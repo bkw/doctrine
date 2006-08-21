@@ -1,0 +1,4 @@
+config/doctrine.yml:
+  class:    sfDoctrineConfigHandler
+config/plan.yml:
+  class:    myPlanConfigHandler

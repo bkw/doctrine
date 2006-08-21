@@ -1,0 +1,44 @@
+HOW TO USE DOCTRINE WITH SYMFONY
+
+Notes:
+    SF_SYMFONY_LIB_DIR refers to your Symfony lib dir.
+    SF_LIB_DIR refers to your project lib dir.
+
+1. Get Doctrine
+Either download from http://phpdoctrine.com or better yet get the svn build at  http://svn.phpdoctrine.org/trunk
+Place it inside some place that Symfony will find it. For global use SF_SYMFONY_LIB_DIR/vendor/doctrine is good. For local/project use, SF_LIB_DIR/doctrine works.
+
+2. Get Doctrine recognized by the Symfony autoloader.
+You can do this in many ways but the easiest is to take included sfDoctrineAutoloadConfig.class.php file and replace the one in your SF_SYMFONY_LIB_DIR/config/ directory. There are no issues with using that one for all your projects. It recognizes every class/interface in any .php file.
+
+3. Install plugin
+Place sfDoctrine.class.php, sfDoctrinePager.class, sfDoctrineUniqueValidator and sfDoctrineDatabase.class, sfDoctrineConfigHandler inside SF_SYMFONY_LIB_DIR/plugins/sfDoctrine or SF_LIB_DIR/plugins/sfDoctrine
+Place doctrine.yml in your desired config dir such as SF_LIB_DIR/config for global application use. Either add the included config_handlers.yml to same directory if you do not have one or append it to your existing one.
+
+4. Setup databases
+Setup your database connections in databases.yml
+Refer to http://www.symfony-project.com/content/book/page/configuration_practice.html#database
+
+5. Edit your doctrine.yml (the one that you placed in your config dir)
+It is self documented. The main entries to deal with are :
+- database_default: This is the default connection name to use as found in databases.yml
+- attributes_create_tables: Do you want Doctrine to auto create DB tables
+The rest of the values will work fine as a default until needed.
+
+6. Create your Doctrine models.
+Refer to Doctrine manual for this. You can place the files in SF_LIB_DIR/model
+
+7. Use it
+
+Example call:
+------------------------------
+//to use default connection
+$session = Doctrine::session();
+//to specify another
+$session = Doctrine::session('another');
+
+//normal Doctrine code...
+$cool = $session->getTable('Coolness');
+....
+------------------------------
+
