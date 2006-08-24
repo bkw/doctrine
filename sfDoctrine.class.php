@@ -28,7 +28,7 @@ class sfDoctrine
       $connection = $defaultConnection;
       if($defaultConnection === null)
       {
-        $error = 'Either specify a Doctrine session or set a default in doctrine.yml.';
+        $error = 'Either specify a Doctrine connection or set a default in doctrine.yml.';
         throw new sfDatabaseException($error);
       }
 

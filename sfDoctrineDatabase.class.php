@@ -58,7 +58,7 @@ class sfDoctrineDatabase extends sfDatabase
       $pdo_username = $this->getParameter('username');
       $pdo_password = $this->getParameter('password');
       $manager = Doctrine_Manager::getInstance();
-      $this->connection = $manager->openSession(new PDO($dsn, $pdo_username, $pdo_password));
+      $this->connection = $manager->openConnection(new PDO($dsn, $pdo_username, $pdo_password));
 
     }
     catch (PDOException $e)
