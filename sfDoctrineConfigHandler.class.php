@@ -39,7 +39,7 @@ class sfDoctrineConfigHandler extends sfYamlConfigHandler
             #let doctrine automatically create db tables? (true, false)
             case 'ATTR_CREATE_TABLES':
 
-                $attributes['ATTR_CREATE_TABLES'] = $value ? 'true':'false';
+                $attributes['ATTR_CREATE_TABLES'] = $value == 1 ? 'true':'false';
                 break;
 
             #default fetch mode (immediate, batch, lazy, offset, lazy_offset)
@@ -83,6 +83,7 @@ class sfDoctrineConfigHandler extends sfYamlConfigHandler
             #collection limit
             case 'ATTR_COLL_LIMIT':
                 $attributes['ATTR_COLL_LIMIT'] = $value;
+                break;
 
             #event listener
             case 'ATTR_LISTENER':
@@ -111,7 +112,7 @@ class sfDoctrineConfigHandler extends sfYamlConfigHandler
 
             #enable doctrine side validation (true, false)
             case 'ATTR_VLD':
-                $attributes['ATTR_VLD'] = $value ? 'true':'false';
+                $attributes['ATTR_VLD'] = $value == 1 ? 'true':'false';
                 break;
         }
       }

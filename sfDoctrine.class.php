@@ -22,7 +22,6 @@ class sfDoctrine
     // load doctrine config
     require(sfConfigCache::getInstance()->checkConfig(sfConfig::get('sf_config_dir_name').'/doctrine.yml'));
 
-
     if($connection === null)
     {
       $connection = $defaultConnection;
@@ -32,8 +31,11 @@ class sfDoctrine
         throw new sfDatabaseException($error);
       }
 
-      return sfContext::getInstance()->getDatabaseConnection($connection);
-
+      $connection = sfContext::getInstance()->getDatabaseConnection($connection);
+      foreach($attributes as $k => $v)
+      {
+        $connection->setAttribute(constant('Doctrine::'.$k), $v);
+      }
     }
   }
 }
