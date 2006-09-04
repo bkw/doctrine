@@ -30,12 +30,13 @@ class sfDoctrine
         $error = 'Either specify a Doctrine connection or set a default in doctrine.yml.';
         throw new sfDatabaseException($error);
       }
-
-      $connection = sfContext::getInstance()->getDatabaseConnection($connection);
-      foreach($attributes as $k => $v)
-      {
-        $connection->setAttribute(constant('Doctrine::'.$k), $v);
-      }
     }
+
+    $connection = sfContext::getInstance()->getDatabaseConnection($connection);
+    foreach($attributes as $k => $v)
+    {
+      $connection->setAttribute(constant('Doctrine::'.$k), $v);
+    }
+    return $connection;
   }
 }
