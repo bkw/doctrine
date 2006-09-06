@@ -32,34 +32,41 @@ class sfDoctrinePager
 
   public function __construct($session, $query, $defaultMaxPerPage = 10)
   {
-    $this->setMaxPerPage($defaultMaxPerPage);
-    $this->setParser(new Doctrine_DQL_Parser($session));
+    $this->setParser(new Doctrine_Query($session));
     $this->setQuery($query);
     $this->setPage(1);
+    $this->setMaxPerPage($defaultMaxPerPage);
     $this->parameter_holder = new sfParameterHolder();
+    
+    $this->getParser()->parseQuery($this->getQuery());
   }
 
   public function init()
   {
+    
     $pForCount = clone $this->getParser();
-    $pForCount->setOffset(0);
-    $pForCount->setLimit(0);
-
-    $this->setNbResults($pForCount->query($this->getQuery())->count());
-
+    $pForCount->offset(0);
+    $pForCount->limit(0);
+    
+    $count = count($pForCount->execute());
+    
+    $this->setNbResults($count);
+    
     $p = $this->getParser();
-    $p->setOffset(0);
-    $p->setLimit(0);
-
-    if (($this->getPage() == 0 || $this->getMaxPerPage() == 0))
+    $p->offset(0);
+    $p->limit(0);
+    if ($this->getPage() == 0 || $this->getMaxPerPage() == 0)
     {
       $this->setLastPage(0);
     }
     else
     {
       $this->setLastPage(ceil($this->getNbResults() / $this->getMaxPerPage()));
-      $p->setOffset(($this->getPage() - 1) * $this->getMaxPerPage());
-      $p->setLimit($this->getMaxPerPage());
+      
+      $offset = ($this->getPage() - 1) * $this->getMaxPerPage();
+      
+      $p->offset($offset);
+      $p->limit($this->getMaxPerPage());
     }
   }
 
@@ -171,11 +178,11 @@ class sfDoctrinePager
 
   private function retrieveObject($offset)
   {
-    $cForRetrieve = clone $this->getDql();
-    $cForRetrieve->setOffset($offset - 1);
-    $cForRetrieve->setLimit(1);
+    $cForRetrieve = clone $this->getParser();
+    $cForRetrieve->offset($offset - 1);
+    $cForRetrieve->limit(1);
 
-    $results = $session->query($cForRetrieve);
+    $results = $cForRetrieve->execute();
 
     return $results[0];
   }
@@ -183,7 +190,8 @@ class sfDoctrinePager
   public function getResults()
   {
     $p = $this->getParser();
-    return $p->query($this->getQuery());
+    
+    return $p->execute();
   }
 
   public function getFirstIndice()
@@ -263,7 +271,9 @@ class sfDoctrinePager
 
   public function setPage($page)
   {
-    $this->page = ($page < 0) ? 1 : $page;
+    $page = intval($page);
+
+    $this->page = ($page <= 0) ? 1 : $page;
   }
 
   public function getMaxPerPage()
