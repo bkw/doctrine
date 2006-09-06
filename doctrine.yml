@@ -10,9 +10,6 @@ all:
     #let doctrine automatically create db tables? (true, false)
     create_tables:  true
 
-    #default fetch mode (immediate, batch, lazy, offset, lazy_offset)
-    fetchmode:      immediate
-
     #cache container (none, sqlite)
     cache:          none
 

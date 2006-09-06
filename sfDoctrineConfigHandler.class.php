@@ -42,12 +42,6 @@ class sfDoctrineConfigHandler extends sfYamlConfigHandler
                 $attributes['ATTR_CREATE_TABLES'] = $value == 1 ? 'true':'false';
                 break;
 
-            #default fetch mode (immediate, batch, lazy, offset, lazy_offset)
-            case 'ATTR_FETCHMODE':
-
-                $attributes['ATTR_FETCHMODE'] = constant('Doctrine::FETCH_'.strtoupper($value));
-                break;
-
             #cache container
             case 'ATTR_CACHE':
                 $attributes['ATTR_CACHE'] = constant('Doctrine::CACHE_'.strtoupper($value));
