@@ -16,8 +16,12 @@
 class sfDoctrine
 {
 
-
   static public function session($connection = null)
+  {
+    return connection($connection);
+  }
+
+  static public function connection($connection = null)
   {
     // load doctrine config
     require(sfConfigCache::getInstance()->checkConfig(sfConfig::get('sf_config_dir_name').'/doctrine.yml'));
