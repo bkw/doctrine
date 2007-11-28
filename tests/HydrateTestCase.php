@@ -89,7 +89,7 @@ class HydrationListener extends Doctrine_Record_Listener
         }
     }
 }
-class Doctrine_Hydrate_Mock extends Doctrine_Hydrate
+class Doctrine_Hydrate_Mock extends Doctrine_Hydrator_Abstract
 {
     protected $data;
 
@@ -97,12 +97,9 @@ class Doctrine_Hydrate_Mock extends Doctrine_Hydrate
     {
         $this->data = $data;
     }
-    public function getQuery()
+    
+    public function hydrateResultSet($stmt, $tableAliases, $hydrationMode = null)
     {
-    	
-    }
-    public function execute($params = array(), $hydrationMode = null)
-    {
-        return $this->data;
+        return true;
     }
 }

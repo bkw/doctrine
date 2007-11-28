@@ -13,6 +13,7 @@ $test = new DoctrineTest();
 $tickets = new GroupTest('Tickets tests', 'tickets');
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_428_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_480_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_587_TestCase());
 //If you write a ticket testcase add it here like shown above!
 $test->addTestCase($tickets);
@@ -144,6 +145,7 @@ $test->addTestCase($data_types);
 // Utility components
 $plugins = new GroupTest('Plugin tests: View, Validator, Hook','plugins');
 //$utility->addTestCase(new Doctrine_PessimisticLocking_TestCase());
+$plugins->addTestCase(new Doctrine_Plugin_TestCase());
 $plugins->addTestCase(new Doctrine_View_TestCase());
 $plugins->addTestCase(new Doctrine_AuditLog_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_TestCase());
@@ -218,7 +220,7 @@ $test->addTestCase(new Doctrine_CustomResultSetOrder_TestCase());
 
 
 $test->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
-
+$test->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
 $test->addTestCase(new Doctrine_ColumnAlias_TestCase());
 
 
@@ -262,7 +264,21 @@ $migration->addTestCase(new Doctrine_Migration_Mysql_TestCase());
 $test->addTestCase($migration);
 
 $test->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
-$test->addTestCase(new Doctrine_Import_Schema_TestCase());
-$test->addTestCase(new Doctrine_Export_Schema_TestCase());
+
+$parser = new GroupTest('Parser tests', 'parser');
+$parser->addTestCase(new Doctrine_Parser_TestCase());
+$test->addTestCase($parser);
+
+$schemaFiles = new GroupTest('Schema files', 'schema_files');
+$schemaFiles->addTestCase(new Doctrine_Import_Schema_TestCase());
+$schemaFiles->addTestCase(new Doctrine_Export_Schema_TestCase());
+$test->addTestCase($schemaFiles);
+
+$data = new GroupTest('Data exporting/importing fixtures', 'data_fixtures');
+$data->addTestCase(new Doctrine_Data_Import_TestCase());
+$data->addTestCase(new Doctrine_Data_Export_TestCase());
+$test->addTestCase($data);
 
 $test->run();
+
+echo memory_get_peak_usage() / 1024;
