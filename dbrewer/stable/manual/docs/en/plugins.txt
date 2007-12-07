@@ -1,0 +1,202 @@
+++ Validators
+++ View
+++ Profiler
+++ Locking Manager
+++ Connection Profiler
+++ Internationalization with I18n
+
+Doctrine_I18n is a plugin for Doctrine that provides internationalization support for record classes. In the following example we have a NewsItem class with two fields 'title' and 'content'. We want to have the field 'title' with different languages support. This can be achieved as follows:
+
+<code type="php">
+class NewsItem extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 200);
+        $this->hasColumn('content', 'string');
+    }
+
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('title')));
+    }
+}
+</code>
++++ Creating the I18n table
+
+The I18n table can be created as follows:
+
+<code type="php">
+$conn->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
+
+$conn->export->exportClasses(array('NewsItem'));
+</code>
+
+The following code example executes two sql statements. When using mysql those statements would look like:
+
+<code>
+CREATE TABLE news_item (id INT NOT NULL AUTO_INCREMENT, content TEXT)
+CREATE TABLE news_item_translation (id INT NOT NULL, title VARCHAR(200), lang VARCHAR(20))
+</code>
+
+Notice how the field 'title' is not present in the news_item table. Since its present in the translation table it would be a waste of resources to have that same field in the main table. Basically Doctrine always automatically removes all translated fields from the main table.
+
++++ Using I18n
+
+In the following example we add some data with finnish and english translations:
+
+<code type="php">
+$item = new NewsItem();
+$item->title = 'Some title';
+$item->content = 'This is some content. This field is not being translated.';
+
+$item->Translation['FI']->title = 'Joku otsikko';
+
+$item->save();
+</code>
+
+Now lets find all items and their finnish translations:
+
+<code type="php">
+$items = Doctrine_Query::create()
+         ->from('NewsItem n')
+         ->leftJoin('n.Translation t INDEXBY t.lang')
+         ->where('t.lang = ?')
+         ->execute(array('FI'));
+
+$items[0]->Translation['FI']->title; // 'joku otsikko'
+</code>
+
+
+++ AuditLog and versioning
+Doctrine_AuditLog provides a full versioning solution. Lets say we have a NewsItem class that we want to be versioned. This functionality can be applied by simply adding $this->actAs('Versionable') into your record setup. 
+
+<code type="php">
+class NewsItem extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 200);
+        $this->hasColumn('content', 'string');
+        // the versioning plugin needs version column
+        $this->hasColumn('version', 'integer');
+    }
+
+    public function setUp()
+    {
+        $this->actAs('Versionable');
+    }
+}
+</code>
+
+Now when we have defined this record to be versionable, Doctrine does internally the following things:
+
+* It creates a class called NewsItemVersion on-the-fly, the table this record is pointing at is news_item_version
+* Everytime a NewsItem object is deleted / updated the previous version is stored into news_item_version
+* Everytime a NewsItem object is updated its version number is increased.
+
++++ Creating the version table
+
+As with all other plugins, the plugin-table, in this case the table that holds the different versions, can be created by enabling Doctrine::EXPORT_PLUGINS. The easiest way to set this is by setting the value of Doctrine::ATTR_EXPORT to Doctrine::EXPORT_ALL. The following example shows the usage:
+
+<code type="php">
+$conn->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
+
+$conn->export->exportClasses(array('NewsItem'));
+</code>
+
+The following code example executes two sql statements. When using mysql those statements would look like:
+
+<code>
+CREATE TABLE news_item (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(200), content TEXT, version INTEGER)
+CREATE TABLE news_item_version (id INT NOT NULL, title VARCHAR(200), content TEXT, version INTEGER)
+</code>
+
++++ Using versioning
+
+<code type="php">
+$newsItem = new NewsItem();
+$newsItem->title = 'No news is good news';
+$newsItem->content = 'All quiet on the western front';
+
+$newsItem->save();
+$newsItem->version; // 1
+
+$newsItem->title = 'A different title';
+$newsItem->save();
+$newsItem->version; // 2
+</code>
+
++++ Reverting changes
+
+Doctrine_Record provides a method called revert() which can be used for reverting to specified version. Internally Doctrine queries the version table and fetches the data for given version. If the given version is not found a Doctrine_Record_Exception is being thrown.
+
+<code type="php">
+$newsItem->revert(1);
+
+$newsItem->title; // No news is good news
+</code>
+
++++ Advanced usage
+
+There are many options for the versioning plugin. Sometimes you may want to use other version column than 'version'. This can be achieved by giving the options parameter to actAs() method.
+
+<code type="php">
+class NewsItem extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 200);
+        $this->hasColumn('content', 'string');
+        // the versioning plugin needs version column
+        $this->hasColumn('news_version', 'integer');
+    }
+
+    public function setUp()
+    {
+        $this->actAs('Versionable', array('versionColumn' => 'news_version'));
+    }
+}
+</code>
+
+You can also control the name of the versioning record and the name of the version table with option attributes 'className' and 'tableName'.
+
+++ Hook
+++ Soft-delete
+
+Soft-delete is a very simple plugin for achieving the following behaviour: when a record is deleted its not removed from database. Usually the record contains some special field like 'deleted' which tells the state of the record (deleted or alive).
+
+The following code snippet shows what you need in order to achieve this kind of behaviour. Notice how we define two event hooks: preDelete and postDelete. Also notice how the preDelete hook skips the actual delete-operation with skipOperation() call. For more info about the event hooks see chapter [doc event-listeners :index :name].
+
+<code type="php">
+class SoftDeleteTest extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', null, array('primary' => true));
+        $this->hasColumn('deleted', 'boolean', 1);
+    }
+    public function preDelete($event)
+    {
+        $event->skipOperation();
+    }
+    public function postDelete($event)
+    {
+        $this->deleted = true;
+        $this->save();
+    }
+}
+</code>
+
+Now lets put the plugin in action:
+
+<code type="php">
+
+// save a new record
+$record = new SoftDeleteTest();
+$record->name = 'new record';
+$record->save();
+
+$record->delete();
+var_dump($record->deleted); // true
+</code>

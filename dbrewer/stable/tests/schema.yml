@@ -1,0 +1,29 @@
+---
+User: 
+  tableName: user
+  className: User
+  columns: 
+    id: 
+      notnull: true
+      primary: true
+      autoincrement: true
+      type: integer
+      length: 4
+      name: id
+    username: 
+      type: string
+      length: 255
+Group: 
+  tableName: group
+  className: Group
+  columns: 
+    id: 
+      notnull: true
+      primary: true
+      autoincrement: true
+      type: integer
+      length: 4
+      name: id
+    name: 
+      type: string
+      length: 255

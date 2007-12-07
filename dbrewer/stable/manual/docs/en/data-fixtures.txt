@@ -1,0 +1,141 @@
+Doctrine Data uses the Doctrine Parser for the dumping and loading of fixtures data so it is possible to use any of the formats available in the Parser. Currently yml is the only fully supported format but xml and others are next.
+
+++ Exporting
+
+You can export data to fixtures file in many different formats
+
+<code type="php">
+// A few ways exist for specifying where you export the data
+
+// Dump to one large fixture file
+$data = new Doctrine_Data();
+$data->exportData('data.yml', 'yml');
+
+// Dump to individual files. One file per model. 3rd argument true specifies to dump to individual files
+$data = new Doctrine_Data();
+$data->exportData('path/to/directory', 'yml', true);
+</code>
+
+++ Importing
+
+You can import data from fixtures files in many different formats
+
+<code type="php">
+// Path can be in a few different formats
+$path = 'path/to/data.yml'; // Path directly to one yml file
+$path = array('data.yml', 'data2.yml', 'more.yml'); // Array of yml file paths
+$path = array('directory1', 'directory2', 'directory3'); // Array of directories which contain yml files. It will find all files with an extension of .yml
+
+// Specify the format of the data you are importing
+$format = 'yml';
+$format = 'xml';
+$format = 'csv';
+
+$models = array('User', 'Phonenumber'); // you can optionally specify an array of the models you wish to import the data for, by default it loads data for all the available loaded models and the data that exists
+
+$data = new Doctrine_Data();
+$data->importData($path, $format, $models);
+</code>
+
+++ Dummy Data
+
+With Doctrine Data you can import dummy data to all your Doctrine Records
+
+<code type="php">
+$numRecords = 3; // Number of dummy records to populate for each model
+$models = array('User', 'Email'); // Models to generate dummy data for. If none specified it generates dummy data for all loaded models.
+
+$data = new Doctrine_Data();
+$data->importDummyData($numRecords, $models);
+</code>
+
+++ Writing
+
+You can write your fixtures files manually and load them in to your applications. Below is a sample data.yml fixtures file. You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, then load all data.
+
+Please see the [doc schema-files :index :name] for the sample models/schema for these example fixtures.
+
+<code type="yml">
+---
+Adult:
+  Adult_1:
+    name: Parent 1
+    Contact: Contact_1
+Car:
+  Car_1:
+    name: Chevorlet Trailblazer
+  Car_2:
+    name: Chevorlet Blazer
+  Car_3:
+    name: Buick
+Child:
+  Child_1:
+    name: Child 1
+    Adult: Adult_1
+Contact:
+  Contact_1:
+    name: Jonathan H. Wage
+  Contact_3:
+    name: Daniel Adams
+  Contact_4:
+    name: Robert Adams
+Dog:
+  Dog_1:
+    name: Sam
+    User: User_1
+  Dog_2:
+    name: Dixie
+    User: User_2
+  Dog_3:
+    name: Chief
+    User: User_3
+SelfReference:
+  SelfReference_1:
+    User1: User_1
+    User2: User_2
+    name: Self Reference 1
+    SelfReference1: SelfReference_2
+    SelfReference2: SelfReference_3
+  SelfReference_2:
+    User1: User_2
+    User2: User_1
+    name: Self Reference 2
+    SelfReference1: SelfReference_1
+    SelfReference2: SelfReference_1
+  SelfReference_3:
+    User1: User_2
+    User2: User_1
+    name: Self Reference 3
+    SelfReference1: SelfReference_3
+    SelfReference2: SelfReference_3
+User:
+  User_1:
+    username: jwage
+    hair_color: light brown
+    Contact: Contact_1
+  User_2:
+    username: dadams
+    hair_color: dark brown
+    Contact: Contact_3
+  User_3:
+    username: radams
+    hair_color: light brown
+    Contact: Contact_4
+UserCar:
+  UserCar_1:
+    User: User_1
+    Car: Car_1
+  UserCar_2:
+    User: User_2
+    Car: Car_2
+  UserCar_3:
+    User: User_3
+    Car: Car_3
+</code>
+
+Here is how you would write code to load the data from that data.yml file
+
+<code type="php">
+$data = new Doctrine_Data();
+$data->importData('data.yml', 'yml');
+</code>
