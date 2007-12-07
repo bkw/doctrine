@@ -110,6 +110,18 @@ class Doctrine_Tokenizer_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($a, array('rdbms (dbal OR database)'));
     }
 
+    public function testBracketExplode()
+    {
+        $str = 'foo.field AND bar.field';
+        $a   = Doctrine_Tokenizer::bracketExplode($str, array(' \&\& ', ' AND '), '(', ')');
+        $this->assertEqual($a, array('foo.field', 'bar.field'));
+
+        // delimiters should be case insensitive
+        $str = 'foo.field and bar.field';
+        $a   = Doctrine_Tokenizer::bracketExplode($str, array(' \&\& ', ' AND '), '(', ')');
+        $this->assertEqual($a, array('foo.field', 'bar.field'));
+    }
+
 
     public function testQuoteExplodedShouldQuoteArray()
     {
