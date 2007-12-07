@@ -30,7 +30,7 @@
  * @version     $Revision: 1080 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-class Doctrine_Tokenizer 
+class Doctrine_Tokenizer
 {
     /**
      * trims brackets
@@ -72,7 +72,7 @@ class Doctrine_Tokenizer
     public static function bracketExplode($str, $d = ' ', $e1 = '(', $e2 = ')')
     {
         if (is_array($d)) {
-            $a = preg_split('/('.implode('|', $d).')/', $str);
+            $a = preg_split('/('.implode('|', $d).')/i', $str);
             $d = stripslashes($d[0]);
         } else {
             $a = explode($d, $str);
@@ -85,7 +85,7 @@ class Doctrine_Tokenizer
                 $term[$i] = trim($val);
                 $s1 = substr_count($term[$i], $e1);
                 $s2 = substr_count($term[$i], $e2);
-                
+
                 if ($s1 == $s2) {
                     $i++;
                 }
@@ -93,8 +93,8 @@ class Doctrine_Tokenizer
                 $term[$i] .= $d . trim($val);
                 $c1 = substr_count($term[$i], $e1);
                 $c2 = substr_count($term[$i], $e2);
-                
-                if ($c1 == $c2) { 
+
+                if ($c1 == $c2) {
                     $i++;
                 }
             }
