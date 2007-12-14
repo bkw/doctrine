@@ -178,6 +178,45 @@ Doctrine_Query::create()->update('User u')
                         ->execute();
 </code>
 
++++ Refreshing records
+
+Sometimes you may want to refresh your record with data from the database, use {{Doctrine_Record::refresh()}}.
+
+<code type="php">
+$user = $conn->getTable('User')->find(2);
+$user->name = 'New name';
+// oups, I want to refresh the name
+$user->refresh();
+</code>
+
+++++ Refreshing relationships
+
+The {{Doctrine_Record::refresh()}} method can also refresh record relationships, but you need to specify them on the query.
+
+<code type="php">
+$user = Doctrine_Query::create()
+    ->from('User')
+    ->leftJoin('Groups')
+    ->where('id = ?')
+    ->fetchOne(array(1));
+
+$group = Doctrine_Query::create()
+    ->from('Group')
+    ->leftJoin('Users')
+    ->where('id = ?')
+    ->fetchOne(array(1));
+
+$userGroup = new UserGroup();
+$userGroup->user_id = $user->id;
+$userGroup->group_id = $group->id;
+$userGroup->save();
+
+// get new group on user
+$user->refresh(true);
+// get new user on group
+$group->refresh(true);
+</code>
+
 +++ Deleting records
 
 Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, {{Doctrine_Collection::delete()}} and {{Doctrine_Connection::delete()}} methods.
@@ -266,15 +305,14 @@ endswitch;
 Sometimes you may want to get a copy of your object (a new object with all properties copied). Doctrine provides a simple method for this: {{Doctrine_Record::copy()}}.
 
 <code type="php">
-// get a simple copy
 $copy = $user->copy();
 </code>
 
-Notice that copying the record with copy() returns a new record (state TDIRTY) with the values of the old record, but it does *not* copy the relations of that record. If you want to copy the relations too, you need to use copyDeep().
+Notice that copying the record with copy() returns a new record (state TDIRTY) with the values of the old record, and it copies the relations of that record. If you do not want to copy the relations too, you need to use copy(false).
 
 <code type="php">
-// get a copy of user with all the relations
-$copy = $user->copyDeep();
+// get a copy of user without the relations
+$copy = $user->copy(false);
 </code>
 
 +++ Saving a blank record
