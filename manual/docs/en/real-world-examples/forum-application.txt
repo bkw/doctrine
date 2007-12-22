@@ -20,7 +20,7 @@ class Forum_Board extends Doctrine_Record {
     }
     public function setUp() {
         $this->hasOne("Forum_Category as Category", "Forum_Board.category_id");
-        $this->ownsMany("Forum_Thread as Threads",  "Forum_Thread.board_id");
+        $this->hasMany("Forum_Thread as Threads",  "Forum_Thread.board_id");
     } 
 }
 
@@ -47,7 +47,7 @@ class Forum_Thread extends Doctrine_Record {
     }
     public function setUp() {
         $this->hasOne("Forum_Board as Board", "Forum_Thread.board_id");
-        $this->ownsMany("Forum_Entry as Entries", "Forum_Entry.thread_id");
+        $this->hasMany("Forum_Entry as Entries", "Forum_Entry.thread_id");
     }
 }
 </code>

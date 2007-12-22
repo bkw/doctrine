@@ -41,7 +41,7 @@ class User extends Doctrine_Record
 {
     public function setUp() 
     {
-        $this->ownsOne('Email', array('local' => 'email_id'));
+        $this->hasOne('Email', array('local' => 'email_id'));
     }
     public function setTableDefinition() 
     {

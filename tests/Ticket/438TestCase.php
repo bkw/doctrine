@@ -153,7 +153,7 @@ class T438_StudentCourse extends Doctrine_Record
   
   public function setUp()
   {
-    $this->ownsOne('T438_Student as Student', array('local' => 'sc_student_id', 'foreign' => 's_id'));
-    $this->ownsOne('T438_Course as Course', array('local' => 'sc_course_id', 'foreign' => 'c_id'));
+    $this->hasOne('T438_Student as Student', array('local' => 'sc_student_id', 'foreign' => 's_id'));
+    $this->hasOne('T438_Course as Course', array('local' => 'sc_course_id', 'foreign' => 'c_id'));
   }
 }
