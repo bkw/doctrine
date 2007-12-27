@@ -231,6 +231,14 @@ class Doctrine_Connection_Statement implements Doctrine_Adapter_Statement_Interf
             $result = true;
             if ( ! $event->skipOperation) {
                 $result = $this->_stmt->execute($params);
+                /*if (strstr($this->getQuery(), 'SELECT')) {
+                    try {
+                        throw new Exception("---");
+                    } catch (Exception $e) {
+                        echo $this->getQuery();
+                        echo $e->getTraceAsString() . "<br />";
+                    }
+                }*/
                 $this->_conn->incrementQueryCount();
             }
 

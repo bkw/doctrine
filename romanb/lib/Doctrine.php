@@ -195,6 +195,14 @@ final class Doctrine
     const ATTR_MODEL_LOADING            = 161;
 
     /**
+     * INHERITANCE TYPE CONSTANTS.
+     */
+     
+     const INHERITANCETYPE_SINGLE_TABLE = 1;
+     const INHERITANCETYPE_JOINED = 2;
+     const INHERITANCETYPE_TABLE_PER_CLASS = 3;
+
+    /**
      * LIMIT CONSTANTS
      */
 

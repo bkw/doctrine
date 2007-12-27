@@ -190,9 +190,9 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     public function find($queryKey, $params = array(), $hydrationMode = Doctrine::HYDRATE_RECORD)
     {
         return Doctrine_Manager::getInstance()
-                            ->getQueryRegistry()
-                            ->get($queryKey)
-                            ->execute($params, $hydrationMode);
+                ->getQueryRegistry()
+                ->get($queryKey)
+                ->execute($params, $hydrationMode);
     }
 
     /**
@@ -210,9 +210,9 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     public function findOne($queryKey, $params = array(), $hydrationMode = Doctrine::HYDRATE_RECORD)
     {
         return Doctrine_Manager::getInstance()
-                            ->getQueryRegistry()
-                            ->get($queryKey)
-                            ->fetchOne($params, $hydrationMode);
+                ->getQueryRegistry()
+                ->get($queryKey)
+                ->fetchOne($params, $hydrationMode);
     }
 
     /**
@@ -572,6 +572,15 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     public function getTable($componentName)
     {
         return $this->getConnectionForComponent($componentName)->getTable($componentName);
+    }
+    
+    /**
+     * 
+     * 
+     */
+    public function getMapper($componentName)
+    {
+        return $this->getConnectionForComponent($componentName)->getMapper($componentName);
     }
 
     /**

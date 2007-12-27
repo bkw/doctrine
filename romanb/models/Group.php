@@ -16,6 +16,9 @@ class Group extends Entity
             'foreign' => 'user_id',
             'refClass' => 'Groupuser',
         ));
+        /*$this->hasMany('Groupuser as User', array(
+                'local' => 'id', 'foreign' => 'group_id'
+        ));*/
     }
 }
 

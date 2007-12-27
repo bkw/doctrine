@@ -45,6 +45,7 @@ class Doctrine_Relation_ForeignKey extends Doctrine_Relation
     {
         $id = array();
         $localTable = $record->getTable();
+
         foreach ((array) $this->definition['local'] as $local) {
            $value = $record->get($localTable->getFieldName($local));
            if (isset($value)) {
@@ -53,11 +54,11 @@ class Doctrine_Relation_ForeignKey extends Doctrine_Relation
         }
         if ($this->isOneToOne()) {
             if ( ! $record->exists() || empty($id) || 
-                 ! $this->definition['table']->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+                 ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
                 
-                $related = $this->getTable()->create();
+                $related = $this->_foreignMapper->create();
             } else {
-                $dql  = 'FROM ' . $this->getTable()->getComponentName()
+                $dql  = 'FROM ' . $this->_foreignMapper->getComponentName()
                       . ' WHERE ' . $this->getCondition();
 
                 $coll = $this->getTable()->getConnection()->query($dql, $id);
@@ -69,9 +70,9 @@ class Doctrine_Relation_ForeignKey extends Doctrine_Relation
         } else {
 
             if ( ! $record->exists() || empty($id) || 
-                 ! $this->definition['table']->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+                 ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
                 
-                $related = new Doctrine_Collection($this->getTable());
+                $related = new Doctrine_Collection($this->_foreignMapper->getComponentName());
             } else {
                 $query      = $this->getRelationDql(1);
                 $related    = $this->getTable()->getConnection()->query($query, $id);

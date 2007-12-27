@@ -83,7 +83,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         
         $this->connection->clear();
         
-        $t = $this->connection->getTable('FieldNameTest')->find(1);
+        $t = $this->connection->getMapper('FieldNameTest')->find(1);
 
         $this->assertEqual($t->someColumn, 'abc');
         $this->assertEqual($t->someEnum, 'php');
@@ -96,14 +96,14 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
 
     public function testGetForeignKey() 
     {
-        $fk = $this->objTable->getRelation("Group");
+        $fk = $this->objTable->getTable()->getRelation("Group");
         $this->assertTrue($fk instanceof Doctrine_Relation_Association);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
         $this->assertTrue($fk->getType() == Doctrine_Relation::MANY_AGGREGATE);
         $this->assertTrue($fk->getLocal() == "user_id");
         $this->assertTrue($fk->getForeign() == "group_id");
 
-        $fk = $this->objTable->getRelation("Email");
+        $fk = $this->objTable->getTable()->getRelation("Email");
         $this->assertTrue($fk instanceof Doctrine_Relation_LocalKey);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
         $this->assertTrue($fk->getType() == Doctrine_Relation::ONE_COMPOSITE);
@@ -111,7 +111,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($fk->getForeign() == $fk->getTable()->getIdentifier());
 
 
-        $fk = $this->objTable->getRelation('Phonenumber');
+        $fk = $this->objTable->getTable()->getRelation('Phonenumber');
         $this->assertTrue($fk instanceof Doctrine_Relation_ForeignKey);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
         $this->assertTrue($fk->getType() == Doctrine_Relation::MANY);
@@ -127,7 +127,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
 
     public function testGetTableName() 
     {
-        $this->assertTrue($this->objTable->tableName == 'entity');
+        $this->assertTrue($this->objTable->getTable()->getTableName() == 'entity');
     } 
 
     public function testGetConnection() 

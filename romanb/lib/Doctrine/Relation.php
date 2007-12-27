@@ -77,6 +77,8 @@ abstract class Doctrine_Relation implements ArrayAccess
                                   'equal'       => false,
                                   );
 
+    protected $_foreignMapper;
+
     /**
      * constructor
      *
@@ -139,6 +141,7 @@ abstract class Doctrine_Relation implements ArrayAccess
         }
 
         $this->definition = $def;
+        $this->_foreignMapper = $this->getTable()->getConnection()->getMapper($def['class']);
     }
 
     /**
@@ -319,6 +322,11 @@ abstract class Doctrine_Relation implements ArrayAccess
               . ' IN (' . substr(str_repeat('?, ', $count), 0, -2) . ')';
 
         return $dql;
+    }
+    
+    public function getForeignComponentName()
+    {
+        return $this->definition['class'];
     }
 
     /**

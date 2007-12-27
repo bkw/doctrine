@@ -34,7 +34,7 @@ class InheritanceDealUser extends InheritanceEntityUser
         $this->hasOne('InheritanceUser as User', array('local' => 'user_id', 'foreign' => 'id'));
         $this->hasOne('InheritanceDeal as Deal', array('local' => 'entity_id', 'foreign' => 'id'));
         $this->setInheritanceMap(array (
-        'type' => 1,
+            'InheritanceDealUser' => array('type' => 1),
         ));
     }
 }

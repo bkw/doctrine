@@ -161,7 +161,7 @@ $plugins->addTestCase(new Doctrine_Validator_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Future_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Past_TestCase());
 $plugins->addTestCase(new Doctrine_Hook_TestCase());
-$plugins->addTestCase(new Doctrine_I18n_TestCase());
+//$plugins->addTestCase(new Doctrine_I18n_TestCase());
 $test->addTestCase($plugins);
 
 // Db component
@@ -216,7 +216,7 @@ $record = new GroupTest('Record tests','record');
 $record->addTestCase(new Doctrine_Record_Filter_TestCase());
 $record->addTestCase(new Doctrine_Record_TestCase());
 $record->addTestCase(new Doctrine_Record_State_TestCase());
-$record->addTestCase(new Doctrine_Record_SerializeUnserialize_TestCase());
+//$record->addTestCase(new Doctrine_Record_SerializeUnserialize_TestCase());
 // This test used to segfault php because of infinite recursion in Connection/UnitOfWork
 $record->addTestCase(new Doctrine_Record_Lock_TestCase());
 $record->addTestCase(new Doctrine_Record_ZeroValues_TestCase());
@@ -233,7 +233,6 @@ $test->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
 $test->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
 $test->addTestCase(new Doctrine_ColumnAlias_TestCase());
 
-
 $test->addTestCase(new Doctrine_RawSql_TestCase());
 
 $test->addTestCase(new Doctrine_NewCore_TestCase());
@@ -241,6 +240,13 @@ $test->addTestCase(new Doctrine_NewCore_TestCase());
 $test->addTestCase(new Doctrine_Template_TestCase());
 
 //$test->addTestCase(new Doctrine_Import_Builder_TestCase());
+
+// Inheritance mapping tests
+$test->addTestCase(new Doctrine_Inheritance_SingleTable_TestCase());
+$test->addTestCase(new Doctrine_Inheritance_Joined_TestCase());
+$test->addTestCase(new Doctrine_Inheritance_TablePerClass_TestCase());
+
+// nestedset tests
 $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 
 // Search tests

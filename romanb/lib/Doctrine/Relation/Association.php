@@ -55,20 +55,24 @@ class Doctrine_Relation_Association extends Doctrine_Relation
      */
     public function getRelationDql($count, $context = 'record')
     {
-        $table = $this->definition['refTable'];
+        //$table = $this->definition['refTable'];
         $component = $this->definition['refTable']->getComponentName();
+        //$rel = $this->definition['refTable']->getRelation($this->_foreignMapper->getComponentName());
+        //echo "LOCAL:" . $rel->getLocal() . "<br />";
         
         switch ($context) {
             case "record":
                 $sub  = substr(str_repeat("?, ", $count),0,-2);
-                $dql  = 'FROM ' . $this->getTable()->getComponentName();
-                $dql .= '.' . $component;
-                $dql .= ' WHERE ' . $this->getTable()->getComponentName()
+                $dql  = 'FROM ' . $this->_foreignMapper->getComponentName();
+                $dql .= ' INNER JOIN ' . $this->_foreignMapper->getComponentName() . "." . $component;
+                //$dql .= ' ON ' . $this->_foreignMapper->getComponentName() . "." . $component . '.' . $rel->getLocal() . ' = ' . $this->_foreignMapper->getComponentName() . '.' . $rel->getForeign();
+                $dql .= ' WHERE ' . $this->_foreignMapper->getComponentName()
                 . '.' . $component . '.' . $this->definition['local'] . ' IN (' . $sub . ')';
                 break;
             case "collection":
                 $sub  = substr(str_repeat("?, ", $count),0,-2);
-                $dql  = 'FROM ' . $component . '.' . $this->getTable()->getComponentName();
+                $dql  = 'FROM ' . $component . ' INNER JOIN ' . $component . '.' . $this->_foreignMapper->getComponentName();
+                //$dql .= ' ON ' . $component . '.' . $rel->getLocal() . ' = ' . $component . '.' . $this->_foreignMapper->getComponentName() . '.' . $rel->getForeign();
                 $dql .= ' WHERE ' . $component . '.' . $this->definition['local'] . ' IN (' . $sub . ')';
                 break;
         }
@@ -87,9 +91,12 @@ class Doctrine_Relation_Association extends Doctrine_Relation
     public function fetchRelatedFor(Doctrine_Record $record)
     {
         $id = $record->getIncremented();
-        if (empty($id) || ! $this->definition['table']->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
-            $coll = new Doctrine_Collection($this->getTable());
+        if (empty($id) || ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+            $coll = new Doctrine_Collection($this->getForeignComponentName());
         } else {
+            $query = Doctrine_Query::create()->parseQuery($this->getRelationDql(1));
+            //echo $query->getDql();
+            //echo $query->getSql();
             $coll = Doctrine_Query::create()->query($this->getRelationDql(1), array($id));
         }
         $coll->setReference($record, $this);
