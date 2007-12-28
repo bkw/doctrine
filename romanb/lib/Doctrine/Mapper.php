@@ -44,6 +44,11 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     protected $_domainClassName;
     
     /**
+     * The names of all the fields that are available on records created by this mapper. 
+     */
+    protected $_fieldNames = array();
+    
+    /**
      * @var array $data                                 temporary data which is then loaded into Doctrine_Record::$_data
      */
     protected $_data = array();
@@ -1062,17 +1067,20 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                 $dataSet = $this->formatDataSet($record);
                 
                 $component = $table->getComponentName();
-
+                
                 $classes = $table->getOption('joinedParents');
                 $classes[] = $component;
-
+                //var_dump($classes);
+                //var_dump($dataSet);
+                //echo "<br /><br />";
                 foreach ($classes as $k => $parent) {
                     if ($k === 0) {
                         $rootRecord = new $parent();
-
+                        
                         $rootRecord->merge($dataSet[$parent]);
 
                         $this->_conn->processSingleInsert($rootRecord);
+                        $record->assignIdentifier($rootRecord->identifier());
                     } else {
                         foreach ((array) $rootRecord->identifier() as $id => $value) {
                             $dataSet[$parent][$id] = $value;
@@ -1158,6 +1166,25 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         return array();
     }
     
+    public function getFieldNames()
+    {
+        if ($this->_fieldNames) {
+            return $this->_fieldNames;
+        }        
+        
+        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
+            $fieldNames = $this->_table->getFieldNames();
+            foreach ($this->_table->getOption('joinedParents') as $parent) {
+                $fieldNames = array_merge($this->_conn->getTable($parent)->getFieldNames(),
+                        $fieldNames);
+            }
+            $this->_fieldNames = $fieldNames;
+            return $fieldNames;
+        } else {
+            $this->_fieldNames = $this->_table->getFieldNames();
+            return $this->_table->getFieldNames();
+        }
+    }
     
     /*public function free()
     {

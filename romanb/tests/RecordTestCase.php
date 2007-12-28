@@ -246,15 +246,15 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     }
 
-    /*public function testSerialize() 
+    public function testSerialize() 
     {
-        $user = $this->connection->getTable("User")->find(4);
+        $user = $this->connection->getMapper("User")->find(4);
         $str = serialize($user);
         $user2 = unserialize($str);
 
         $this->assertTrue($user2 instanceof User);
         $this->assertEqual($user2->identifier(), $user->identifier());
-    }*/
+    }
 
     public function testCallback() 
     {

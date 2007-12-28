@@ -186,11 +186,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
         // get the column count
         $count = count($this->_data);
-
+        
         $this->_values = $this->cleanData($this->_data);
 
         $this->prepareIdentifiers($exists);
-
+        
         if ( ! $exists) {
             if ($count > count($this->_values)) {
                 $this->_state = Doctrine_Record::STATE_TDIRTY;
@@ -270,7 +270,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function isValid()
     {
-        if ( ! $this->_table->getAttribute(Doctrine::ATTR_VALIDATE)) {
+        if ( ! $this->_mapper->getAttribute(Doctrine::ATTR_VALIDATE)) {
             return true;
         }
         // Clear the stack from any previous errors.
@@ -470,7 +470,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $tmp = $data;
         $data = array();
 
-        foreach ($this->getTable()->getFieldNames() as $fieldName) {
+        $fieldNames = $this->_mapper->getFieldNames();
+        foreach ($fieldNames as $fieldName) {
             if (isset($tmp[$fieldName])) {
                 $data[$fieldName] = $tmp[$fieldName];
             } else if (!isset($this->_data[$fieldName])) {
@@ -560,7 +561,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         foreach ($this->_data as $k => $v) {
             if ($v instanceof Doctrine_Record && $this->_table->getTypeOf($k) != 'object') {
                 unset($vars['_data'][$k]);
-            } elseif ($v === self::$_null) {
+            } else if ($v === self::$_null) {
                 unset($vars['_data'][$k]);
             } else {
                 switch ($this->_table->getTypeOf($k)) {
@@ -577,7 +578,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 }
             }
         }
- 
+        
         $str = serialize($vars);
 
         $this->postSerialize($event);
@@ -605,16 +606,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $this->_oid = self::$_index;
         self::$_index++;
 
-        $this->_table = $connection->getTable(get_class($this));
+        $this->_mapper = $connection->getMapper(get_class($this));  
 
         $array = unserialize($serialized);
 
         foreach($array as $k => $v) {
             $this->$k = $v;
         }
+        
+        $this->_table = $this->_mapper->getTable();
 
         foreach ($this->_data as $k => $v) {
-
             switch ($this->_table->getTypeOf($k)) {
                 case 'array':
                 case 'object':
@@ -630,12 +632,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
         }
 
-        $this->_table->getRepository()->add($this);
-
+        $this->_mapper->getRepository()->add($this);
         $this->cleanData($this->_data);
-
         $this->prepareIdentifiers($this->exists());
-
         $this->postUnserialize($event);
     }
 
@@ -678,7 +677,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
 
         if ($err) {
-            throw new Doctrine_Record_State_Exception('Unknown record state ' . $state);
+            throw new Doctrine_Record_Exception('Unknown record state ' . $state);
         }
     }
 
@@ -1065,11 +1064,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function save(Doctrine_Connection $conn = null)
     {
-        if ($conn === null) {
-            $conn = $this->_table->getConnection();
-        }
-        //$conn->unitOfWork->saveGraph($this);
-        $this->_mapper->saveGraph($this);
+        $this->_mapper->saveGraph($this, $conn);
     }
 
     /**
@@ -1111,7 +1106,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function replace(Doctrine_Connection $conn = null)
     {
         if ($conn === null) {
-            $conn = $this->_table->getConnection();
+            $conn = $this->_mapper->getConnection();
         }
 
         return $conn->replace($this->_table, $this->getPrepared(), $this->_id);
@@ -1292,6 +1287,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $array = $data->toArray($deep);
         } else if (is_array($data)) {
             $array = $data;
+        } else {
+            $array = array();
         }
 
         return $this->fromArray($array, $deep);
@@ -1435,7 +1432,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function delete(Doctrine_Connection $conn = null)
     {
         if ($conn == null) {
-            $conn = $this->_table->getConnection();
+            $conn = $this->_mapper->getConnection();
         }
         return $conn->unitOfWork->delete($this);
     }
@@ -1498,11 +1495,18 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $this->_state    = Doctrine_Record::STATE_CLEAN;
             $this->_modified = array();
         } else {
-            $name = $this->_table->getIdentifier();
-            $this->_id[$name] = $id;
-            $this->_data[$name] = $id;
-            $this->_state     = Doctrine_Record::STATE_CLEAN;
-            $this->_modified  = array();
+            if (is_array($id)) {
+                foreach ($id as $fieldName => $value) {
+                    $this->_id[$fieldName] = $value;
+                    $this->_data[$fieldName] = $value;
+                }
+            } else {
+                $name = $this->_table->getIdentifier();
+                $this->_id[$name] = $id;
+                $this->_data[$name] = $id;
+            }
+            $this->_state = Doctrine_Record::STATE_CLEAN;
+            $this->_modified = array();
         }
     }
 
