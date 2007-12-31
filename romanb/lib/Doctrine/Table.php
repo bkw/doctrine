@@ -165,6 +165,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
             'treeImpl'       => null,
             'treeOptions'    => null,
             'subclasses'     => null,
+            'queryParts'     => array(),
             'indexes'        => array(),
             'parents'        => array(),
             'joinedParents'  => array()
@@ -174,7 +175,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
      * Constructs a new table object.
      */
     public function __construct($domainClassName, Doctrine_Connection $conn)
-    {
+    {        
         $this->_domainClassName = $domainClassName;
         $this->_conn = $conn;
         $this->_parser = new Doctrine_Relation_Parser($this);
@@ -1095,6 +1096,50 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     public function getFilters()
     {
         return $this->_filters;
+    }
+    
+    /**
+     * bindQueryParts
+     * binds query parts to given component
+     *
+     * @param array $queryParts         an array of pre-bound query parts
+     * @return Doctrine_Record          this object
+     */
+    public function bindQueryParts(array $queryParts)
+    {
+    	$this->_options['queryParts'] = $queryParts;
+
+        return $this;
+    }
+
+    /**
+     * bindQueryPart
+     * binds given value to given query part
+     *
+     * @param string $queryPart
+     * @param mixed $value
+     * @return Doctrine_Record          this object
+     */
+    public function bindQueryPart($queryPart, $value)
+    {
+    	$this->_options['queryParts'][$queryPart] = $value;
+
+        return $this;
+    }
+    
+    /**
+     * getBoundQueryPart
+     *
+     * @param string $queryPart 
+     * @return string $queryPart
+     */
+    public function getBoundQueryPart($queryPart)
+    {
+        if ( ! isset($this->_options['queryParts'][$queryPart])) {
+            return null;
+        }
+
+        return $this->_options['queryParts'][$queryPart];
     }
 
     /**

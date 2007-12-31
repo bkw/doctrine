@@ -76,7 +76,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      *      -- queryParts                   the bound query parts
      */
     protected $_options      = array('name'           => null,
-                                     'queryParts'     => array(),
+                                     //'queryParts'     => array(),
                                     // 'versioning'     => null,
                                      );
 
@@ -434,7 +434,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     /**
      * Get the classname to return. Most often this is just the options['name']
      *
-     * USED FOR SINGLE TABLE INHERITANCE.
+     * USED FOR SINGLE TABLE INHERITANCE & CLASS TABLE INHERITANCE.
      *
      * Check the subclasses option and the inheritanceMap for each subclass to see
      * if all the maps in a subclass is met. If this is the case return that
@@ -659,50 +659,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         return $this->_domainClassName;
     }
-    
-    /**
-     * bindQueryParts
-     * binds query parts to given component
-     *
-     * @param array $queryParts         an array of pre-bound query parts
-     * @return Doctrine_Record          this object
-     */
-    public function bindQueryParts(array $queryParts)
-    {
-    	$this->_options['queryParts'] = $queryParts;
-
-        return $this;
-    }
-
-    /**
-     * bindQueryPart
-     * binds given value to given query part
-     *
-     * @param string $queryPart
-     * @param mixed $value
-     * @return Doctrine_Record          this object
-     */
-    public function bindQueryPart($queryPart, $value)
-    {
-    	$this->_options['queryParts'][$queryPart] = $value;
-
-        return $this;
-    }
-    
-    /**
-     * getBoundQueryPart
-     *
-     * @param string $queryPart 
-     * @return string $queryPart
-     */
-    public function getBoundQueryPart($queryPart)
-    {
-        if ( ! isset($this->_options['queryParts'][$queryPart])) {
-            return null;
-        }
-
-        return $this->_options['queryParts'][$queryPart];
-    }
 
     /**
      * returns a string representation of this object
@@ -807,6 +763,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         
         $conn->beginInternalTransaction();
         $saveLater = $this->saveRelated($record);
+        //echo "num savelater:" . count($saveLater) . "<br />";
 
         $record->state($state);
 
@@ -960,22 +917,21 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      */
     public function saveAssociations(Doctrine_Record $record)
     {
-        foreach ($record->getReferences() as $k => $v) {
-            $rel = $record->getTable()->getRelation($k);
+        foreach ($record->getReferences() as $relationName => $relatedObject) {
+            $rel = $record->getTable()->getRelation($relationName);
             
-            if ($rel instanceof Doctrine_Relation_Association) {   
-                $v->save($this->_conn);
+            if ($rel instanceof Doctrine_Relation_Association) {  
+                $relatedObject->save($this->_conn);
 
                 $assocTable = $rel->getAssociationTable();
-                foreach ($v->getDeleteDiff() as $r) {
+                foreach ($relatedObject->getDeleteDiff() as $r) {
                     $query = 'DELETE FROM ' . $assocTable->getTableName()
                            . ' WHERE ' . $rel->getForeign() . ' = ?'
                            . ' AND ' . $rel->getLocal() . ' = ?';
-
                     $this->_conn->execute($query, array($r->getIncremented(), $record->getIncremented()));
                 }
 
-                foreach ($v->getInsertDiff() as $r) {
+                foreach ($relatedObject->getInsertDiff() as $r) {
                     $assocRecord = $this->_conn->getMapper($assocTable->getComponentName())->create();
                     $assocRecord->set($assocTable->getFieldName($rel->getForeign()), $r);
                     $assocRecord->set($assocTable->getFieldName($rel->getLocal()), $record);

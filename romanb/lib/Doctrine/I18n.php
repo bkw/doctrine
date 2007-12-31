@@ -71,6 +71,7 @@ class Doctrine_I18n extends Doctrine_Record_Generator
       	}
 
         $options = array('className' => $this->_options['className']);
+        $this->setTableName(strtolower($this->_options['className']));
 
         $cols = $this->_options['table']->getColumns();
 

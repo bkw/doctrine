@@ -304,14 +304,14 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
      */
     public function bindQueryParts(array $queryParts)
     {
-        if (!$this->_mapper) {
+        if (!$this->_table) {
             try {
                 throw new Exception();
             } catch (Exception $e) {
                 echo $e->getTraceAsString() . "<br />";
             }
         }
-    	$this->_mapper->bindQueryParts($queryParts);
+    	$this->_table->bindQueryParts($queryParts);
 
         return $this;
     }

@@ -123,12 +123,11 @@ class Doctrine_Relation_Parser_TestCase extends Doctrine_UnitTestCase
     public function testRelationParserSupportsForeignColumnGuessingForAssociations()
     {
         $r = new Doctrine_Relation_Parser($this->conn->getTable('User'));
-
         $d = $r->completeAssocDefinition(array('class'    => 'Group',
                                                'type'     => Doctrine_Relation::MANY,
                                                'local'    => 'user_id',
-                                               'refClass' => 'GroupUser'));
-
+                                               'refClass' => 'Groupuser'));
+        
         $this->assertEqual($d['foreign'], 'group_id');
     }
     public function testRelationParserSupportsLocalColumnGuessingForAssociations()
@@ -168,8 +167,7 @@ class Doctrine_Relation_Parser_TestCase extends Doctrine_UnitTestCase
     public function testGetRelationReturnsForeignKeyObjectForManytToManyRelation()
     {
         $r = new Doctrine_Relation_Parser($this->conn->getTable('User'));
-        $p = array('type' => Doctrine_Relation::MANY,
-                   'refClass' => 'GroupUser');
+        $p = array('type' => Doctrine_Relation::MANY, 'refClass' => 'GroupUser');
 
         $r->bind('Group', $p);
 

@@ -744,29 +744,35 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($userMapper === $user->getMapper());
         $this->assertTrue($userMapper->getTable() === $user->getMapper()->getTable());
         $this->assertTrue($userMapper->getTable() === $this->conn->getTable('User'));
-        $this->assertTrue($this->conn === $userMapper->getConnection());        
+        $this->assertTrue($this->conn === $userMapper->getConnection());
+        
+        
+        $userTable = $userMapper->getTable();
+        $rel1 = $userTable->getRelation('GroupGroupuser');
+        $rel2 = $userTable->getRelation('UserGroupuser');
+        echo get_class($rel1) . "<br />";
+        echo get_class($rel2) . "<br />";
+        echo get_class($userTable->getRelation('Group'));
+        echo "........<br />";
+        echo "local:" . $rel1->getLocal() . "---foreign:" . $rel1->getForeign() . "<br />";
+        echo "local:" . $rel2->getLocal() . "---foreign:" . $rel2->getForeign() . "<br />";
+        echo "........<br />";
         
         $gf = $this->connection->getMapper("Group");
-        
-        $groups = $gf->findAll();
-        foreach ($groups as $group) {
-            echo $group->id . "--".$group->type."<br />";
-        }
-        
+        echo "start";
+        $this->assertTrue($user->Group instanceof Doctrine_Collection);
+        echo "end";
         $xrefMapper = $this->connection->getMapper('Groupuser');
         $xrefs = $xrefMapper->findAll();
         foreach ($xrefs as $xref) {
-            echo $xref->group_id . " -- ". $xref->user_id ."<br />";
+            echo $xref->group_id . " -- ". $xref->user_id ."(state:".$xref->state().")<br />";
         }
-        echo "start<br />";
-        $this->assertTrue($user->Group instanceof Doctrine_Collection);
-        echo "end<br />";
+
         $this->assertEqual($user->Group->count(), 1);
         $this->assertEqual($user->Group[0]->id, 3);
 
 
         // ADDING ASSOCIATED REFERENCES
-        
 
         $group1 = $gf->find(1);
         $group2 = $gf->find(2);
@@ -776,6 +782,13 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Group->count(), 3);
 
         $user->save();
+        
+        $xrefMapper = $this->connection->getMapper('Groupuser');
+        $xrefs = $xrefMapper->findAll();
+        foreach ($xrefs as $xref) {
+            echo $xref->group_id . " -- ". $xref->user_id ."(state:".$xref->state().")<br />";
+        }
+        
         $coll = $user->Group;
 
 
@@ -788,6 +801,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         
         //echo get_class($user->Group);
         $this->assertEqual($user->Group->count(), 3);
+        $this->assertEqual($user->Group[0]->id, 1);
         $this->assertEqual($user->Group[1]->id, 2);
         $this->assertEqual($user->Group[2]->id, 3);
 
@@ -828,27 +842,27 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         // ACCESSING ASSOCIATION OBJECT PROPERTIES
 
         $user = new User();
-        $this->assertTrue($user->getTable()->getRelation("Groupuser") instanceof Doctrine_Relation_ForeignKey);
+        $this->assertTrue($user->getTable()->getRelation("UserGroupuser") instanceof Doctrine_Relation_ForeignKey);
 
-        $this->assertTrue($user->Groupuser instanceof Doctrine_Collection);
-        $this->assertTrue($user->Groupuser[0] instanceof Groupuser);
+        $this->assertTrue($user->UserGroupuser instanceof Doctrine_Collection);
+        $this->assertTrue($user->UserGroupuser[0] instanceof Groupuser);
 
         $user->name = "Jack Daniels";
         $user->Group[0]->name = "Group #1";
         $user->Group[1]->name = "Group #2";
         $t1 = time();
         $t2 = time();
-        $user->Groupuser[0]->added = $t1;
-        $user->Groupuser[1]->added = $t2;
+        $user->UserGroupuser[0]->added = $t1;
+        $user->UserGroupuser[1]->added = $t2;
 
-        $this->assertEqual($user->Groupuser[0]->added, $t1);
-        $this->assertEqual($user->Groupuser[1]->added, $t2);
+        $this->assertEqual($user->UserGroupuser[0]->added, $t1);
+        $this->assertEqual($user->UserGroupuser[1]->added, $t2);
 
         $user->save();
 
         $user->refresh();
-        $this->assertEqual($user->Groupuser[0]->added, $t1);
-        $this->assertEqual($user->Groupuser[1]->added, $t2);
+        $this->assertEqual($user->UserGroupuser[0]->added, $t1);
+        $this->assertEqual($user->UserGroupuser[1]->added, $t2);
         
     }
 

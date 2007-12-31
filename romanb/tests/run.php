@@ -162,7 +162,7 @@ $plugins->addTestCase(new Doctrine_Validator_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Future_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Past_TestCase());
 $plugins->addTestCase(new Doctrine_Hook_TestCase());
-//$plugins->addTestCase(new Doctrine_I18n_TestCase());
+$plugins->addTestCase(new Doctrine_I18n_TestCase());
 $test->addTestCase($plugins);
 
 // Db component
@@ -229,9 +229,9 @@ $test->addTestCase($record);
 $test->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
 $test->addTestCase(new Doctrine_CustomResultSetOrder_TestCase());
 
-$test->addTestCase(new Doctrine_CtiColumnAggregation_TestCase());
+//$test->addTestCase(new Doctrine_CtiColumnAggregation_TestCase());
 $test->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
-$test->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
+//$test->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
 $test->addTestCase(new Doctrine_ColumnAlias_TestCase());
 
 $test->addTestCase(new Doctrine_RawSql_TestCase());
@@ -272,7 +272,7 @@ $test->addTestCase($cache);
 
 // Migration Tests
 $migration = new GroupTest('Migration tests','migration');
-//$migration->addTestCase(new Doctrine_Migration_TestCase());
+$migration->addTestCase(new Doctrine_Migration_TestCase());
 //$migration->addTestCase(new Doctrine_Migration_Mysql_TestCase());
 $test->addTestCase($migration);
 

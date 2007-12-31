@@ -157,7 +157,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             return;
         } else if (isset($mapper) && $mapper instanceof Doctrine_Mapper) {
             //echo "two<br />";
-            if (get_class($this) != $mapper->getComponentName()) {
+            $class = get_class($this);
+            $this->_mapper = Doctrine_Manager::getInstance()->getMapper($class);
+            if ($class != $this->_mapper->getComponentName()) {
                 try {
                     throw new Exception("ddd");
                 } catch (Exception $e) {
@@ -165,8 +167,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                     echo $e->getTraceAsString() . "<br /><br />";
                 }
             }
-            $class = get_class($this);
-            $this->_mapper = $mapper;
             $this->_table = $this->_mapper->getTable();
             $exists = ! $isNewEntry;
         } else {
@@ -859,13 +859,16 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             if ( ! isset($this->_references[$fieldName]) && $load) {
                 $rel = $this->_table->getRelation($fieldName);
                 if ($fieldName == 'Group') {
-                    echo "getting relation $fieldName<br />";
+                    //echo "getting relation $fieldName<br />";
                     //echo $rel->getTable()->getComponentName();
-                    echo get_class($rel);
+                    //echo get_class($rel);
                 }
+                $foo = $rel->fetchRelatedFor($this);
+                $this->_references[$fieldName] = $foo;
+                /*if (count($this->_references[$fieldName]) > 0) {
+                    echo $this->_references[$fieldName][0]->state() . "<br />";
+                }*/
                 
-                $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
-                //echo count($this->_references[$fieldName]);
             }
             return $this->_references[$fieldName];
 
@@ -911,7 +914,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function set($fieldName, $value, $load = true)
     {
-        if (isset($this->_data[$fieldName])) {
+        if (isset($this->_data[$fieldName])) {            
             if ($value instanceof Doctrine_Record) {
                 $type = $this->_table->getTypeOf($fieldName);
 
@@ -937,6 +940,12 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 $this->_modified[] = $fieldName;
                 switch ($this->_state) {
                     case Doctrine_Record::STATE_CLEAN:
+                        /*try {
+                            throw new Exception();
+                        } catch (Exception $e) {
+                            echo $e->getTraceAsString() . "<br /><br />";
+                        }
+                        echo "setting dirty ... <br />";*/
                         $this->_state = Doctrine_Record::STATE_DIRTY;
                         break;
                     case Doctrine_Record::STATE_TCLEAN:

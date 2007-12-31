@@ -15,7 +15,8 @@ class Doctrine_Table_Factory
     {
         $this->_conn = $conn;
         //$this->_driver = $driver;
-        
+        $name = "Doctrine_Table_Factory";
+        //call_user_func_array(array($name, 'foobar'), array());
     }
     
     public function loadTables($name, array &$tables)
@@ -123,9 +124,9 @@ class Doctrine_Table_Factory
         if ( ! class_exists($name) || empty($name)) {
             //try {
             throw new Doctrine_Exception("Couldn't find class " . $name);
-            /*} catch (Exception $e) {
-                echo $e->getTraceAsString() . "<br /><br />";
-            }*/
+            //} catch (Exception $e) {
+            //    echo $e->getTraceAsString() . "<br /><br />";
+            //}
         }
         $record = new $name($table);
 
@@ -373,6 +374,11 @@ class Doctrine_Table_Factory
             default:
                 $table->setIdentifierType(Doctrine::IDENTIFIER_COMPOSITE);
         }
+    }
+    
+    public static function foobar()
+    {
+        echo "bar!";
     }
     
 }

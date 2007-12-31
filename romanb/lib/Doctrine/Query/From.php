@@ -40,7 +40,7 @@ class Doctrine_Query_From extends Doctrine_Query_Part
      * @return void
      */
     public function parse($str)
-    {        
+    {
         $str = trim($str);
         $parts = $this->_tokenizer->bracketExplode($str, 'JOIN');
 

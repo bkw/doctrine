@@ -194,9 +194,9 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
 
                             if ($field = $this->_getCustomIndexField($dqlAlias)) {
                                 if (isset($prev[$parent][$relationAlias][$field])) {
-                                    throw new Doctrine_Hydrator_Exception("Couldn't hydrate. Found non-unique key mapping.");
+                                    throw new Doctrine_Hydrator_Exception("Hydration failed. Found non-unique key mapping.");
                                 } else if ( ! isset($element[$field])) {
-                                    throw new Doctrine_Hydrator_Exception("Couldn't hydrate. Found a non-existent key.");
+                                    throw new Doctrine_Hydrator_Exception("Hydration failed. Found a non-existent field '$field'.");
                                 }
                                 $prev[$parent][$relationAlias][$element[$field]] = $element;
                             } else {

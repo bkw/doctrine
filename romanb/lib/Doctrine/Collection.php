@@ -80,7 +80,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         if ($mapper instanceof Doctrine_Table) {
             try {
-                throw new Exception("ffff");
+                throw new Exception();
             } catch (Exception $e) {
                 echo $e->getTraceAsString();
             }
@@ -265,6 +265,12 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function setReference(Doctrine_Record $record, Doctrine_Relation $relation)
     {
+        /*try {
+            throw new Exception();
+        } catch (Exception $e) {
+            echo "relation set on collection: " . get_class($relation) . "<br />";
+            echo $e->getTraceAsString() . "<br />";
+        }*/
         $this->reference = $record;
         $this->relation  = $relation;
 

@@ -565,7 +565,15 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
               . ' SET ' . implode(', ', $set)
               . ' WHERE ' . implode(' = ? AND ', $table->getIdentifierColumnNames())
               . ' = ?';
-
+        
+        /*if (strstr($sql, 'groupuser')) {
+            try {
+                throw new Exception();
+            } catch (Exception $e) {
+                echo $e->getTraceAsString() . "<br /><br />";
+            }
+        }*/
+        
         return $this->exec($sql, $params);
     }
 
@@ -606,7 +614,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         $query .= implode(', ', $a) . ')';
         // prepare and execute the statement
-
         return $this->exec($query, array_values($fields));
     }
     
@@ -969,7 +976,14 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                 $this->getAttribute(Doctrine::ATTR_LISTENER)->preQuery($event);
 
                 if ( ! $event->skipOperation) {
-                    $stmt = $this->dbh->query($query);
+                    //try {
+                        $stmt = $this->dbh->query($query);
+                    /*} catch (Exception $e) {
+                        if (strstr($e->getMessage(), 'no such column')) {
+                            echo $query . "<br /><br />";
+                        }
+                    }*/
+                    
                     $this->_count++;
                 }
                 $this->getAttribute(Doctrine::ATTR_LISTENER)->postQuery($event);
@@ -996,7 +1010,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             if ( ! empty($params)) {
                 $stmt = $this->prepare($query);
                 $stmt->execute($params);
-
+                //echo "<br /><br />" . $query . "<br /><br />";
                 return $stmt->rowCount();
             } else {
                 $event = new Doctrine_Event($this, Doctrine_Event::CONN_EXEC, $query, $params);
@@ -1005,6 +1019,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
                 if ( ! $event->skipOperation) {
                     $count = $this->dbh->exec($query);
+                    //echo "<br /><br />" . $query . "<br /><br />";
                     $this->_count++;
                 }
                 $this->getAttribute(Doctrine::ATTR_LISTENER)->postExec($event);
@@ -1144,6 +1159,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     
     public function getMappers()
     {
+        //var_dump($this->_mappers);
         return $this->_mappers;
     }
 

@@ -75,6 +75,9 @@ abstract class Doctrine_Relation implements ArrayAccess
                                   'deferrable'  => false,
                                   'constraint'  => false,
                                   'equal'       => false,
+                                  'relName'     => false,
+                                  'reverseRelName' => false,
+                                  'refClass'    => false
                                   );
 
     protected $_foreignMapper;
@@ -139,7 +142,6 @@ abstract class Doctrine_Relation implements ArrayAccess
                 $def[$key] = null;          
             }
         }
-
         $this->definition = $def;
         $this->_foreignMapper = $this->getTable()->getConnection()->getMapper($def['class']);
     }
@@ -215,6 +217,11 @@ abstract class Doctrine_Relation implements ArrayAccess
     final public function getAlias()
     {
         return $this->definition['alias'];
+    }
+    
+    public function getRelationName()
+    {
+        return $this->definition['relName'];
     }
 
     /**
