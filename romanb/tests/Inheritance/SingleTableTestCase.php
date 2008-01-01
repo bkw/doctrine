@@ -8,14 +8,17 @@ class Doctrine_Inheritance_SingleTable_TestCase extends Doctrine_UnitTestCase
 
     public function prepareTables()
     {
-      //$this->tables = array('STI_User');
-      parent::prepareTables();
+        $this->tables[] = 'STI_User';
+        $this->tables[] = 'STI_Manager';
+        $this->tables[] = 'STI_Customer';
+        $this->tables[] = 'STI_SuperManager';
+        parent::prepareTables();
     }
 
-    public function testMetadataTableCreation()
-    {    
-        $superManagerTable = $this->conn->getTable('STI_SuperManager');
+    public function testMetadataSetup()
+    { 
         $userTable = $this->conn->getTable('STI_User');
+        $superManagerTable = $this->conn->getTable('STI_SuperManager');
         $managerTable = $this->conn->getTable('STI_Manager');
         $customerTable = $this->conn->getTable('STI_Customer');
         
@@ -23,7 +26,7 @@ class Doctrine_Inheritance_SingleTable_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($customerTable === $managerTable);
         $this->assertTrue($superManagerTable === $managerTable);
         $this->assertTrue($userTable === $customerTable);
-        $this->assertEqual(6, count($userTable->getColumns()));
+        $this->assertEqual(7, count($userTable->getColumns()));
         
         $this->assertEqual(array(), $userTable->getOption('joinedParents'));
         $this->assertEqual(array(), $superManagerTable->getOption('joinedParents'));
@@ -39,6 +42,22 @@ class Doctrine_Inheritance_SingleTable_TestCase extends Doctrine_UnitTestCase
         
         //var_dump($superManagerTable->getComponentName());
     }
+    
+    public function testSave()
+    {
+        $manager = new STI_Manager();
+        $manager->salary = 80000;
+        $manager->name = 'John Smith';
+        try {
+            $manager->save();
+            $this->assertEqual(1, $manager->id);
+            $this->assertEqual(80000, $manager->salary);
+            $this->assertEqual('John Smith', $manager->name);
+            $this->assertEqual(2, $manager->type);
+        } catch (Exception $e) {
+            $this->fail("Saving record in single table inheritance failed: " . $e->getMessage());
+        }
+    }
 }
 
 
@@ -53,9 +72,10 @@ class STI_User extends Doctrine_Record
                       'STI_SuperManager' => array('type' => 4))
         );
         $this->setTableName('sti_entity');
-        $this->hasColumn('sti_id as id', 'varchar', 30, array ('primary' => true));
-        $this->hasColumn('sti_foo as foo', 'integer', 4, array ('notnull'=>true));
-        $this->hasColumn('sti_name as name', 'varchar', 50, array ());
+        $this->hasColumn('sti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+        $this->hasColumn('sti_foo as foo', 'integer', 4);
+        $this->hasColumn('sti_name as name', 'varchar', 50);
+        $this->hasColumn('type', 'integer', 4);
     }
 }
 

@@ -126,9 +126,10 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $null->type = 1;
         try {
+            $this->connection->beginTransaction();
             $null->save();
             $this->fail();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->pass();
             $this->connection->rollback();
         }

@@ -8,17 +8,15 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
     public function prepareTables()
     {
       //$this->tables = array('STI_User');
+      $this->tables[] = 'CTI_User';
+      $this->tables[] = 'CTI_Manager';
+      $this->tables[] = 'CTI_Customer';
+      $this->tables[] = 'CTI_SuperManager';
       parent::prepareTables();
     }
 
-    public function testTicket()
-    {
-        //$table = $this->conn->getTable2('CTI_User');
-        //echo get_class($table);
-        //echo "<br />";
-        //var_dump($table->getColumns());
-        //$this->fail('foo');
-        
+    public function testMetadataSetup()
+    {        
         $suManagerTable = $this->conn->getTable('CTI_SuperManager');
         $userTable = $this->conn->getTable('CTI_User');
         $customerTable = $this->conn->getTable('CTI_Customer');
@@ -30,7 +28,7 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         
         // expected column counts
         $this->assertEqual(2, count($suManagerTable->getColumns()));
-        $this->assertEqual(3, count($userTable->getColumns()));
+        $this->assertEqual(4, count($userTable->getColumns()));
         $this->assertEqual(2, count($managerTable->getColumns()));
         $this->assertEqual(2, count($customerTable->getColumns()));
         
@@ -55,9 +53,22 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
                 
         
         //$this->assertEqual(array('CTI_User', 'CTI_Manager', ''))
-                
-        
-        //var_dump($managerTable->getColumns());
+    }
+    
+    public function testSaveInsertsDataAcrossJoinedTablesTransparently()
+    {
+        $manager = new CTI_Manager();
+        $manager->salary = 80000;
+        $manager->name = 'John Smith';
+        try {
+            $manager->save();
+            $this->assertEqual(1, $manager->id);
+            $this->assertEqual(80000, $manager->salary);
+            $this->assertEqual('John Smith', $manager->name);
+            $this->assertEqual(2, $manager->type);
+        } catch (Exception $e) {
+            $this->fail("Saving record in class table inheritance failed: " . $e->getMessage());
+        }
     }
 }
 
@@ -73,9 +84,10 @@ class CTI_User extends Doctrine_Record
                       'CTI_SuperManager' => array('type' => 4))
         );
         $this->setTableName('cti_user');
-        $this->hasColumn('sti_id as id', 'varchar', 30, array ('primary' => true, 'autoincrement' => true));
-        $this->hasColumn('sti_foo as foo', 'integer', 4, array ('notnull'=>true));
-        $this->hasColumn('sti_name as name', 'varchar', 50, array ());
+        $this->hasColumn('sti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+        $this->hasColumn('sti_foo as foo', 'integer', 4);
+        $this->hasColumn('sti_name as name', 'varchar', 50);
+        $this->hasColumn('type', 'integer', 4);
     }
 }
 

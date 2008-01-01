@@ -69,9 +69,7 @@ class Doctrine_Relation_Association extends Doctrine_Relation
         //$rel = $this->definition['refTable']->getRelation($this->_foreignMapper->getComponentName());
         //echo "LOCAL:" . $rel->getLocal() . "<br />";
         
-        $inverseJoinColumn = $this->definition['foreign'];
         $relatedClassName = $this->_foreignMapper->getComponentName();
-        $relatedClassIdentifier = $this->_foreignMapper->getTable()->getIdentifier();
         
         switch ($context) {
             case "record":

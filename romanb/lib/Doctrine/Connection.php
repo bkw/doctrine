@@ -1302,6 +1302,16 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     {
         return $this->transaction->getTransactionLevel();
     }
+    
+    /**
+     * get the current internal transaction nesting level
+     *
+     * @return integer
+     */
+    public function getInternalTransactionLevel()
+    {
+        return $this->transaction->getInternalTransactionLevel();
+    }
 
     /**
      * errorCode
@@ -1312,7 +1322,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function errorCode()
     {
         $this->connect();
-
         return $this->dbh->errorCode();
     }
 
@@ -1325,7 +1334,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function errorInfo()
     {
         $this->connect();
-
         return $this->dbh->errorInfo();
     }
     
@@ -1350,7 +1358,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         if ( ! $this->getAttribute(Doctrine::ATTR_RESULT_CACHE)) {
             throw new Doctrine_Exception('Result Cache driver not initialized.');
         }
-
         return $this->getAttribute(Doctrine::ATTR_RESULT_CACHE);
     }
     
@@ -1364,7 +1371,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         if ( ! $this->getAttribute(Doctrine::ATTR_QUERY_CACHE)) {
             throw new Doctrine_Exception('Query Cache driver not initialized.');
         }
-
         return $this->getAttribute(Doctrine::ATTR_QUERY_CACHE);
     }
 

@@ -94,6 +94,10 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             $keyColumn = $mapper->getBoundQueryPart('indexBy');
         }
 
+        if ($keyColumn === null) {
+        	$keyColumn = $mapper->getAttribute(Doctrine::ATTR_COLL_KEY);
+        }
+
         if ($keyColumn !== null) {
             $this->keyColumn = $keyColumn;
         }
@@ -278,9 +282,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                 $relation instanceof Doctrine_Relation_LocalKey) {
 
             $this->referenceField = $relation->getForeignFieldName();
-
             $value = $record->get($relation->getLocalFieldName());
-
             foreach ($this->data as $record) {
                 if ($value !== null) {
                     $record->set($this->referenceField, $value, false);
@@ -288,7 +290,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                     $record->set($this->referenceField, $this->reference, false);
                 }
             }
-        } elseif ($relation instanceof Doctrine_Relation_Association) {
+        } else if ($relation instanceof Doctrine_Relation_Association) {
 
         }
     }
@@ -313,7 +315,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     public function remove($key)
     {
         $removed = $this->data[$key];
-
         unset($this->data[$key]);
         return $removed;
     }
@@ -329,6 +330,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         return isset($this->data[$key]);
     }
+    
     public function search(Doctrine_Record $record)
     {
         return array_search($record, $this->data, true);
@@ -639,7 +641,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * Snapshot with the objects 1, 2 and 4
      * Current data with objects 2, 3 and 5
      *
-     * The process would remove object 4
+     * The process would remove objects 1 and 4
      *
      * @return Doctrine_Collection
      */
@@ -648,7 +650,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         foreach (array_udiff($this->_snapshot, $this->data, array($this, "compareRecords")) as $record) {
             $record->delete();
         }
-
         return $this;
     }
 
@@ -797,17 +798,20 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             $conn = $this->_mapper->getConnection();
         }
         
-        $conn->beginInternalTransaction();
-
-        $conn->transaction->addCollection($this);
-
-        $this->processDiff();
-
-        foreach ($this->getData() as $key => $record) {
-            $record->save($conn);
+        try {
+            $conn->beginInternalTransaction();
+            
+            $conn->transaction->addCollection($this);
+            $this->processDiff();
+            foreach ($this->getData() as $key => $record) {
+                $record->save($conn);
+            }
+            
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollback();
+            throw $e;
         }
-
-        $conn->commit();
 
         return $this;
     }
@@ -826,17 +830,21 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             $conn = $this->_mapper->getConnection();
         }
 
-        $conn->beginInternalTransaction();
-        $conn->transaction->addCollection($this);
+        try {
+            $conn->beginInternalTransaction();
+            
+            $conn->transaction->addCollection($this);
+            foreach ($this as $key => $record) {
+                $record->delete($conn);
+            }
 
-        foreach ($this as $key => $record) {
-            $record->delete($conn);
+            $conn->commit();            
+        } catch (Exception $e) {
+            $conn->rollback();
+            throw $e;
         }
 
-        $conn->commit();
-
         $this->data = array();
-        
         return $this;
     }
 

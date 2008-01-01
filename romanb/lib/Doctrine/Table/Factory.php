@@ -188,10 +188,11 @@ class Doctrine_Table_Factory
                             $found = true;
                             continue;
                         } else {
-                            if ( ! isset($parentColumns[$columnName]['owner'])) {
+                            /*if ( ! isset($parentColumns[$columnName]['owner'])) {
                                 $parentColumns[$columnName]['owner'] = $parentTable->getComponentName();
                             }
-                            $joinedParents[] = $parentColumns[$columnName]['owner'];
+                            $joinedParents[] = $parentColumns[$columnName]['owner'];*/
+                            $joinedParents[] = $parentTable->getComponentName();
                         }
                     } else {
                         //unset($parentColumns[$columnName]);

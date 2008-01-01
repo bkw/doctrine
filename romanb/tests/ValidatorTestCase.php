@@ -409,6 +409,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
             $this->fail();
             $this->conn->commit();
         } catch (Doctrine_Validator_Exception $dve) {
+            $this->conn->rollback();
             $s = $dve->getInvalidRecords();
             $this->assertEqual(1, count($dve->getInvalidRecords()));
             $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();

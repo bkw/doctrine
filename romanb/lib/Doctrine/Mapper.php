@@ -761,66 +761,70 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
 
         $record->state(Doctrine_Record::STATE_LOCKED);
         
-        $conn->beginInternalTransaction();
-        $saveLater = $this->saveRelated($record);
-        //echo "num savelater:" . count($saveLater) . "<br />";
+        try {
+            $conn->beginInternalTransaction();
+            $saveLater = $this->saveRelated($record);
+            //echo "num savelater:" . count($saveLater) . "<br />";
 
-        $record->state($state);
+            $record->state($state);
 
-        if ($record->isValid()) {
-            $event = new Doctrine_Event($record, Doctrine_Event::RECORD_SAVE);
+            if ($record->isValid()) {
+                $event = new Doctrine_Event($record, Doctrine_Event::RECORD_SAVE);
+                $record->preSave($event);
+                $this->getRecordListener()->preSave($event);
+                
+                $state = $record->state();
 
-            $record->preSave($event);
+                if ( ! $event->skipOperation) {
+                    switch ($state) {
+                        case Doctrine_Record::STATE_TDIRTY:
+                            $this->insert($record);
+                            break;
+                        case Doctrine_Record::STATE_DIRTY:
+                        case Doctrine_Record::STATE_PROXY:
+                            $this->update($record);
+                            break;
+                        case Doctrine_Record::STATE_CLEAN:
+                        case Doctrine_Record::STATE_TCLEAN:
+                            break;
+                    }
+                }
 
-            $this->getRecordListener()->preSave($event);
+                $this->getRecordListener()->postSave($event);
+                $record->postSave($event);
+            } else {
+                $conn->transaction->addInvalid($record);
+            }
+
             $state = $record->state();
+            $record->state(Doctrine_Record::STATE_LOCKED);
 
-            if ( ! $event->skipOperation) {
-                switch ($state) {
-                    case Doctrine_Record::STATE_TDIRTY:
-                        $this->insert($record);
-                        break;
-                    case Doctrine_Record::STATE_DIRTY:
-                    case Doctrine_Record::STATE_PROXY:
-                        $this->update($record);
-                        break;
-                    case Doctrine_Record::STATE_CLEAN:
-                    case Doctrine_Record::STATE_TCLEAN:
-
-                        break;
+            foreach ($saveLater as $fk) {
+                $alias = $fk->getAlias();
+                if ($record->hasReference($alias)) {
+                    $obj = $record->$alias;
+                    // check that the related object is not an instance of Doctrine_Null
+                    if ( ! ($obj instanceof Doctrine_Null)) {
+                        $obj->save($conn);
+                    }
                 }
             }
 
-            $this->getRecordListener()->postSave($event);
-             
-            $record->postSave($event);
-        } else {
-            $conn->transaction->addInvalid($record);
-        }
+            // save the MANY-TO-MANY associations
+            $this->saveAssociations($record);
 
-        $state = $record->state();
-
-        $record->state(Doctrine_Record::STATE_LOCKED);
-
-        foreach ($saveLater as $fk) {
-            $alias = $fk->getAlias();
-
-            if ($record->hasReference($alias)) {
-                $obj = $record->$alias;
+            $record->state($state);
             
-                // check that the related object is not an instance of Doctrine_Null
-                if ( ! ($obj instanceof Doctrine_Null)) {
-                    $obj->save($conn);
-                }
-            }
+            $conn->commit();
+        } catch (Exception $e) {
+            // save() calls can be nested recursively and exceptions bubble up, so check
+            // if there are any internal transactions left that need to be rolled back 
+            // before doing so.
+            if ($conn->getInternalTransactionLevel() > 0) {
+                $conn->rollback();
+            } 
+            throw $e;
         }
-
-        // save the MANY-TO-MANY associations
-        $this->saveAssociations($record);
-
-        $record->state($state);
-        
-        $conn->commit();
 
         return true;
     }
@@ -860,6 +864,8 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $record->postSave($event);
     }
     
+    
+    
     /**
      * saveRelated
      * saves all related records to $record
@@ -867,7 +873,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      * @throws PDOException         if something went wrong at database level
      * @param Doctrine_Record $record
      */
-    public function saveRelated(Doctrine_Record $record)
+    protected function saveRelated(Doctrine_Record $record)
     {
         $saveLater = array();
         foreach ($record->getReferences() as $k => $v) {
@@ -952,22 +958,18 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     public function update(Doctrine_Record $record)
     {
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_UPDATE);
-
         $record->preUpdate($event);
-
         $table = $this->_table;
-
-        $table->getRecordListener()->preUpdate($event);
+        $this->getRecordListener()->preUpdate($event);
 
         if ( ! $event->skipOperation) {
             $identifier = $record->identifier();
 
             if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED
                     && count($table->getOption('joinedParents')) > 0) {
+                        
                 $dataSet = $this->formatDataSet($record);
-                
                 $component = $table->getComponentName();
-
                 $classes = $table->getOption('joinedParents');
                 $classes[] = $component;
 
@@ -992,8 +994,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
             $record->assignIdentifier(true);
         }
         
-        $table->getRecordListener()->postUpdate($event);
-
+        $this->getRecordListener()->postUpdate($event);
         $record->postUpdate($event);
 
         return true;
@@ -1010,29 +1011,24 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         // listen the onPreInsert event
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_INSERT);
-
         $record->preInsert($event);
-        
-        $table = $this->_table;
+        $this->getRecordListener()->preInsert($event);
 
-        $table->getRecordListener()->preInsert($event);
+        $table = $this->_table;
 
         if ( ! $event->skipOperation) {
             if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED &&
                     count($table->getOption('joinedParents')) > 0) {
+                        
                 $dataSet = $this->formatDataSet($record);
-                
                 $component = $table->getComponentName();
-                
+
                 $classes = $table->getOption('joinedParents');
-                $classes[] = $component;
-                //var_dump($classes);
-                //var_dump($dataSet);
-                //echo "<br /><br />";
-                foreach ($classes as $k => $parent) {
+                array_unshift($classes, $component);
+
+                foreach (array_reverse($classes) as $k => $parent) {
                     if ($k === 0) {
                         $rootRecord = new $parent();
-                        
                         $rootRecord->merge($dataSet[$parent]);
 
                         $this->_conn->processSingleInsert($rootRecord);
@@ -1041,7 +1037,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                         foreach ((array) $rootRecord->identifier() as $id => $value) {
                             $dataSet[$parent][$id] = $value;
                         }
-
                         $this->_conn->insert($this->_conn->getTable($parent), $dataSet[$parent]);
                     }
                 }
@@ -1051,9 +1046,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         }
 
         $this->addRecord($record);
-
-        $table->getRecordListener()->postInsert($event);
-
+        $this->getRecordListener()->postInsert($event);
         $record->postInsert($event);
 
         return true;
@@ -1066,25 +1059,22 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     public function formatDataSet(Doctrine_Record $record)
     {
         $table = $this->_table;
-
         $dataSet = array();
-    
         $component = $table->getComponentName();
-    
         $array = $record->getPrepared();
-    
-        foreach ($table->getColumns() as $columnName => $definition) {
-            $fieldName = $table->getFieldName($columnName);
-            if (isset($definition['primary']) && $definition['primary']) {
-                continue;
+        
+        $classes = array_merge(array($component), $this->_table->getOption('joinedParents'));
+        
+        foreach ($classes as $class) {
+            $table = $this->_conn->getTable($class);
+            foreach ($table->getColumns() as $columnName => $definition) {
+                if (isset($definition['primary'])) {
+                    continue;
+                }
+                $fieldName = $table->getFieldName($columnName);
+                $dataSet[$class][$fieldName] = isset($array[$fieldName]) ? $array[$fieldName] : null;
             }
-    
-            if (isset($definition['owner'])) {
-                $dataSet[$definition['owner']][$fieldName] = $array[$fieldName];
-            } else {
-                $dataSet[$component][$fieldName] = $array[$fieldName];
-            }
-        }    
+        }
         
         return $dataSet;
     }
@@ -1114,12 +1104,20 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     
     public function getDiscriminatorColumn($domainClassName)
     {
-        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED ||
-                $this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
             $inheritanceMap = $this->_table->getOption('inheritanceMap');
             return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
+        } else if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
+            $joinedParents = $this->_table->getOption('joinedParents');
+            if (count($joinedParents) <= 0) {
+                $inheritanceMap = $this->_table->getOption('inheritanceMap');
+            } else {
+                $inheritanceMap = $this->_conn->getTable(array_pop($joinedParents))->getOption('inheritanceMap');
+            }
+            return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
+        } else {
+            return array();
         }
-        return array();
     }
     
     public function getFieldNames()

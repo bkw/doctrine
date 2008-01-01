@@ -162,7 +162,7 @@ $plugins->addTestCase(new Doctrine_Validator_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Future_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Past_TestCase());
 $plugins->addTestCase(new Doctrine_Hook_TestCase());
-$plugins->addTestCase(new Doctrine_I18n_TestCase());
+//$plugins->addTestCase(new Doctrine_I18n_TestCase());
 $test->addTestCase($plugins);
 
 // Db component
@@ -252,9 +252,9 @@ $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 
 // Search tests
 $search = new GroupTest('Search tests','search');
-$search->addTestCase(new Doctrine_Search_TestCase());
-$search->addTestCase(new Doctrine_Search_Query_TestCase());
-$search->addTestCase(new Doctrine_Search_File_TestCase());
+//$search->addTestCase(new Doctrine_Search_TestCase());
+//$search->addTestCase(new Doctrine_Search_Query_TestCase());
+//$search->addTestCase(new Doctrine_Search_File_TestCase());
 
 $test->addTestCase($search);
 
