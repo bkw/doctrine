@@ -45,6 +45,12 @@ class Doctrine_Relation_Association extends Doctrine_Relation
     {
         return $this->definition['refTable'];
     }
+    
+    public function getAssociationClassName()
+    {
+        return $this->definition['refClass'];
+    }
+    
 
     /**
      * getRelationDql
@@ -55,9 +61,9 @@ class Doctrine_Relation_Association extends Doctrine_Relation
     public function getRelationDql($count, $context = 'record')
     {
         //$table = $this->definition['refTable'];
-        $assocRelationName = isset($this->definition['reverseRelName']) ?
-                $this->definition['reverseRelName'] : $this->definition['refTable']->getComponentName();
-        
+        $assocRelationName = isset($this->definition['refReverseRelationName']) ?
+                $this->definition['refReverseRelationName'] : $this->definition['refClass'];
+
         /*if ($this->definition['localTable'] === $this->definition['table']) {
             echo $this->definition['class'];
             $rel = $this->definition['table']->getRelation('User');

@@ -52,33 +52,32 @@ class Doctrine_Relation_ForeignKey extends Doctrine_Relation
                $id[] = $value;
            }
         }
+        
         if ($this->isOneToOne()) {
             if ( ! $record->exists() || empty($id) || 
-                 ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
-                
+                    ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
                 $related = $this->_foreignMapper->create();
             } else {
                 $dql  = 'FROM ' . $this->_foreignMapper->getComponentName()
                       . ' WHERE ' . $this->getCondition();
-
                 $coll = $this->getTable()->getConnection()->query($dql, $id);
                 $related = $coll[0];
             }
-
+            
+            // set the foreign key field on the related record
             $related->set($related->getTable()->getFieldName($this->definition['foreign']),
                     $record, false);
         } else {
-
             if ( ! $record->exists() || empty($id) || 
-                 ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
-                
+                    ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
                 $related = new Doctrine_Collection($this->_foreignMapper->getComponentName());
             } else {
-                $query      = $this->getRelationDql(1);
-                $related    = $this->getTable()->getConnection()->query($query, $id);
+                $query = $this->getRelationDql(1);
+                $related = $this->getTable()->getConnection()->query($query, $id);
             }
             $related->setReference($record, $this);
         }
+        
         return $related;
     }
 

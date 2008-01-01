@@ -751,23 +751,23 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $userTable = $userMapper->getTable();
         $rel1 = $userTable->getRelation('GroupGroupuser');
         $rel2 = $userTable->getRelation('UserGroupuser');
-        echo get_class($rel1) . "<br />";
+        /*echo get_class($rel1) . "<br />";
         echo get_class($rel2) . "<br />";
         echo get_class($userTable->getRelation('Group'));
         echo "........<br />";
         echo "local:" . $rel1->getLocal() . "---foreign:" . $rel1->getForeign() . "<br />";
         echo "local:" . $rel2->getLocal() . "---foreign:" . $rel2->getForeign() . "<br />";
-        echo "........<br />";
+        echo "........<br />";*/
         
         $gf = $this->connection->getMapper("Group");
-        echo "start";
+        //echo "start";
         $this->assertTrue($user->Group instanceof Doctrine_Collection);
-        echo "end";
-        $xrefMapper = $this->connection->getMapper('Groupuser');
+        //echo "end";
+        /*$xrefMapper = $this->connection->getMapper('Groupuser');
         $xrefs = $xrefMapper->findAll();
         foreach ($xrefs as $xref) {
             echo $xref->group_id . " -- ". $xref->user_id ."(state:".$xref->state().")<br />";
-        }
+        }*/
 
         $this->assertEqual($user->Group->count(), 1);
         $this->assertEqual($user->Group[0]->id, 3);
@@ -784,11 +784,11 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $user->save();
         
-        $xrefMapper = $this->connection->getMapper('Groupuser');
+        /*$xrefMapper = $this->connection->getMapper('Groupuser');
         $xrefs = $xrefMapper->findAll();
         foreach ($xrefs as $xref) {
             echo $xref->group_id . " -- ". $xref->user_id ."(state:".$xref->state().")<br />";
-        }
+        }*/
         
         $coll = $user->Group;
 
@@ -802,9 +802,10 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         
         //echo get_class($user->Group);
         $this->assertEqual($user->Group->count(), 3);
-        $this->assertEqual($user->Group[0]->id, 1);
-        $this->assertEqual($user->Group[1]->id, 2);
-        $this->assertEqual($user->Group[2]->id, 3);
+        $pks = $user->Group->getPrimaryKeys();
+        $this->assertTrue(in_array(1, $pks));
+        $this->assertTrue(in_array(2, $pks));
+        $this->assertTrue(in_array(3, $pks));
 
         $user->unlink('Group', array($group1->id, $group2->id));
         $this->assertEqual($user->Group->count(), 1);

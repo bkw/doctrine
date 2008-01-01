@@ -15,8 +15,8 @@ class Group extends Entity
             'local' => 'group_id',
             'foreign' => 'user_id',
             'refClass' => 'Groupuser',
-            'relName' => 'GroupGroupuser',
-            'reverseRelName' => 'UserGroupuser'
+            'refRelationName' => 'GroupGroupuser',
+            'refReverseRelationName' => 'UserGroupuser'
         ));
         /*$this->hasMany('Groupuser as User', array(
                 'local' => 'id', 'foreign' => 'group_id'

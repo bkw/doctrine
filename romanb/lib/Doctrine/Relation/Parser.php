@@ -167,16 +167,21 @@ class Doctrine_Relation_Parser
         $def = $this->_pending[$alias];
         
         // check if reference class name exists
-        // if it does we are dealing with association relation
+        // if it does we are dealing with an association relation (many-many)
         if (isset($def['refClass'])) {
             $def = $this->completeAssocDefinition($def);
             $localClasses = array_merge($this->_table->getOption('parents'), array($this->_table->getComponentName()));
 
-            // if the two many-many related components shared the same table, we need a relation name
-            // to distinguish the relations.
+            // if the two many-many related components share the same table, we need
+            // custom relation names to distinguish the relations.
             if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE &&
-                    in_array($def['class'], $this->_table->getOption('subclasses'))) { 
-                $relationName = $def['relName'];
+                    in_array($def['class'], $this->_table->getOption('subclasses'))) {
+                if ( ! isset($def['refRelationName']) || ! isset($def['refReverseRelationName'])) {
+                    throw new Doctrine_Relation_Exception("Incomplete relation. Many-to-many relations between "
+                            . "classes that share the same table (single table inheritance) need to specify "
+                            . "a 'refRelationName' and a 'refReverseRelationName' to distinguish relations.");
+                }            
+                $relationName = $def['refRelationName'];
             } else {
                 $relationName = $def['refClass'];
             }
@@ -201,7 +206,6 @@ class Doctrine_Relation_Parser
             }
         }
         if (isset($rel)) {
-            // unset pending relation
             unset($this->_pending[$alias]);
             $this->_relations[$alias] = $rel;
             return $rel;
@@ -230,8 +234,8 @@ class Doctrine_Relation_Parser
             $relationName = $def['refClass'];
         }*/
         $relationName = $def['refClass'];
-        if (isset($def['relName'])) {
-           $relationName .= ' as ' . $def['relName'];
+        if (isset($def['refRelationName'])) {
+           $relationName .= ' as ' . $def['refRelationName'];
         }
         
         // add a relation pointing from the intermediary table to the table of this parser
@@ -435,15 +439,15 @@ class Doctrine_Relation_Parser
         $localClasses   = array_merge($this->_table->getOption('parents'), array($this->_table->getComponentName()));
 
         $localIdentifierColumnNames = $this->_table->getIdentifierColumnNames();
-        $localIdColumnName = array_pop($localIdentifierColumnNames);
+        $localIdColumnName = $localIdentifierColumnNames[count($localIdentifierColumnNames) - 1];
         $foreignIdentifierColumnNames = $def['table']->getIdentifierColumnNames();
-        $foreignIdColumnName = array_pop($foreignIdentifierColumnNames);
+        $foreignIdColumnName = $foreignIdentifierColumnNames[count($foreignIdentifierColumnNames) - 1];
 
         if (isset($def['local'])) {
             if ( ! isset($def['foreign'])) {
                 // local key is set, but foreign key is not
                 // try to guess the foreign key
-                if ($def['local'] === $localIdColumnName) {
+                if ($def['local'] == $localIdColumnName) {
                     $def['foreign'] = $this->guessColumns($localClasses, $def['table']);
                 } else {
                     // the foreign field is likely to be the
@@ -452,8 +456,8 @@ class Doctrine_Relation_Parser
                     $def['localKey'] = true;
                 }
             } else {
-                if ($def['local'] !== $localIdColumnName && 
-                    $def['type'] == Doctrine_Relation::ONE) {
+                if ((array)$def['local'] != $localIdentifierColumnNames &&
+                        $def['type'] == Doctrine_Relation::ONE) {
                     $def['localKey'] = true;
                 }
             }

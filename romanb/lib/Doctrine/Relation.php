@@ -75,8 +75,8 @@ abstract class Doctrine_Relation implements ArrayAccess
                                   'deferrable'  => false,
                                   'constraint'  => false,
                                   'equal'       => false,
-                                  'relName'     => false,
-                                  'reverseRelName' => false,
+                                  'refRelationName' => false,
+                                  'refReverseRelationName' => false,
                                   'refClass'    => false
                                   );
 
@@ -158,6 +158,7 @@ abstract class Doctrine_Relation implements ArrayAccess
                 ($this->definition['onUpdate']) ||
                 ($this->definition['onDelete']));
     }
+    
     public function isDeferred()
     {
         return $this->definition['deferred'];
@@ -167,6 +168,7 @@ abstract class Doctrine_Relation implements ArrayAccess
     {
         return $this->definition['deferrable'];
     }
+    
     public function isEqual()
     {
         return $this->definition['equal'];

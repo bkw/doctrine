@@ -1531,7 +1531,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     $asf = $relation->getAssociationTable();
 
                     $assocTableName = $asf->getTableName();
-
+                    
                     if ( ! $loadFields || ! empty($map) || $joinCondition) {
                         $this->_subqueryAliases[] = $assocTableName;
                     }
@@ -1543,7 +1543,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                             'parent' => $prevPath,
                             'relation' => $relation,
                             'table' => $asf,
-                            'mapper' => $this->_conn->getMapper($asf->getComponentName())
+                            'mapper' => $this->_conn->getMapper($relation->getAssociationClassName())
                     );
 
                     $assocAlias = $this->getTableAlias($assocPath, $asf->getTableName());

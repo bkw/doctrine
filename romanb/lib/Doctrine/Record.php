@@ -858,23 +858,16 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         try {
             if ( ! isset($this->_references[$fieldName]) && $load) {
                 $rel = $this->_table->getRelation($fieldName);
-                if ($fieldName == 'Group') {
-                    //echo "getting relation $fieldName<br />";
-                    //echo $rel->getTable()->getComponentName();
-                    //echo get_class($rel);
-                }
-                $foo = $rel->fetchRelatedFor($this);
-                $this->_references[$fieldName] = $foo;
+                $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
                 /*if (count($this->_references[$fieldName]) > 0) {
                     echo $this->_references[$fieldName][0]->state() . "<br />";
                 }*/
-                
             }
             return $this->_references[$fieldName];
 
         } catch (Doctrine_Table_Exception $e) {
-            //echo $e->getTraceAsString();
-            //echo "<br /><br />";
+            echo $e->getTraceAsString();
+            echo "<br /><br />";
             foreach ($this->_table->getFilters() as $filter) {
                 if (($value = $filter->filterGet($this, $fieldName, $value)) !== null) {
                     return $value;
