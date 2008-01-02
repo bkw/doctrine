@@ -565,15 +565,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
               . ' SET ' . implode(', ', $set)
               . ' WHERE ' . implode(' = ? AND ', $table->getIdentifierColumnNames())
               . ' = ?';
-        
-        /*if (strstr($sql, 'groupuser')) {
-            try {
-                throw new Exception();
-            } catch (Exception $e) {
-                echo $e->getTraceAsString() . "<br /><br />";
-            }
-        }*/
-        
+
         return $this->exec($sql, $params);
     }
 
@@ -1126,20 +1118,25 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $customMapperClass = $className . 'Mapper';
         if (class_exists($customMapperClass, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
                 in_array('Doctrine_Mapper', class_parents($customMapperClass))) {
+            $table = $this->getTable($className);
             $mapper = new $customMapperClass($className, $this);
         } else {
             // determine correct mapper type
-            /*$inheritanceType = $table->getOption('inheritanceType');
+            $table = $this->getTable($className);
+            $inheritanceType = $table->getInheritanceType();
             if ($inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
-                $mapper = new Doctrine_Mapper_Joined($className, $this);
-            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+                $mapper = new Doctrine_Mapper_Joined($className, $table);
+            }/* else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
                 $mapper = new Doctrine_Mapper_SingleTable($className, $this);
             } else if ($inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
                 $mapper = new Doctrine_Mapper_TablePerClass($className, $this);
             } else {
                 throw new Doctrine_Connection_Exception("Unknown inheritance type '$inheritanceType'. Can't create mapper.");
             }*/
-            $mapper = new Doctrine_Mapper($className, $this);
+            else {
+                $mapper = new Doctrine_Mapper($className, $table);
+            }
+            
         }
 
         $this->_mappers[$className] = $mapper;

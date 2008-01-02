@@ -7,12 +7,18 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
 
     public function prepareTables()
     {
-      //$this->tables = array('STI_User');
-      $this->tables[] = 'CTI_User';
-      $this->tables[] = 'CTI_Manager';
-      $this->tables[] = 'CTI_Customer';
-      $this->tables[] = 'CTI_SuperManager';
-      parent::prepareTables();
+        //$this->tables = array('STI_User');
+        $this->tables[] = 'CTI_User';
+        $this->tables[] = 'CTI_Manager';
+        $this->tables[] = 'CTI_Customer';
+        $this->tables[] = 'CTI_SuperManager';
+        parent::prepareTables();
+    }
+    
+    public function setUp()
+    {
+        parent::setUp();
+        $this->prepareTables();
     }
 
     public function testMetadataSetup()
@@ -55,20 +61,83 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         //$this->assertEqual(array('CTI_User', 'CTI_Manager', ''))
     }
     
-    public function testSaveInsertsDataAcrossJoinedTablesTransparently()
+    protected function _createManager()
     {
         $manager = new CTI_Manager();
         $manager->salary = 80000;
         $manager->name = 'John Smith';
         try {
             $manager->save();
-            $this->assertEqual(1, $manager->id);
-            $this->assertEqual(80000, $manager->salary);
-            $this->assertEqual('John Smith', $manager->name);
-            $this->assertEqual(2, $manager->type);
+            $this->pass();
+            return $manager;
         } catch (Exception $e) {
-            $this->fail("Saving record in class table inheritance failed: " . $e->getMessage());
+            $this->fail("Inserting record in class table inheritance failed: " . $e->getMessage());
         }
+    }
+    
+    protected function _createSuperManager()
+    {
+        $manager = new CTI_SuperManager();
+        $manager->salary = 1000000;
+        $manager->name = 'Bill Gates';
+        $manager->gosutitle = 'BillyBoy';
+        try {
+            $manager->save();
+            $this->pass();
+            return $manager;
+        } catch (Exception $e) {
+            $this->fail("Inserting record in class table inheritance failed: " . $e->getMessage());
+        }
+    }
+    
+    public function testSaveInsertsDataAcrossJoinedTablesTransparently()
+    {
+        $manager = $this->_createManager();
+        $this->assertEqual(1, $manager->id);
+        $this->assertEqual(80000, $manager->salary);
+        $this->assertEqual('John Smith', $manager->name);
+        $this->assertEqual(2, $manager->type);
+        
+        $superManager = $this->_createSuperManager();
+        $this->assertEqual(2, $superManager->id);
+        $this->assertEqual(1000000, $superManager->salary);
+        $this->assertEqual('Bill Gates', $superManager->name);
+        $this->assertEqual('BillyBoy', $superManager->gosutitle);
+        $this->assertEqual(4, $superManager->type);
+    }
+    
+    public function testUpdateUpdatesDataAcrossJoinedTablesTransparently()
+    {
+        $manager = $this->_createManager();
+        $manager->salary = 90000; // he got a pay rise...
+        $manager->name = 'John Locke'; // he got married ...
+        try {
+            $manager->save();
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail("Updating record in class table inheritance failed: " . $e->getMessage());
+        }  
+        $this->assertEqual(1, $manager->id);
+        $this->assertEqual(90000, $manager->salary);
+        $this->assertEqual('John Locke', $manager->name);
+        $this->assertEqual(2, $manager->type);
+        
+        
+        $superManager = $this->_createSuperManager();
+        $superManager->salary = 0; // he got fired...
+        $superManager->name = 'Bill Clinton'; // he got married ... again
+        $superManager->gosutitle = 'Billy the Kid'; // ... and went mad
+        try {
+            $superManager->save();
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail("Updating record in class table inheritance failed: " . $e->getMessage());
+        }  
+        $this->assertEqual(2, $superManager->id);
+        $this->assertEqual(0, $superManager->salary);
+        $this->assertEqual('Bill Clinton', $superManager->name);
+        $this->assertEqual('Billy the Kid', $superManager->gosutitle);
+        $this->assertEqual(4, $superManager->type);
     }
 }
 
@@ -84,9 +153,9 @@ class CTI_User extends Doctrine_Record
                       'CTI_SuperManager' => array('type' => 4))
         );
         $this->setTableName('cti_user');
-        $this->hasColumn('sti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
-        $this->hasColumn('sti_foo as foo', 'integer', 4);
-        $this->hasColumn('sti_name as name', 'varchar', 50);
+        $this->hasColumn('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+        $this->hasColumn('cti_foo as foo', 'integer', 4);
+        $this->hasColumn('cti_name as name', 'varchar', 50);
         $this->hasColumn('type', 'integer', 4);
     }
 }
@@ -96,7 +165,7 @@ class CTI_Manager extends CTI_User
     public function setTableDefinition()
     {
         $this->setTableName('cti_manager');
-        $this->hasColumn('stim_salary as salary', 'varchar', 50, array());
+        $this->hasColumn('ctim_salary as salary', 'varchar', 50, array());
     }
 }
 
@@ -105,7 +174,7 @@ class CTI_Customer extends CTI_User
     public function setTableDefinition()
     {
         $this->setTableName('cti_customer');
-        $this->hasColumn('stic_bonuspoints as bonuspoints', 'varchar', 50, array());
+        $this->hasColumn('ctic_bonuspoints as bonuspoints', 'varchar', 50, array());
     }
 }
 
@@ -114,6 +183,6 @@ class CTI_SuperManager extends CTI_Manager
     public function setTableDefinition()
     {
         $this->setTableName('cti_supermanager');
-        $this->hasColumn('stism_gosutitle as gosutitle', 'varchar', 50, array());
+        $this->hasColumn('ctism_gosutitle as gosutitle', 'varchar', 50, array());
     }
 }

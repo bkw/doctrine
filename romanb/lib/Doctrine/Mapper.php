@@ -69,18 +69,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     protected $_repository;
 
     /**
-     * @var array $options                  an array containing all options
-     *
-     *      -- name                         name of the component, for example component name of the GroupTable is 'Group'
-     *
-     *      -- queryParts                   the bound query parts
-     */
-    protected $_options      = array('name'           => null,
-                                     //'queryParts'     => array(),
-                                    // 'versioning'     => null,
-                                     );
-
-    /**
      * @var array $_invokedMethods              method invoker cache
      */
     protected $_invokedMethods = array();
@@ -93,24 +81,12 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      * @param string $name                      the name of the component
      * @param Doctrine_Connection $conn         the connection associated with this table
      */
-    public function __construct($name, Doctrine_Connection $conn)
+    public function __construct($name, Doctrine_Table $table)
     {
         $this->_domainClassName = $name;
-        $this->_conn = $conn;
-        $this->_table = $conn->getTable($name);
-
+        $this->_conn = $table->getConnection();
+        $this->_table = $table;
         $this->setParent($this->_conn);
-
-        /*if ($loadMetaData) {
-            $this->_loadMetaDataFromCode();
-        } else {
-            $tableName = $this->_metaData->getOption('tableName');
-            if ( ! isset($tableName)) {
-                $this->_metaData->setOption('tableName', Doctrine::tableize($this->_domainClassName));
-            }
-        }
-        */
-        
         $this->_repository = new Doctrine_Table_Repository($this);  
     }
 
@@ -277,11 +253,11 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      */
     public function findByDql($dql, array $params = array(), $hydrationMode = null)
     {
-        $parser = new Doctrine_Query($this->_conn);
+        $query = new Doctrine_Query($this->_conn);
         $component = $this->getComponentName();
-        $query = 'FROM ' . $component . ' WHERE ' . $dql;
+        $dql = 'FROM ' . $component . ' WHERE ' . $dql;
 
-        return $parser->query($query, $params, $hydrationMode);        
+        return $query->query($dql, $params, $hydrationMode);        
     }
 
     /**
@@ -302,6 +278,11 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                 ->getQueryRegistry()
                 ->get($queryKey, $this->getComponentName())
                 ->execute($params, $hydrationMode);
+    }
+    
+    public function executeNamedQuery($queryName, $params = array(), $hydrationMode = Doctrine::HYDRATE_RECORD)
+    {
+        return $this->execute($queryName, $params, $hydrationMode);        
     }
 
     /**
@@ -606,18 +587,16 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                 case 'object':
                     if (is_string($value)) {
                         $value = unserialize($value);
-
                         if ($value === false) {
-                            throw new Doctrine_Table_Exception('Unserialization of ' . $fieldName . ' failed.');
+                            throw new Doctrine_Mapper_Exception('Unserialization of ' . $fieldName . ' failed.');
                         }
                         return $value;
                     }
                 break;
                 case 'gzip':
                     $value = gzuncompress($value);
-
                     if ($value === false) {
-                        throw new Doctrine_Table_Exception('Uncompressing of ' . $fieldName . ' failed.');
+                        throw new Doctrine_Mapper_Exception('Uncompressing of ' . $fieldName . ' failed.');
                     }
                     return $value;
                 break;
@@ -736,7 +715,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                 
                 return $this->$method($relation['local'], $arguments[0], $hydrationMode);
             } else {
-                throw new Doctrine_Table_Exception('Cannot find by: ' . $by . '. Invalid column or relationship alias.');
+                throw new Doctrine_Mapper_Exception('Cannot find by: ' . $by . '. Invalid field or relationship alias.');
             }
         }
     }
@@ -838,9 +817,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     public function save(Doctrine_Record $record)
     {
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_SAVE);
-
         $record->preSave($event);
-
         $this->getRecordListener()->preSave($event);
 
         if ( ! $event->skipOperation) {
@@ -860,7 +837,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         }
 
         $this->getRecordListener()->postSave($event);
-        
         $record->postSave($event);
     }
     
@@ -964,33 +940,8 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
 
         if ( ! $event->skipOperation) {
             $identifier = $record->identifier();
-
-            if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED
-                    && count($table->getOption('joinedParents')) > 0) {
-                        
-                $dataSet = $this->formatDataSet($record);
-                $component = $table->getComponentName();
-                $classes = $table->getOption('joinedParents');
-                $classes[] = $component;
-
-                foreach ($record as $field => $value) {
-                    if ($value instanceof Doctrine_Record) {
-                        if ( ! $value->exists()) {
-                            $value->save();
-                        }
-                        $record->set($field, $value->getIncremented());
-                    }
-                }
-
-                foreach ($classes as $class) {
-                    $parentTable = $this->_conn->getTable($class);
-                    $this->_conn->update($parentTable, $dataSet[$class], $identifier);
-                }
-            } else {
-                $array = $record->getPrepared();
-                
-                $this->_conn->update($table, $array, $identifier);
-            }
+            $array = $record->getPrepared();
+            $this->_conn->update($table, $array, $identifier);
             $record->assignIdentifier(true);
         }
         
@@ -1009,42 +960,16 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
      */
     public function insert(Doctrine_Record $record)
     {
-        // listen the onPreInsert event
+        // trigger event
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_INSERT);
         $record->preInsert($event);
         $this->getRecordListener()->preInsert($event);
-
-        $table = $this->_table;
-
+        
         if ( ! $event->skipOperation) {
-            if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED &&
-                    count($table->getOption('joinedParents')) > 0) {
-                        
-                $dataSet = $this->formatDataSet($record);
-                $component = $table->getComponentName();
-
-                $classes = $table->getOption('joinedParents');
-                array_unshift($classes, $component);
-
-                foreach (array_reverse($classes) as $k => $parent) {
-                    if ($k === 0) {
-                        $rootRecord = new $parent();
-                        $rootRecord->merge($dataSet[$parent]);
-
-                        $this->_conn->processSingleInsert($rootRecord);
-                        $record->assignIdentifier($rootRecord->identifier());
-                    } else {
-                        foreach ((array) $rootRecord->identifier() as $id => $value) {
-                            $dataSet[$parent][$id] = $value;
-                        }
-                        $this->_conn->insert($this->_conn->getTable($parent), $dataSet[$parent]);
-                    }
-                }
-            } else {
-                $this->_conn->processSingleInsert($record);
-            }
+            $this->_conn->processSingleInsert($record);
         }
-
+        
+        // trigger event
         $this->addRecord($record);
         $this->getRecordListener()->postInsert($event);
         $record->postInsert($event);
@@ -1052,34 +977,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         return true;
     }
     
-    /**
-     * CLASS TABLE INHERITANCE SPECIFIC
-     * @todo DESCRIBE WHAT THIS METHOD DOES, PLEASE!
-     */
-    public function formatDataSet(Doctrine_Record $record)
-    {
-        $table = $this->_table;
-        $dataSet = array();
-        $component = $table->getComponentName();
-        $array = $record->getPrepared();
-        
-        $classes = array_merge(array($component), $this->_table->getOption('joinedParents'));
-        
-        foreach ($classes as $class) {
-            $table = $this->_conn->getTable($class);
-            foreach ($table->getColumns() as $columnName => $definition) {
-                if (isset($definition['primary'])) {
-                    continue;
-                }
-                $fieldName = $table->getFieldName($columnName);
-                $dataSet[$class][$fieldName] = isset($array[$fieldName]) ? $array[$fieldName] : null;
-            }
-        }
-        
-        return $dataSet;
-    }
-    
-    public function delete(Doctrine_Record $record, Doctrine_Connection $conn = null)
+    public function delete(Doctrine_Record $record)
     {
         
     }
@@ -1096,9 +994,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     
     public function getCustomJoins()
     {
-        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
-            return $this->_table->getOption('joinedParents');
-        }
         return array();
     }
     
@@ -1106,14 +1001,6 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
             $inheritanceMap = $this->_table->getOption('inheritanceMap');
-            return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
-        } else if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
-            $joinedParents = $this->_table->getOption('joinedParents');
-            if (count($joinedParents) <= 0) {
-                $inheritanceMap = $this->_table->getOption('inheritanceMap');
-            } else {
-                $inheritanceMap = $this->_conn->getTable(array_pop($joinedParents))->getOption('inheritanceMap');
-            }
             return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
         } else {
             return array();
@@ -1124,37 +1011,15 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         if ($this->_fieldNames) {
             return $this->_fieldNames;
-        }        
-        
-        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
-            $fieldNames = $this->_table->getFieldNames();
-            foreach ($this->_table->getOption('joinedParents') as $parent) {
-                $fieldNames = array_merge($this->_conn->getTable($parent)->getFieldNames(),
-                        $fieldNames);
-            }
-            $this->_fieldNames = $fieldNames;
-            return $fieldNames;
-        } else {
-            $this->_fieldNames = $this->_table->getFieldNames();
-            return $this->_table->getFieldNames();
         }
+        
+        $this->_fieldNames = $this->_table->getFieldNames();
+        return $this->_table->getFieldNames();
     }
     
     /*public function free()
     {
         unset($this->_table);
-    }*/
-    
-    
-    /**********************************************************************************
-    **********************************************************************************
-    **********************************************************************************
-    **********************************************************************************
-    **********************************************************************************
-    **********************************************************************************
-    **********************************************************************************
-    **********************************************************************************/  
-    
-    
+    }*/   
     
 }

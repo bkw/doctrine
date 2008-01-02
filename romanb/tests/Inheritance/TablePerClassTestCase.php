@@ -7,6 +7,12 @@ class Doctrine_Inheritance_TablePerClass_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() 
     { }
+    
+    public function setUp()
+    {
+        parent::setUp();
+        $this->prepareTables();
+    }
 
     public function prepareTables()
     {
@@ -18,7 +24,7 @@ class Doctrine_Inheritance_TablePerClass_TestCase extends Doctrine_UnitTestCase
     }
 
     public function testMetadataTableSetup()
-    {        
+    { 
         $supMngrTable = $this->conn->getTable('CCTI_SuperManager');
         $usrTable = $this->conn->getTable('CCTI_User');
         $mngrTable = $this->conn->getTable('CCTI_Manager');
@@ -54,6 +60,12 @@ class Doctrine_Inheritance_TablePerClass_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail("Saving record in concrete table inheritance failed: " . $e->getMessage());
         }
+    }
+    
+    public function testQuery()
+    {
+        //$manager = $this->conn->query("FROM CCTI_Manager")->getFirst();
+        //var_dump($manager);
     }
 }
 

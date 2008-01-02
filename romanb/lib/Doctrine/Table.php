@@ -896,7 +896,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
 
     /**
      * getExportableFormat
-     * returns exportable presentation of this object
+     * Returns an array with the DDL for this table object.
      *
      * @return array
      * @todo move to Table
@@ -907,11 +907,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
         $primary = array();
 
         foreach ($this->getColumns() as $name => $definition) {
-
-            if (isset($definition['owner'])) {
-                continue;
-            }
-
             switch ($definition['type']) {
                 case 'enum':
                     if (isset($definition['default'])) {
@@ -931,7 +926,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
             }
         }
         $options['foreignKeys'] = array();
-
 
         if ($parseForeignKeys && $this->getAttribute(Doctrine::ATTR_EXPORT)
                 & Doctrine::EXPORT_CONSTRAINTS) {
@@ -1048,11 +1042,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     public function unshiftFilter(Doctrine_Record_Filter $filter)
     {
         $filter->setTable($this);
-
         $filter->init();
-
         array_unshift($this->_filters, $filter);
-
         return $this;
     }
     
@@ -1108,7 +1099,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     public function bindQueryParts(array $queryParts)
     {
     	$this->_options['queryParts'] = $queryParts;
-
         return $this;
     }
 
@@ -1123,7 +1113,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     public function bindQueryPart($queryPart, $value)
     {
     	$this->_options['queryParts'][$queryPart] = $value;
-
         return $this;
     }
     
@@ -1138,7 +1127,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
         if ( ! isset($this->_options['queryParts'][$queryPart])) {
             return null;
         }
-
         return $this->_options['queryParts'][$queryPart];
     }
 
@@ -1162,26 +1150,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     {
         return true;
     }
-    
-    
-    /*public function __call($method, $params)
-    {
-        //echo $method . "<br />";
-        if ($method == 'saveGraph') {
-            $class = get_class($params[0]);
-            $mapper = Doctrine_Manager::getInstance()->getMapper($class);
-        } else if ($method == 'create') {
-            try {
-                throw new Exception("table can't create.");
-            } catch (Exception $e) {
-                echo $e->getTraceAsString();
-            }
-            
-        } else {
-            $mapper = Doctrine_Manager::getInstance()->getMapper($this->_domainClassName); 
-        }
-        return call_user_func_array(array($mapper, $method), $params);
-    }*/
     
     public function __toString()
     {

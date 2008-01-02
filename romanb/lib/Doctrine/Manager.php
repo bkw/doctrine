@@ -74,7 +74,6 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     private function __construct()
     {
         $this->_root = dirname(__FILE__);
-
         Doctrine_Locator_Injectable::initNullObject(new Doctrine_Null);
     }
 
@@ -275,9 +274,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
             $adapter = $parts;
         } else {
             $parts = $this->parseDsn($adapter);
-            
             $driverName = $parts['scheme'];
-            
             $adapter = $parts;
         }
 
@@ -297,7 +294,6 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
             $this->_index++;
         }
 
-
         $drivers = array('mysql'    => 'Doctrine_Connection_Mysql',
                          'sqlite'   => 'Doctrine_Connection_Sqlite',
                          'pgsql'    => 'Doctrine_Connection_Pgsql',
@@ -309,6 +305,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
                          'firebird' => 'Doctrine_Connection_Firebird',
                          'informix' => 'Doctrine_Connection_Informix',
                          'mock'     => 'Doctrine_Connection_Mock');
+        
         if ( ! isset($drivers[$driverName])) {
             throw new Doctrine_Manager_Exception('Unknown driver ' . $driverName);
         }
@@ -363,8 +360,6 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      */
     public function parseDsn($dsn)
     {
-
-
         //fix linux sqlite dsn so that it will parse correctly
         $dsn = str_replace("///", "/", $dsn);
 
@@ -575,8 +570,11 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     }
     
     /**
-     * 
-     * 
+     * getMapper
+     * Returns the mapper object for the given component name.
+     *
+     * @param string $componentName
+     * @return Doctrine_Mapper
      */
     public function getMapper($componentName)
     {

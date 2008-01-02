@@ -392,8 +392,8 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
     }
 
     /**
-     * sets a parent for this configurable component
-     * the parent must be configurable component itself
+     * Sets a parent for this configurable component
+     * the parent must be a configurable component itself.
      *
      * @param Doctrine_Configurable $component
      * @return void
@@ -405,7 +405,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
 
     /**
      * getParent
-     * returns the parent of this component
+     * Returns the parent of this component.
      *
      * @return Doctrine_Configurable
      */
