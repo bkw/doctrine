@@ -209,7 +209,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
 
         $this->_errorStack = new Doctrine_Validator_ErrorStack(get_class($this));
-
         $repository = $this->_mapper->getRepository();
         $repository->add($this);
 
@@ -784,6 +783,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function getData()
     {
         return $this->_data;
+    }
+    
+    public function getValues()
+    {
+        return $this->_values;
     }
 
     /**
@@ -1836,15 +1840,15 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function __call($method, $args)
     {
-        if (($template = $this->_table->getMethodOwner($method)) !== false) {
+        if (($template = $this->_mapper->getMethodOwner($method)) !== false) {
             $template->setInvoker($this);
             return call_user_func_array(array($template, $method), $args);
         }
 
-        foreach ($this->_table->getTemplates() as $template) {
+        foreach ($this->_mapper->getTable()->getTemplates() as $template) {
             if (method_exists($template, $method)) {
                 $template->setInvoker($this);
-                $this->_table->setMethodOwner($method, $template);
+                $this->_mapper->setMethodOwner($method, $template);
 
                 return call_user_func_array(array($template, $method), $args);
             }
@@ -1874,4 +1878,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         return (string) $this->_oid;
     }
+    
+    public function free()
+    {
+        $this->_mapper->getRepository()->evict($this->_oid);
+        $this->_mapper->removeRecord($this);
+    }
+    
 }

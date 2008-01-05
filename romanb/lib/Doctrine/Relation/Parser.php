@@ -111,13 +111,7 @@ class Doctrine_Relation_Parser
         if ( ! isset($options['type'])) {
             throw new Doctrine_Relation_Exception('Relation type not set.');
         }
-        /*if ($name == 'Groupuser') {
-            try {
-                throw new Exception("...");
-            } catch (Exception $e) {
-                echo $e->getTraceAsString() . "<br />";
-            }
-        }*/
+
         $this->_pending[$alias] = array_merge($options, array('class' => $name, 'alias' => $alias));
 
         return $this->_pending[$alias];
@@ -225,14 +219,6 @@ class Doctrine_Relation_Parser
         
         // if the two many-many related components shared the same table, we need a relation name
         // to distinguish the relations.
-        /*if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE &&
-                in_array($def['class'], $this->_table->getOption('subclasses'))) { 
-            //var_dump($def['relName']);
-            //echo "<br />";
-            $relationName = $def['relName'];
-        } else {
-            $relationName = $def['refClass'];
-        }*/
         $relationName = $def['refClass'];
         if (isset($def['refRelationName'])) {
            $relationName .= ' as ' . $def['refRelationName'];
@@ -251,17 +237,7 @@ class Doctrine_Relation_Parser
         }
         
         // add a relation pointing from this parser's table to the xref table 
-        if ( ! $this->hasRelation($relationName/*$def['refClass']*/) /*||
-                $this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE &&
-                $def['class'] != $this->_table->getComponentName() &&
-                in_array($def['class'], $this->_table->getOption('subclasses'))*/) {
-            
-            /*if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE &&
-                    $def['class'] != $this->_table->getComponentName() &&
-                    in_array($def['class'], $this->_table->getOption('subclasses'))) {
-                
-            }*/
-            
+        if ( ! $this->hasRelation($relationName/*$def['refClass']*/)) {            
             $this->bind($relationName, array(
                     'type' => Doctrine_Relation::MANY,
                     'foreign' => $def['local'],
@@ -293,20 +269,23 @@ class Doctrine_Relation_Parser
      *
      * @param string $template
      */
-    public function getImpl($template)
+    public function getImpl(array &$def, $key)
     {
         $conn = $this->_table->getConnection();
-        if (in_array('Doctrine_Template', class_parents($template))) {
-            $impl = $this->_table->getImpl($template);
-            
+        if (in_array('Doctrine_Template', class_parents($def[$key]))) {
+            $impl = $this->_table->getImpl($def[$key]);
             if ($impl === null) {
-                throw new Doctrine_Relation_Parser_Exception("Couldn't find concrete implementation for template " . $template);
+                throw new Doctrine_Relation_Parser_Exception("Couldn't find concrete implementation for template " . $def[$key]);
             }
-        } else {
-            $impl = $template;
+            $def[$key] = $impl;
         }
 
-        return $conn->getTable($impl);
+        return $conn->getTable($def[$key]);
+    }
+    
+    protected function _isTemplate($className)
+    {
+        return in_array('Doctrine_Template', class_parents($className));
     }
 
     /**
@@ -318,10 +297,9 @@ class Doctrine_Relation_Parser
     public function completeAssocDefinition($def) 
     {
         $conn = $this->_table->getConnection();
-        $def['table'] = $this->getImpl($def['class']);
+        $def['table'] = $this->getImpl($def, 'class');
         $def['localTable'] = $this->_table;
-        //$def['class'] = $def['table']->getComponentName();
-        $def['refTable'] = $this->getImpl($def['refClass']);
+        $def['refTable'] = $this->getImpl($def, 'refClass');
 
         $id = $def['refTable']->getIdentifierColumnNames();
 
@@ -432,7 +410,8 @@ class Doctrine_Relation_Parser
     public function completeDefinition($def)
     {
         $conn = $this->_table->getConnection();
-        $def['table'] = $this->getImpl($def['class']);
+        $def['table'] = $this->getImpl($def, 'class');
+        //$def['class'] = $def['table']->getComponentName();
         $def['localTable'] = $this->_table;
 
         $foreignClasses = array_merge($def['table']->getOption('parents'), array($def['class']));

@@ -19,15 +19,15 @@ class Doctrine_Table_Factory
         //call_user_func_array(array($name, 'foobar'), array());
     }
     
+    /**
+     * Loads the metadata of the class in question and all it's ancestors whose metadata
+     * is still not loaded.
+     *
+     * @param string $name   The name of the class for which the metadata should get loaded.
+     * @param array  $tables The metadata collection to which the loaded metadata is added.
+     */
     public function loadTables($name, array &$tables)
     {
-        if (empty($name)) {
-           try {
-               throw new Exception("ggg");
-           } catch (Exception $e) {
-               echo $e->getTraceAsString();
-           }
-        }
         $parentClass = $name;
         $parentClasses = array();
         $parentClassWithTable = false;
@@ -46,7 +46,7 @@ class Doctrine_Table_Factory
             $parentClasses[] = $parentClass;
         }
         $parentClasses = array_reverse($parentClasses);
-        $parentClasses[] = $name; 
+        $parentClasses[] = $name;
         
         if ($parentClassWithTable) {
             $table = $tables[$parentClassWithTable];
@@ -99,13 +99,9 @@ class Doctrine_Table_Factory
                 $parents[] = $subclass;
             }
         } else {
-            //var_dump($parentClasses);
-            //echo $table->getComponentName();
             throw new Doctrine_Table_Factory_Exception("Failed to load meta data. Unknown inheritance type "
                     . "or no inheritance type specified for hierarchy.");
         }
-        
-        return $tables;
     }
     
     
@@ -121,6 +117,14 @@ class Doctrine_Table_Factory
      */
     protected function _loadMetaDataFromCode(Doctrine_Table $table, $name)
     {
+        if ($name == 'Doctrine_Locator_Injectable') {
+            try {
+                throw new Exception();
+            } catch (Exception $e) {
+                echo $e->getTraceAsString() . "<br /><br />";
+            }
+        }
+        
         if ( ! class_exists($name) || empty($name)) {
             //try {
             throw new Doctrine_Exception("Couldn't find class " . $name);
@@ -168,24 +172,13 @@ class Doctrine_Table_Factory
         if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
             $joinedParents = array();
             foreach (array_reverse($names) as $parent) {
-                /*$ref = new ReflectionClass($parent);	            
-                if ($ref->isAbstract()) {
-                    continue;
-                }*/
-                /*if ($parent === $class->getName()) {
-                    continue;
-                }*/
-
                 $parentTable = $table->getConnection()->getTable($parent);
-                $found = false;
-                
                 $parentColumns = $parentTable->getColumns();
                 $thisColumns = $table->getColumns();
                 
                 foreach ($parentColumns as $columnName => $definition) {
                     if ( ! isset($definition['primary'])) {
                         if (isset($thisColumns[$columnName])) {
-                            $found = true;
                             continue;
                         } else {
                             /*if ( ! isset($parentColumns[$columnName]['owner'])) {
@@ -195,21 +188,11 @@ class Doctrine_Table_Factory
                             $joinedParents[] = $parentTable->getComponentName();
                         }
                     } else {
-                        //unset($parentColumns[$columnName]);
                         unset($definition['autoincrement']);
                         $fullName = $columnName . ' as ' . $parentTable->getFieldName($columnName);
                         $table->setColumn($fullName, $definition['type'], $definition['length'], $definition, true);
                     }
                 }
-
-                if ($found) {
-                    continue;
-                }
-
-                /*foreach ($parentColumns as $columnName => $definition) {    
-                    $fullName = $columnName . ' as ' . $parentTable->getFieldName($columnName);
-                    $table->setColumn($fullName, $definition['type'], $definition['length'], $definition, true);
-                }*/
             }
             $table->setOption('joinedParents', array_values(array_unique($joinedParents)));
         }

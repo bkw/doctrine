@@ -188,13 +188,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
         return $this->_conn;
     }
     
-    /*public function addDomainClassName($domainClassName)
-    {
-        if ( ! in_array($domainClassName, $this->_domainClassNames)) {
-            $this->_domainClassNames[] = $domainClassName;
-        }
-    }*/
-    
     /**
      * Gets the owner of a column.
      * The owner of a column is the name of the component in a hierarchy that
@@ -245,17 +238,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     {
         return ($fieldName === $this->getIdentifier() || 
                 in_array($fieldName, (array) $this->getIdentifier()));
-    }
-
-    public function getMethodOwner($method)
-    {
-        return (isset($this->_invokedMethods[$method])) ?
-                      $this->_invokedMethods[$method] : false;
-    }
-    
-    public function setMethodOwner($method, $class)
-    {
-        $this->_invokedMethods[$method] = $class;
     }
     
     /**

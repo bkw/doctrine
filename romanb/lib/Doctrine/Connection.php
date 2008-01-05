@@ -598,7 +598,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                 $a[] = '?';
             }
         }
-
+        
         // build the statement
         $query = 'INSERT INTO ' . $this->quoteIdentifier($tableName) 
                . ' (' . implode(', ', $cols) . ') '
@@ -606,6 +606,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         $query .= implode(', ', $a) . ')';
         // prepare and execute the statement
+        
         return $this->exec($query, array_values($fields));
     }
     
@@ -615,7 +616,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function processSingleInsert(Doctrine_Record $record)
     {
         $fields = $record->getPrepared();
-
         if (empty($fields)) {
             return false;
         }
@@ -624,7 +624,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $identifier = (array) $table->getIdentifier();
 
         $seq = $record->getTable()->getOption('sequenceName');
-
+        
         if ( ! empty($seq)) {
             $id = $this->sequence->nextId($seq);
             $seqName = $table->getIdentifier();
@@ -632,7 +632,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
             $record->assignIdentifier($id);
         }
-
+        
         $this->insert($table, $fields);
 
         if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
@@ -651,7 +651,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             $record->assignIdentifier($id);
         } else {
             $record->assignIdentifier(true);
-        }    	
+        }
     }
 
     /**
@@ -1061,56 +1061,31 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     {
         return isset($this->tables[$name]);
     }
-
-    /**
-     * returns a table object for given component name
-     *
-     * @param string $name              component name
-     * @return object Doctrine_Table
-     */
-    /*public function getTable($name)
-    {        
-        if (isset($this->tables[$name])) {
-            return $this->tables[$name];
-        }
-        $class = $name . 'Table';
-
-        if (class_exists($class, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
-                in_array('Doctrine_Table', class_parents($class))) {
-            $table = new $class($name, $this, true);
-        } else {
-            $table = new Doctrine_Table($name, $this, true);
-        }
-
-        $this->tables[$name] = $table;
-
-        return $table;
-    }*/
     
     /**
-     * returns a table object for given component name
+     * Gets the table object that represents the database table that is used to
+     * persist the specified domain class.
      *
      * @param string $name              component name
      * @return Doctrine_Table
      */
-    public function getTable($name)
+    public function getTable($className)
     {
-        if (isset($this->tables[$name])) {
-            return $this->tables[$name];
+        if (isset($this->tables[$className])) {
+            return $this->tables[$className];
         }
-        //echo count($this->tables) . "<br />";
-        $this->_tableFactory->loadTables($name, $this->tables);
-        
-        //echo "<br /><br /><br />";
-        //echo count($this->tables) . "<br />";
-        return $this->tables[$name];
+        $this->_tableFactory->loadTables($className, $this->tables);
+        return $this->tables[$className];
     }
     
     /**
-     *
+     * Gets a mapper for the specified domain class that is used map instances of
+     * the class between the relational database and their object representation.
+     * 
+     * @return Doctrine_Mapper_Abstract  The mapper object.
      */
     public function getMapper($className)
-    {
+    {        
         if (isset($this->_mappers[$className])) {
             return $this->_mappers[$className];
         }
@@ -1121,26 +1096,22 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             $table = $this->getTable($className);
             $mapper = new $customMapperClass($className, $this);
         } else {
-            // determine correct mapper type
+            // instantiate correct mapper type
             $table = $this->getTable($className);
             $inheritanceType = $table->getInheritanceType();
             if ($inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
                 $mapper = new Doctrine_Mapper_Joined($className, $table);
-            }/* else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-                $mapper = new Doctrine_Mapper_SingleTable($className, $this);
+            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+                $mapper = new Doctrine_Mapper_SingleTable($className, $table);
             } else if ($inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-                $mapper = new Doctrine_Mapper_TablePerClass($className, $this);
+                $mapper = new Doctrine_Mapper_TablePerClass($className, $table);
             } else {
                 throw new Doctrine_Connection_Exception("Unknown inheritance type '$inheritanceType'. Can't create mapper.");
-            }*/
-            else {
-                $mapper = new Doctrine_Mapper($className, $table);
             }
-            
         }
 
         $this->_mappers[$className] = $mapper;
-
+        
         return $mapper;
     }
 

@@ -7,12 +7,12 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
 
     public function prepareTables()
     {
-        //$this->tables = array('STI_User');
         $this->tables[] = 'CTI_User';
         $this->tables[] = 'CTI_Manager';
         $this->tables[] = 'CTI_Customer';
         $this->tables[] = 'CTI_SuperManager';
-        parent::prepareTables();
+        
+        parent::prepareTables();   
     }
     
     public function setUp()
@@ -88,6 +88,7 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail("Inserting record in class table inheritance failed: " . $e->getMessage());
         }
+        
     }
     
     public function testSaveInsertsDataAcrossJoinedTablesTransparently()
@@ -143,7 +144,7 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
 
 
 class CTI_User extends Doctrine_Record
-{
+{    
     public function setTableDefinition()
     {
         $this->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED,
@@ -155,7 +156,7 @@ class CTI_User extends Doctrine_Record
         $this->setTableName('cti_user');
         $this->hasColumn('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
         $this->hasColumn('cti_foo as foo', 'integer', 4);
-        $this->hasColumn('cti_name as name', 'varchar', 50);
+        $this->hasColumn('cti_name as name', 'string', 50);
         $this->hasColumn('type', 'integer', 4);
     }
 }

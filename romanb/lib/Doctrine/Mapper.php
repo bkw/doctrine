@@ -34,7 +34,8 @@
 class Doctrine_Mapper extends Doctrine_Configurable implements Countable
 {
     /**
-     * @var Doctrine_Table  Metadata container for mapping to the database table.
+     * @var Doctrine_Table  Metadata container that represents the database table this
+     *                      mapper is mapping objects to.
      */
     protected $_table;
     
@@ -44,27 +45,33 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     protected $_domainClassName;
     
     /**
-     * The names of all the fields that are available on records created by this mapper. 
+     * The names of all the fields that are available on entities created by this mapper. 
      */
     protected $_fieldNames = array();
     
     /**
-     * @var array $data                                 temporary data which is then loaded into Doctrine_Record::$_data
+     * Temporary data which is then loaded into Doctrine_Record::$_data.
+     *
+     * @var array $data
      */
     protected $_data = array();
 
     /**
-     * @var Doctrine_Connection $conn                   Doctrine_Connection object that created this table
+     * The Doctrine_Connection object that the database connection of this mapper.
+     *
+     * @var Doctrine_Connection $conn
      */
     protected $_conn;
 
     /**
      * @var array $identityMap                          first level cache
+     * @todo Proper identity map implementation & move elsewhere?
      */
     protected $_identityMap = array();
 
     /**
      * @var Doctrine_Table_Repository $repository       record repository
+     * @todo Needed? What is it used for? Does the identity map not suffice?
      */
     protected $_repository;
 
@@ -75,11 +82,11 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
 
 
     /**
-     * the constructor
+     * Constructs a new mapper.
      *
-     * @throws Doctrine_Connection_Exception    if there are no opened connections
-     * @param string $name                      the name of the component
-     * @param Doctrine_Connection $conn         the connection associated with this table
+     * @param string $name                    The name of the domain class this mapper is used for.
+     * @param Doctrine_Table $table           The table object used for the mapping procedure.
+     * @throws Doctrine_Connection_Exception  if there are no opened connections
      */
     public function __construct($name, Doctrine_Table $table)
     {
@@ -737,7 +744,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         if ($state === Doctrine_Record::STATE_LOCKED) {
             return false;
         }
-
+        
         $record->state(Doctrine_Record::STATE_LOCKED);
         
         try {
@@ -753,7 +760,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
                 $this->getRecordListener()->preSave($event);
                 
                 $state = $record->state();
-
+                
                 if ( ! $event->skipOperation) {
                     switch ($state) {
                         case Doctrine_Record::STATE_TDIRTY:
@@ -804,7 +811,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
             } 
             throw $e;
         }
-
+        
         return true;
     }
     
@@ -964,7 +971,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_INSERT);
         $record->preInsert($event);
         $this->getRecordListener()->preInsert($event);
-        
+
         if ( ! $event->skipOperation) {
             $this->_conn->processSingleInsert($record);
         }
@@ -973,7 +980,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $this->addRecord($record);
         $this->getRecordListener()->postInsert($event);
         $record->postInsert($event);
-
+        
         return true;
     }
     
@@ -999,12 +1006,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     
     public function getDiscriminatorColumn($domainClassName)
     {
-        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-            $inheritanceMap = $this->_table->getOption('inheritanceMap');
-            return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
-        } else {
-            return array();
-        }
+        return array();
     }
     
     public function getFieldNames()
@@ -1020,6 +1022,16 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     /*public function free()
     {
         unset($this->_table);
-    }*/   
+    }*/
+    
+    public function getIdentityMap()
+    {
+        return $this->_identityMap;
+    }
+    
+    public function dump()
+    {
+        var_dump($this->_invokedMethods);
+    }
     
 }

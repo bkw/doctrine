@@ -60,27 +60,36 @@ abstract class Doctrine_Relation implements ArrayAccess
     const ONE   = 0;
     const MANY  = 2;
     
-    protected $definition = array('alias'       => true,
-                                  'foreign'     => true,
-                                  'local'       => true,
-                                  'class'       => true,
-                                  'type'        => true,
-                                  'table'       => true,
-                                  'localTable'  => true,
-                                  'name'        => false,
-                                  'refTable'    => false,
+    protected $definition = array('alias'       => true, // relation alias
+                                  'foreign'     => true, // foreign column names
+                                  'local'       => true, // local column names
+                                  'class'       => true, // related(foreign) class name
+                                  'type'        => true, // relation type
+                                  'table'       => true, // related(foreign) table object
+                                  'localTable'  => true, // local table object
+                                  'name'        => false, 
                                   'onDelete'    => false,
                                   'onUpdate'    => false,
                                   'deferred'    => false,
                                   'deferrable'  => false,
                                   'constraint'  => false,
                                   'equal'       => false,
+                                  'refClass'    => false, // the name of the association class (many-many)
+                                  'refTable'    => false, // the association table object (many-many)
                                   'refRelationName' => false,
                                   'refReverseRelationName' => false,
-                                  'refClass'    => false
+                                  
                                   );
-
+                              
+    /**
+     * The mapper of the foreign (related) class.
+     */
     protected $_foreignMapper;
+    
+    /**
+     * The mapper of the local class.
+     */
+    protected $_localMapper;
 
     /**
      * constructor

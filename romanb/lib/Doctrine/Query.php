@@ -507,7 +507,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             $columnName = $table->getColumnName($fieldName);
             if (($owner = $table->getColumnOwner($columnName)) !== null && 
                     $owner !== $table->getComponentName()) {
-
                 $parent = $this->_conn->getTable($owner);
                 $columnName = $parent->getColumnName($fieldName);
                 $parentAlias = $this->getTableAlias($componentAlias . '.' . $parent->getComponentName());
