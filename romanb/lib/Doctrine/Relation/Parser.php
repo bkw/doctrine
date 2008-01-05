@@ -125,9 +125,9 @@ class Doctrine_Relation_Parser
     public function getRelation($alias, $recursive = true)
     {
         if (isset($this->_relations[$alias])) {
-            if ($alias == 'Groupuser') {
+            /*if ($alias == 'Groupuser') {
                 //var_dump($this->_relations[$alias]['foreign']);
-            }
+            }*/
             return $this->_relations[$alias];
         }
 
@@ -139,12 +139,12 @@ class Doctrine_Relation_Parser
             $this->getRelations();
             return $this->getRelation($alias, false);
         } else {
-            try {
+            /*try {
                 throw new Doctrine_Table_Exception('Unknown relation alias ' . $alias);
             } catch (Exception $e) {
                 echo $e->getTraceAsString();
                 echo "<br /><br />";
-            }
+            }*/
             throw new Doctrine_Table_Exception('Unknown relation alias ' . $alias);
         }
     }
