@@ -2,6 +2,7 @@
 
 class Doctrine_Mapper_Joined extends Doctrine_Mapper
 {
+    protected $_columnNameFieldNameMap = array();
     
     /**
      * inserts a record into database
@@ -19,19 +20,39 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper
 
         $classes = $table->getOption('joinedParents');
         array_unshift($classes, $component);
-
-        foreach (array_reverse($classes) as $k => $parent) {
-            if ($k === 0) {
-                $rootRecord = new $parent();
-                $rootRecord->merge($dataSet[$parent]);
-                parent::insert($rootRecord);
-                $record->assignIdentifier($rootRecord->identifier());
-            } else {
-                foreach ((array) $rootRecord->identifier() as $id => $value) {
-                    $dataSet[$parent][$id] = $value;
+        
+        try {
+            $this->_conn->beginInternalTransaction();
+            $identifier = null;
+            foreach (array_reverse($classes) as $k => $parent) {
+                $parentTable = $this->_conn->getTable($parent);
+                if ($k == 0) {
+                    $identifierType = $parentTable->getIdentifierType();
+                    if ($identifierType == Doctrine::IDENTIFIER_AUTOINC) {
+                        $this->_conn->insert($parentTable, $dataSet[$parent]);
+                        $identifier = $this->_conn->sequence->lastInsertId();
+                    } else if ($identifierType == Doctrine::IDENTIFIER_SEQUENCE) {
+                        $seq = $record->getTable()->getOption('sequenceName');
+                        if ( ! empty($seq)) {
+                            $identifier = $this->_conn->sequence->nextId($seq);
+                            $dataSet[$parent][$parentTable->getIdentifier()] = $identifier;
+                            $this->_conn->insert($parentTable, $dataSet[$parent]);
+                        }
+                    } else {
+                        throw new Doctrine_Mapper_Exception("Unsupported identifier type '$identifierType'.");
+                    }
+                    $record->assignIdentifier($identifier);
+                } else {
+                    foreach ((array) $record->identifier() as $id => $value) {
+                        $dataSet[$parent][$id] = $value;
+                    }
+                    $this->_conn->insert($parentTable, $dataSet[$parent]);
                 }
-                $this->_conn->insert($this->_conn->getTable($parent), $dataSet[$parent]);
             }
+            $this->_conn->commit();
+        } catch (Exception $e) {
+            $this->_conn->rollback();
+            throw $e;
         }
 
         return true;
@@ -115,12 +136,50 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper
         
         $fieldNames = $this->_table->getFieldNames();
         foreach ($this->_table->getOption('joinedParents') as $parent) {
-            $fieldNames = array_merge($this->_conn->getTable($parent)->getFieldNames(),
-                    $fieldNames);
+            $parentTable = $this->_conn->getTable($parent);
+            $fieldNames = array_merge($parentTable->getFieldNames(), $fieldNames);
         }
-        $this->_fieldNames = $fieldNames;
+        $this->_fieldNames = array_unique($fieldNames);
         
         return $fieldNames;
+    }
+    
+    public function getFieldName($columnName)
+    {
+        if (isset($this->_columnNameFieldNameMap[$columnName])) {
+            return $this->_columnNameFieldNameMap[$columnName];
+        }
+        
+        if ($this->_table->hasColumn($columnName)) {
+            $this->_columnNameFieldNameMap[$columnName] = $this->_table->getFieldName($columnName);
+            return $this->_columnNameFieldNameMap[$columnName];
+        }
+        
+        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
+            $parentTable = $this->_conn->getTable($parentClass);
+            if ($parentTable->hasColumn($columnName)) {
+                $this->_columnNameFieldNameMap[$columnName] = $parentTable->getFieldName($columnName);
+                return $this->_columnNameFieldNameMap[$columnName];
+            }
+        }
+        
+        throw new Doctrine_Mapper_Exception("No field name found for column name '$columnName'.");
+    }
+    
+    public function getOwningTable($fieldName)
+    {
+        if ($this->_table->hasField($fieldName)) {
+            return $this->_table;
+        }
+        
+        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
+            $parentTable = $this->_conn->getTable($parentClass);
+            if ($parentTable->hasField($fieldName)) {
+                return $parentTable;
+            }
+        }
+        
+        throw new Doctrine_Mapper_Exception("Unable to find owner of field '$fieldName'.");
     }
     
     /**

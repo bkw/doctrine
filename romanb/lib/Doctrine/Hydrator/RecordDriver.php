@@ -109,7 +109,7 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
             $this->_tables[$component] = Doctrine_Manager::getInstance()->getMapper($component);
             $this->_tables[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
         }
-        
+
         $this->_tables[$component]->setData($data);
         $record = $this->_tables[$component]->getRecord();
 

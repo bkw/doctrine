@@ -1225,6 +1225,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * count
      * this class implements countable interface
      *
+     * Implementation of the Countable interface.
+     *
      * @return integer          the number of columns in this record
      */
     public function count()
@@ -1436,10 +1438,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function delete(Doctrine_Connection $conn = null)
     {
-        if ($conn == null) {
-            $conn = $this->_mapper->getConnection();
-        }
-        return $conn->unitOfWork->delete($this);
+        return $this->_mapper->delete($this, $conn);
     }
 
     /**

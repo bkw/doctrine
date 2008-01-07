@@ -984,9 +984,86 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         return true;
     }
     
-    public function delete(Doctrine_Record $record)
+    /**
+     * deletes given record and all the related composites
+     * this operation is isolated by a transaction
+     *
+     * this event can be listened by the onPreDelete and onDelete listeners
+     *
+     * @return boolean      true on success, false on failure
+     * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
+     */
+    public function delete(Doctrine_Record $record, Doctrine_Connection $conn = null)
     {
+        if ( ! $record->exists()) {
+            return false;
+        }
         
+        if ($conn == null) {
+            $conn = $this->_conn;
+        }
+
+        $event = new Doctrine_Event($record, Doctrine_Event::RECORD_DELETE);
+        $record->preDelete($event);
+        $this->getRecordListener()->preDelete($event);
+        
+        $table = $this->_table;
+
+        $state = $record->state();
+        $record->state(Doctrine_Record::STATE_LOCKED);
+        
+        if ( ! $event->skipOperation) {
+            try {
+                $conn->beginInternalTransaction();
+                $this->deleteComposites($record);
+
+                $record->state(Doctrine_Record::STATE_TDIRTY);
+
+                if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
+                    foreach ($table->getOption('joinedParents') as $parent) {
+                        $parentTable = $conn->getTable($parent);
+                        $conn->delete($parentTable, $record->identifier());
+                    }
+                }
+
+                $conn->delete($table, $record->identifier());
+                $record->state(Doctrine_Record::STATE_TCLEAN);
+
+                $this->removeRecord($record);
+                $conn->commit();
+            } catch (Exception $e) {
+                $conn->rollback();
+                throw $e;
+            }
+        } else {
+            // return to original state   
+            $record->state($state);
+        }
+        
+        $this->getRecordListener()->postDelete($event);
+        $record->postDelete($event);
+
+        return true;
+    }
+    
+    /**
+     * deletes all related composites
+     * this method is always called internally when a record is deleted
+     *
+     * @throws PDOException         if something went wrong at database level
+     * @return void
+     */
+    protected function deleteComposites(Doctrine_Record $record)
+    {
+        foreach ($this->_table->getRelations() as $fk) {
+            if ($fk->isComposite()) {
+                $obj = $record->get($fk->getAlias());
+                if ($obj instanceof Doctrine_Record && 
+                        $obj->state() != Doctrine_Record::STATE_LOCKED)  {
+                    $obj->delete($this->_conn);
+                }
+            }
+        }
     }
     
     public function executeQuery(Doctrine_Query $query)
@@ -1009,6 +1086,16 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         return array();
     }
     
+    public function getCustomQueryCriteria($domainClassName)
+    {
+        return array();
+    }
+
+    public function getFieldName($columnName)
+    {
+        return $this->_table->getFieldName($columnName);
+    }
+    
     public function getFieldNames()
     {
         if ($this->_fieldNames) {
@@ -1016,7 +1103,12 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         }
         
         $this->_fieldNames = $this->_table->getFieldNames();
-        return $this->_table->getFieldNames();
+        return $this->_fieldNames;
+    }
+    
+    public function getOwningTable($fieldName)
+    {
+        return $this->_table;
     }
     
     /*public function free()

@@ -140,6 +140,23 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual('Billy the Kid', $superManager->gosutitle);
         $this->assertEqual(4, $superManager->type);
     }
+    
+    public function testDqlQueryJoinsTransparentlyAcrossParents()
+    {
+        $this->_createManager();
+        $this->conn->getMapper('CTI_Manager')->clear();
+        
+        $query = $this->conn->createQuery();
+        $query->parseQuery("SELECT m.* FROM CTI_Manager m");
+        $manager = $query->execute()->getFirst();
+        
+        $this->assertTrue($manager instanceof CTI_Manager);
+        $this->assertEqual(1, $manager->id);
+        $this->assertEqual(80000, $manager->salary);
+        $this->assertEqual('John Smith', $manager->name);
+        $this->assertEqual(2, $manager->type);
+        
+    }
 }
 
 

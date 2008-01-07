@@ -480,8 +480,9 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
      */
     public function processPendingFields($componentAlias)
     {
-        $tableAlias = $this->getTableAlias($componentAlias);
-        $table      = $this->_queryComponents[$componentAlias]['table'];
+        $tableAlias = $this->getSqlTableAlias($componentAlias);
+        $baseTable = $this->_queryComponents[$componentAlias]['table'];
+        $mapper = $this->_queryComponents[$componentAlias]['mapper'];
 
         if ( ! isset($this->_pendingFields[$componentAlias])) {
             return;
@@ -489,41 +490,37 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $fields = $this->_pendingFields[$componentAlias];
 
-
         // check for wildcards
         if (in_array('*', $fields)) {
-            //echo "<br />";Doctrine::dump($table->getColumnNames()); echo "<br />";
-            $fields = $table->getFieldNames();
+            $fields = $mapper->getFieldNames();
         } else {
             // only auto-add the primary key fields if this query object is not
             // a subquery of another query object
             if ( ! $this->_isSubquery) {
-                $fields = array_unique(array_merge((array) $table->getIdentifier(), $fields));
+                $fields = array_unique(array_merge((array) $baseTable->getIdentifier(), $fields));
             }
         }
         
         $sql = array();
         foreach ($fields as $fieldName) {
-            $columnName = $table->getColumnName($fieldName);
-            if (($owner = $table->getColumnOwner($columnName)) !== null && 
-                    $owner !== $table->getComponentName()) {
-                $parent = $this->_conn->getTable($owner);
-                $columnName = $parent->getColumnName($fieldName);
-                $parentAlias = $this->getTableAlias($componentAlias . '.' . $parent->getComponentName());
-                $sql[] = $this->_conn->quoteIdentifier($parentAlias . '.' . $columnName)
-                       . ' AS '
-                       . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
+            $table = $mapper->getOwningTable($fieldName);
+            if ($table !== $baseTable) {
+                $tableAlias = $this->getSqlTableAlias($componentAlias . '.' . $table->getComponentName());
             } else {
-                $columnName = $table->getColumnName($fieldName);
-                $sql[] = $this->_conn->quoteIdentifier($tableAlias . '.' . $columnName)
-                       . ' AS '
-                       . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
+                $tableAlias = $this->getSqlTableAlias($componentAlias);
+            }
+            
+            $columnName = $table->getColumnName($fieldName);
+            $columnName = $table->getColumnName($fieldName);
+            $sql[] = $this->_conn->quoteIdentifier($tableAlias . '.' . $columnName)
+                   . ' AS '
+                   . $this->_conn->quoteIdentifier($this->getSqlTableAlias($componentAlias) . '__' . $columnName);
+
+            if ( ! in_array($tableAlias, $this->_neededTables)) {
+                $this->_neededTables[] = $tableAlias;
             }
         }
-
-        $this->_neededTables[] = $tableAlias;
-        //Doctrine::dump(implode(', ', $sql));
-        //echo "<br /><br />";
+        
         return implode(', ', $sql);
     }
 

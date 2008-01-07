@@ -606,7 +606,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         $query .= implode(', ', $a) . ')';
         // prepare and execute the statement
-        
+
         return $this->exec($query, array_values($fields));
     }
     
@@ -629,7 +629,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             $id = $this->sequence->nextId($seq);
             $seqName = $table->getIdentifier();
             $fields[$seqName] = $id;
-
             $record->assignIdentifier($id);
         }
         

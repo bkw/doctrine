@@ -20,8 +20,9 @@
  */
 Doctrine::autoload('Doctrine_Access');
 /**
- * Doctrine_Collection
- * Collection of Doctrine_Record objects.
+ * A Doctrine_Collection represents a collection of record objects.
+ * A collection object is strongly typed in the sense that it can only contain
+ * records of a specific type.
  *
  * @package     Doctrine
  * @subpackage  Collection
@@ -38,6 +39,11 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     protected $data = array();
     
+    /**
+     * The mapper object used to map the records of this collection to the database.
+     *
+     * @var Doctrine_Mapper
+     */
     protected $_mapper;
 
     /**
@@ -72,19 +78,18 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
 
     /**
-     * constructor
+     * Constructor.
+     * Creates a new collection that will hold instances of the type that is
+     * specified through the mapper. That means if the mapper is a mapper for
+     * the entity "User", then the resulting collection will be a collection of
+     * user objects.
      *
-     * @param Doctrine_Table|string $table
+     * @param Doctrine_Mapper|string $mapper   The mapper used by the collection.
+     * @param string $keyColumn                The field name that will be used as the key
+     *                                         in the collection.
      */
     public function __construct($mapper, $keyColumn = null)
     {
-        if ($mapper instanceof Doctrine_Table) {
-            try {
-                throw new Exception();
-            } catch (Exception $e) {
-                echo $e->getTraceAsString();
-            }
-        }
         if (is_string($mapper)) {
             $mapper = Doctrine_Manager::getInstance()->getMapper($mapper);
         }
@@ -124,6 +129,17 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         return $this->_mapper->getTable();
     }
+    
+    /**
+     * getMapper
+     * Returns the mapper of this collection.
+     *
+     * @return Doctrine_Mapper
+     */
+    public function getMapper()
+    {
+        return $this->_mapper;
+    }
 
     /**
      * setData
@@ -137,7 +153,10 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
-     * this method is automatically called when this Doctrine_Collection is serialized
+     * Serializes the collection.
+     * This method is automatically called when this Doctrine_Collection is serialized.
+     *
+     * Part of the implementation of the Serializable interface.
      *
      * @return array
      */
@@ -158,8 +177,10 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
-     * unseralize
-     * this method is automatically called everytime a Doctrine_Collection object is unserialized
+     * Reconstitutes the collection object from it's serialized form.
+     * This method is automatically called everytime a Doctrine_Collection object is unserialized.
+     *
+     * Part of the implementation of the Serializable interface.
      *
      * @return void
      */
@@ -196,7 +217,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     public function setKeyColumn($column)
     {
         $this->keyColumn = $column;
-        
         return $this;
     }
 
@@ -331,6 +351,9 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         return isset($this->data[$key]);
     }
     
+    /**
+     *
+     */
     public function search(Doctrine_Record $record)
     {
         return array_search($record, $this->data, true);
@@ -385,7 +408,9 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
-     * @return array                an array containing all primary keys
+     * Returns the primary keys of all records in the collection.
+     *
+     * @return array   An array containing all primary keys.
      */
     public function getPrimaryKeys()
     {
@@ -412,11 +437,11 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
-     * count
-     * this class implements interface countable
-     * returns the number of records in this collection
+     * Returns the number of records in this collection.
      *
-     * @return integer
+     * Implementation of the Countable interface.
+     *
+     * @return integer  The number of records in the collection.
      */
     public function count()
     {
@@ -455,7 +480,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                 $record->set($this->referenceField, $this->reference, false);
             }
         }
-        /**
+        /*
          * for some weird reason in_array cannot be used here (php bug ?)
          *
          * if used it results in fatal error : [ nesting level too deep ]
@@ -618,7 +643,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     public function takeSnapshot()
     {
         $this->_snapshot = $this->data;
-        
         return $this;
     }
 

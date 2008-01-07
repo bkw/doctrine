@@ -536,7 +536,7 @@ abstract class Doctrine_Query_Abstract
             $joinedTable = $this->_conn->getTable($componentName);
             $joinedAlias = $componentAlias . '.' . $componentName;
             $joinedTableAlias = $this->getSqlTableAlias($joinedAlias, $joinedTable->getTableName());
-            $sql .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($joinedTable->getTableName())
+            $sql .= ' INNER JOIN ' . $this->_conn->quoteIdentifier($joinedTable->getTableName())
                     . ' ' . $this->_conn->quoteIdentifier($joinedTableAlias) . ' ON ';
             
             foreach ($table->getIdentifierColumnNames() as $column) {
@@ -560,7 +560,7 @@ abstract class Doctrine_Query_Abstract
     {
         $array = array();
         foreach ($this->_queryComponents as $componentAlias => $data) {
-            $tableAlias = $this->getSqlTableAlias($componentAlias);
+            $sqlTableAlias = $this->getSqlTableAlias($componentAlias);
             //echo $data['table']->getComponentName() . " -- ";
             /*if (!isset($data['mapper'])) {
                 //echo $data['table']->getComponentName();
@@ -572,7 +572,13 @@ abstract class Doctrine_Query_Abstract
             //echo $data['mapper']->getComponentName() . "_<br />";
             //var_dump($data['mapper']->getDiscriminatorColumn($data['mapper']->getComponentName()));
             
-            $array[$tableAlias][] = $data['mapper']->getDiscriminatorColumn($data['mapper']->getComponentName());
+            $discriminatorColumnDef = $data['mapper']->getCustomQueryCriteria($data['mapper']->getComponentName());
+            /*if (isset($discriminatorColumnDef['component'])) {
+                $sqlTableAlias = $this->getSqlTableAlias($discriminatorColumnDef['component'],
+                        $this->_conn->getTable($discriminatorColumnDef['component'])->getTableName());
+                unset($discriminatorColumnDef['component']);
+            }*/
+            $array[$sqlTableAlias][] = $discriminatorColumnDef;
         }
         //var_dump($array);
         // apply inheritance maps

@@ -9,7 +9,10 @@ class Doctrine_Mapper_SingleTable extends Doctrine_Mapper
         return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
     }
     
-    
+    public function getCustomQueryCriteria($domainClassName)
+    {
+        return $this->getDiscriminatorColumn($domainClassName);
+    }
     
 }
 
