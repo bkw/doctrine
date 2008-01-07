@@ -31,7 +31,7 @@
  * @link        www.phpdoctrine.org
  * @since       1.0
  */
-class Doctrine_Mapper extends Doctrine_Configurable implements Countable
+abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements Countable
 {
     /**
      * @var Doctrine_Table  Metadata container that represents the database table this
@@ -946,16 +946,21 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $this->getRecordListener()->preUpdate($event);
 
         if ( ! $event->skipOperation) {
-            $identifier = $record->identifier();
-            $array = $record->getPrepared();
-            $this->_conn->update($table, $array, $identifier);
-            $record->assignIdentifier(true);
+            $this->_doUpdate($record);
         }
         
         $this->getRecordListener()->postUpdate($event);
         $record->postUpdate($event);
 
         return true;
+    }
+    
+    protected function _doUpdate(Doctrine_Record $record)
+    {
+        $identifier = $record->identifier();
+        $array = $record->getPrepared();
+        $this->_conn->update($this->_table, $array, $identifier);
+        $record->assignIdentifier(true);
     }
     
     /**
@@ -973,7 +978,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $this->getRecordListener()->preInsert($event);
 
         if ( ! $event->skipOperation) {
-            $this->_conn->processSingleInsert($record);
+            $this->_doInsert($record);
         }
         
         // trigger event
@@ -982,6 +987,11 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $record->postInsert($event);
         
         return true;
+    }
+    
+    protected function _doInsert(Doctrine_Record $record)
+    {
+        $this->_conn->processSingleInsert($record);
     }
     
     /**
@@ -1013,28 +1023,7 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $record->state(Doctrine_Record::STATE_LOCKED);
         
         if ( ! $event->skipOperation) {
-            try {
-                $conn->beginInternalTransaction();
-                $this->deleteComposites($record);
-
-                $record->state(Doctrine_Record::STATE_TDIRTY);
-
-                if ($table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
-                    foreach ($table->getOption('joinedParents') as $parent) {
-                        $parentTable = $conn->getTable($parent);
-                        $conn->delete($parentTable, $record->identifier());
-                    }
-                }
-
-                $conn->delete($table, $record->identifier());
-                $record->state(Doctrine_Record::STATE_TCLEAN);
-
-                $this->removeRecord($record);
-                $conn->commit();
-            } catch (Exception $e) {
-                $conn->rollback();
-                throw $e;
-            }
+            $this->_doDelete($record, $conn);
         } else {
             // return to original state   
             $record->state($state);
@@ -1044,6 +1033,26 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
         $record->postDelete($event);
 
         return true;
+    }
+    
+    protected function _doDelete(Doctrine_Record $record, Doctrine_Connection $conn)
+    {
+        try {
+            $conn->beginInternalTransaction();
+            $this->deleteComposites($record);
+
+            $record->state(Doctrine_Record::STATE_TDIRTY);
+
+            $conn->delete($this->_table, $record->identifier());
+            $record->state(Doctrine_Record::STATE_TCLEAN);
+
+            $this->removeRecord($record);
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollback();
+            throw $e;
+        }        
+        
     }
     
     /**
@@ -1075,6 +1084,38 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         return $this->_table;
     }
+
+    public function getFieldName($columnName)
+    {
+        return $this->_table->getFieldName($columnName);
+    }
+    
+    public function getFieldNames()
+    {
+        if ($this->_fieldNames) {
+            return $this->_fieldNames;
+        }
+        $this->_fieldNames = $this->_table->getFieldNames();
+        return $this->_fieldNames;
+    }
+    
+    public function getOwningTable($fieldName)
+    {
+        return $this->_table;
+    }
+    
+    public function getIdentityMap()
+    {
+        return $this->_identityMap;
+    }
+    
+    public function dump()
+    {
+        var_dump($this->_invokedMethods);
+    }
+    
+    
+    /* Hooks used during SQL query construction to manipulate the query. */
     
     public function getCustomJoins()
     {
@@ -1090,40 +1131,4 @@ class Doctrine_Mapper extends Doctrine_Configurable implements Countable
     {
         return array();
     }
-
-    public function getFieldName($columnName)
-    {
-        return $this->_table->getFieldName($columnName);
-    }
-    
-    public function getFieldNames()
-    {
-        if ($this->_fieldNames) {
-            return $this->_fieldNames;
-        }
-        
-        $this->_fieldNames = $this->_table->getFieldNames();
-        return $this->_fieldNames;
-    }
-    
-    public function getOwningTable($fieldName)
-    {
-        return $this->_table;
-    }
-    
-    /*public function free()
-    {
-        unset($this->_table);
-    }*/
-    
-    public function getIdentityMap()
-    {
-        return $this->_identityMap;
-    }
-    
-    public function dump()
-    {
-        var_dump($this->_invokedMethods);
-    }
-    
 }

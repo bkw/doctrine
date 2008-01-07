@@ -1,6 +1,6 @@
 <?php 
 
-class Doctrine_Mapper_Joined extends Doctrine_Mapper
+class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
 {
     protected $_columnNameFieldNameMap = array();
     
@@ -11,7 +11,7 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper
      * @return boolean
      * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
      */
-    public function insert(Doctrine_Record $record)
+    protected function _doInsert(Doctrine_Record $record)
     {
         $table = $this->_table;
                     
@@ -65,39 +65,58 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper
      * @return boolean                  whether or not the update was successful
      * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
      */
-    public function update(Doctrine_Record $record)
+    protected function _doUpdate(Doctrine_Record $record)
     {
-        $event = new Doctrine_Event($record, Doctrine_Event::RECORD_UPDATE);
-        $record->preUpdate($event);
         $table = $this->_table;
-        $this->getRecordListener()->preUpdate($event);
+        $identifier = $record->identifier();                     
+        $dataSet = $this->_formatDataSet($record);
+        $component = $table->getComponentName();
+        $classes = $table->getOption('joinedParents');
+        array_unshift($classes, $component);
 
-        if ( ! $event->skipOperation) {
-            $identifier = $record->identifier();                     
-            $dataSet = $this->_formatDataSet($record);
-            $component = $table->getComponentName();
-            $classes = $table->getOption('joinedParents');
-            array_unshift($classes, $component);
-
-            foreach ($record as $field => $value) {
-                if ($value instanceof Doctrine_Record) {
-                    if ( ! $value->exists()) {
-                        $value->save();
-                    }
-                    $record->set($field, $value->getIncremented());
+        foreach ($record as $field => $value) {
+            if ($value instanceof Doctrine_Record) {
+                if ( ! $value->exists()) {
+                    $value->save();
                 }
+                $record->set($field, $value->getIncremented());
             }
+        }
 
-            foreach (array_reverse($classes) as $class) {
-                $parentTable = $this->_conn->getTable($class);
-                $this->_conn->update($parentTable, $dataSet[$class], $identifier);
-            }
-            
-            $record->assignIdentifier(true);
+        foreach (array_reverse($classes) as $class) {
+            $parentTable = $this->_conn->getTable($class);
+            $this->_conn->update($parentTable, $dataSet[$class], $identifier);
         }
         
-        $this->getRecordListener()->postUpdate($event);
-        $record->postUpdate($event);
+        $record->assignIdentifier(true);
+
+        return true;
+    }
+    
+
+    protected function _doDelete(Doctrine_Record $record, Doctrine_Connection $conn)
+    {
+        try {
+            $table = $this->_table;
+            $conn->beginInternalTransaction();
+            $this->deleteComposites($record);
+
+            $record->state(Doctrine_Record::STATE_TDIRTY);
+
+            foreach ($table->getOption('joinedParents') as $parent) {
+                $parentTable = $conn->getTable($parent);
+                $conn->delete($parentTable, $record->identifier());
+            }
+
+            $conn->delete($table, $record->identifier());
+            $record->state(Doctrine_Record::STATE_TCLEAN);
+
+            $this->removeRecord($record);
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollback();
+            throw $e;
+        }
 
         return true;
     }

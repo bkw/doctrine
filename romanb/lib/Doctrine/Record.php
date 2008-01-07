@@ -155,18 +155,10 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             //$this->_mapper = Doctrine_Manager::getInstance()->getMapper(get_class($this));
             $exists = ! $isNewEntry;
             return;
-        } else if (isset($mapper) && $mapper instanceof Doctrine_Mapper) {
+        } else if (isset($mapper) && $mapper instanceof Doctrine_Mapper_Abstract) {
             //echo "two<br />";
             $class = get_class($this);
             $this->_mapper = Doctrine_Manager::getInstance()->getMapper($class);
-            if ($class != $this->_mapper->getComponentName()) {
-                try {
-                    throw new Exception("ddd");
-                } catch (Exception $e) {
-                    echo "MISMATCH: " . get_class($this) . "---" . $mapper->getComponentName();
-                    echo $e->getTraceAsString() . "<br /><br />";
-                }
-            }
             $this->_table = $this->_mapper->getTable();
             $exists = ! $isNewEntry;
         } else {

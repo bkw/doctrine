@@ -561,24 +561,7 @@ abstract class Doctrine_Query_Abstract
         $array = array();
         foreach ($this->_queryComponents as $componentAlias => $data) {
             $sqlTableAlias = $this->getSqlTableAlias($componentAlias);
-            //echo $data['table']->getComponentName() . " -- ";
-            /*if (!isset($data['mapper'])) {
-                //echo $data['table']->getComponentName();
-                echo $this->getDql();
-            }*/
-            /*if ($data['mapper']->getComponentName() != $data['table']->getComponentName()) {
-                //echo $this->getDql() . "<br />";
-            }*/
-            //echo $data['mapper']->getComponentName() . "_<br />";
-            //var_dump($data['mapper']->getDiscriminatorColumn($data['mapper']->getComponentName()));
-            
-            $discriminatorColumnDef = $data['mapper']->getCustomQueryCriteria($data['mapper']->getComponentName());
-            /*if (isset($discriminatorColumnDef['component'])) {
-                $sqlTableAlias = $this->getSqlTableAlias($discriminatorColumnDef['component'],
-                        $this->_conn->getTable($discriminatorColumnDef['component'])->getTableName());
-                unset($discriminatorColumnDef['component']);
-            }*/
-            $array[$sqlTableAlias][] = $discriminatorColumnDef;
+            $array[$sqlTableAlias][] = $data['mapper']->getCustomQueryCriteria($data['mapper']->getComponentName());
         }
         //var_dump($array);
         // apply inheritance maps

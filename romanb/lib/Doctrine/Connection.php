@@ -1091,7 +1091,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         
         $customMapperClass = $className . 'Mapper';
         if (class_exists($customMapperClass, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
-                in_array('Doctrine_Mapper', class_parents($customMapperClass))) {
+                in_array('Doctrine_Mapper_Abstract', class_parents($customMapperClass))) {
             $table = $this->getTable($className);
             $mapper = new $customMapperClass($className, $this);
         } else {
