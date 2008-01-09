@@ -589,11 +589,11 @@ END;
             $ret[$i] = "    ".'$this->setInheritanceMap(array(\''.$options['inheritance']['keyField'].'\' => \''.$options['inheritance']['keyValue'].'\'));';
         }
         
+        $i++;
         $ret[$i] = $this->buildTemplates($templates);
-        $i++;
         
-        $ret[$i] = $this->buildActAs($actAs);
         $i++;
+        $ret[$i] = $this->buildActAs($actAs);
         
         $code = implode("\n", $ret);
         $code = trim($code);
