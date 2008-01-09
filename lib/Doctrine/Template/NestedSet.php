@@ -39,6 +39,11 @@ class Doctrine_Template_NestedSet extends Doctrine_Template
         $this->_options = $options;
     }
     
+    public function setTableDefinition()
+    {
+        $this->_table->getTree()->setTableDefinition();
+    }
+    
     public function setUp()
     {
         $this->_table->setOption('treeOptions', $this->_options);
