@@ -414,7 +414,7 @@ class Doctrine_DataDict_Pgsql extends Doctrine_DataDict
                 return 'TIMESTAMP without time zone';
             case 'float':
             case 'double':
-                return 'FLOAT8';
+                return 'FLOAT';
             case 'decimal':
                 $length = !empty($field['length']) ? $field['length'] : 18;
                 $scale = !empty($field['scale']) ? $field['scale'] : $this->conn->getAttribute(Doctrine::ATTR_DECIMAL_PLACES);
@@ -509,6 +509,7 @@ class Doctrine_DataDict_Pgsql extends Doctrine_DataDict
                 break;
             case 'datetime':
             case 'timestamp':
+            case 'timestamptz':
                 $type[] = 'timestamp';
                 $length = null;
                 break;
@@ -519,6 +520,7 @@ class Doctrine_DataDict_Pgsql extends Doctrine_DataDict
             case 'float':
             case 'float4':
             case 'double':
+            case 'double precision':
             case 'real':
                 $type[] = 'float';
                 break;

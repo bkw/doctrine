@@ -86,7 +86,7 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($type, array('type' => array('blob', 'clob'),
                                         'length' => null, 
-                                        'unsigned' => null, 
+                                        'unsigned' => null,
                                         'fixed' => null));
     }
     public function testGetPortableDeclarationSupportsNativeTimestampTypes()
@@ -274,7 +274,7 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'float', 'length' => 20, 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'FLOAT8');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'FLOAT');
     }
     public function testGetNativeDefinitionSupportsBooleanType()
     {
