@@ -234,6 +234,7 @@ $test->addTestCase(new Doctrine_Template_TestCase());
 //$test->addTestCase(new Doctrine_IntegrityAction_TestCase());
 
 $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
+$test->addTestCase(new Doctrine_NestedSet_LoadInSetUp_TestCase());
 
 // Search tests
 $search = new GroupTest('Search tests','search');
