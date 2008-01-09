@@ -31,7 +31,8 @@
  * @link        www.phpdoctrine.org
  * @since       1.0
  */
-abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements Countable
+abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
+        implements Countable
 {
     /**
      * @var Doctrine_Table  Metadata container that represents the database table this
@@ -48,13 +49,6 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * The names of all the fields that are available on entities created by this mapper. 
      */
     protected $_fieldNames = array();
-    
-    /**
-     * Temporary data which is then loaded into Doctrine_Record::$_data.
-     *
-     * @var array $data
-     */
-    protected $_data = array();
 
     /**
      * The Doctrine_Connection object that the database connection of this mapper.
@@ -372,10 +366,9 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      *
      * @return Doctrine_Record
      */
-    public function getRecord()
+    public function getRecord(array $data)
     {
-        if ( ! empty($this->_data)) {
-
+        if ( ! empty($data)) {
             $identifierFieldNames = $this->_table->getIdentifier();
 
             if ( ! is_array($identifierFieldNames)) {
@@ -384,18 +377,19 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
 
             $found = false;
             foreach ($identifierFieldNames as $fieldName) {
-                if ( ! isset($this->_data[$fieldName])) {
+                if ( ! isset($data[$fieldName])) {
                     // primary key column not found return new record
                     $found = true;
                     break;
                 }
-                $id[] = $this->_data[$fieldName];
+                $id[] = $data[$fieldName];
             }
 
             if ($found) {
-                $recordName = $this->getClassnameToReturn();
-                $record = new $recordName($this, true);
-                $this->_data = array();
+                //$recordName = $this->getClassnameToReturn();
+                //$record = new $recordName($this, true);
+                $record = new $this->_domainClassName($this, true, $data);
+                $data = array();
                 return $record;
             }
 
@@ -404,16 +398,18 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
 
             if (isset($this->_identityMap[$id])) {
                 $record = $this->_identityMap[$id];
-                $record->hydrate($this->_data);
+                $record->hydrate($data);
             } else {
-                $recordName = $this->getClassnameToReturn();
-                $record = new $recordName($this);
+                //$recordName = $this->getClassnameToReturn();
+                //$record = new $recordName($this);
+                $record = new $this->_domainClassName($this, false, $data);
                 $this->_identityMap[$id] = $record;
             }
-            $this->_data = array();
+            $data = array();
         } else {
-            $recordName = $this->getClassnameToReturn();
-            $record = new $recordName($this, true);
+            //$recordName = $this->getClassnameToReturn();
+            //$record = new $recordName($this, true);
+            $record = new $this->_domainClassName($this, true, $data);
         }
 
         return $record;
@@ -435,7 +431,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * @return string The name of the class to create
      *
      */
-    public function getClassnameToReturn()
+    /*public function getClassnameToReturn()
     {
         $subClasses = $this->_table->getOption('subclasses');
         if ( ! isset($subClasses)) {
@@ -457,7 +453,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
             }
         }
         return $this->_domainClassName;
-    }
+    }*/
 
     /**
      * @param $id                       database row id
@@ -472,15 +468,15 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                 . ' WHERE ' . implode(' = ? && ', $identifierColumnNames) . ' = ?';
             $query = $this->applyInheritance($query);
 
-            $params = array_merge(array($id), array_values($this->getDiscriminatorColumn($this->_domainClassName)));
+            $params = array_merge(array($id), array_values($this->getDiscriminatorColumn()));
 
-            $this->_data = $this->_conn->execute($query, $params)->fetch(PDO::FETCH_ASSOC);
+            $data = $this->_conn->execute($query, $params)->fetch(PDO::FETCH_ASSOC);
 
-            if ($this->_data === false) {
+            if ($data === false) {
                 return false;
             }
         }
-        return $this->getRecord();
+        return $this->getRecord($data);
     }
 
     /**
@@ -490,7 +486,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      */
     final public function applyInheritance($where)
     {
-        $inheritanceMap = $this->getDiscriminatorColumn($this->_domainClassName);
+        $inheritanceMap = $this->getDiscriminatorColumn();
         if ( ! empty($inheritanceMap)) {
             $a = array();
             foreach ($inheritanceMap as $field => $value) {
@@ -521,30 +517,6 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         $graph = new Doctrine_Query($this->getConnection());
         $graph->load($this->getComponentName());
         return $graph;
-    }
-
-    /**
-     * setData
-     * doctrine uses this function internally
-     * users are strongly discouraged to use this function
-     *
-     * @param array $data               internal data
-     * @return void
-     */
-    public function setData(array $data)
-    {
-        $this->_data = $data;
-    }
-
-    /**
-     * returns internal data, used by Doctrine_Record instances
-     * when retrieving data from database
-     *
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->_data;
     }
 
     /**
@@ -730,7 +702,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     /**
      *
      */
-    public function saveGraph(Doctrine_Record $record, Doctrine_Connection $conn = null)
+    public function save(Doctrine_Record $record, Doctrine_Connection $conn = null)
     {
         if ($this->_domainClassName != get_class($record)) {
             echo "mismatch: " . $this->_domainClassName . " <-> " . get_class($record) . "<br />";
@@ -798,9 +770,8 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
 
             // save the MANY-TO-MANY associations
             $this->saveAssociations($record);
-
+            // reset state
             $record->state($state);
-            
             $conn->commit();
         } catch (Exception $e) {
             // save() calls can be nested recursively and exceptions bubble up, so check
@@ -816,13 +787,63 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     }
     
     /**
+     * Inserts a single entity into the database, without any related entities.
+     *
+     * @param Doctrine_Record $record   The entity to insert.
+     */
+    protected function insertSingleRecord(Doctrine_Record $record)
+    {
+        $fields = $record->getPrepared();
+        if (empty($fields)) {
+            return false;
+        }
+        
+        $table = $record->getTable();
+        $identifier = (array) $table->getIdentifier();
+
+        $seq = $table->getOption('sequenceName');
+        if ( ! empty($seq)) {
+            $id = $this->_conn->sequence->nextId($seq);
+            $seqName = $table->getIdentifier();
+            $fields[$seqName] = $id;
+            $record->assignIdentifier($id);
+        }
+        
+        $this->_conn->insert($table, $fields);
+
+        if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
+                $table->getIdentifierType() != Doctrine::IDENTIFIER_NATURAL) {
+
+            if (strtolower($this->getName()) == 'pgsql') {
+                $seq = $table->getTableName() . '_' . $identifier[0];
+            }
+
+            $id = $this->_conn->sequence->lastInsertId($seq);
+
+            if ( ! $id) {
+                throw new Doctrine_Connection_Exception("Couldn't get last insert identifier.");
+            }
+
+            $record->assignIdentifier($id);
+        } else {
+            $record->assignIdentifier(true);
+        }
+    }
+    
+    protected function _fireEvent($type, $callback, $invoker)
+    {
+        
+    }
+    
+    /**
      * saves the given record
      *
      * @param Doctrine_Record $record
      * @return void
      */
-    public function save(Doctrine_Record $record)
+    public function saveSingleRecord(Doctrine_Record $record)
     {
+        //$this->_fireEvent(Doctrine_Event::RECORD_SAVE, 'preSave', $record);
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_SAVE);
         $record->preSave($event);
         $this->getRecordListener()->preSave($event);
@@ -925,7 +946,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                     $assocRecord->set($assocTable->getFieldName($rel->getForeign()), $r);
                     $assocRecord->set($assocTable->getFieldName($rel->getLocal()), $record);
 
-                    $this->save($assocRecord);
+                    $this->saveSingleRecord($assocRecord);
                 }
             }
         }
@@ -968,7 +989,6 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      *
      * @param Doctrine_Record $record   record to be inserted
      * @return boolean
-     * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
      */
     public function insert(Doctrine_Record $record)
     {
@@ -991,7 +1011,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     
     protected function _doInsert(Doctrine_Record $record)
     {
-        $this->_conn->processSingleInsert($record);
+        $this->insertSingleRecord($record);
     }
     
     /**
@@ -1115,6 +1135,16 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     }
     
     
+    /*public function addToWhere($componentAlias, array &$sqlWhereParts, Doctrine_Query $query)
+    {
+        
+    }
+    
+    public function addToFrom($sqlString, Doctrine_Query $query)
+    {
+        
+    }*/
+    
     /* Hooks used during SQL query construction to manipulate the query. */
     
     public function getCustomJoins()
@@ -1122,12 +1152,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         return array();
     }
     
-    public function getDiscriminatorColumn($domainClassName)
-    {
-        return array();
-    }
-    
-    public function getCustomQueryCriteria($domainClassName)
+    public function getDiscriminatorColumn()
     {
         return array();
     }

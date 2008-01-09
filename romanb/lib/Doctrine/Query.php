@@ -1153,7 +1153,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
         }
 
         // append discriminator column conditions (if any)
-        $string = $this->_createDiscriminatorSql();
+        $string = $this->_createDiscriminatorConditionSql();
+        //echo "orig:$string<br /><br />";
         if ( ! empty($string)) {
             if (substr($string, 0, 1) === '(' && substr($string, -1) === ')') {
                 $this->_sqlParts['where'][] = $string;
@@ -1479,23 +1480,21 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                 $componentAlias = $prevPath;
             }
 
-            // if the current alias already exists, skip it
+            // if the current alias already exists, it's user error
             if (isset($this->_queryComponents[$componentAlias])) {
-                continue;
+                throw new Doctrine_Query_Exception("Duplicate alias '$componentAlias' in query.");
             }
 
             if ( ! isset($table)) {
                 // process the root of the path
-
                 $table = $this->loadRoot($name, $componentAlias);
             } else {
                 $join = ($delimeter == ':') ? 'INNER JOIN ' : 'LEFT JOIN ';
-                //echo "!!!!!!" . $prevPath . "!!!!!<br />";
                 $relation = $table->getRelation($name);
                 $localTable = $table;
 
-                $table    = $relation->getTable();
-                //echo "<br /><br />" . $table->getComponentName() . "------" . $relation->getForeignComponentName() . "<br /><br />";
+                $table = $relation->getTable();
+                //echo "<br /><br />" . $table->getComponentName() . "------" . $relation->getForeignComponentName() . "<br /><br />";                
                 $this->_queryComponents[$componentAlias] = array(
                         'table'    => $table,
                         'mapper'   => $this->_conn->getMapper($relation->getForeignComponentName()),
@@ -1533,7 +1532,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     }
 
                     $assocPath = $prevPath . '.' . $asf->getComponentName();
-                    //var_dump($name); echo "hrrrr";
                     //echo "<br /><br />" . $asf->getComponentName() . "---2---" . $relation->getForeignComponentName() . "<br /><br />";
                     $this->_queryComponents[$assocPath] = array(
                             'parent' => $prevPath,
@@ -1589,7 +1587,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                         }
                     }
                 } else {
-
                     $queryPart = $join . $foreignSql;
 
                     if ( ! $overrideJoin) {
@@ -1608,7 +1605,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                 }
             }
             if ($loadFields) {
-
                 $restoreState = false;
                 // load fields if necessary
                 if ($loadFields && empty($this->_dqlParts['select'])) {
@@ -1629,8 +1625,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             if (isset($e[1])) {
                 $indexBy = $e[1];
             }
-        } else if ($mapper->getBoundQueryPart('indexBy') !== null) {
-            $indexBy = $mapper->getBoundQueryPart('indexBy');
+        } else if ($table->getBoundQueryPart('indexBy') !== null) {
+            $indexBy = $table->getBoundQueryPart('indexBy');
         }
 
         if ($indexBy !== null) {
@@ -1730,7 +1726,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
         $q .= ' FROM ' . $this->_buildSqlFromPart();
 
         // append discriminator column conditions (if any)
-        $string = $this->_createDiscriminatorSql();
+        $string = $this->_createDiscriminatorConditionSql();
         if ( ! empty($string)) {
             $where[] = $string;
         }

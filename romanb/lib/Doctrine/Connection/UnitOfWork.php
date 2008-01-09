@@ -556,22 +556,19 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
         //echo "<br /><br />flushin all.<br /><br />";
         // get the flush tree
         $tree = $this->buildFlushTree($this->conn->getMappers());
-        //foreach ($tree as $name) echo $name . "<br />";
 
         // save all records
         foreach ($tree as $name) {
             $mapper = $this->conn->getMapper($name);
-
             foreach ($mapper->getRepository() as $record) {
                 //echo $record->getOid() . "<br />";
-                $mapper->save($record);
+                $mapper->saveSingleRecord($record);
             }
         }
 
         // save all associations
         foreach ($tree as $name) {
             $mapper = $this->conn->getMapper($name);
-
             foreach ($mapper->getRepository() as $record) {
                 $mapper->saveAssociations($record);
             }

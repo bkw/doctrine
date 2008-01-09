@@ -556,12 +556,16 @@ abstract class Doctrine_Query_Abstract
      *
      * @return string  The created SQL snippet.
      */
-    protected function _createDiscriminatorSql()
-    {
+    protected function _createDiscriminatorConditionSql()
+    {        
         $array = array();
         foreach ($this->_queryComponents as $componentAlias => $data) {
             $sqlTableAlias = $this->getSqlTableAlias($componentAlias);
-            $array[$sqlTableAlias][] = $data['mapper']->getCustomQueryCriteria($data['mapper']->getComponentName());
+            if ( ! $data['mapper'] instanceof Doctrine_Mapper_SingleTable) {
+                $array[$sqlTableAlias][] = array();
+            } else {
+                $array[$sqlTableAlias][] = $data['mapper']->getDiscriminatorColumn();
+            }
         }
         //var_dump($array);
         // apply inheritance maps
@@ -1507,7 +1511,7 @@ abstract class Doctrine_Query_Abstract
     {
         return $this->_sqlParts;
     }
-    
+
     /**
      * getType
      *

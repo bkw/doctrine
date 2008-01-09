@@ -133,7 +133,7 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
     /**
      *
      */
-    public function getDiscriminatorColumn($domainClassName)
+    public function getDiscriminatorColumn()
     {
         $joinedParents = $this->_table->getOption('joinedParents');
         if (count($joinedParents) <= 0) {
@@ -141,7 +141,7 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         } else {
             $inheritanceMap = $this->_conn->getTable(array_pop($joinedParents))->getOption('inheritanceMap');
         }
-        return isset($inheritanceMap[$domainClassName]) ? $inheritanceMap[$domainClassName] : array();
+        return isset($inheritanceMap[$this->_domainClassName]) ? $inheritanceMap[$this->_domainClassName] : array();
     }
     
     /**

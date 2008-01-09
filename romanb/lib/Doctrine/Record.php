@@ -146,7 +146,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      *                                         open connections
      * @throws Doctrine_Record_Exception       if the cleanData operation fails somehow
      */
-    public function __construct($mapper = null, $isNewEntry = false)
+    public function __construct($mapper = null, $isNewEntry = false, array $data = array())
     {
         //echo get_class($this) . "<br />";
         if (isset($mapper) && $mapper instanceof Doctrine_Table) {
@@ -174,7 +174,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         self::$_index++;
 
         // get the data array
-        $this->_data = $this->_mapper->getData();
+        $this->_data = $data;
 
         // get the column count
         $count = count($this->_data);
@@ -194,7 +194,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $this->assignDefaultValues();
         } else {
             $this->_state = Doctrine_Record::STATE_CLEAN;
-
+            // @TODO table->getColumnCount is not correct in CTI
             if ($count < $this->_table->getColumnCount()) {
                 $this->_state  = Doctrine_Record::STATE_PROXY;
             }
@@ -205,7 +205,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $repository->add($this);
 
         $this->construct();
-
     }
 
     /**
@@ -245,11 +244,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * @return integer
      */
     public function getOid()
-    {
-        return $this->_oid;
-    }
-    
-    public function oid()
     {
         return $this->_oid;
     }
@@ -526,22 +520,22 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     }
 
     /**
-     * serialize
-     * this method is automatically called when this Doctrine_Record is serialized
+     * Serializes the entity.
+     * This method is automatically called when the entity is serialized.
+     *
+     * Part of the implementation of the Serializable interface.
      *
      * @return array
      */
     public function serialize()
     {
         $event = new Doctrine_Event($this, Doctrine_Event::RECORD_SERIALIZE);
-
         $this->preSerialize($event);
 
         $vars = get_object_vars($this);
 
         unset($vars['_references']);
         unset($vars['_mapper']);
-        //unset($vars['_table']);
         unset($vars['_errorStack']);
         unset($vars['_filter']);
         unset($vars['_node']);
@@ -578,8 +572,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     }
 
     /**
-     * unseralize
-     * this method is automatically called everytime a Doctrine_Record object is unserialized
+     * Reconstructs the entity from it's serialized form.
+     * This method is automatically called everytime the entity is unserialized.
      *
      * @param string $serialized                Doctrine_Record as serialized string
      * @throws Doctrine_Record_Exception        if the cleanData operation fails somehow
@@ -626,6 +620,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $this->_mapper->getRepository()->add($this);
         $this->cleanData($this->_data);
         $this->prepareIdentifiers($this->exists());
+        
         $this->postUnserialize($event);
     }
 
@@ -668,7 +663,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
 
         if ($err) {
-            throw new Doctrine_Record_Exception('Unknown record state ' . $state);
+            throw new Doctrine_Record_Exception("Unknown record state '$state'.");
         }
     }
 
@@ -855,12 +850,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             if ( ! isset($this->_references[$fieldName]) && $load) {
                 $rel = $this->_table->getRelation($fieldName);
                 $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
-                /*if (count($this->_references[$fieldName]) > 0) {
-                    echo $this->_references[$fieldName][0]->state() . "<br />";
-                }*/
             }
             return $this->_references[$fieldName];
-
         } catch (Doctrine_Table_Exception $e) {
             //echo $e->getTraceAsString();
             //echo "<br /><br />";
@@ -929,12 +920,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 $this->_modified[] = $fieldName;
                 switch ($this->_state) {
                     case Doctrine_Record::STATE_CLEAN:
-                        /*try {
-                            throw new Exception();
-                        } catch (Exception $e) {
-                            echo $e->getTraceAsString() . "<br /><br />";
-                        }
-                        echo "setting dirty ... <br />";*/
                         $this->_state = Doctrine_Record::STATE_DIRTY;
                         break;
                     case Doctrine_Record::STATE_TCLEAN:
@@ -996,7 +981,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                     }
                 }
             }
-
         } else if ($rel instanceof Doctrine_Relation_Association) {
             // join table relation found
             if ( ! ($value instanceof Doctrine_Collection)) {
@@ -1062,7 +1046,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function save(Doctrine_Connection $conn = null)
     {
-        $this->_mapper->saveGraph($this, $conn);
+        $this->_mapper->save($this, $conn);
     }
 
     /**
@@ -1201,7 +1185,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
         }
         //$map = $this->_table->getOption('inheritanceMap');
-        $map = $this->_mapper->getDiscriminatorColumn($this->_domainClassName);
+        $map = $this->_mapper->getDiscriminatorColumn();
         foreach ($map as $k => $v) {
             $old = $this->get($k, false);
             if ((string) $old !== (string) $v || $old === null) {

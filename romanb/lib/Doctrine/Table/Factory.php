@@ -203,8 +203,6 @@ class Doctrine_Table_Factory
         if ($table->isTree()) {
             $table->getTree()->setTableDefinition();
         }
-
-        $table->setColumnCount(count($table->getColumns()));
         
         $tableName = $table->getOption('tableName');
         if ( ! isset($tableName)) {
@@ -304,8 +302,6 @@ class Doctrine_Table_Factory
                     $table->setIdentifier('id');
                     $table->setIdentifierType(Doctrine::IDENTIFIER_AUTOINC);
                 }
-                $currentCount = $table->getColumnCount();
-                $table->setColumnCount(++$currentCount);
                 break;
             case 1:
                 foreach ($table->getIdentifier() as $pk) {
