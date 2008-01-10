@@ -66,7 +66,8 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
     /**
      * @var array $params                       query input parameters
      */
-    protected $_params      = array('where' => array(),
+    protected $_params      = array('join' => array(),
+                                    'where' => array(),
                                     'set' => array(),
                                     'having' => array());
 
@@ -733,7 +734,7 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
      */
     public function getParams()
     {
-        return array_merge($this->_params['set'], $this->_params['where'], $this->_params['having']);
+        return array_merge($this->_params['join'], $this->_params['set'], $this->_params['where'], $this->_params['having']);
     }
 
     /**
@@ -833,10 +834,8 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
      */
     public function execute($params = array(), $hydrationMode = null)
     {
-        $params = array_merge($this->_params['set'], 
-                              $this->_params['where'],
-                              $this->_params['having'], 
-                              $params);
+        $params = array_merge($this->getParams(), $params);
+
         if ($this->_cache) {
             $cacheDriver = $this->getCacheDriver();
 

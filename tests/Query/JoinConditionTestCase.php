@@ -34,8 +34,12 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() 
     { }
+
+
     public function prepareTables() 
     { }
+
+
     public function testJoinConditionsAreSupportedForOneToManyLeftJoins()
     {
         $q = new Doctrine_Query();
@@ -44,6 +48,8 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON p.phonenumber = '123 123' WHERE (e.type = 0)");
     }
+
+
     public function testJoinConditionsAreSupportedForOneToManyInnerJoins()
     {
         $q = new Doctrine_Query();
@@ -52,6 +58,8 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e INNER JOIN phonenumber p ON p.phonenumber = '123 123' WHERE (e.type = 0)");
     }
+
+
     public function testJoinConditionsAreSupportedForManyToManyLeftJoins()
     {
         $q = new Doctrine_Query();
@@ -60,6 +68,8 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, e2.id AS e2__id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id > 2 WHERE (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))");
     }
+
+
     public function testJoinConditionsAreSupportedForManyToManyInnerJoins()
     {
         $q = new Doctrine_Query();

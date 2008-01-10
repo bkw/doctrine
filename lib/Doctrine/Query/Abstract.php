@@ -256,10 +256,17 @@ abstract class Doctrine_Query_Abstract extends Doctrine_Hydrate
      * appends an INNER JOIN to the FROM part of the query
      *
      * @param string $join         Query INNER JOIN
+     * @param array $params        Optional parameters for join clause
      * @return Doctrine_Query
      */
-    public function innerJoin($join)
+    public function innerJoin($join, $params = array())
     {
+        if (is_array($params)) {
+            $this->_params['join'] = array_merge($this->_params['join'], $params);
+        } else {
+            $this->_params['join'][] = $params;
+        }
+
         return $this->parseQueryPart('from', 'INNER JOIN ' . $join, true);
     }
 
@@ -268,10 +275,17 @@ abstract class Doctrine_Query_Abstract extends Doctrine_Hydrate
      * appends a LEFT JOIN to the FROM part of the query
      *
      * @param string $join         Query LEFT JOIN
+     * @param array $params        Optional parameters for join clause
      * @return Doctrine_Query
      */
-    public function leftJoin($join)
+    public function leftJoin($join, $params = array())
     {
+        if (is_array($params)) {
+            $this->_params['join'] = array_merge($this->_params['join'], $params);
+        } else {
+            $this->_params['join'][] = $params;
+        }
+
         return $this->parseQueryPart('from', 'LEFT JOIN ' . $join, true);
     }
 
