@@ -14,6 +14,7 @@ $tickets = new GroupTest('Tickets tests', 'tickets');
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_428_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_587_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_642_TestCase());
 //If you write a ticket testcase add it here like shown above!
 $test->addTestCase($tickets);
 
