@@ -54,20 +54,21 @@ class Doctrine_Query_JoinCondition2_TestCase extends Doctrine_UnitTestCase
 
         $groups->save();
 
-        $zYne = Doctrine_Query::create()->from('User u')->where('u.id = ?', 4)->fetchOne();
+        $zYne = Doctrine_Query::create()->from('User u')->where('u.name = ?', 'zYne')->fetchOne();
         $zYne->Group[0] = $groups[0];
         $zYne->Group[1] = $groups[1];
         $zYne->save();
     }
 
-
-    public function testJoinCondifitionsRawLeftJoins()
+    public function testJoinConditionsArgumentsLeftJoins()
     {
         $q = new Doctrine_Query($this->connection);
 
-        $q->select('u.id')->from('User u')->leftJoin('u.Group g WITH g.id = 12')->where('u.id = 4');
+        $q->select('u.id, g.id')->from('User u')->leftJoin('u.Group g WITH g.name = ?', 'Developers')->where('u.name = ?', 'zYne');
 
-	$this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.id = 12 WHERE e.id = 4 AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))');
+	    $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e2.id AS e2__id FROM entity e"
+	            . " LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id"
+	            . " AND e2.name = ? WHERE e.name = ? AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))");
 
         $rs = $q->execute();
 
@@ -86,69 +87,16 @@ class Doctrine_Query_JoinCondition2_TestCase extends Doctrine_UnitTestCase
         // Should return 0 (no more queries executed)
         $this->assertEqual($bug, 0);
     }
-
-
-    public function testJoinCondifitionsArgumentsLeftJoins()
-    {
-        $q = new Doctrine_Query($this->connection);
-
-        $q->select('u.id')->from('User u')->leftJoin('u.Group g WITH g.id = ?', 12)->where('u.id = ?', 4);
-
-	$this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.id = ? WHERE e.id = ? AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))');
-
-        $rs = $q->execute();
-
-        // Should only find zYne
-        $this->assertEqual($rs->count(), 1);
-
-        // Grab the number of runned queries
-        $queryCount = $this->connection->count();
-
-        // Only one Group fetched for zYne
-        $this->assertEqual($rs[0]->Group->count(), 1);
-
-        // Check if it executed any other query
-        $bug = ($this->connection->count() - $queryCount);
-
-        // Should return 0 (no more queries executed)
-        $this->assertEqual($bug, 0);
-    }
-
-
-    public function testJoinCondifitionsRawInnerJoins()
-    {
-        $q = new Doctrine_Query($this->connection);
-
-        $q->select('u.id')->from('User u')->innerJoin('u.Group g WITH g.id = 12')->where('u.id = 4');
-
-	$this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id FROM entity e INNER JOIN groupuser g ON e.id = g.user_id INNER JOIN entity e2 ON e2.id = g.group_id AND e2.id = 12 WHERE e.id = 4 AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))');
-
-        $rs = $q->execute();
-
-        // Should only find zYne
-        $this->assertEqual($rs->count(), 1);
-
-        // Grab the number of runned queries
-        $queryCount = $this->connection->count();
-
-        // Only one Group fetched for zYne
-        $this->assertEqual($rs[0]->Group->count(), 1);
-
-        // Check if it executed any other query
-        $bug = ($this->connection->count() - $queryCount);
-
-        // Should return 0 (no more queries executed)
-        $this->assertEqual($bug, 0);
-    }
-
 
     public function testJoinCondifitionsArgumentsInnerJoins()
     {
         $q = new Doctrine_Query($this->connection);
 
-        $q->select('u.id')->from('User u')->innerJoin('u.Group g WITH g.id = ?', 12)->where('u.id = ?', 4);
+        $q->select('u.id, g.id')->from('User u')->innerJoin('u.Group g WITH g.name = ?', 'Developers')->where('u.name = ?', 'zYne');
 
-	$this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id FROM entity e INNER JOIN groupuser g ON e.id = g.user_id INNER JOIN entity e2 ON e2.id = g.group_id AND e2.id = ? WHERE e.id = ? AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))');
+	    $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e2.id AS e2__id FROM entity e"
+	            . " INNER JOIN groupuser g ON e.id = g.user_id INNER JOIN entity e2 ON e2.id = g.group_id"
+	            . " AND e2.name = ? WHERE e.name = ? AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL))");
 
         $rs = $q->execute();
 
