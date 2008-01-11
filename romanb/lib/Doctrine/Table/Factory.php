@@ -200,9 +200,9 @@ class Doctrine_Table_Factory
         $table->setOption('declaringClass', $class);
 
         // set the table definition for the given tree implementation
-        if ($table->isTree()) {
+        /*if ($table->isTree()) {
             $table->getTree()->setTableDefinition();
-        }
+        }*/
         
         $tableName = $table->getOption('tableName');
         if ( ! isset($tableName)) {
@@ -215,9 +215,9 @@ class Doctrine_Table_Factory
         $record->setUp();
         
         // if tree, set up tree relations
-        if ($table->isTree()) {
+        /*if ($table->isTree()) {
             $table->getTree()->setUp();
-        }
+        }*/
         
         return $table;
     }

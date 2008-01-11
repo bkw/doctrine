@@ -700,12 +700,18 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
     }
     
     /**
+     * Saves an entity and all it's related entities.
      *
+     * @param Doctrine_Record $record    The entity to save.
+     * @param Doctrine_Connection $conn  The connection to use. Will default to the mapper's
+     *                                   connection.
+     * @throws Doctrine_Mapper_Exception If the mapper is unable to save the given record.
      */
     public function save(Doctrine_Record $record, Doctrine_Connection $conn = null)
     {
-        if ($this->_domainClassName != get_class($record)) {
-            echo "mismatch: " . $this->_domainClassName . " <-> " . get_class($record) . "<br />";
+        if ( ! ($record instanceof $this->_domainClassName)) {
+            throw new Doctrine_Mapper_Exception("Mapper of type " . $this->_domainClassName . " 
+                    can't save instances of type" . get_class($record) . ".");
         }
         
         if ($conn === null) {
@@ -959,7 +965,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
      * @return boolean                  whether or not the update was successful
      * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
      */
-    public function update(Doctrine_Record $record)
+    protected function update(Doctrine_Record $record)
     {
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_UPDATE);
         $record->preUpdate($event);
@@ -990,8 +996,8 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
      * @param Doctrine_Record $record   record to be inserted
      * @return boolean
      */
-    public function insert(Doctrine_Record $record)
-    {
+    protected function insert(Doctrine_Record $record)
+    {        
         // trigger event
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_INSERT);
         $record->preInsert($event);
@@ -1027,6 +1033,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
     {
         if ( ! $record->exists()) {
             return false;
+        }
+        
+        if ( ! ($record instanceof $this->_domainClassName)) {
+            throw new Doctrine_Mapper_Exception("Mapper of type " . $this->_domainClassName . " 
+                    can't save instances of type" . get_class($record) . ".");
         }
         
         if ($conn == null) {
@@ -1148,6 +1159,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
     /* Hooks used during SQL query construction to manipulate the query. */
     
     public function getCustomJoins()
+    {
+        return array();
+    }
+    
+    public function getCustomFields()
     {
         return array();
     }

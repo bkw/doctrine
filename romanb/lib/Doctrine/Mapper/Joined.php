@@ -127,7 +127,27 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
      */
     public function getCustomJoins()
     {
-        return $this->_table->getOption('joinedParents');
+        $customJoins = array();
+        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
+            $customJoins[$parentClass] = 'INNER';
+        }
+        foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
+            if ($subClass != $this->_domainClassName) {
+                $customJoins[$subClass] = 'LEFT';
+            }
+        }
+        return $customJoins;
+    }
+    
+    public function getCustomFields()
+    {
+        $fields = array();
+        if ($this->_table->getOption('subclasses')) {
+            foreach ($this->_table->getOption('subclasses') as $subClass) {
+                $fields = array_merge($this->_conn->getTable($subClass)->getFieldNames(), $fields);
+            }
+        }
+        return array_unique($fields);
     }
     
     /**
@@ -182,6 +202,14 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
             }
         }
         
+        foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
+            $subTable = $this->_conn->getTable($subClass);
+            if ($subTable->hasColumn($columnName)) {
+                $this->_columnNameFieldNameMap[$columnName] = $subTable->getFieldName($columnName);
+                return $this->_columnNameFieldNameMap[$columnName];
+            }
+        }
+        
         throw new Doctrine_Mapper_Exception("No field name found for column name '$columnName'.");
     }
     
@@ -195,6 +223,13 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
             $parentTable = $this->_conn->getTable($parentClass);
             if ($parentTable->hasField($fieldName)) {
                 return $parentTable;
+            }
+        }
+        
+        foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
+            $subTable = $this->_conn->getTable($subClass);
+            if ($subTable->hasField($fieldName)) {
+                return $subTable;
             }
         }
         

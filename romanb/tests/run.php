@@ -1,4 +1,4 @@
-f<?php
+<?php
 error_reporting(E_ALL | E_STRICT);
 ini_set('max_execution_time', 900);
 ini_set("date.timezone", "GMT+0");
@@ -33,7 +33,7 @@ $driver = new GroupTest("Driver tests", 'driver');
 $driver->addTestCase(new Doctrine_Connection_Pgsql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
-$driver->addTestCase(new Doctrine_Connection_Mssql_TestCase()); 
+$driver->addTestCase(new Doctrine_Connection_Mssql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mysql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Firebird_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Informix_TestCase());
@@ -203,6 +203,7 @@ $query_tests->addTestCase(new Doctrine_Query_Where_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_From_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Select_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_JoinCondition_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_JoinCondition2_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultipleAggregateValue_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MysqlSubquery_TestCase());
@@ -249,6 +250,7 @@ $test->addTestCase(new Doctrine_Inheritance_TablePerClass_TestCase());
 
 // nestedset tests
 $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
+$test->addTestCase(new Doctrine_NestedSet_LoadInSetUp_TestCase());
 
 // Search tests
 $search = new GroupTest('Search tests','search');

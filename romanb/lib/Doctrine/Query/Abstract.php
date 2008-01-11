@@ -532,11 +532,11 @@ abstract class Doctrine_Query_Abstract
         $tableAlias = $this->getSqlTableAlias($componentAlias, $table->getTableName());
         $customJoins = $this->_conn->getMapper($componentName)->getCustomJoins();
         $sql = '';
-        foreach ($customJoins as $componentName) {
+        foreach ($customJoins as $componentName => $joinType) {
             $joinedTable = $this->_conn->getTable($componentName);
             $joinedAlias = $componentAlias . '.' . $componentName;
             $joinedTableAlias = $this->getSqlTableAlias($joinedAlias, $joinedTable->getTableName());
-            $sql .= ' INNER JOIN ' . $this->_conn->quoteIdentifier($joinedTable->getTableName())
+            $sql .= " $joinType JOIN " . $this->_conn->quoteIdentifier($joinedTable->getTableName())
                     . ' ' . $this->_conn->quoteIdentifier($joinedTableAlias) . ' ON ';
             
             foreach ($table->getIdentifierColumnNames() as $column) {

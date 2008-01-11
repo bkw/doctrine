@@ -501,6 +501,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             }
         }
         
+        $fields = array_unique(array_merge($fields, $mapper->getCustomFields()));
+        
         $sql = array();
         foreach ($fields as $fieldName) {
             $table = $mapper->getOwningTable($fieldName);
@@ -614,7 +616,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
         // check for DISTINCT keyword
         if ($first === 'DISTINCT') {
             $this->_sqlParts['distinct'] = true;
-
             $refs[0] = substr($refs[0], ++$pos);
         }
 
@@ -629,7 +630,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
             $terms = $this->_tokenizer->sqlExplode($reference, ' ');
 
-            $pos   = strpos($terms[0], '(');
+            $pos = strpos($terms[0], '(');
 
             if (count($terms) > 1 || $pos !== false) {
                 $expression = array_shift($terms);
@@ -644,7 +645,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
                 $tableAlias = $this->getTableAlias($componentAlias);
 
-                $index    = count($this->_aggregateAliasMap);
+                $index = count($this->_aggregateAliasMap);
 
                 $sqlAlias = $this->_conn->quoteIdentifier($tableAlias . '__' . $index);
 
@@ -667,7 +668,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     $componentAlias = key($this->_queryComponents);
                     $field = $e[0];
                 }
-
                 $this->_pendingFields[$componentAlias][] = $field;
             }
         }
@@ -1604,6 +1604,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     $this->_pendingJoinConditions[$componentAlias] = $joinCondition;
                 }
             }
+
             if ($loadFields) {
                 $restoreState = false;
                 // load fields if necessary

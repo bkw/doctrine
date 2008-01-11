@@ -20,43 +20,38 @@
  */
 
 /**
- * Doctrine_Ticket_480_TestCase
+ * Doctrine_NestedSet_LoadInSetUp_TestCase
  *
  * @package     Doctrine
- * @author      Miloslav Kmet <adrive-nospam@hip-hop.sk>
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
  * @link        www.phpdoctrine.com
  * @since       1.0
  * @version     $Revision$
  */
-
-class stComment extends Doctrine_Record
+class Doctrine_NestedSet_LoadInSetUp_TestCase extends Doctrine_UnitTestCase 
 {
-    public function setTableDefinition()
+    public function prepareTables()
     {
-        $this->setTableName('st_comment');
-        $this->hasColumn('title', 'string', 100, array());
-        $this->hasColumn('body', 'string', 1000, array());
+        $this->tables[] = 'CategoryNestedSet';
+        parent::prepareTables();
     }
-}
-
-class Doctrine_Ticket_480_TestCase extends Doctrine_UnitTestCase
-{
-    public function testInit()
+    
+    public function testNestedSet()
     {
-                $this->dbh = new Doctrine_Adapter_Mock('oracle');
-                $this->conn = Doctrine_Manager::getInstance()->openConnection($this->dbh);
-    }
-
-    public function testTicket()
-    {
-        $this->conn->export->exportClasses(array('stComment'));
-        $queries = $this->dbh->getAll();
-
-        // (2nd|1st except transaction init.) executed query must be CREATE TABLE or CREATE SEQUENCE, not CREATE TRIGGER
-        // Trigger can be created after both CREATE TABLE and CREATE SEQUENCE
-        $this->assertFalse(preg_match('~^CREATE TRIGGER.*~', $queries[1]));
-        $this->assertFalse(preg_match('~^CREATE TRIGGER.*~', $queries[2]));
+      $category = new CategoryNestedSet();
+      
+      if ( ! $category->getTable()->hasColumn('lft')) {
+        $this->fail();
+      }
+      
+      if ( ! $category->getTable()->hasColumn('rgt')) {
+        $this->fail();
+      }
+      
+      if ( ! $category->getTable()->hasColumn('level')) {
+        $this->fail();
+      }
     }
 }

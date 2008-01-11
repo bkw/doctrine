@@ -44,7 +44,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
         'date'      => '1970-01-01',
         'clob'      => '',
         'blob'      => '',
-        'string'    => ''
+        'string'    => '',
     );
 
     /**
@@ -117,7 +117,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function dropIndexSql($table, $name)
     {
         $name = $this->conn->quoteIdentifier($this->conn->formatter->getIndexName($name));
-        
+
         return 'DROP INDEX ' . $name;
     }
 
@@ -133,7 +133,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     {
         $table = $this->conn->quoteIdentifier($table);
         $name  = $this->conn->quoteIdentifier($name);
-        
+
         return $this->conn->exec('ALTER TABLE ' . $table . ' DROP CONSTRAINT ' . $name);
     }
 
@@ -358,7 +358,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function createConstraint($table, $name, $definition)
     {
         $sql = $this->createConstraintSql($table, $name, $definition);
-        
+
         return $this->conn->exec($sql);
     }
 
@@ -474,7 +474,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
         $query .= ' (' . implode(', ', $fields) . ')';
 
         return $query;
-    }    
+    }
     /**
      * createForeignKeySql
      *
@@ -501,7 +501,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function createForeignKey($table, array $definition)
     {
         $sql = $this->createForeignKeySql($table, $definition);
-        
+
         return $this->conn->execute($sql);
     }
 
@@ -597,7 +597,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function alterTable($name, array $changes, $check = false)
     {
         $sql = $this->alterTableSql($name, $changes, $check);
-        
+
         if (is_string($sql) && $sql) {
             $this->conn->execute($sql);
         }
@@ -693,6 +693,11 @@ class Doctrine_Export extends Doctrine_Connection_Module
      */
     public function getDeclaration($name, array $field)
     {
+        $method = 'get' . $field['type'] . 'Declaration';
+
+        if (method_exists($this, $method)) {
+            return $this->$method($name, $field);
+        }
 
         $default   = $this->getDefaultFieldDeclaration($field);
 
@@ -710,13 +715,8 @@ class Doctrine_Export extends Doctrine_Connection_Module
         $check     = (isset($field['check']) && $field['check']) ?
                     ' ' . $field['check'] : '';
 
-        $method = 'get' . $field['type'] . 'Declaration';
+        $dec = $this->conn->dataDict->getNativeDeclaration($field);
 
-        if (method_exists($this->conn->dataDict, $method)) {
-            return $this->conn->dataDict->$method($name, $field);
-        } else {
-            $dec = $this->conn->dataDict->getNativeDeclaration($field);
-        }
         return $this->conn->quoteIdentifier($name, true) . ' ' . $dec . $charset . $default . $notnull . $unique . $check . $collation;
     }
 
@@ -730,15 +730,20 @@ class Doctrine_Export extends Doctrine_Connection_Module
      */
     public function getDefaultFieldDeclaration($field)
     {
-        $default = '';
+        $default = empty($field['notnull']) && !in_array($field['type'], array('clob', 'blob'))
+            ? ' DEFAULT NULL' : '';
+
         if (isset($field['default'])) {
             if ($field['default'] === '') {
-                $field['default'] = empty($field['notnull'])
-                    ? null : $this->valid_default_values[$field['type']];
+                $field['default'] = null;
+                if (! empty($field['notnull']) && array_key_exists($field['type'], $this->valid_default_values)) {
+                   $field['default'] = $this->valid_default_values[$field['type']];
+                }
 
-                if ($field['default'] === '' &&
-                   ($this->conn->getAttribute(Doctrine::ATTR_PORTABILITY) & Doctrine::PORTABILITY_EMPTY_TO_NULL)) {
-                    $field['default'] = null;
+                if ($field['default'] === ''
+                    && ($this->conn->getAttribute(Doctrine::ATTR_PORTABILITY) & Doctrine::PORTABILITY_EMPTY_TO_NULL)
+                ) {
+                    $field['default'] = ' ';
                 }
             }
 
@@ -1045,7 +1050,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
         } else {
             $models = Doctrine::getLoadedModels();
         }
-        
+
         $this->exportClasses($models);
     }
 
@@ -1065,13 +1070,13 @@ class Doctrine_Export extends Doctrine_Connection_Module
             $record = new $class();
             $connection = $record->getTable()->getConnection();
             $connectionName = Doctrine_Manager::getInstance()->getConnectionName($connection);
-            
+
             if ( ! isset($connections[$connectionName])) {
                 $connections[$connectionName] = array();
                 $connections[$connectionName]['creates'] = array();
                 $connections[$connectionName]['alters'] = array();
             }
-            
+
             $sql = $this->exportClassesSql(array($class));
             // Build array of all the creates
             // We need these to happen first
@@ -1082,7 +1087,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
                     unset($sql[$key]);
                 }
             }
-            
+
             $connections[$connectionName]['alters'] = array_merge($connections[$connectionName]['alters'], $sql);
         }
 
@@ -1094,9 +1099,9 @@ class Doctrine_Export extends Doctrine_Connection_Module
 
         foreach ($build as $connectionName => $sql) {
             $connection = Doctrine_Manager::getInstance()->getConnection($connectionName);
-            
+
             $connection->beginTransaction();
-            
+
             foreach ($sql as $query) {
                 try {
                     $connection->exec($query);
@@ -1108,7 +1113,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
                     }
                 }
             }
-            
+
             $connection->commit();
         }
     }
@@ -1125,9 +1130,9 @@ class Doctrine_Export extends Doctrine_Connection_Module
     public function exportClassesSql(array $classes)
     {
         $models = Doctrine::filterInvalidModels($classes);
-        
+
         $sql = array();
-        
+
         foreach ($models as $name) {
             $record = new $name();
             $table  = $record->getTable();
@@ -1138,7 +1143,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
                 $data  = $table->getConnection()->getTable($parent)->getExportableFormat();
 
                 $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-                
+
                 $sql = array_merge($sql, (array) $query);
             }
 
@@ -1151,14 +1156,14 @@ class Doctrine_Export extends Doctrine_Connection_Module
             } else {
                 $sql[] = $query;
             }
-            
+
             if ($table->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_PLUGINS) {
                 $sql = array_merge($sql, $this->exportGeneratorsSql($table));
             }
         }
-        
+
         $sql = array_unique($sql);
-        
+
         rsort($sql);
 
         return $sql;
@@ -1176,13 +1181,13 @@ class Doctrine_Export extends Doctrine_Connection_Module
 
         foreach ($table->getGenerators() as $name => $generator) {
             if ($generator === null) {
-                continue;                     	
+                continue;
             }
 
             $generators[] = $generator;
 
             $generatorTable = $generator->getTable();
-            
+
             if ($generatorTable instanceof Doctrine_Table) {
                 $generators = array_merge($generators, $this->getAllGenerators($generatorTable));
             }
@@ -1203,7 +1208,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
     	$sql = array();
         foreach ($this->getAllGenerators($table) as $name => $generator) {
             $table = $generator->getTable();
-            
+
             // Make sure plugin has a valid table
             if ($table instanceof Doctrine_Table) {
                 $data = $table->getExportableFormat();
@@ -1237,7 +1242,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
         } else {
             $models = Doctrine::getLoadedModels();
         }
-        
+
         return $this->exportClassesSql($models);
     }
 

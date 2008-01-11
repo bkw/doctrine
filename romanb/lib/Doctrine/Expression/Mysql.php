@@ -110,4 +110,19 @@ class Doctrine_Expression_Mysql extends Doctrine_Expression_Driver
     {
         return 'UUID()';
     }
+
+    /**
+     * Returns a series of strings concatinated
+     *
+     * concat() accepts an arbitrary number of parameters. Each parameter
+     * must contain an expression or an array with expressions.
+     *
+     * @param string|array(string) strings that will be concatinated.
+     */
+    public function concat()
+    {
+        $args = func_get_args();
+
+        return 'CONCAT(' . join(', ', (array) $args) . ')';
+    }
 }

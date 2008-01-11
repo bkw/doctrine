@@ -22,7 +22,7 @@ Doctrine::autoload('Doctrine_Access');
 /**
  * A Doctrine_Collection represents a collection of record objects.
  * A collection object is strongly typed in the sense that it can only contain
- * records of a specific type.
+ * records of a specific type or one it's subtypes.
  *
  * @package     Doctrine
  * @subpackage  Collection
@@ -35,7 +35,9 @@ Doctrine::autoload('Doctrine_Access');
 class Doctrine_Collection extends Doctrine_Access implements Countable, IteratorAggregate, Serializable
 {
     /**
-     * @var array $data                     an array containing the records of this collection
+     * An array containing the records of this collection.
+     *
+     * @var array                     
      */
     protected $data = array();
     
@@ -47,35 +49,46 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     protected $_mapper;
 
     /**
-     * @var array $_snapshot                a snapshot of the fetched data
+     * A snapshot of the fetched data.
+     *
+     * @var array                
      */
     protected $_snapshot = array();
 
     /**
-     * @var Doctrine_Record $reference      collection can belong to a record
+     * This record this collection is attached to, if any.
+     * 
+     * @var Doctrine_Record
      */
     protected $reference;
 
     /**
-     * @var string $referenceField         the reference field of the collection
+     * The reference field of the collection.
+     *
+     * @var string $referenceField         
      */
     protected $referenceField;
 
     /**
-     * @var Doctrine_Relation               the record this collection is related to, if any
+     * The relation this collection is related to, if any.
+     *
+     * @var Doctrine_Relation               
      */
     protected $relation;
 
     /**
-     * @var string $keyColumn               the name of the column that is used for collection key mapping
+     * The name of the column that is used for collection key mapping.
+     *
+     * @var string
      */
     protected $keyColumn;
 
     /**
-     * @var Doctrine_Null $null             used for extremely fast null value testing
+     * Helper variable. Used for fast null value testing.
+     *
+     * @var Doctrine_Null
      */
     protected static $null;
-
 
     /**
      * Constructor.
@@ -110,7 +123,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
     /**
      * initNullObject
-     * initializes the null object for this collection
+     * Initializes the null object for this collection.
      *
      * @return void
      */
@@ -121,7 +134,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
     /**
      * getTable
-     * returns the table this collection belongs to
+     * Returns the table of the mapper of the collection.
      *
      * @return Doctrine_Table
      */
@@ -186,8 +199,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function unserialize($serialized)
     {
-        $manager    = Doctrine_Manager::getInstance();
-        $connection    = $manager->getCurrentConnection();
+        $manager = Doctrine_Manager::getInstance();
+        $connection = $manager->getCurrentConnection();
 
         $array = unserialize($serialized);
 
@@ -263,6 +276,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         return end($this->data);
     }
+    
     /**
      * returns the last record in the collection
      *
@@ -272,6 +286,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         return end($this->data);
     }
+    
     /**
      * returns the current key
      *
@@ -281,6 +296,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         return key($this->data);
     }
+    
     /**
      * setReference
      * sets a reference pointer
@@ -289,18 +305,11 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function setReference(Doctrine_Record $record, Doctrine_Relation $relation)
     {
-        /*try {
-            throw new Exception();
-        } catch (Exception $e) {
-            echo "relation set on collection: " . get_class($relation) . "<br />";
-            echo $e->getTraceAsString() . "<br />";
-        }*/
         $this->reference = $record;
         $this->relation  = $relation;
 
         if ($relation instanceof Doctrine_Relation_ForeignKey || 
                 $relation instanceof Doctrine_Relation_LocalKey) {
-
             $this->referenceField = $relation->getForeignFieldName();
             $value = $record->get($relation->getLocalFieldName());
             foreach ($this->data as $record) {
@@ -390,6 +399,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                     $record->set($this->referenceField, $this->reference, false);
                 }
             }
+            
             if ($key === null) {
                 $this->data[] = $record;
             } else {
@@ -397,7 +407,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             }
 
             if (isset($this->keyColumn)) {
-
                 $record->set($this->keyColumn, $key);
             }
 
@@ -459,7 +468,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         if (isset($this->referenceField)) {
             $record->set($this->referenceField, $this->reference, false);
         }
-
         $this->data[$key] = $record;
     }
 
@@ -520,7 +528,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     public function loadRelated($name = null)
     {
         $list = array();
-        $query   = new Doctrine_Query($this->_mapper->getConnection());
+        $query = new Doctrine_Query($this->_mapper->getConnection());
 
         if ( ! isset($name)) {
             foreach ($this->data as $record) {
@@ -535,7 +543,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             return $query;
         }
 
-        $rel     = $this->_mapper->getTable()->getRelation($name);
+        $rel = $this->_mapper->getTable()->getRelation($name);
 
         if ($rel instanceof Doctrine_Relation_LocalKey || $rel instanceof Doctrine_Relation_ForeignKey) {
             foreach ($this->data as $record) {
@@ -550,9 +558,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             }
         }
 
-        $dql     = $rel->getRelationDql(count($list), 'collection');
-
-        $coll    = $query->query($dql, $list);
+        $dql = $rel->getRelationDql(count($list), 'collection');
+        $coll = $query->query($dql, $list);
 
         $this->populateRelated($name, $coll);
     }
@@ -671,7 +678,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function processDiff() 
     {
-        foreach (array_udiff($this->_snapshot, $this->data, array($this, "compareRecords")) as $record) {
+        foreach (array_udiff($this->_snapshot, $this->data, array($this, "_compareRecords")) as $record) {
             $record->delete();
         }
         return $this;
@@ -687,9 +694,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     {
         $data = array();
         foreach ($this as $key => $record) {
-            
             $key = $prefixKey ? get_class($record) . '_' .$key:$key;
-            
             $data[$key] = $record->toArray($deep, $prefixKey);
         }
         
@@ -782,7 +787,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function getDeleteDiff()
     {
-        return array_udiff($this->_snapshot, $this->data, array($this, "compareRecords"));
+        return array_udiff($this->_snapshot, $this->data, array($this, "_compareRecords"));
     }
 
     /**
@@ -792,14 +797,14 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function getInsertDiff()
     {
-        return array_udiff($this->data, $this->_snapshot, array($this, "compareRecords"));
+        return array_udiff($this->data, $this->_snapshot, array($this, "_compareRecords"));
     }
 
     /**
-     * compareRecords
-     * Compares two records. To be used on _snapshot diffs using array_udiff
+     * _compareRecords
+     * Compares two records. To be used on _snapshot diffs using array_udiff.
      */
-    protected function compareRecords($a, $b)
+    protected function _compareRecords($a, $b)
     {
         if ($a->getOid() == $b->getOid()) {
             return 0;
@@ -810,8 +815,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
     /**
      * save
-     * saves all records of this collection and processes the 
-     * difference of the last snapshot and the current data
+     * Saves all records of this collection and processes the 
+     * difference of the last snapshot and the current data.
      *
      * @param Doctrine_Connection $conn     optional connection parameter
      * @return Doctrine_Collection

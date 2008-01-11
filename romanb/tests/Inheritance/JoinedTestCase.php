@@ -157,7 +157,7 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(2, $manager->type);
     }
     
-    public function testQueryingBaseClassReturnsSubclassInstances()
+    public function testQueryingBaseClassOuterJoinsSubClassesAndReturnsSubclassInstances()
     {
         $this->_createManager();
         $this->conn->getMapper('CTI_Manager')->clear();
@@ -170,7 +170,7 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         
         $this->assertTrue($user instanceof CTI_Manager);
         $this->assertEqual(1, $user->id);
-        //$this->assertEqual(80000, $user->salary);
+        $this->assertEqual(80000, $user->salary);
         $this->assertEqual('John Smith', $user->name);
         $this->assertEqual(2, $user->type);
     }
@@ -187,16 +187,14 @@ class CTI_User extends Doctrine_Record
                       'CTI_Customer' => array('type' => 3),
                       'CTI_SuperManager' => array('type' => 4))
         );/*
-        $this->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED, array(
+        $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED, array(
                 'discriminatorColumn' => 'type',
                 'map' => array(1 => 'CTI_User', 2 => 'CTI_Manager', 3 => 'CTI_Customer',
                                4 => 'CTI_SuperManager')
-                );
-                array('CTI_User' => array('type' => 1),
-                      'CTI_Manager' => array('type' => 2),
-                      'CTI_Customer' => array('type' => 3),
-                      'CTI_SuperManager' => array('type' => 4))
-        );*/
+                ));
+        $class->setDiscriminatorValue(1);
+        $class->setInheritanceOption('fetchType', 'explicit');
+        */
         $this->setTableName('cti_user');
         $this->hasColumn('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
         $this->hasColumn('cti_foo as foo', 'integer', 4);

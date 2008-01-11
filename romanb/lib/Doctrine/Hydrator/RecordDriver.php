@@ -20,8 +20,8 @@
  */
 
 /**
- * Doctrine_Hydrate_Record 
- * defines a record fetching strategy for Doctrine_Hydrate
+ * Doctrine_Hydrate_RecordDriver
+ * Hydration strategy used for creating collections of entity objects.
  *
  * @package     Doctrine
  * @subpackage  Hydrate
@@ -30,14 +30,13 @@
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  */
 class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
 {
     protected $_collections = array();
-    
     protected $_records = array();
-    
-    protected $_tables = array();
+    protected $_mappers = array();
 
     public function getElementCollection($component)
     {
@@ -105,16 +104,16 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
     
     public function getElement(array $data, $component)
     {
-        if ( ! isset($this->_tables[$component])) {
-            $this->_tables[$component] = Doctrine_Manager::getInstance()->getMapper($component);
-            $this->_tables[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+        if ( ! isset($this->_mappers[$component])) {
+            $this->_mappers[$component] = Doctrine_Manager::getInstance()->getMapper($component);
+            $this->_mappers[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
         }
-        $component = $this->getClassnameToReturn($data, $component);
+        $component = $this->_getClassnameToReturn($data, $component);
         //var_dump($data);
         //echo $component;
         //echo "<br /><br />";
         //$this->_tables[$component]->setData($data);
-        $record = $this->_tables[$component]->getRecord($data);
+        $record = $this->_mappers[$component]->getRecord($data);
 
         if ( ! isset($this->_records[$record->getOid()]) ) {
             $record->clearRelated();
@@ -130,40 +129,34 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
         foreach ($this->_collections as $key => $coll) {
             $coll->takeSnapshot();
         }
-        foreach ($this->_tables as $table) {
-            $table->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
+        foreach ($this->_mappers as $mapper) {
+            $mapper->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
         }
     }
     
     /**
-     * Get the classname to return. Most often this is just the options['name']
-     *
-     * USED FOR SINGLE TABLE INHERITANCE & CLASS TABLE INHERITANCE.
-     *
-     * Check the subclasses option and the inheritanceMap for each subclass to see
-     * if all the maps in a subclass is met. If this is the case return that
-     * subclass name. If no subclasses match or if there are no subclasses defined
-     * return the name of the class for this tables record.
+     * Check the dataset for a discriminator column, to determine the correct
+     * class to instantiate. If no discriminator column is found, the given
+     * classname will be returned.
      *
      * @todo this function could use reflection to check the first time it runs
      * if the subclassing option is not set.
      *
-     * @return string The name of the class to create
+     * @return string The name of the class to instantiate.
      *
      */
-    public function getClassnameToReturn(array $data, $component)
+    protected function _getClassnameToReturn(array $data, $className)
     {
-        $subClasses = $this->_tables[$component]->getTable()->getOption('subclasses');
+        $subClasses = $this->_mappers[$className]->getTable()->getOption('subclasses');
         if ( ! isset($subClasses)) {
-            return $component;
+            return $className;
         }
 
         foreach ($subClasses as $subclass) {
-            if ( ! isset($this->_tables[$subclass])) {
-                $this->_tables[$subclass] = Doctrine_Manager::getInstance()->getMapper($subclass);
+            if ( ! isset($this->_mappers[$subclass])) {
+                $this->_mappers[$subclass] = Doctrine_Manager::getInstance()->getMapper($subclass);
             }
-            $mapper = $this->_tables[$subclass];
-            $nomatch = false;
+            $mapper = $this->_mappers[$subclass];
             $inheritanceMap = $mapper->getDiscriminatorColumn();
             foreach ($inheritanceMap as $key => $value) {
                 if (isset($data[$key]) && $data[$key] == $value) {
@@ -171,6 +164,6 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
                 }
             }
         }
-        return $component;
+        return $className;
     }
 }
