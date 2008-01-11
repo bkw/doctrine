@@ -986,12 +986,18 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * @param string $name
      * @return void
      */
-    public function __unset($name)
+    public function __unset($fieldName)
     {
-        if (isset($this->_data[$name])) {
-            $this->_data[$name] = array();
+        if (isset($this->_data[$fieldName])) {
+            $this->_data[$fieldName] = array();
+        } else if (isset($this->_references[$fieldName])) {
+            if ($this->_references[$fieldName] instanceof Doctrine_Record) {
+                // todo: delete related record when saving $this
+                $this->_references[$fieldName] = self::$_null;
+            } elseif ($this->_references[$fieldName] instanceof Doctrine_Collection) {
+                $this->_references[$fieldName]->setData(array());
+            }
         }
-        // todo: what to do with references ?
     }
 
     /**
@@ -1197,6 +1203,14 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
         return array_merge($a, $this->_values);
     }
+
+    /**
+     * fromArray
+     *
+     * @param   string $array
+     * @param   bool  $deep Bool value for whether or not to merge the data deep
+     * @return  void
+     */
     public function fromArray($array)
     {
         if (is_array($array)) {
@@ -1209,6 +1223,42 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
         }
     }
+
+    /**
+     * synchronizeWithArray
+     * synchronizes a Doctrine_Record and its relations with data from an array
+     *
+     * it expects an array representation of a Doctrine_Record similar to the return
+     * value of the toArray() method. If the array contains relations it will create
+     * those that don't exist, update the ones that do, and delete the ones missing
+     * on the array but available on the Doctrine_Record
+     *
+     * @param array $array representation of a Doctrine_Record
+     */
+    public function synchronizeWithArray(array $array)
+    {
+        foreach ($array as $key => $value) {
+            if ($this->getTable()->hasRelation($key)) {
+                $this->get($key)->synchronizeWithArray($value);
+            } else if ($this->getTable()->hasColumn($key)) {
+                $this->set($key, $value);
+            }
+        }
+        // eliminate relationships missing in the $array
+        foreach ($this->_references as $name => $obj) {
+            if (!isset($array[$name])) {
+                unset($this->$name);
+            }
+        }
+    }
+
+    /**
+     * exportTo
+     *
+     * @param string $type 
+     * @param string $deep 
+     * @return void
+     */
     public function exportTo($type, $deep = false)
     {
         if ($type == 'array') {
@@ -1217,6 +1267,15 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             return Doctrine_Parser::dump($this->toArray($deep, true), $type);
         }
     }
+
+    /**
+     * importFrom
+     *
+     * @param string $type 
+     * @param string $data 
+     * @return void
+     * @author Jonathan H. Wage
+     */
     public function importFrom($type, $data)
     {
         if ($type == 'array') {
