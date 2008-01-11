@@ -435,10 +435,10 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $data = array();
 
         foreach ($this->getTable()->getColumnNames() as $name) {
-            if ( ! isset($tmp[$name])) {
-                $data[$name] = self::$_null;
-            } else {
+            if (isset($tmp[$name])) {
                 $data[$name] = $tmp[$name];
+            } else if (!isset($this->_data[$name])) {
+                $data[$name] = self::$_null;
             }
             unset($tmp[$name]);
         }
