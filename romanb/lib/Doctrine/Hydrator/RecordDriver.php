@@ -106,13 +106,9 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
     {
         if ( ! isset($this->_mappers[$component])) {
             $this->_mappers[$component] = Doctrine_Manager::getInstance()->getMapper($component);
-            $this->_mappers[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
         }
+        
         $component = $this->_getClassnameToReturn($data, $component);
-        //var_dump($data);
-        //echo $component;
-        //echo "<br /><br />";
-        //$this->_tables[$component]->setData($data);
         $record = $this->_mappers[$component]->getRecord($data);
 
         if ( ! isset($this->_records[$record->getOid()]) ) {
@@ -128,9 +124,6 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
         // take snapshots from all initialized collections
         foreach ($this->_collections as $key => $coll) {
             $coll->takeSnapshot();
-        }
-        foreach ($this->_mappers as $mapper) {
-            $mapper->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
         }
     }
     

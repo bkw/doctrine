@@ -399,55 +399,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             throw new Doctrine_Query_Exception('Unknown aggregate alias: ' . $dqlAlias);
         }
     }
-
-    /**
-     * parseQueryPart
-     * parses given DQL query part
-     *
-     * @param string $queryPartName     the name of the query part
-     * @param string $queryPart         query part to be parsed
-     * @param boolean $append           whether or not to append the query part to its stack
-     *                                  if false is given, this method will overwrite 
-     *                                  the given query part stack with $queryPart
-     * @return Doctrine_Query           this object
-     */
-    /*protected function parseQueryPart($queryPartName, $queryPart, $append = false) 
-    {
-        if ($this->_state === self::STATE_LOCKED) {
-            throw new Doctrine_Query_Exception('This query object is locked. No query parts can be manipulated.');
-        }
-
-        // sanity check
-        if ($queryPart === '' || $queryPart === null) {
-            throw new Doctrine_Query_Exception('Empty ' . $queryPartName . ' part given.');
-        }
-
-        // add query part to the dql part array
-        if ($append) {
-            $this->_dqlParts[$queryPartName][] = $queryPart;
-        } else {
-            $this->_dqlParts[$queryPartName] = array($queryPart);
-        }
-
-        if ($this->_state === self::STATE_DIRECT) {
-            $parser = $this->_getParser($queryPartName);
-
-            $sql = $parser->parse($queryPart);
-
-            if (isset($sql)) {
-                if ($append) {
-                    $this->addSqlQueryPart($queryPartName, $sql);
-                } else {
-                    $this->setSqlQueryPart($queryPartName, $sql);
-                }
-            }
-        }
-
-        $this->_state = Doctrine_Query::STATE_DIRTY;
-
-        return $this;
-    }*/
-
+   
     /**
      * getDqlPart
      * returns a specific DQL query part.

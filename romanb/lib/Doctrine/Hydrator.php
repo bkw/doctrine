@@ -106,6 +106,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
 
         // Initialize
         foreach ($this->_queryComponents as $dqlAlias => $data) {
+            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
             $componentName = $data['mapper']->getComponentName();
             $listeners[$componentName] = $data['table']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
@@ -229,6 +230,11 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         
         $driver->flush();
         
+        // re-enable lazy loading
+        foreach ($this->_queryComponents as $dqlAlias => $data) {
+            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
+        }
+        
         //$e = microtime(true);
         //echo 'Hydration took: ' . ($e - $s) . ' for '.count($result).' records<br />';
 
@@ -307,8 +313,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                 }
             }
 
-            $map   = $this->_queryComponents[$cache[$key]['dqlAlias']];
-            $mapper = $map['mapper'];
+            $mapper = $this->_queryComponents[$cache[$key]['dqlAlias']]['mapper'];
             $dqlAlias = $cache[$key]['dqlAlias'];
             $fieldName = $cache[$key]['fieldName'];
 
