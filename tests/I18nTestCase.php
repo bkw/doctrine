@@ -93,19 +93,25 @@ class Doctrine_I18n_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($t->lang, 'EN');
 
     }
-    
+
+
     public function testUpdatingI18nItems()
     {
         $i = Doctrine_Query::create()->query('FROM I18nTest')->getFirst();
-        
+
         $i->Translation['EN']->name = 'updated name';
         $i->Translation['EN']->title = 'updated title';
 
         $i->Translation->save();
-        
+
+        $this->conn->clear();
+
+        $t = Doctrine_Query::create()->from('I18nTestTranslation')->fetchOne();
+
         $this->assertEqual($t->name, 'updated name');
         $this->assertEqual($t->title, 'updated title');
     }
+
 
     public function testDataFetching()
     {
