@@ -1023,6 +1023,10 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
      */
     public function parseData2($stmt, $hydrationMode)
     {
+        if ($hydrationMode === null) {
+            $hydrationMode = $this->_hydrationMode;
+        }
+        
         if ($hydrationMode == Doctrine::HYDRATE_NONE) {
             return $stmt->fetchAll(PDO::FETCH_NUM);
         }
@@ -1032,10 +1036,6 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
         $rootAlias = key($this->_aliasMap);
         $componentName = $rootMap['table']->getComponentName();
         $isSimpleQuery = count($this->_aliasMap) <= 1;
-        
-        if ($hydrationMode === null) {
-            $hydrationMode = $this->_hydrationMode;
-        }
 
         if ($hydrationMode === Doctrine::HYDRATE_ARRAY) {
             $driver = new Doctrine_Hydrate_Array();
