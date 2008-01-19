@@ -19,6 +19,7 @@ class Doctrine_Ticket_XXX_TestCase extends Doctrine_UnitTestCase
     $cow = new Cow();
 
     $moo->Cows[] = $cow;
+    $cow->Moo = $moo;
     $moo->save();
     $this->assertEqual($moo->amount, 0);
   }
@@ -67,11 +68,13 @@ class Cow extends Doctrine_Record
   public function preInsert($e)
   {
     
+    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->amount = 0;
-    echo $this->Moo->amount. "\n";
+    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->save();
+    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->refresh();
-    echo $this->Moo->amount. "\n";
+    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
   }
 }
 
