@@ -1,7 +1,7 @@
 <?php
 
 
-class Doctrine_Ticket_XXX_TestCase extends Doctrine_UnitTestCase
+class Doctrine_Ticket_741_TestCase extends Doctrine_UnitTestCase
 {
 
     public function prepareData() 
@@ -65,16 +65,24 @@ class Cow extends Doctrine_Record
     $this->hasOne('Moo', array('local' => 'moo_id', 'foreign' => 'id'));
   }
 
-  public function preInsert($e)
+  public function postInsert($e)
   {
     
-    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
+    //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->amount = 0;
-    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
+    //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->save();
-    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
+    //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->refresh();
-    echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
+    //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
+    /*
+      This outputs the following
+      State: 6         Amount: 1000
+      State: 6         Amount: 0
+      State: 6         Amount: 0
+      State: 3         Amount: 1000
+
+    */
   }
 }
 
