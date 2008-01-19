@@ -9,26 +9,27 @@ class Doctrine_Ticket_741_TestCase extends Doctrine_UnitTestCase
 
     public function prepareTables()
     {
-        $this->tables = array('Moo', 'Cow');
+        $this->tables = array('Parent741', 'Child741');
         parent::prepareTables();
     }
-  public function testTicket()
-  {
-    $moo = new Moo();
-    $moo->amount = 1000;
-    $cow = new Cow();
 
-    $moo->Cows[] = $cow;
-    $cow->Moo = $moo;
-    $moo->save();
-    $this->assertEqual($moo->amount, 0);
-  }
+    public function testTicket()
+    {
+        $moo = new Parent741();
+        $moo->amount = 1000;
+        $cow = new Child741();
+
+        $moo->Cows[] = $cow;
+        $cow->Moo = $moo;
+        $moo->save();
+        $this->assertEqual($moo->amount, 0);
+    }
 
 }
 
 
 
-class Moo extends Doctrine_Record
+class Parent741 extends Doctrine_Record
 {
   public function setTableDefinition()
   {
@@ -43,11 +44,11 @@ class Moo extends Doctrine_Record
 
   public function setUp()
   {
-    $this->hasMany('Cow as Cows', array('local' => 'id', 'foreign' => 'moo_id'));
+    $this->hasMany('Child741 as Cows', array('local' => 'id', 'foreign' => 'moo_id'));
   }
 }
 
-class Cow extends Doctrine_Record
+class Child741 extends Doctrine_Record
 {
   public function setTableDefinition()
   {
@@ -62,7 +63,7 @@ class Cow extends Doctrine_Record
 
   public function setUp()
   {
-    $this->hasOne('Moo', array('local' => 'moo_id', 'foreign' => 'id'));
+    $this->hasOne('Parent741 as Moo', array('local' => 'moo_id', 'foreign' => 'id'));
   }
 
   public function postInsert($e)
