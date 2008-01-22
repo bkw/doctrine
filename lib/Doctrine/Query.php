@@ -401,6 +401,19 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
     }
 
     /**
+     * contains
+     *
+     * Method to check if a arbitrary piece of dql exists
+     *
+     * @param string $dql Arbitrary piece of dql to check for
+     * @return boolean
+     */
+    public function contains($dql)
+    {
+      return stripos($this->getDql(), $dql) === false ? false : true;
+    }
+
+    /**
      * getDql
      * returns the DQL query associated with this object
      *
