@@ -201,10 +201,28 @@ class CTI_User extends Doctrine_Record
         $this->hasColumn('cti_name as name', 'string', 50);
         $this->hasColumn('type', 'integer', 4);
     }
+    
+    public static function initMapping(Doctrine_MetadataClass $class)
+    {
+        $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED,
+                array('CTI_User' => array('type' => 1),
+                      'CTI_Manager' => array('type' => 2),
+                      'CTI_Customer' => array('type' => 3),
+                      'CTI_SuperManager' => array('type' => 4))
+        );
+        $class->setTableName('cti_user');
+        $class->hasColumn('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+        $class->hasColumn('cti_foo as foo', 'integer', 4);
+        $class->hasColumn('cti_name as name', 'string', 50);
+        $class->hasColumn('type', 'integer', 4);
+    }
+    
 }
 
 class CTI_Manager extends CTI_User 
 {
+    protected $name;
+    
     public function setTableDefinition()
     {
         $this->setTableName('cti_manager');

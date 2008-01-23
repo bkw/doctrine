@@ -248,6 +248,9 @@ $test->addTestCase(new Doctrine_Inheritance_SingleTable_TestCase());
 $test->addTestCase(new Doctrine_Inheritance_Joined_TestCase());
 $test->addTestCase(new Doctrine_Inheritance_TablePerClass_TestCase());
 
+// Metadata loading tests
+$test->addTestCase(new Doctrine_Metadata_Factory_TestCase());
+
 // nestedset tests
 $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 $test->addTestCase(new Doctrine_NestedSet_LoadInSetUp_TestCase());

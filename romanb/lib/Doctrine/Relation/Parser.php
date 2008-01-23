@@ -53,7 +53,7 @@ class Doctrine_Relation_Parser
      *
      * @param Doctrine_Table $table         the table object this parser belongs to
      */
-    public function __construct(Doctrine_Table $table) 
+    public function __construct(/*Doctrine_Table*/ $table) 
     {
         $this->_table = $table;
     }

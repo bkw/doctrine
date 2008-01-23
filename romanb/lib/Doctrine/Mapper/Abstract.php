@@ -31,8 +31,7 @@
  * @link        www.phpdoctrine.org
  * @since       1.0
  */
-abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
-        implements Countable
+abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements Countable
 {
     /**
      * @var Doctrine_Table  Metadata container that represents the database table this
@@ -110,11 +109,13 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
      *                                          occurred during the create table operation
      * @return boolean                          whether or not the export operation was successful
      *                                          false if table already existed in the database
+     * @deprecated
+     * @todo Remove
      */
-    public function export()
+    /*public function export()
     {
         $this->_conn->export->exportTable($this->_table);
-    }
+    }*/
 
     /**
      * getExportableFormat
@@ -123,10 +124,10 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
      * @return array
      * @todo move to Table
      */
-    public function getExportableFormat($parseForeignKeys = true)
+    /*public function getExportableFormat($parseForeignKeys = true)
     {
         return $this->_table->getExportableFormat($parseForeignKeys);
-    }
+    }*/
 
     /**
      * createQuery
@@ -169,9 +170,9 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
     }
 
     /**
-     * returns the connection associated with this table (if any)
+     * Returns the connection the mapper is currently using.
      *
-     * @return Doctrine_Connection|null     the connection object
+     * @return Doctrine_Connection|null  The connection object.
      */
     public function getConnection()
     {
@@ -207,6 +208,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
         }
 
         $id = is_array($id) ? array_values($id) : array($id);
+        
         return $this->createQuery()
                 ->where(implode(' = ? AND ', (array) $this->_table->getIdentifier()) . ' = ?')
                 ->fetchOne($id, $hydrationMode);
@@ -820,7 +822,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
         if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
                 $table->getIdentifierType() != Doctrine::IDENTIFIER_NATURAL) {
 
-            if (strtolower($this->getName()) == 'pgsql') {
+            if (strtolower($this->_conn->getName()) == 'pgsql') {
                 $seq = $table->getTableName() . '_' . $identifier[0];
             }
 
@@ -873,8 +875,6 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable
         $this->getRecordListener()->postSave($event);
         $record->postSave($event);
     }
-    
-    
     
     /**
      * saveRelated

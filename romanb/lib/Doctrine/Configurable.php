@@ -347,8 +347,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
     public function setListener($listener)
     {
         if ( ! ($listener instanceof Doctrine_EventListener_Interface)
-            && ! ($listener instanceof Doctrine_Overloadable)
-        ) {
+                && ! ($listener instanceof Doctrine_Overloadable)) {
             throw new Doctrine_EventListener_Exception("Couldn't set eventlistener. EventListeners should implement either Doctrine_EventListener_Interface or Doctrine_Overloadable");
         }
         $this->attributes[Doctrine::ATTR_LISTENER] = $listener;

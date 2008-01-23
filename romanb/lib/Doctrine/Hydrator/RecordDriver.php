@@ -128,15 +128,12 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
     }
     
     /**
-     * Check the dataset for a discriminator column, to determine the correct
+     * Check the dataset for a discriminator column to determine the correct
      * class to instantiate. If no discriminator column is found, the given
      * classname will be returned.
      *
-     * @todo this function could use reflection to check the first time it runs
-     * if the subclassing option is not set.
-     *
      * @return string The name of the class to instantiate.
-     *
+     * @todo Can be optimized performance-wise.
      */
     protected function _getClassnameToReturn(array $data, $className)
     {
@@ -157,6 +154,7 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
                 }
             }
         }
+        
         return $className;
     }
 }
