@@ -64,6 +64,15 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(1.2e3, $token['value']);
     }
 
+    public function testScannerRecognizesFloatWithExponent2()
+    {
+        $scanner = new Doctrine_Query_Scanner('0.2e3');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(.2e3, $token['value']);
+    }
+
     public function testScannerRecognizesFloatWithNegativeExponent()
     {
         $scanner = new Doctrine_Query_Scanner('7E-10');
@@ -71,6 +80,83 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $token = $scanner->next();
         $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
         $this->assertEqual(7E-10, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatBig()
+    {
+        $scanner = new Doctrine_Query_Scanner('1,234,567.89');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.23456789e6, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatBigWrongPoint()
+    {
+        $scanner = new Doctrine_Query_Scanner('12,34,56,7.89');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.23456789e6, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatLocaleSpecific()
+    {
+        $scanner = new Doctrine_Query_Scanner('1,234');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.234, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatLocaleSpecificBig()
+    {
+        $scanner = new Doctrine_Query_Scanner('1.234.567,89');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.23456789e6, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatLocaleSpecificBigWrongPoint()
+    {
+        $scanner = new Doctrine_Query_Scanner('12.34.56.7,89');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.23456789e6, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatLocaleSpecificExponent()
+    {
+        $scanner = new Doctrine_Query_Scanner('1,234e2');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(1.234e2, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatLocaleSpecificExponent2()
+    {
+        $scanner = new Doctrine_Query_Scanner('0,234e2');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEqual(.234e2, $token['value']);
+    }
+
+    public function testScannerRecognizesFloatContainingWhitespace()
+    {
+        $scanner = new Doctrine_Query_Scanner('-   1.234e2');
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_NONE, $token['type']);
+        $this->assertEqual('-', $token['value']);
+
+        $token = $scanner->next();
+        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertNotEqual(-1.234e2, $token['value']);
+        $this->assertEqual(1.234e2, $token['value']);
     }
 
     public function testScannerRecognizesStringContainingWhitespace()

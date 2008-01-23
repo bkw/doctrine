@@ -87,7 +87,7 @@ class Doctrine_Query_Scanner
         if ( ! isset($regex)) {
             $patterns = array(
                 '[a-z_][a-z0-9_]*',
-                '(?:[0-9]+(?:[\.][0-9]+)?)(?:e[+-]?[0-9]+)?',
+                '(?:[0-9]+(?:[,\.][0-9]+)*)(?:e[+-]?[0-9]+)?',
                 "'(?:[^']|'')*'",
                 '\?|:[a-z]+'
             );
@@ -100,7 +100,9 @@ class Doctrine_Query_Scanner
         foreach ($matches as $match) {
             $value = $match[0];
 
-            if (is_numeric($value)) {
+            if ($this->_is_numeric($value)) {
+                // Do not care about locale specific 
+                $value = $this->_get_numeric($value);
                 if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
                     $type = Doctrine_Query_Token::T_FLOAT;
                 } else {
@@ -122,6 +124,47 @@ class Doctrine_Query_Scanner
                 'position' => $match[1]
             );
         }
+    }
+
+
+    public function _is_numeric($value)
+    {
+        // Checking for valid numeric numbers: 1.234, -1.234e-2
+        if (!is_numeric($value)) {
+            // World: 1.000.000,02 , 1,3e-2 (remove the '.' and convert ',' into '.')
+            if (!is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
+                // American: 1,000,000.02   (only need to remove the ',' chars)
+                if (!is_numeric(strtr($value, array(',' => '')))) {
+                    return false; // We tried... =\
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function _get_numeric($value)
+    {
+        if (is_scalar($value)) {
+            // Checking for valid numeric numbers: 1.234, -1.234e-2
+            if (is_numeric($value)) {
+                return $value;
+            }
+
+            // World number: 1.000.000,02 or -1,234e-2
+            if (is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
+                return strtr($value, array('.' => '', ',' => '.'));
+            }
+
+            // American extensive number: 1,000,000.02
+            if (is_numeric(strtr($value, array(',' => '')))) {
+                return strtr($value, array(',' => ''));
+            }
+
+            return false;
+        }
+
+        return false;
     }
 
     public function peek()
