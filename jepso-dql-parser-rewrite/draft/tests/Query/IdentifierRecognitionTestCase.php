@@ -44,7 +44,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
 
         $q->from('User u');
         
-        $decl = $q->getHyrator()->getAliasDeclaration('u');
+        $decl = $q->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -59,7 +59,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
 
         $q->from('User u INDEX BY name');
 
-        $decl = $q->getHyrator()->getAliasDeclaration('u');
+        $decl = $q->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -74,7 +74,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
 
         $q->from('User u INDEX BY name LEFT JOIN u.Phonenumber p');
 
-        $decl = $q->getHyrator()->getAliasDeclaration('u');
+        $decl = $q->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -82,7 +82,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
         
-        $decl = $q->getHyrator()->getAliasDeclaration('p');
+        $decl = $q->getHydrator()->getAliasDeclaration('p');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -97,7 +97,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
 
         $q->from('User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY name INDEX BY p.phonenumber');
 
-        $decl = $q->getHyrator()->getAliasDeclaration('u');
+        $decl = $q->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -105,7 +105,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
         
-        $decl = $q->getHyrator()->getAliasDeclaration('g');
+        $decl = $q->getHydrator()->getAliasDeclaration('g');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -113,7 +113,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
 
-        $decl = $q->getHyrator()->getAliasDeclaration('p');
+        $decl = $q->getHydrator()->getAliasDeclaration('p');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
