@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Configurable');
 /**
@@ -91,6 +91,15 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @var array  
      */
     protected $_mappers = array();
+    
+    /**
+     * $_name
+     *
+     * Name of the connection
+     *
+     * @var string $_name
+     */
+    protected $_name;
 
     /**
      * The name of this connection driver.
@@ -331,6 +340,16 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      */
     public function getName()
     {
+        return $this->_name;
+    }
+    
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+    
+    public function getDriverName()
+    {
         return $this->driverName;
     }
 
@@ -365,7 +384,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                     $this->modules[$name] = new Doctrine_Formatter($this);
                     break;
                 default:
-                    $class = 'Doctrine_' . ucwords($name) . '_' . $this->getName();
+                    $class = 'Doctrine_' . ucwords($name) . '_' . $this->getDriverName();
                     $this->modules[$name] = new $class($this);
                 }
         }
@@ -1427,6 +1446,71 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function rollback($savepoint = null)
     {
         $this->transaction->rollback($savepoint);
+    }
+
+    /**
+     * createDatabase
+     *
+     * Method for creating the database for the connection instance
+     *
+     * @return mixed Will return an instance of the exception thrown if the create database fails, otherwise it returns a string detailing the success
+     */
+    public function createDatabase()
+    {
+        try {
+            if ( ! $dsn = $this->getOption('dsn')) {
+                throw new Doctrine_Connection_Exception('You must create your Doctrine_Connection by using a valid Doctrine style dsn in order to use the create/drop database functionality');
+            }
+
+            $manager = $this->getManager();
+
+            $info = $manager->parsePdoDsn($dsn);
+            $username = $this->getOption('username');
+            $password = $this->getOption('password');
+
+            // Make connection without database specified so we can create it
+            $connect = $manager->openConnection(new PDO($info['scheme'] . ':host=' . $info['host'], $username, $password), 'tmp_connection', false);
+
+            // Create database
+            $connect->export->createDatabase($info['dbname']);
+
+            // Close the tmp connection with no database
+            $manager->closeConnection($connect);
+
+            // Close original connection
+            $manager->closeConnection($this);
+
+            // Reopen original connection with newly created database
+            $manager->openConnection(new PDO($info['dsn'], $username, $password), $this->getName(), true);
+
+            return 'Successfully created database for connection "' . $this->getName() . '" named "' . $info['dbname'] . '"';
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    /**
+     * dropDatabase
+     *
+     * Method for dropping the database for the connection instance
+     *
+     * @return mixed Will return an instance of the exception thrown if the drop database fails, otherwise it returns a string detailing the success
+     */
+    public function dropDatabase()
+    {
+      try {
+          if ( ! $dsn = $this->getOption('dsn')) {
+              throw new Doctrine_Connection_Exception('You must create your Doctrine_Connection by using a valid Doctrine style dsn in order to use the create/drop database functionality');
+          }
+
+          $info = $this->getManager()->parsePdoDsn($dsn);
+          
+          $this->export->dropDatabase($info['dbname']);
+
+          return 'Successfully dropped database for connection "' . $this->getName() . '" named "' . $info['dbname'] . '"';
+      } catch (Exception $e) {
+          return $e;
+      }
     }
 
     /**

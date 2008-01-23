@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Connection_Common');
 /**
@@ -88,16 +88,6 @@ class Doctrine_Connection_Mysql extends Doctrine_Connection_Common
         $this->properties['varchar_max_length'] = 255;
 
         parent::__construct($manager, $adapter);
-    }
-
-    /**
-     * returns the name of the connected database
-     *
-     * @return string
-     */
-    public function getDatabaseName()
-    {
-        return $this->fetchOne('SELECT DATABASE()');
     }
 
     /**

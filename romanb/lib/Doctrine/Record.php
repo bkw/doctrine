@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Record_Abstract');
 /**
@@ -445,7 +445,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     /**
      * cleanData
      * leaves the $data array only with values whose key is a field inside this
-     * record and returns the values that where removed from $data.
+     * record and returns the values that were removed from $data.  Also converts
+     * any values of 'null' to objects of type Doctrine_Null.
      *
      * @param array $data       data array to be cleaned
      * @return array $tmp       values cleaned from data
@@ -459,6 +460,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         foreach ($fieldNames as $fieldName) {
             if (isset($tmp[$fieldName])) {
                 $data[$fieldName] = $tmp[$fieldName];
+            } else if (array_key_exists($fieldName, $tmp)) {
+                $data[$fieldName] = self::$_null;
             } else if (!isset($this->_data[$fieldName])) {
                 $data[$fieldName] = self::$_null;
             }
@@ -1307,7 +1310,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     }
 
     /**
-     * synchronizeWithArray
+     * synchronizeFromArray
      * synchronizes a Doctrine_Record and its relations with data from an array
      *
      * it expects an array representation of a Doctrine_Record similar to the return
@@ -1317,12 +1320,12 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      *
      * @param array $array representation of a Doctrine_Record
      */
-    public function synchronizeWithArray(array $array)
+    public function synchronizeFromArray(array $array)
     {
         foreach ($array as $key => $value) {
             if ($this->getTable()->hasRelation($key)) {
-                $this->get($key)->synchronizeWithArray($value);
-            } else if ($this->getTable()->hasField($key)) {
+                $this->get($key)->synchronizeFromArray($value);
+            } else if ($this->getTable()->hasColumn($key)) {
                 $this->set($key, $value);
             }
         }

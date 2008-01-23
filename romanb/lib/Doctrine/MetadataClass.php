@@ -9,6 +9,12 @@
  */
 class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializable
 {
+    protected static $INHERITANCE_OPTIONS = array(
+            Doctrine::INHERITANCETYPE_JOINED => array(),
+            Doctrine::INHERITANCETYPE_SINGLE_TABLE => array(),
+            Doctrine::INHERITANCETYPE_TABLE_PER_CLASS => array()
+            );
+    
     /**
      * The name of the domain class that is mapped to the database with this metadata.
      * Note: In Single Table Inheritance this will be the name of the root class of the
@@ -46,6 +52,22 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      * @var integer
      */
     protected $_inheritanceType = Doctrine::INHERITANCETYPE_TABLE_PER_CLASS;
+    
+    /**
+     * The name of the column that acts as a discriminator to identify the type of an
+     * object. Used in Single Table Inheritance and Class Table Inheritance.
+     *
+     * @var string
+     */
+    protected $_discriminatorColumn;
+    
+    /**
+     * The discriminator map contains the mapping of discriminator values (keys)
+     * to class names (values).
+     *
+     * @var array
+     */
+    protected $_discriminatorMap;
     
     /**
      * An array containing all templates attached to the class.
@@ -898,13 +920,33 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
     public function setInheritanceType($type, array $options = array())
     {
         if ($type == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-            $this->setSubclasses($options);
+            $this->_evaluateDiscriminatorOptions($options);
         } else if ($type == Doctrine::INHERITANCETYPE_JOINED) {
-            $this->setSubclasses($options);
+            $this->_evaluateDiscriminatorOptions($options);
         } else if ($type == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
             // concrete table inheritance ...
-        }        
+        } else {
+            throw new Doctrine_MetadataClass_Exception("Invalid inheritance type '$type'.");
+        }
         $this->_inheritanceType = $type;
+    }
+    
+    public function setInheritanceOption($name, $value)
+    {
+        
+    }
+    
+    private function _evaluateDiscriminatorOptions(array $options)
+    {
+        if ( ! isset($options['discriminatorColumn'])) {
+            throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorColumn'."
+                    . " Inheritance types JOINED and SINGLE_TABLE require this option.");
+        } else if ( ! isset($options['discriminatorMap'])) {
+            throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorMap'."
+                    . " Inheritance types JOINED and SINGLE_TABLE require this option.");
+        }
+        $this->_discriminatorColumn = $options['discriminatorColumn'];
+        $this->_discriminatorMap = $options['discriminatorMap'];
     }
     
     protected function setSubclasses($map)

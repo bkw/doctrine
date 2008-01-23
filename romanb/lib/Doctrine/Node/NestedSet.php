@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -302,8 +302,10 @@ class Doctrine_Node_NestedSet extends Doctrine_Node implements Doctrine_Node_Int
     {
         $path = array();
         $ancestors = $this->getAncestors();
-        foreach ($ancestors as $ancestor) {
-            $path[] = $ancestor->__toString();
+        if ($ancestors) {
+            foreach ($ancestors as $ancestor) {
+                $path[] = $ancestor->__toString();
+            }
         }
         if ($includeRecord) {
             $path[] = $this->getRecord()->__toString();

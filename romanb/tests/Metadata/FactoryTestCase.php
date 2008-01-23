@@ -91,12 +91,14 @@ class Metadata_User extends Doctrine_Record
     public static function initMetadata(Doctrine_MetadataClass $class)
     {
         $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED,
-                array('CTI_User' => array('type' => 1),
-                      'CTI_Manager' => array('type' => 2),
-                      'CTI_Customer' => array('type' => 3),
-                      'CTI_SuperManager' => array('type' => 4))
+                array('discriminatorColumn' => 'type',
+                      'discriminatorMap' => array(
+                          1 => 'CTI_User',
+                          2 => 'CTI_Manager',
+                          3 => 'CTI_Customer',
+                          4 => 'CTI_SuperManager')
+                )
         );
-        //$class->setDiscriminatorValue(1);
         
         $class->setTableName('cti_user');
         $class->mapField('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));

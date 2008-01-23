@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Access');
 /**
@@ -718,7 +718,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
-     * synchronizeWithArray
+     * synchronizeFromArray
      * synchronizes a Doctrine_Collection with data from an array
      *
      * it expects an array representation of a Doctrine_Collection similar to the return
@@ -727,17 +727,18 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      *
      * @param array $array representation of a Doctrine_Collection
      */
-    public function synchronizeWithArray(array $array)
+    public function synchronizeFromArray(array $array)
     {
         foreach ($this as $key => $record) {
             if (isset($array[$key])) {
-                $record->synchronizeWithArray($array[$key]);
+                $record->synchronizeFromArray($array[$key]);
                 unset($array[$key]);
             } else {
                 // remove records that don't exist in the array
                 $this->remove($key);
             }
         }
+
         // create new records for each new row in the array
         foreach ($array as $rowKey => $row) {
             $this[$rowKey]->fromArray($row);

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -377,7 +377,10 @@ class Doctrine_Query_Tokenizer
                 }
             }
         }
-        $term[$i - 1] = array($term[$i - 1], '');
+
+        if (isset($term[$i - 1])) {
+            $term[$i - 1] = array($term[$i - 1], '');
+        }
 
         return $term;
     }

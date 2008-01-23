@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Cache_Driver');
 /**
@@ -86,6 +86,8 @@ class Doctrine_Cache_Memcache extends Doctrine_Cache_Driver
 
         if (is_array($tmp)) {
             return $tmp[0];
+        } else if (is_string($tmp)) {
+            return $tmp;
         }
 
         return false;

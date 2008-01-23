@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Access');
 /**
@@ -224,9 +224,7 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
      */
     public function ownsOne()
     {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::ONE_COMPOSITE);
-        
-        return $this;
+        throw new Doctrine_Exception('ownsMany() has been deprecated.');
     }
 
     /**
@@ -242,8 +240,7 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
      */
     public function ownsMany()
     {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::MANY_COMPOSITE);
-        return $this;
+        throw new Doctrine_Exception('ownsOne() has been deprecated.');
     }
 
     /**
@@ -293,6 +290,12 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
         $this->_table->setColumn($name, $type, $length, $options);
     }
     
+    /**
+     * hasColumns
+     *
+     * @param array $definitions
+     * @return void
+     */
     public function hasColumns(array $definitions)
     {
         foreach ($definitions as $name => $options) {
