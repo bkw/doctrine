@@ -131,12 +131,17 @@ class Doctrine_Query_Scanner
     {
         // Checking for valid numeric numbers: 1.234, -1.234e-2
         if (!is_numeric($value)) {
-            // World: 1.000.000,02 , 1,3e-2 (remove the '.' and convert ',' into '.')
-            if (!is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
-                // American: 1,000,000.02   (only need to remove the ',' chars)
-                if (!is_numeric(strtr($value, array(',' => '')))) {
-                    return false; // We tried... =\
+            // Are we dealing with numbers?
+            if (strspn($value, "0123456789-+,.eE") == strlen($value)) {
+                // World: 1.000.000,02 , 1,3e-2 (remove the '.' and convert ',' into '.')
+                if (!is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
+                    // American: 1,000,000.02   (only need to remove the ',' chars)
+                    if (!is_numeric(strtr($value, array(',' => '')))) {
+                        return false; // We tried... =\
+                    }
                 }
+            } else {
+                return false; // String...
             }
         }
 
