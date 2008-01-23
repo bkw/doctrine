@@ -230,6 +230,7 @@ class Doctrine_Data_Import extends Doctrine_Data
             if( array_key_exists('children', $nestedSet) )
             {
                 $children = $nestedSet['children'];
+                $children = array_reverse($children, true);
                 unset($nestedSet['children']);
             }
 
