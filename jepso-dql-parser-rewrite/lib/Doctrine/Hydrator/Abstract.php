@@ -72,24 +72,24 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
     }
 
     /**
-     * setAliasMap
+     * setAliasDeclarations
      * sets the whole component alias map
      *
      * @param array $map            alias map
      * @return Doctrine_Hydrate     this object
      */
-    public function setQueryComponents(array $queryComponents)
+    public function setAliasDeclarations(array $queryComponents)
     {
         $this->_queryComponents = $queryComponents;
     }
 
     /**
-     * getAliasMap
+     * getAliasDeclarations
      * returns the component alias map
      *
      * @return array    component alias map
      */
-    public function getQueryComponents()
+    public function getAliasDeclarations()
     {
         return $this->_queryComponents;
     }
@@ -115,18 +115,6 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
      * @deprecated
      */
     public function getAliasDeclaration($componentAlias)
-    {
-        return $this->getQueryComponent($componentAlias);
-    }
-
-    /**
-     * getQueryComponent
-     * get the declaration for given component alias
-     *
-     * @param string $componentAlias    the component alias the retrieve the declaration from
-     * @return array                    the alias declaration
-     */
-    public function getQueryComponent($componentAlias)
     {
         if ( ! isset($this->_queryComponents[$componentAlias])) {
             throw new Doctrine_Query_Exception('Unknown component alias ' . $componentAlias);
