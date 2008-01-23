@@ -39,7 +39,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $suManagerClass = $this->conn->getMetadata('Metadata_SuperManager');
         $this->assertTrue($suManagerClass instanceof Doctrine_MetadataClass);
         $this->assertIdentical(array('Metadata_Manager', 'Metadata_User'), $suManagerClass->getOption('parents'));
-        $this->assertEqual('cti_manager', $suManagerClass->getTableName());
+        $this->assertEqual('cti_supermanager', $suManagerClass->getTableName());
         $this->assertEqual(4, count($suManagerClass->getFields()));
         
         var_dump($suManagerClass->getColumns());
