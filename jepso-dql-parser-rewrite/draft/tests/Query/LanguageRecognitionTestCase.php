@@ -315,4 +315,18 @@ class Doctrine_Query_LanguageRecognition_TestCase extends Doctrine_UnitTestCase
     {
         $this->assertValidDql('FROM Employee e WHERE e.salary > SOME (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
-}
+
+    public function testLikeExpression()
+    {
+        $this->assertValidDql("SELECT u.id FROM User u WHERE u.name LIKE 'z%'");
+    }
+
+    public function testNotLikeExpression()
+    {
+        $this->assertValidDql("SELECT u.id FROM User u WHERE u.name NOT LIKE 'z%'");
+    }
+
+    public function testLikeExpressionWithCustomEscapeCharacter()
+    {
+        $this->assertValidDql("SELECT u.id FROM User u WHERE u.name LIKE 'z|%' ESCAPE '|'");
+    }}
