@@ -76,14 +76,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     protected $tables = array();
     
     /**
-     * 
-     */
-    protected $_metadataClasses = array();
-    
-    /**
      *
      */
-    protected $_metadataClassFactory;
+    protected $_metadataFactory;
     
     /**
      * An array of mapper objects currently maintained by this connection.
@@ -244,7 +239,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $this->setParent($manager);
         
         $this->_tableFactory = new Doctrine_Table_Factory($this);
-        $this->_metadataClassFactory = new Doctrine_MetadataClass_Factory($this);
+        $this->_metadataFactory = new Doctrine_MetadataClass_Factory($this);
 
         $this->setAttribute(Doctrine::ATTR_CASE, Doctrine::CASE_NATURAL);
         $this->setAttribute(Doctrine::ATTR_ERRMODE, Doctrine::ERRMODE_EXCEPTION);
@@ -566,6 +561,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param string $table         The table to delete data from
      * @param array $identifier     An associateve array containing identifier fieldname-value pairs.
      * @return integer              The number of affected rows
+     *
+     * @todo First argument should just be a table name. Move the conversion from
+     *       field to column names one layer up.
      */
     public function delete(Doctrine_Table $table, array $identifier)
     {
@@ -589,6 +587,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param array $values     An associateve array containing column-value pairs.
      * @return mixed            boolean false if empty value array was given,
      *                          otherwise returns the number of affected rows
+     *
+     * @todo First argument should just be a table name. Move the conversion from
+     *       field to column names one layer up.
      */
     public function update(Doctrine_Table $table, array $fields, array $identifier)
     {
@@ -623,6 +624,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param array $fields     An associateve array containing fieldname-value pairs.
      * @return mixed            boolean false if empty value array was given,
      *                          otherwise returns the number of affected rows
+     * 
+     * @todo First argument should just be a table name. Move the conversion from
+     *       field to column names one layer up.
      */
     public function insert(Doctrine_Table $table, array $fields)
     {
@@ -1081,14 +1085,15 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         return $this->tables[$className];
     }
     
+    /**
+     * Returns the metadata for a class.
+     *
+     * @return Doctrine_Metadata
+     * @todo package:orm
+     */
     public function getMetadata($className)
     {
-        if (isset($this->_metadataClasses[$className])) {
-            return $this->_metadataClasses[$className];
-        }
-        $this->_metadataClassFactory->loadClasses($className, $this->_metadataClasses);
-        
-        return $this->_metadataClasses[$className];
+        return $this->_metadataFactory->getMetadataFor($className);
     }
     
     /**
@@ -1096,6 +1101,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * the class between the relational database and their object representation.
      * 
      * @return Doctrine_Mapper_Abstract  The mapper object.
+     * @todo package:orm  
      */
     public function getMapper($className)
     {        
@@ -1139,6 +1145,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     
     /**
      *
+     * @todo package:orm
      */
     public function getMappers()
     {
@@ -1199,6 +1206,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param string $name          component name
      * @return Doctrine_Record      Doctrine_Record object
      * @todo Any strong reasons why this should not be removed?
+     * @todo package:orm
      */
     public function create($name)
     {
@@ -1208,7 +1216,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     /**
      * Creates a new Doctrine_Query object that operates on this connection.
      * 
-     * @return Doctrine_Query 
+     * @return Doctrine_Query
+     * @todo package:orm
      */
     public function createQuery($dql = "")
     {
@@ -1227,6 +1236,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * @throws PDOException         if something went wrong at database level
      * @return void
+     * @todo package:orm
      */
     public function flush()
     {
@@ -1240,6 +1250,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * clears all repositories
      *
      * @return void
+     * @todo package:orm
      */
     public function clear()
     {
@@ -1254,6 +1265,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * evicts all tables
      *
      * @return void
+     * @todo package:orm
      */
     public function evictTables()
     {
@@ -1294,6 +1306,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * Returns the current internal transaction nesting level.
      *
      * @return integer  The nesting level. A value of 0 means theres no active transaction.
+     * @todo package:orm???
      */
     public function getInternalTransactionLevel()
     {
@@ -1341,6 +1354,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * getResultCacheDriver
      *
      * @return Doctrine_Cache_Interface
+     * @todo package:orm
      */
     public function getResultCacheDriver()
     {
@@ -1355,6 +1369,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * getQueryCacheDriver
      *
      * @return Doctrine_Cache_Interface
+     * @todo package:orm
      */
     public function getQueryCacheDriver()
     {
@@ -1405,6 +1420,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * This method must only be used by Doctrine itself to initiate transactions.
      * Userland-code must use {@link beginTransaction()}.
+     *
+     * @todo package:orm???
      */
     public function beginInternalTransaction($savepoint = null)
     {

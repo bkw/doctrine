@@ -11,10 +11,31 @@ class Doctrine_MetadataClass_Factory
     protected $_conn;
     protected $_driver;
     
+    /**
+     * 
+     */
+    protected $_loadedMetadata = array();
+    
     public function __construct(Doctrine_Connection $conn /*Doctrine_MetadataClass_Driver $driver*/)
     {
         $this->_conn = $conn;
         //$this->_driver = $driver;
+    }
+    
+    /**
+     * Returns the metadata object for a class.
+     *
+     * @param string $className  The name of the class.
+     * @return Doctrine_Metadata
+     */
+    public function getMetadataFor($className)
+    {
+        if (isset($this->_loadedMetadata[$className])) {
+            return $this->_loadedMetadata[$className];
+        }
+        $this->_loadClasses($className, $this->_loadedMetadata);
+        
+        return $this->_loadedMetadata[$className];
     }
     
     /**
@@ -24,7 +45,7 @@ class Doctrine_MetadataClass_Factory
      * @param string $name   The name of the class for which the metadata should get loaded.
      * @param array  $tables The metadata collection to which the loaded metadata is added.
      */
-    public function loadClasses($name, array &$classes)
+    protected function _loadClasses($name, array &$classes)
     {
         $parentClass = $name;
         $parentClasses = array();
@@ -47,15 +68,13 @@ class Doctrine_MetadataClass_Factory
         } else {
             $rootClassOfHierarchy = count($parentClasses) > 0 ? array_shift($parentClasses) : $name;
             $class = new Doctrine_MetadataClass($rootClassOfHierarchy, $this->_conn);
-            $this->_loadMetaDataFromCode($class, $rootClassOfHierarchy);
+            $this->_loadMetadata($class, $rootClassOfHierarchy);
             $classes[$rootClassOfHierarchy] = $class;
         }
         
         if (count($parentClasses) == 0) {
             return $class;
         }
-        //var_dump($parentClasses);
-        //echo "<br /><br />";
         
         // load metadata of subclasses
         // -> child1 -> child2 -> $name
@@ -63,40 +82,12 @@ class Doctrine_MetadataClass_Factory
         $parent = $class;
         foreach ($parentClasses as $subclassName) {
             $subClass = new Doctrine_MetadataClass($subclassName, $this->_conn);
-            $subClass->setInheritanceType($parent->getInheritanceType());
+            $subClass->setInheritanceType($parent->getInheritanceType(), $parent->getInheritanceOptions());
             $this->_addInheritedFields($subClass, $parent);
-            $this->_loadMetaDataFromCode($subClass, $subclassName);
+            $this->_loadMetadata($subClass, $subclassName);
             $classes[$subclassName] = $subClass;
             $parent = $subClass;
         }
-        
-        /*
-        if ($class->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
-            foreach ($parentClasses as $subclassName) {
-                $subClass = new Doctrine_MetadataClass($subclassName, $this->_conn);
-                $subClass->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED);
-                $this->_loadMetaDataFromCode($subClass, $subclassName);
-                $classes[$subclassName] = $subClass;
-            }
-        } else if ($class->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-            foreach ($parentClasses as $subclassName) {
-                $subClass = new Doctrine_MetadataClass($subclassName, $this->_conn);
-                $subClass->setInheritanceType(Doctrine::INHERITANCETYPE_SINGLE_TABLE);
-                $this->_loadMetaDataFromCode($subClass, $subclassName);
-                $classes[$subclassName] = $subClass;
-            }
-        } else if ($class->getInheritanceType() == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-            foreach ($parentClasses as $subclassName) {
-                $subClass = new Doctrine_MetadataClass($subclassName, $this->_conn);
-                $subClass->setInheritanceType(Doctrine::INHERITANCETYPE_TABLE_PER_CLASS);
-                $this->_loadMetaDataFromCode($subClass, $subclassName);
-                $classes[$subclassName] = $subClass;
-            }
-        } else {
-            throw new Doctrine_MetadataClass_Factory_Exception("Failed to load meta data. Unknown inheritance type "
-                    . "or no inheritance type specified for hierarchy.");
-        }
-        */
     }
     
     protected function _addInheritedFields($subClass, $parentClass)
@@ -112,10 +103,9 @@ class Doctrine_MetadataClass_Factory
     }
     
     /**
-     * Initializes the in-memory metadata for the domain class this mapper belongs to.
-     * Uses reflection and code setup.
+     * Current code driver.
      */
-    protected function _loadMetaDataFromCode(Doctrine_MetadataClass $class, $name)
+    protected function _loadMetadata(Doctrine_MetadataClass $class, $name)
     {
         if ( ! class_exists($name) || empty($name)) {
             throw new Doctrine_Exception("Couldn't find class " . $name . ".");
@@ -141,7 +131,7 @@ class Doctrine_MetadataClass_Factory
         $class->setOption('parents', $names);
 
         // set up metadata mapping
-        call_user_func_array(array($name, 'initMetadata'), array($class));
+        $this->_loadMetadataFromCode($class, $name);
         
         $tableName = $class->getTableName();
         if ( ! isset($tableName)) {
@@ -151,11 +141,22 @@ class Doctrine_MetadataClass_Factory
         $this->_initIdentifier($class);
         
         return $class;
-    }    
+    }
     
     /**
-     * Initializes the table identifier(s)/primary key(s).
+     * Code driver.
      *
+     * @todo Move to code driver.
+     */
+    protected function _loadMetadataFromCode($class, $name)
+    {
+        call_user_func_array(array($name, 'initMetadata'), array($class));
+    }
+    
+    /**
+     * Initializes the class identifier(s)/primary key(s).
+     *
+     * @param Doctrine_Metadata  The metadata container of the class in question.
      */
     protected function _initIdentifier(Doctrine_MetadataClass $class)
     {

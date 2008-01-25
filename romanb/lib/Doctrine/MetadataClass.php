@@ -8,17 +8,9 @@
  * @author  Roman Borschel <roman@code-factory.org>
  */
 class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializable
-{
-    protected static $INHERITANCE_OPTIONS = array(
-            Doctrine::INHERITANCETYPE_JOINED => array(),
-            Doctrine::INHERITANCETYPE_SINGLE_TABLE => array(),
-            Doctrine::INHERITANCETYPE_TABLE_PER_CLASS => array()
-            );
-    
+{    
     /**
      * The name of the domain class that is mapped to the database with this metadata.
-     * Note: In Single Table Inheritance this will be the name of the root class of the
-     * hierarchy (the one that gets the database table).
      * 
      * @var string
      */
@@ -31,15 +23,20 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
     protected $_conn;
     
     /**
+     * The names of the parent classes.
+     */
+    protected $_parentClasses = array();
+    
+    /**
      * The field names of all fields that are part of the identifier/primary key
-     * of the described component.
+     * of the described class.
      *
      * @var array 
      */
     protected $_identifier = array();
     
     /**
-     * The identifier type of the component.
+     * The identifier type of the class.
      *
      * @see Doctrine_Identifier constants
      * @var integer
@@ -76,14 +73,6 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      * @var array $_templates                   
      */
     protected $_templates = array();
-
-    /**
-     * An array containing all filters attached to this class.
-     *
-     * @see Doctrine_Record_Filter
-     * @var array $_filters                     
-     */
-    protected $_filters = array();
     
     /**
      * An array containing all generators attached to this class.
@@ -92,6 +81,14 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      * @var array $_generators                  
      */
     protected $_generators = array();
+
+    /**
+     * An array containing all filters attached to this class.
+     *
+     * @see Doctrine_Record_Filter
+     * @var array $_filters                     
+     */
+    protected $_filters = array();
     
     /**
      * An array of column definitions,
@@ -130,6 +127,11 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
     protected $_columnNames = array();
     
     /**
+     * @todo Implementation.
+     */
+    protected $_readOnlyFieldNames = array();
+    
+    /**
      * Tree object associated with the class.
      *
      * @var Doctrine_Tree                
@@ -149,7 +151,7 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      *
      * @var boolean     
      */
-    protected $hasDefaultValues;
+    protected $_hasDefaultValues;
     
     /**
      * Relation parser object. Manages the relations for the class.
@@ -189,6 +191,16 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
             );
     
     /**
+     * 
+     */
+    protected $_inheritanceOptions = array(
+            'discriminatorColumn' => 'dtype',
+            'discriminatorMap'    => array(),
+            'discriminatorType'   => 'integer',
+            'joinSubclasses'      => true
+            );
+    
+    /**
      * Specific options that can be set for the database table the class is mapped to.
      * Some of them are dbms specific and they are only used if the table is generated
      * by Doctrine (NOT when using Migrations).
@@ -219,9 +231,9 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
             );     
     
     /**
-     * Constructs a new metadata class instance.
+     * Constructs a new metadata instance.
      *
-     * @param string $domainClassName  Name of the class this metadata class is used for.
+     * @param string $domainClassName  Name of the class the metadata instance is used for.
      */
     public function __construct($domainClassName, Doctrine_Connection $conn)
     {        
@@ -538,7 +550,7 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
             }
         }
         if (isset($options['default'])) {
-            $this->hasDefaultValues = true;
+            $this->_hasDefaultValues = true;
         }
         
         $this->columnCount++;
@@ -552,7 +564,7 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      */
     public function hasDefaultValues()
     {
-        return $this->hasDefaultValues;
+        return $this->_hasDefaultValues;
     }
 
     /**
@@ -920,23 +932,21 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
     public function setInheritanceType($type, array $options = array())
     {
         if ($type == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-            $this->_evaluateDiscriminatorOptions($options);
+            $this->_checkRequiredDiscriminatorOptions($options);
         } else if ($type == Doctrine::INHERITANCETYPE_JOINED) {
-            $this->_evaluateDiscriminatorOptions($options);
+            $this->_checkRequiredDiscriminatorOptions($options);
         } else if ($type == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
             // concrete table inheritance ...
         } else {
             throw new Doctrine_MetadataClass_Exception("Invalid inheritance type '$type'.");
         }
         $this->_inheritanceType = $type;
+        foreach ($options as $name => $value) {
+            $this->setInheritanceOption($name, $value);
+        }
     }
     
-    public function setInheritanceOption($name, $value)
-    {
-        
-    }
-    
-    private function _evaluateDiscriminatorOptions(array $options)
+    private function _checkRequiredDiscriminatorOptions(array $options)
     {
         if ( ! isset($options['discriminatorColumn'])) {
             throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorColumn'."
@@ -945,25 +955,60 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
             throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorMap'."
                     . " Inheritance types JOINED and SINGLE_TABLE require this option.");
         }
-        $this->_discriminatorColumn = $options['discriminatorColumn'];
-        $this->_discriminatorMap = $options['discriminatorMap'];
     }
     
-    protected function setSubclasses($map)
+    public function getInheritanceOption($name)
     {
-        //echo "setting inheritance map on " . get_class($this) . "<br />";
-        $this->setOption('inheritanceMap', $map);
-        $this->setOption('subclasses', array_keys($map));
+        if ( ! isset($this->_inheritanceOptions[$name])) {
+            throw new Doctrine_MetadataClass_Exception("Unknown inheritance option: '$name'.");
+        }
+        
+        return $this->_inheritanceOptions[$name];
+    }
+    
+    public function getInheritanceOptions()
+    {
+        return $this->_inheritanceOptions;
+    }
+    
+    public function setInheritanceOption($name, $value)
+    {
+        if ( ! isset($this->_inheritanceOptions[$name])) {
+            throw new Doctrine_MetadataClass_Exception("Unknown inheritance option: '$name'.");
+        }
+        
+        switch ($name) {
+            case 'discriminatorColumn':
+                if ( ! is_string($value)) {
+                    throw new Doctrine_MetadataClass_Exception("Invalid value '$value' for option"
+                            . " 'discriminatorColumn'.");
+                }
+                break;
+            case 'discriminatorMap':
+                if ( ! is_array($value)) {
+                    throw new Doctrine_MetadataClass_Exception("Value for option 'discriminatorMap'"
+                            . " must be an array.");
+                }
+                break;
+            case 'discriminatorType':
+                if ($value != "integer" && $value != "string") {
+                    throw new Doctrine_MetadataClass_Exception("Value for option 'discriminatorType'"
+                            . " can only be 'string' or 'integer'.");
+                }
+                break;
+        }
+        
+        $this->_inheritanceOptions[$name] = $value;
     }
     
     /**
      * export
      * exports this class to the database based on its mapping.
      *
-     * @throws Doctrine_Connection_Exception    if some error other than Doctrine::ERR_ALREADY_EXISTS
-     *                                          occurred during the create table operation
-     * @return boolean                          whether or not the export operation was successful
-     *                                          false if table already existed in the database
+     * @throws Doctrine_Connection_Exception    If some error other than Doctrine::ERR_ALREADY_EXISTS
+     *                                          occurred during the create table operation.
+     * @return boolean                          Whether or not the export operation was successful
+     *                                          false if table already existed in the database.
      */
     public function export()
     {
@@ -975,7 +1020,7 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
      * Returns an array with the DDL for this table object.
      *
      * @return array
-     * @todo move to Table
+     * @todo Move somewhere else ... somehow this seems wrong here. Exporting is a separate task.
      */
     public function getExportableFormat($parseForeignKeys = true)
     {
@@ -1120,6 +1165,7 @@ class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializab
         $filter->setTable($this);
         $filter->init();
         array_unshift($this->_filters, $filter);
+        
         return $this;
     }
     
