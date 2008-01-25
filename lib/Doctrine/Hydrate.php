@@ -1055,6 +1055,10 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
         // logic behind it, hence calling it multiple times on
         // large result sets can be quite expensive.
         // So for efficiency we use little listener caching here
+        //
+        // We also cache information about subclasses of the involved tables,
+        // because 
+
         foreach ($this->_aliasMap as $alias => $data) {
             $componentName = $data['table']->getComponentName();
             $listeners[$componentName] = $data['table']->getRecordListener();
@@ -1064,7 +1068,7 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
             $id[$alias] = '';
             
             $subclassMap[$alias] = array();
-            $subclassInheritanceMap = array();
+            $subclassInheritanceMap[$alias] = array();
             
             // cache record listeners for subclasses of all involved tables
             if ($subclasses = $data['table']->subclasses) {
@@ -1074,12 +1078,11 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
                     if ($componentName != $subclass) {
                         $subclass_table = $this->_conn->getTable($subclass);
                         $listeners[$subclass] = $subclass_table->getRecordListener();
-                        $subclassInheritanceMap[$subclass] = $subclass_table->inheritanceMap;
+                        $subclassInheritanceMap[$alias][$subclass] = $subclass_table->getOption('inheritanceMap');
                     }
                }
             }
         }
-
         while ($data = $stmt->fetch(Doctrine::FETCH_ASSOC)) {
             $currData  = array();
             $identifiable = array();
@@ -1122,8 +1125,8 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
             // check if this matches any subclasses
             $componentName = false;
             foreach ($subclassMap[$rootAlias] as $subclass) {
-                if (array_key_exists($subclass, $subclassInheritanceMap)) {
-                    foreach ($subclassInheritanceMap[$subclass] as $key => $value) {
+                if (isset($subclassInheritanceMap[$rootAlias][$subclass])) {
+                    foreach ($subclassInheritanceMap[$rootAlias][$subclass] as $key => $value) {
                         if (isset($currData[$rootAlias][$key]) && $currData[$rootAlias][$key] == $value) {
                             $subclass_table = $this->_conn->getTable($subclass);
                             $componentName = $subclass_table->getComponentName();
