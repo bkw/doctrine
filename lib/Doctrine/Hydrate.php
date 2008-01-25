@@ -1062,6 +1062,22 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
             $currData[$alias] = array();
             $prev[$alias] = array();
             $id[$alias] = '';
+            
+            $subclassMap[$alias] = array();
+            $subclassInheritanceMap = array();
+            
+            // cache record listeners for subclasses of all involved tables
+            if ($subclasses = $data['table']->subclasses) {
+                $subclassMap[$alias] = $subclasses;
+
+                foreach ($subclasses as $subclass) {
+                    if ($componentName != $subclass) {
+                        $subclass_table = $this->_conn->getTable($subclass);
+                        $listeners[$subclass] = $subclass_table->getRecordListener();
+                        $subclassInheritanceMap[$subclass] = $subclass_table->inheritanceMap;
+                    }
+               }
+            }
         }
 
         while ($data = $stmt->fetch(Doctrine::FETCH_ASSOC)) {
@@ -1102,7 +1118,23 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
 
             // dealing with root component
             $table = $this->_aliasMap[$rootAlias]['table'];
-            $componentName = $table->getComponentName();
+
+            // check if this matches any subclasses
+            $componentName = false;
+            foreach ($subclassMap[$rootAlias] as $subclass) {
+                if (array_key_exists($subclass, $subclassInheritanceMap)) {
+                    foreach ($subclassInheritanceMap[$subclass] as $key => $value) {
+                        if (isset($currData[$rootAlias][$key]) && $currData[$rootAlias][$key] == $value) {
+                            $subclass_table = $this->_conn->getTable($subclass);
+                            $componentName = $subclass_table->getComponentName();
+                        }
+                    }
+                }
+            }
+
+            // if it didn't match any subclasses, just use the name of the table
+            if (!$componentName) $componentName = $table->getComponentName();
+
             $event->set('data', $currData[$rootAlias]);
             $listeners[$componentName]->preHydrate($event);
             $element = $driver->getElement($currData[$rootAlias], $componentName);
