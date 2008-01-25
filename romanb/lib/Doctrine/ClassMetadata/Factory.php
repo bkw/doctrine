@@ -6,7 +6,7 @@
  * @todo Support different drivers for loading the metadata from different sources.
  * @package Doctrine
  */
-class Doctrine_MetadataClass_Factory
+class Doctrine_ClassMetadata_Factory
 {
     protected $_conn;
     protected $_driver;
@@ -67,7 +67,7 @@ class Doctrine_MetadataClass_Factory
             $class = $classes[$loadedParentClass];
         } else {
             $rootClassOfHierarchy = count($parentClasses) > 0 ? array_shift($parentClasses) : $name;
-            $class = new Doctrine_MetadataClass($rootClassOfHierarchy, $this->_conn);
+            $class = new Doctrine_ClassMetadata($rootClassOfHierarchy, $this->_conn);
             $this->_loadMetadata($class, $rootClassOfHierarchy);
             $classes[$rootClassOfHierarchy] = $class;
         }
@@ -81,7 +81,7 @@ class Doctrine_MetadataClass_Factory
         
         $parent = $class;
         foreach ($parentClasses as $subclassName) {
-            $subClass = new Doctrine_MetadataClass($subclassName, $this->_conn);
+            $subClass = new Doctrine_ClassMetadata($subclassName, $this->_conn);
             $subClass->setInheritanceType($parent->getInheritanceType(), $parent->getInheritanceOptions());
             $this->_addInheritedFields($subClass, $parent);
             $this->_loadMetadata($subClass, $subclassName);
@@ -105,7 +105,7 @@ class Doctrine_MetadataClass_Factory
     /**
      * Current code driver.
      */
-    protected function _loadMetadata(Doctrine_MetadataClass $class, $name)
+    protected function _loadMetadata(Doctrine_ClassMetadata $class, $name)
     {
         if ( ! class_exists($name) || empty($name)) {
             throw new Doctrine_Exception("Couldn't find class " . $name . ".");
@@ -124,7 +124,7 @@ class Doctrine_MetadataClass_Factory
         } while ($className = get_parent_class($className));
 
         if ($className === false) {
-            throw new Doctrine_MetadataClass_Factory_Exception("Unknown component '$className'.");
+            throw new Doctrine_ClassMetadata_Factory_Exception("Unknown component '$className'.");
         }
 
         // save parents
@@ -158,7 +158,7 @@ class Doctrine_MetadataClass_Factory
      *
      * @param Doctrine_Metadata  The metadata container of the class in question.
      */
-    protected function _initIdentifier(Doctrine_MetadataClass $class)
+    protected function _initIdentifier(Doctrine_ClassMetadata $class)
     {
         switch (count($class->getIdentifier())) {
             case 0:

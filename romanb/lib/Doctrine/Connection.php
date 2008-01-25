@@ -239,7 +239,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $this->setParent($manager);
         
         $this->_tableFactory = new Doctrine_Table_Factory($this);
-        $this->_metadataFactory = new Doctrine_MetadataClass_Factory($this);
+        $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this);
 
         $this->setAttribute(Doctrine::ATTR_CASE, Doctrine::CASE_NATURAL);
         $this->setAttribute(Doctrine::ATTR_ERRMODE, Doctrine::ERRMODE_EXCEPTION);

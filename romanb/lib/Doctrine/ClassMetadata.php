@@ -7,7 +7,7 @@
  * @package Doctrine
  * @author  Roman Borschel <roman@code-factory.org>
  */
-class Doctrine_MetadataClass extends Doctrine_Configurable implements Serializable
+class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializable
 {    
     /**
      * The name of the domain class that is mapped to the database with this metadata.

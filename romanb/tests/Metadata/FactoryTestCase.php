@@ -23,7 +23,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
     public function testMetadataSetupOnClassTableInheritanceHierarchy()
     {        
         $userClass = $this->conn->getMetadata('Metadata_User');
-        $this->assertTrue($userClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($userClass instanceof Doctrine_ClassMetadata);
         $this->assertEqual('cti_user', $userClass->getTableName());
         $this->assertEqual(3, count($userClass->getFields()));
         $this->assertIdentical(array(), $userClass->getOption('parents'));
@@ -37,7 +37,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         
         
         $managerClass = $this->conn->getMetadata('Metadata_Manager');
-        $this->assertTrue($managerClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($managerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_User'), $managerClass->getOption('parents'));
         $this->assertEqual('cti_manager', $managerClass->getTableName());
         $this->assertEqual(4, count($managerClass->getFields()));
@@ -51,7 +51,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         
         
         $suManagerClass = $this->conn->getMetadata('Metadata_SuperManager');
-        $this->assertTrue($suManagerClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($suManagerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_Manager', 'Metadata_User'), $suManagerClass->getOption('parents'));
         $this->assertEqual('cti_supermanager', $suManagerClass->getTableName());
         $this->assertEqual(5, count($suManagerClass->getFields()));
@@ -69,7 +69,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
     public function testMetadataSetupOnSingleTableInheritanceHierarchy()
     {        
         $userClass = $this->conn->getMetadata('Metadata_STI_User');
-        $this->assertTrue($userClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($userClass instanceof Doctrine_ClassMetadata);
         $this->assertEqual('cti_user', $userClass->getTableName());
         $this->assertEqual(3, count($userClass->getFields()));
         $this->assertIdentical(array(), $userClass->getOption('parents'));
@@ -83,7 +83,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         
         
         $managerClass = $this->conn->getMetadata('Metadata_STI_Manager');
-        $this->assertTrue($managerClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($managerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_User'), $managerClass->getOption('parents'));
         $this->assertEqual('cti_manager', $managerClass->getTableName());
         $this->assertEqual(4, count($managerClass->getFields()));
@@ -97,7 +97,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         
         
         $suManagerClass = $this->conn->getMetadata('Metadata_STI_SuperManager');
-        $this->assertTrue($suManagerClass instanceof Doctrine_MetadataClass);
+        $this->assertTrue($suManagerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_Manager', 'Metadata_User'), $suManagerClass->getOption('parents'));
         $this->assertEqual('cti_supermanager', $suManagerClass->getTableName());
         $this->assertEqual(5, count($suManagerClass->getFields()));
@@ -116,7 +116,7 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
 
 class Metadata_User extends Doctrine_Record
 {    
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_user');
         $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED,
@@ -139,7 +139,7 @@ class Metadata_User extends Doctrine_Record
 
 class Metadata_Manager extends Metadata_User 
 {
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_manager');
         $class->mapField('ctim_salary as salary', 'varchar', 50, array());
@@ -157,7 +157,7 @@ class Metadata_Customer extends CTI_User
 
 class Metadata_SuperManager extends Metadata_Manager
 {
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_supermanager');
         $class->mapField('ctism_gosutitle as gosutitle', 'varchar', 50, array());
@@ -168,7 +168,7 @@ class Metadata_SuperManager extends Metadata_Manager
 
 class Metadata_STI_User extends Doctrine_Record
 {    
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_user');
         $class->setInheritanceType(Doctrine::INHERITANCETYPE_SINGLE_TABLE,
@@ -191,7 +191,7 @@ class Metadata_STI_User extends Doctrine_Record
 
 class Metadata_STI_Manager extends Metadata_User 
 {
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_manager');
         $class->mapField('ctim_salary as salary', 'varchar', 50, array());
@@ -209,7 +209,7 @@ class Metadata_STI_Customer extends CTI_User
 
 class Metadata_STI_SuperManager extends Metadata_Manager
 {
-    public static function initMetadata(Doctrine_MetadataClass $class)
+    public static function initMetadata(Doctrine_ClassMetadata $class)
     {
         $class->setTableName('cti_supermanager');
         $class->mapField('ctism_gosutitle as gosutitle', 'varchar', 50, array());
