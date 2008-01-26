@@ -86,13 +86,18 @@ abstract class Doctrine_Query_Abstract extends Doctrine_Hydrate
     public function whereIn($expr, $params = array(), $not = false)
     {
         $params = (array) $params;
+
+        // if there's no params, return (else we'll get a WHERE IN (), invalid SQL)
+        if (!count($params))
+          return;
+
         $a = array();
         foreach ($params as $k => $value) {
             if ($value instanceof Doctrine_Expression) {
                 $value = $value->getSql();
                 unset($params[$k]);
             } else {
-                $value = '?';          
+                $value = '?';
             }
             $a[] = $value;
         }
