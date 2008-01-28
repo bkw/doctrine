@@ -565,7 +565,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @todo First argument should just be a table name. Move the conversion from
      *       field to column names one layer up.
      */
-    public function delete(Doctrine_Table $table, array $identifier)
+    public function delete(Doctrine_ClassMetadata $table, array $identifier)
     {
         $criteria = array();
         foreach (array_keys($identifier) as $id) {
@@ -591,7 +591,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @todo First argument should just be a table name. Move the conversion from
      *       field to column names one layer up.
      */
-    public function update(Doctrine_Table $table, array $fields, array $identifier)
+    public function update(Doctrine_ClassMetadata $table, array $fields, array $identifier)
     {
         if (empty($fields)) {
             return false;
@@ -628,7 +628,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @todo First argument should just be a table name. Move the conversion from
      *       field to column names one layer up.
      */
-    public function insert(Doctrine_Table $table, array $fields)
+    public function insert(Doctrine_ClassMetadata $table, array $fields)
     {
         if (empty($fields)) {
             return false;
@@ -966,6 +966,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         try {
             if ( ! empty($params)) {
+                //echo $query . "<br />";
                 $stmt = $this->prepare($query);
                 $stmt->execute($params);
                 return $stmt;
@@ -1041,6 +1042,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $event = new Doctrine_Event($this, Doctrine_Event::CONN_ERROR);
         $this->getListener()->preError($event);
         
+        /*if (strstr($e->getMessage(), 'no such table')) {
+            echo $e->getMessage() . "<br />" . $e->getTraceAsString() . "<br />";
+        }*/
+        
         $name = 'Doctrine_Connection_' . $this->driverName . '_Exception';
 
         $exc = new $name($e->getMessage(), (int) $e->getCode());
@@ -1075,7 +1080,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param string $name              component name
      * @return Doctrine_Table
      */
-    public function getTable($className)
+    /*public function getTable($className)
     {
         if (isset($this->tables[$className])) {
             return $this->tables[$className];
@@ -1083,7 +1088,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $this->_tableFactory->loadTables($className, $this->tables);
         
         return $this->tables[$className];
-    }
+    }*/
     
     /**
      * Returns the metadata for a class.
@@ -1092,6 +1097,17 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @todo package:orm
      */
     public function getMetadata($className)
+    {
+        return $this->getClassMetadata($className);
+    }
+    
+    /**
+     * Returns the metadata for a class.
+     *
+     * @return Doctrine_Metadata
+     * @todo package:orm
+     */
+    public function getClassMetadata($className)
     {
         return $this->_metadataFactory->getMetadataFor($className);
     }
@@ -1110,19 +1126,19 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         }
         
         $customMapperClass = $className . 'Mapper';
-        $table = $this->getTable($className);
+        $metadata = $this->getMetadata($className);
         if (class_exists($customMapperClass, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
                 in_array('Doctrine_Mapper_Abstract', class_parents($customMapperClass))) {
-            $mapper = new $customMapperClass($className, $table);
+            $mapper = new $customMapperClass($className, $metadata);
         } else {
             // instantiate correct mapper type
-            $inheritanceType = $table->getInheritanceType();
+            $inheritanceType = $metadata->getInheritanceType();
             if ($inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
-                $mapper = new Doctrine_Mapper_Joined($className, $table);
+                $mapper = new Doctrine_Mapper_Joined($className, $metadata);
             } else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-                $mapper = new Doctrine_Mapper_SingleTable($className, $table);
+                $mapper = new Doctrine_Mapper_SingleTable($className, $metadata);
             } else if ($inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-                $mapper = new Doctrine_Mapper_TablePerClass($className, $table);
+                $mapper = new Doctrine_Mapper_TablePerClass($className, $metadata);
             } else {
                 throw new Doctrine_Connection_Exception("Unknown inheritance type '$inheritanceType'. Can't create mapper.");
             }

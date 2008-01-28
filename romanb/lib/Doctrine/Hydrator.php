@@ -107,7 +107,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         foreach ($this->_queryComponents as $dqlAlias => $data) {
             $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
             $componentName = $data['mapper']->getComponentName();
-            $listeners[$componentName] = $data['table']->getRecordListener();
+            $listeners[$componentName] = $data['mapper']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
             $prev[$dqlAlias] = array();
             $id[$dqlAlias] = '';

@@ -316,7 +316,7 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
                 $conn = Doctrine_Manager::getInstance()
                         ->getConnectionForComponent($component);
                         
-                $table = $conn->getTable($component);
+                $table = $conn->getClassMetadata($component);
                 $this->_queryComponents[$componentAlias] = array(
                         'table' => $table, 'mapper' => $conn->getMapper($component));
             } else {

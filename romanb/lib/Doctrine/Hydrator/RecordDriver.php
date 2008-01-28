@@ -104,11 +104,11 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
     
     public function getElement(array $data, $component)
     {
+        $component = $this->_getClassnameToReturn($data, $component);
         if ( ! isset($this->_mappers[$component])) {
             $this->_mappers[$component] = Doctrine_Manager::getInstance()->getMapper($component);
         }
-        
-        $component = $this->_getClassnameToReturn($data, $component);
+
         $record = $this->_mappers[$component]->getRecord($data);
 
         if ( ! isset($this->_records[$record->getOid()]) ) {
@@ -137,21 +137,19 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
      */
     protected function _getClassnameToReturn(array $data, $className)
     {
-        $subClasses = $this->_mappers[$className]->getTable()->getOption('subclasses');
-        if ( ! isset($subClasses)) {
+        if ( ! isset($this->_mappers[$className])) {
+            $this->_mappers[$className] = Doctrine_Manager::getInstance()->getMapper($className);
+        }
+        
+        $discCol = $this->_mappers[$className]->getTable()->getInheritanceOption('discriminatorColumn');
+        if ( ! $discCol) {
             return $className;
         }
-
-        foreach ($subClasses as $subclass) {
-            if ( ! isset($this->_mappers[$subclass])) {
-                $this->_mappers[$subclass] = Doctrine_Manager::getInstance()->getMapper($subclass);
-            }
-            $mapper = $this->_mappers[$subclass];
-            $inheritanceMap = $mapper->getDiscriminatorColumn();
-            foreach ($inheritanceMap as $key => $value) {
-                if (isset($data[$key]) && $data[$key] == $value) {
-                    return $mapper->getComponentName();
-                }
+        
+        $discMap = $this->_mappers[$className]->getTable()->getInheritanceOption('discriminatorMap');
+        foreach ($discMap as $value => $class) {
+            if (isset($data[$discCol]) && $data[$discCol] == $value) {
+                return $class;
             }
         }
         

@@ -16,16 +16,16 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         $table = $this->_table;
                     
         $dataSet = $this->_formatDataSet($record);
-        $component = $table->getComponentName();
+        $component = $table->getClassName();
 
-        $classes = $table->getOption('joinedParents');
+        $classes = $table->getOption('parents');
         array_unshift($classes, $component);
         
         try {
             $this->_conn->beginInternalTransaction();
             $identifier = null;
             foreach (array_reverse($classes) as $k => $parent) {
-                $parentTable = $this->_conn->getTable($parent);
+                $parentTable = $this->_conn->getMetadata($parent);
                 if ($k == 0) {
                     $identifierType = $parentTable->getIdentifierType();
                     if ($identifierType == Doctrine::IDENTIFIER_AUTOINC) {
@@ -70,8 +70,8 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         $table = $this->_table;
         $identifier = $record->identifier();                     
         $dataSet = $this->_formatDataSet($record);
-        $component = $table->getComponentName();
-        $classes = $table->getOption('joinedParents');
+        $component = $table->getClassName();
+        $classes = $table->getOption('parents');
         array_unshift($classes, $component);
 
         foreach ($record as $field => $value) {
@@ -84,7 +84,7 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         }
 
         foreach (array_reverse($classes) as $class) {
-            $parentTable = $this->_conn->getTable($class);
+            $parentTable = $this->_conn->getMetadata($class);
             $this->_conn->update($parentTable, $dataSet[$class], $identifier);
         }
         
@@ -128,7 +128,7 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
     public function getCustomJoins()
     {
         $customJoins = array();
-        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
+        foreach ($this->_table->getOption('parents') as $parentClass) {
             $customJoins[$parentClass] = 'INNER';
         }
         foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
@@ -141,10 +141,11 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
     
     public function getCustomFields()
     {
-        $fields = array();
+        $fields = array($this->_table->getInheritanceOption('discriminatorColumn'));
+        //$fields = array();
         if ($this->_table->getOption('subclasses')) {
             foreach ($this->_table->getOption('subclasses') as $subClass) {
-                $fields = array_merge($this->_conn->getTable($subClass)->getFieldNames(), $fields);
+                $fields = array_merge($this->_conn->getMetadata($subClass)->getFieldNames(), $fields);
             }
         }
         return array_unique($fields);
@@ -174,10 +175,6 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         }
         
         $fieldNames = $this->_table->getFieldNames();
-        foreach ($this->_table->getOption('joinedParents') as $parent) {
-            $parentTable = $this->_conn->getTable($parent);
-            $fieldNames = array_merge($parentTable->getFieldNames(), $fieldNames);
-        }
         $this->_fieldNames = array_unique($fieldNames);
         
         return $fieldNames;
@@ -194,8 +191,8 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
             return $this->_columnNameFieldNameMap[$columnName];
         }
         
-        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
-            $parentTable = $this->_conn->getTable($parentClass);
+        foreach ($this->_table->getOption('parents') as $parentClass) {
+            $parentTable = $this->_conn->getMetadata($parentClass);
             if ($parentTable->hasColumn($columnName)) {
                 $this->_columnNameFieldNameMap[$columnName] = $parentTable->getFieldName($columnName);
                 return $this->_columnNameFieldNameMap[$columnName];
@@ -203,31 +200,31 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         }
         
         foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
-            $subTable = $this->_conn->getTable($subClass);
+            $subTable = $this->_conn->getMetadata($subClass);
             if ($subTable->hasColumn($columnName)) {
                 $this->_columnNameFieldNameMap[$columnName] = $subTable->getFieldName($columnName);
                 return $this->_columnNameFieldNameMap[$columnName];
             }
         }
-        
+
         throw new Doctrine_Mapper_Exception("No field name found for column name '$columnName'.");
     }
     
     public function getOwningTable($fieldName)
-    {
+    {        
         if ($this->_table->hasField($fieldName)) {
             return $this->_table;
         }
         
-        foreach ($this->_table->getOption('joinedParents') as $parentClass) {
-            $parentTable = $this->_conn->getTable($parentClass);
+        foreach ($this->_table->getOption('parents') as $parentClass) {
+            $parentTable = $this->_conn->getMetadata($parentClass);
             if ($parentTable->hasField($fieldName)) {
                 return $parentTable;
             }
         }
         
         foreach ((array)$this->_table->getOption('subclasses') as $subClass) {
-            $subTable = $this->_conn->getTable($subClass);
+            $subTable = $this->_conn->getMetadata($subClass);
             if ($subTable->hasField($fieldName)) {
                 return $subTable;
             }
@@ -243,13 +240,13 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
     {
         $table = $this->_table;
         $dataSet = array();
-        $component = $table->getComponentName();
+        $component = $table->getClassName();
         $array = $record->getPrepared();
         
-        $classes = array_merge(array($component), $this->_table->getOption('joinedParents'));
+        $classes = array_merge(array($component), $this->_table->getOption('parents'));
         
         foreach ($classes as $class) {
-            $table = $this->_conn->getTable($class);
+            $table = $this->_conn->getMetadata($class);
             foreach ($table->getColumns() as $columnName => $definition) {
                 if (isset($definition['primary'])) {
                     continue;

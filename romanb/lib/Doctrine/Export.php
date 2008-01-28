@@ -1068,7 +1068,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
      * @return void
      */
     public function exportClasses(array $classes)
-    {
+    { 
         $connections = array();
         foreach ($classes as $class) {
             $record = new $class();
@@ -1083,6 +1083,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
             }
 
             $sql = $this->exportClassesSql(array($class));
+
             // Build array of all the creates
             // We need these to happen first
             foreach ($sql as $key => $query) {
@@ -1137,29 +1138,51 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *                                          occurred during the create table operation
      * @param array $classes
      * @return void
+     * @todo package:orm
      */
     public function exportClassesSql(array $classes)
     {
         $models = Doctrine::filterInvalidModels($classes);
 
         $sql = array();
-
+        $finishedClasses = array();
+        
         foreach ($models as $name) {
-            $record = new $name();
-            $table  = $record->getTable();
-
-            $parents = $table->getOption('joinedParents');
-
-            foreach ($parents as $parent) {
-                $data  = $table->getConnection()->getTable($parent)->getExportableFormat();
-
-                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-
-                $sql = array_merge($sql, (array) $query);
+            if (in_array($name, $finishedClasses)) {
+                continue;
             }
-
-            $data = $table->getExportableFormat();
-
+            
+            //echo $name . "<br />";
+            $classMetadata = $this->conn->getClassMetadata($name);
+            
+            if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
+                //echo "joined.<br />";
+                $parents = $classMetadata->getOption('parents');
+                foreach ($parents as $parent) {
+                    $data = $classMetadata->getConnection()->getClassMetadata($parent)->getExportableFormat();
+                    $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
+                    $sql = array_merge($sql, (array) $query);
+                    $finishedClasses[] = $parent;
+                }
+            }/* else if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+                echo "single table.<br />";
+                $parents = $classMetadata->getOption('parents');
+                if ($parents) {
+                    $rootClassMetadata = $classMetadata->getConnection()->getClassMetadata(array_pop($parents));
+                } else {
+                    $rootClassMetadata = $classMetadata;
+                }
+                $subClasses = $rootClassMetadata->getOption('subclasses');
+                $data = $rootClassMetadata->getExportableFormat();
+                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
+                $sql = array_merge($sql, (array) $query);
+                $finishedClasses = array_merge($finishedClasses, array($rootClassMetadata->getClassName()), $subClasses);
+            } else if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
+                echo "table per class.<br />";
+                
+            }*/
+            
+            $data = $classMetadata->getExportableFormat();
             $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
 
             if (is_array($query)) {
@@ -1168,8 +1191,8 @@ class Doctrine_Export extends Doctrine_Connection_Module
                 $sql[] = $query;
             }
 
-            if ($table->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_PLUGINS) {
-                $sql = array_merge($sql, $this->exportGeneratorsSql($table));
+            if ($classMetadata->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_PLUGINS) {
+                $sql = array_merge($sql, $this->exportGeneratorsSql($classMetadata));
             }
         }
 
@@ -1185,8 +1208,9 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *
      * @param Doctrine_Table $table     table object to retrieve the generators from
      * @return array                    an array of Doctrine_Record_Generator objects
+     * @todo package:orm
      */
-    public function getAllGenerators(Doctrine_Table $table)
+    public function getAllGenerators(Doctrine_ClassMetadata $table)
     {
         $generators = array();
 
@@ -1213,11 +1237,12 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *
      * @param Doctrine_Table $table     the table in which the generators belong to
      * @return array                    an array of sql strings
+     * @todo package:orm
      */
-    public function exportGeneratorsSql(Doctrine_Table $table)
+    public function exportGeneratorsSql(Doctrine_ClassMetadata $class)
     {
     	$sql = array();
-        foreach ($this->getAllGenerators($table) as $name => $generator) {
+        foreach ($this->getAllGenerators($class) as $name => $generator) {
             $table = $generator->getTable();
 
             // Make sure plugin has a valid table

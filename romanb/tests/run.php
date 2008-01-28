@@ -157,12 +157,12 @@ $plugins = new GroupTest('Plugin tests: View, Validator, Hook', 'plugins');
 //$plugins->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 //$plugins->addTestCase(new Doctrine_Plugin_TestCase());
 $plugins->addTestCase(new Doctrine_View_TestCase());
-$plugins->addTestCase(new Doctrine_AuditLog_TestCase());
+//$plugins->addTestCase(new Doctrine_AuditLog_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Future_TestCase());
 $plugins->addTestCase(new Doctrine_Validator_Past_TestCase());
 $plugins->addTestCase(new Doctrine_Hook_TestCase());
-$plugins->addTestCase(new Doctrine_I18n_TestCase());
+//$plugins->addTestCase(new Doctrine_I18n_TestCase());
 $test->addTestCase($plugins);
 
 // Db component
@@ -179,6 +179,13 @@ $test->addTestCase($event_listener);
 
 // Query tests
 $query_tests = new GroupTest('Query tests','query_test');
+## The following tests seem to influence each other when the whole suite is run...
+$query_tests->addTestCase(new Doctrine_Query_JoinCondition2_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_Select_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_MultipleAggregateValue_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_AggregateValue_TestCase());
+##
+
 $query_tests->addTestCase(new Doctrine_Query_Condition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin2_TestCase());
@@ -198,13 +205,9 @@ $query_tests->addTestCase(new Doctrine_Query_Orderby_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Subquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Driver_TestCase());
 $query_tests->addTestCase(new Doctrine_Record_Hook_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_AggregateValue_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Where_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_From_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_Select_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_JoinCondition_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_JoinCondition2_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_MultipleAggregateValue_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MysqlSubquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_PgsqlSubquery_TestCase());

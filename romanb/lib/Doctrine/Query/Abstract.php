@@ -528,12 +528,12 @@ abstract class Doctrine_Query_Abstract
      */
     protected function _createCustomJoinSql($componentName, $componentAlias)
     {
-        $table = $this->_conn->getTable($componentName);
+        $table = $this->_conn->getMetadata($componentName);
         $tableAlias = $this->getSqlTableAlias($componentAlias, $table->getTableName());
         $customJoins = $this->_conn->getMapper($componentName)->getCustomJoins();
         $sql = '';
         foreach ($customJoins as $componentName => $joinType) {
-            $joinedTable = $this->_conn->getTable($componentName);
+            $joinedTable = $this->_conn->getMetadata($componentName);
             $joinedAlias = $componentAlias . '.' . $componentName;
             $joinedTableAlias = $this->getSqlTableAlias($joinedAlias, $joinedTable->getTableName());
             $sql .= " $joinType JOIN " . $this->_conn->quoteIdentifier($joinedTable->getTableName())
@@ -564,7 +564,26 @@ abstract class Doctrine_Query_Abstract
             if ( ! $data['mapper'] instanceof Doctrine_Mapper_SingleTable) {
                 $array[$sqlTableAlias][] = array();
             } else {
-                $array[$sqlTableAlias][] = $data['mapper']->getDiscriminatorColumn();
+                $discCol = $data['table']->getInheritanceOption('discriminatorColumn');
+                $discMap = $data['table']->getInheritanceOption('discriminatorMap');
+                $discValue = array_search($data['table']->getClassName(), $discMap);
+                if ($discValue === false) {
+                    continue;
+                }
+                $discriminator = array($discCol => $discValue);
+                $array[$sqlTableAlias][] = $discriminator;
+                
+                /*
+                $subclasses = $data['table']->getOption('subclasses');
+                foreach ((array)$subclasses as $subclass) {
+                    echo "adding $subclass to the discrimnator list<br />";
+                    $subClassMetadata = $this->_conn->getClassMetadata($subclass);
+                    $discCol = $subClassMetadata->getInheritanceOption('discriminatorColumn');
+                    $discMap = $subClassMetadata->getInheritanceOption('discriminatorMap');
+                    $discValue = array_search($subclass, $discMap);
+                    $discriminator[$discCol] => $discValue);
+                }
+                */ 
             }
         }
         //var_dump($array);

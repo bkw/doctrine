@@ -855,9 +855,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
             }
             return $this->_references[$fieldName];
-        } catch (Doctrine_Table_Exception $e) {
-            //echo $e->getTraceAsString();
-            //echo "<br /><br />";
+        } catch (Doctrine_Relation_Exception $e) {
+            //echo $this->_domainClassName . "<br />";
+            //var_dump($this->_values);
+            echo $e->getTraceAsString();
+            echo "<br /><br />";
             foreach ($this->_table->getFilters() as $filter) {
                 if (($value = $filter->filterGet($this, $fieldName, $value)) !== null) {
                     return $value;
@@ -932,8 +934,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
         } else {
             try {
+                /*echo $this->_domainClassName;
+                var_dump($this->_data);
+                echo "<br /><br />";
+                try {
+                    throw new Exception();
+                } catch (Exception $e) {
+                    echo $e->getTraceAsString() . "<br />";
+                }
+                echo "<br /><br />";*/
                 $this->_coreSetRelated($fieldName, $value);
-            } catch (Doctrine_Table_Exception $e) {
+            } catch (Doctrine_Relation_Exception $e) {
                 foreach ($this->_table->getFilters() as $filter) {
                     if (($value = $filter->filterSet($this, $fieldName, $value)) !== null) {
                         return $value;
@@ -1187,15 +1198,20 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                     $a[$field] = $this->_data[$field];
             }
         }
-
-        $map = $this->_mapper->getDiscriminatorColumn();
-        foreach ($map as $k => $v) {
-            $old = $this->get($k, false);
+        
+        // @todo cleanup
+        if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED ||
+                $this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+            $discCol = $this->_table->getInheritanceOption('discriminatorColumn');
+            $discMap = $this->_table->getInheritanceOption('discriminatorMap');
+            $old = $this->get($discCol, false);
+            $v = array_search($this->_domainClassName, $discMap);
             if ((string) $old !== (string) $v || $old === null) {
-                $a[$k] = $v;
-                $this->_data[$k] = $v;
+                $a[$discCol] = $v;
+                $this->_data[$discCol] = $v;
             }
         }
+
 
         return $a;
     }

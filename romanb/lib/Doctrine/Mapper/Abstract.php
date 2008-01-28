@@ -81,11 +81,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * @param Doctrine_Table $table           The table object used for the mapping procedure.
      * @throws Doctrine_Connection_Exception  if there are no opened connections
      */
-    public function __construct($name, Doctrine_Table $table)
+    public function __construct($name, Doctrine_ClassMetadata $metadata)
     {
         $this->_domainClassName = $name;
-        $this->_conn = $table->getConnection();
-        $this->_table = $table;
+        $this->_conn = $metadata->getConnection();
+        $this->_table = $metadata;
         $this->setParent($this->_conn);
         $this->_repository = new Doctrine_Table_Repository($this);  
     }
@@ -816,12 +816,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
             $fields[$seqName] = $id;
             $record->assignIdentifier($id);
         }
-        
+
         $this->_conn->insert($table, $fields);
 
         if (empty($seq) && count($identifier) == 1 && $identifier[0] == $table->getIdentifier() &&
                 $table->getIdentifierType() != Doctrine::IDENTIFIER_NATURAL) {
-
             if (strtolower($this->_conn->getName()) == 'pgsql') {
                 $seq = $table->getTableName() . '_' . $identifier[0];
             }
@@ -934,12 +933,13 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     public function saveAssociations(Doctrine_Record $record)
     {
         foreach ($record->getReferences() as $relationName => $relatedObject) {
+            
             $rel = $record->getTable()->getRelation($relationName);
             
-            if ($rel instanceof Doctrine_Relation_Association) {  
+            if ($rel instanceof Doctrine_Relation_Association) {
                 $relatedObject->save($this->_conn);
-
                 $assocTable = $rel->getAssociationTable();
+                
                 foreach ($relatedObject->getDeleteDiff() as $r) {
                     $query = 'DELETE FROM ' . $assocTable->getTableName()
                            . ' WHERE ' . $rel->getForeign() . ' = ?'
@@ -947,7 +947,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                     $this->_conn->execute($query, array($r->getIncremented(), $record->getIncremented()));
                 }
 
-                foreach ($relatedObject->getInsertDiff() as $r) {
+                foreach ($relatedObject->getInsertDiff() as $r)  {
                     $assocRecord = $this->_conn->getMapper($assocTable->getComponentName())->create();
                     $assocRecord->set($assocTable->getFieldName($rel->getForeign()), $r);
                     $assocRecord->set($assocTable->getFieldName($rel->getLocal()), $record);

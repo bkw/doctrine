@@ -3,9 +3,9 @@ class RecordHookTest extends Doctrine_Record
 {
     protected $_messages = array();
 
-    public function setTableDefinition()
+    public static function initMetadata($class)
     {
-        $this->hasColumn('name', 'string', null, array('primary' => true));
+        $class->setColumn('name', 'string', null, array('primary' => true));
     }
     public function preSave($event)
     {

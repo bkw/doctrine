@@ -185,7 +185,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     protected $_options      = array(
             'treeImpl'       => null,
             'treeOptions'    => null,
-            'subclasses'     => null,
+            'subclasses'     => array(),
             'queryParts'     => array(),
             'parents'        => array()
             );
@@ -260,6 +260,11 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function getClassName()
     {
         return $this->_domainClassName;
+    }
+    
+    public function getComponentName()
+    {
+        return $this->getClassName();
     }
     
     /**
@@ -861,7 +866,13 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         if ( ! isset($args[1])) {
             $args[1] = array();
         }
-
+        if ( ! is_array($args[1])) {
+            try {
+                throw new Exception();
+            } catch (Exception $e) {
+                echo $e->getTraceAsString();
+            }
+        }
         $options = array_merge($args[1], $options);
         $this->_parser->bind($args[0], $options);
     }
@@ -924,6 +935,11 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return $this->_inheritanceType;
     }
     
+    public function setSubclasses(array $subclasses)
+    {
+        $this->setOption('subclasses', $subclasses);        
+    }
+    
     /**
      * Sets the inheritance type used by the class.
      *
@@ -949,10 +965,10 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     private function _checkRequiredDiscriminatorOptions(array $options)
     {
         if ( ! isset($options['discriminatorColumn'])) {
-            throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorColumn'."
+            throw new Doctrine_ClassMetadata_Exception("Missing option 'discriminatorColumn'."
                     . " Inheritance types JOINED and SINGLE_TABLE require this option.");
         } else if ( ! isset($options['discriminatorMap'])) {
-            throw new Doctrine_MetadataClass_Exception("Missing option 'discriminatorMap'."
+            throw new Doctrine_ClassMetadata_Exception("Missing option 'discriminatorMap'."
                     . " Inheritance types JOINED and SINGLE_TABLE require this option.");
         }
     }
@@ -1026,8 +1042,26 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     {
         $columns = array();
         $primary = array();
+        $allColumns = $this->getColumns();
+        
+        // If the class is part of a Single Table Inheritance hierarchy, collect the fields
+        // of all classes in the hierarchy.
+        if ($this->_inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+            $parents = $this->getOption('parents');
+            if ($parents) {
+                $rootClass = $this->_conn->getClassMetadata(array_pop($parents));
+            } else {
+                $rootClass = $this;
+            }
+            $subClasses = $rootClass->getOption('subclasses');
+            foreach ($subClasses as $subClass) {
+                $subClassMetadata = $this->_conn->getClassMetadata($subClass);
+                $allColumns = array_merge($allColumns, $subClassMetadata->getColumns());
+            }
+        }
 
-        foreach ($this->getColumns() as $name => $definition) {
+        // Convert enum & boolean default values
+        foreach ($allColumns as $name => $definition) {
             switch ($definition['type']) {
                 case 'enum':
                     if (isset($definition['default'])) {
@@ -1046,16 +1080,13 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
                 $primary[] = $name;
             }
         }
+        
+        // Collect foreign keys from the relations
         $options['foreignKeys'] = array();
-
         if ($parseForeignKeys && $this->getAttribute(Doctrine::ATTR_EXPORT)
                 & Doctrine::EXPORT_CONSTRAINTS) {
-
             $constraints = array();
-
-            $emptyIntegrity = array('onUpdate' => null,
-                                    'onDelete' => null);
-
+            $emptyIntegrity = array('onUpdate' => null, 'onDelete' => null);
             foreach ($this->getRelations() as $name => $relation) {
                 $fk = $relation->toArray();
                 $fk['foreignTable'] = $relation->getTable()->getTableName();
@@ -1092,10 +1123,10 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         }
 
         $options['primary'] = $primary;
-
+        
         return array('tableName' => $this->getTableOption('tableName'),
                      'columns'   => $columns,
-                     'options'   => array_merge($this->getTableOptions(), $options));
+                     'options'   => array_merge($options, $this->getTableOptions()));
     }
     
     /**
@@ -1163,7 +1194,6 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function unshiftFilter(Doctrine_Record_Filter $filter)
     {
         $filter->setTable($this);
-        $filter->init();
         array_unshift($this->_filters, $filter);
         
         return $this;
@@ -1368,7 +1398,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
 
         $this->addTemplate($className, $tpl);
 
-        $tpl->setTable($this->_table);
+        $tpl->setTable($this);
         $tpl->setUp();
         $tpl->setTableDefinition();
 
@@ -1388,10 +1418,10 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     {
         if (is_array($constraint)) {
             foreach ($constraint as $name => $def) {
-                $this->addCheckConstraint($def, $name);
+                $this->_addCheckConstraint($def, $name);
             }
         } else {
-            $this->addCheckConstraint($constraint, $name);
+            $this->_addCheckConstraint($constraint, $name);
         }
         
         return $this;
@@ -1424,6 +1454,38 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         //Doctrine::CLASSTYPE_ENTITY
         //Doctrine::CLASSTYPE_MAPPED_SUPERCLASS
         //Doctrine::CLASSTYPE_TRANSIENT
+    }
+    
+    /**
+     * hasOne
+     * binds One-to-One aggregate relation
+     *
+     * @param string $componentName     the name of the related component
+     * @param string $options           relation options
+     * @see Doctrine_Relation::_$definition
+     * @return Doctrine_Record          this object
+     */
+    public function hasOne()
+    {
+        $this->bind(func_get_args(), Doctrine_Relation::ONE_AGGREGATE);
+
+        return $this;
+    }
+
+    /**
+     * hasMany
+     * binds One-to-Many / Many-to-Many aggregate relation
+     *
+     * @param string $componentName     the name of the related component
+     * @param string $options           relation options
+     * @see Doctrine_Relation::_$definition
+     * @return Doctrine_Record          this object
+     */
+    public function hasMany()
+    {
+        $this->bind(func_get_args(), Doctrine_Relation::MANY_AGGREGATE);
+
+        return $this;
     }
     
     /**

@@ -84,7 +84,12 @@ class Doctrine_ClassMetadata_Factory
             $subClass = new Doctrine_ClassMetadata($subclassName, $this->_conn);
             $subClass->setInheritanceType($parent->getInheritanceType(), $parent->getInheritanceOptions());
             $this->_addInheritedFields($subClass, $parent);
+            $this->_addInheritedRelations($subClass, $parent);
             $this->_loadMetadata($subClass, $subclassName);
+            if ($parent->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+                //echo "<br />". $subClass->getClassName() . $parent->getTableName() . "<br />";
+                $subClass->setTableName($parent->getTableName());
+            }
             $classes[$subclassName] = $subClass;
             $parent = $subClass;
         }
@@ -93,12 +98,18 @@ class Doctrine_ClassMetadata_Factory
     protected function _addInheritedFields($subClass, $parentClass)
     {
         foreach ($parentClass->getColumns() as $name => $definition) {
-            if (isset($definition['autoincrement']) && $definition['autoincrement'] === true) {
+            /*if (isset($definition['autoincrement']) && $definition['autoincrement'] === true) {
                 unset($definition['autoincrement']);
-            }
+            }*/
             $fullName = "$name as " . $parentClass->getFieldName($name);
             $subClass->setColumn($fullName, $definition['type'], $definition['length'],
                     $definition);
+        }
+    }
+    
+    protected function _addInheritedRelations($subClass, $parentClass) {
+        foreach ($parentClass->getRelationParser()->getRelations() as $name => $relation) {
+            $subClass->getRelationParser()->addRelation($name, $relation);
         }
     }
     
@@ -108,6 +119,11 @@ class Doctrine_ClassMetadata_Factory
     protected function _loadMetadata(Doctrine_ClassMetadata $class, $name)
     {
         if ( ! class_exists($name) || empty($name)) {
+            try {
+                throw new Exception();
+            } catch (Exception $e) {
+                echo $e->getTraceAsString();
+            }
             throw new Doctrine_Exception("Couldn't find class " . $name . ".");
         }
 
