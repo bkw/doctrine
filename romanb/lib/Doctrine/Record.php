@@ -26,6 +26,7 @@ Doctrine::autoload('Doctrine_Record_Abstract');
  * @package     Doctrine
  * @subpackage  Record
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        www.phpdoctrine.com
  * @since       1.0
@@ -41,33 +42,33 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * DIRTY STATE
      * a Doctrine_Record is in dirty state when its properties are changed
      */
-    const STATE_DIRTY       = 1;
+    const STATE_DIRTY = 1;
 
     /**
      * TDIRTY STATE
      * a Doctrine_Record is in transient dirty state when it is created
      * and some of its fields are modified but it is NOT yet persisted into database
      */
-    const STATE_TDIRTY      = 2;
+    const STATE_TDIRTY = 2;
 
     /**
      * CLEAN STATE
      * a Doctrine_Record is in clean state when all of its properties are loaded from the database
      * and none of its properties are changed
      */
-    const STATE_CLEAN       = 3;
+    const STATE_CLEAN = 3;
 
     /**
      * PROXY STATE
      * a Doctrine_Record is in proxy state when its properties are not fully loaded
      */
-    const STATE_PROXY       = 4;
+    const STATE_PROXY = 4;
 
     /**
      * NEW TCLEAN
      * a Doctrine_Record is in transient clean state when it is created and none of its fields are modified
      */
-    const STATE_TCLEAN      = 5;
+    const STATE_TCLEAN = 5;
 
     /**
      * LOCKED STATE
@@ -76,7 +77,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * This state is used internally to ensure that circular deletes
      * and saves will not cause infinite loops
      */
-    const STATE_LOCKED     = 6;
+    const STATE_LOCKED = 6;
 
     /**
      *
@@ -85,38 +86,51 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
     /**
      * @var Doctrine_Node_<TreeImpl>        node object
+     * @todo Specific to the NestedSet Behavior plugin. Move outta here.
      */
     protected $_node;
 
     /**
-     * @var integer $_id                    the primary keys of this object
+     * The values that make up the ID/primary key of the object.
+     *
+     * @var array                   
      */
-    protected $_id           = array();
+    protected $_id = array();
 
     /**
-     * @var array $_data                    the record data
+     * The record data.
+     *
+     * @var array                  
      */
-    protected $_data         = array();
+    protected $_data = array();
 
     /**
-     * @var array $_values                  the values array, aggregate values and such are mapped into this array
+     * The values array, aggregate values and such are mapped into this array.
+     *
+     * @var array                  
      */
-    protected $_values       = array();
+    protected $_values = array();
 
     /**
-     * @var integer $_state                 the state of this record
+     * The state of the object.
+     *
+     * @var integer             
      * @see STATE_* constants
      */
     protected $_state;
 
     /**
-     * @var array $_modified                an array containing field names that have been modified
+     * The names of fields that have been modified but not yet persisted.
+     *
+     * @var array               
      * @todo Better name? $_modifiedFields?
      */
-    protected $_modified     = array();
+    protected $_modified = array();
 
     /**
-     * @var Doctrine_Validator_ErrorStack   error stack object
+     * The error stack used to collect errors during validation.
+     *
+     * @var Doctrine_Validator_ErrorStack   
      */
     protected $_errorStack;
 

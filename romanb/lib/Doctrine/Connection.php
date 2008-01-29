@@ -1058,28 +1058,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     {
         return isset($this->tables[$name]);
     }
-
-    /**
-     * Gets the table object that represents the database table that is used to
-     * persist the specified domain class.
-     *
-     * @param string $name              component name
-     * @return Doctrine_Table
-     */
-    /*public function getTable($className)
-    {
-        if (isset($this->tables[$className])) {
-            return $this->tables[$className];
-        }
-
-        if (!($this->_tableFactory instanceOf Doctrine_Table_Factory)) {
-            $this->_tableFactory = new Doctrine_Table_Factory($this);
-        }
-
-        $this->_tableFactory->loadTables($className, $this->tables);
-        
-        return $this->tables[$className];
-    }*/
     
     /**
      * Returns the metadata for a class.
@@ -1145,16 +1123,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * returns an array of all initialized tables
-     *
-     * @return array
-     */
-    /*public function getTables()
-    {
-        return $this->tables;
-    }*/
-
-    /**
      *
      * @todo package:orm
      */
@@ -1191,25 +1159,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * addTable
-     * adds a Doctrine_Table object into connection registry
-     *
-     * @param $table                a Doctrine_Table object to be added into registry
-     * @return boolean
-     */
-    /*public function addTable(Doctrine_Table $table)
-    {
-        $name = $table->getComponentName();
-
-        if (isset($this->tables[$name])) {
-            return false;
-        }
-        $this->tables[$name] = $table;
-        
-        return true;
-    }*/
-
-    /**
      * create
      * creates a record
      *
@@ -1228,9 +1177,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * Creates a new Doctrine_Query object that operates on this connection.
      * 
      * @return Doctrine_Query
-     * @todo package:orm
-     *
      * @return Doctrine_Query
+     * @todo package:orm
      */
     public function createQuery($dql = "")
     {
