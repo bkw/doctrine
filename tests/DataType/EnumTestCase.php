@@ -66,6 +66,35 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         }
     }
 
+    public function testUpdate()
+    {
+        $test = new EnumTest2();
+        $test->status = 'open';
+        $this->assertEqual($test->status, 'open');
+        $test->save();
+
+        $test_update = Doctrine::getTable('EnumTest2')->find(1);
+        $test_update->status = 'verified';
+        $this->assertEqual($test_update->status, 'verified');
+        $test_update->save();
+    }
+
+    public function testDqlUpdate()
+    {
+        $query = new Doctrine_Query($this->connection);
+        $query->update('EnumTest2 u')
+            ->set('u.status', '?', 'verified')
+            ->execute();
+
+        try {
+            $query = new Doctrine_Query($this->connection);
+            $ret = $query->query("FROM EnumTest2 WHERE EnumTest2.status = 'verified'");
+            $this->assertEqual(count($ret), 1);
+        } catch (Exception $e) {
+            $this->fail();
+        }
+    }
+
     public function testParameterConversionInCount() 
     {
         try {
