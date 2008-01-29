@@ -30,7 +30,7 @@ class Text_Wiki_Render_Latex_Code extends Text_Wiki_Render {
             }
         }
             
-        $text = "\\begin{lstlisting}\n$text\n\\end{lstlisting}\n\n"; 
+        $text = "\\begin{lstlisting}[caption={} {}]\n$text\n\\end{lstlisting}\n\n";
         
         if ($type != '') {
             $text = "\\lstset{language=$type}\n" . $text;
