@@ -326,4 +326,39 @@ class Doctrine_Lib
         $r[] = "</pre>";
         return implode("\n",$r);
     }
+
+
+    // [TODO] Figure it out why this is necessary (was added in trunk and 0.10 branch)
+    // Please refer to Changeset #3624 where this piece of code was applied
+    public static function copyDirectory($source, $dest)
+    {
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        // Make destination directory
+        if ( ! is_dir($dest)) {
+            mkdir($dest);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            if ($dest !== "$source/$entry") {
+                self::copyDirectory("$source/$entry", "$dest/$entry");
+            }
+        }
+
+        // Clean up
+        $dir->close();
+
+        return true;
+    }
 }

@@ -444,7 +444,9 @@ final class Doctrine
      * @var array
      */
     private static $_loadedModels = array();
-    
+
+    private static $_pathModels = array();
+
     /**
      * _validators
      *
@@ -462,6 +464,19 @@ final class Doctrine
     public function __construct()
     {
         throw new Doctrine_Exception('Doctrine is static class. No instances can be created.');
+    }
+
+    public static function getLoadedModelFiles()
+    {
+        // [TODO] This method is just a wrapper of _loadedModels
+        // (which has named changed to _loadedModelFiles). The next task is
+        // to rename the _loadedModels to _loadedModelFiles inside Doctrine
+        return self::$_loadedModels;
+    }
+
+    public static function getPathModels()
+    {
+        return self::$_pathModels;
     }
 
     /**
@@ -515,6 +530,7 @@ final class Doctrine
                     $e = explode('.', $file->getFileName());
                     if (end($e) === 'php' && strpos($file->getFileName(), '.inc') === false) {
                         self::$_loadedModels[$e[0]] = $file->getPathName();
+                        self::$_pathModels[$file->getPathName()][$e[0]] = $e[0];
                     }
                 }
             }
