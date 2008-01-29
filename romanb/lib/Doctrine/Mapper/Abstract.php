@@ -37,7 +37,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * @var Doctrine_Table  Metadata container that represents the database table this
      *                      mapper is mapping objects to.
      */
-    protected $_table;
+    protected $_classMetadata;
     
     /**
      * The name of the domain class this mapper is used for.
@@ -85,7 +85,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     {
         $this->_domainClassName = $name;
         $this->_conn = $metadata->getConnection();
-        $this->_table = $metadata;
+        $this->_classMetadata = $metadata;
         $this->setParent($this->_conn);
         $this->_repository = new Doctrine_Table_Repository($this);  
     }
@@ -210,7 +210,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         $id = is_array($id) ? array_values($id) : array($id);
         
         return $this->createQuery()
-                ->where(implode(' = ? AND ', (array) $this->_table->getIdentifier()) . ' = ?')
+                ->where(implode(' = ? AND ', (array) $this->_classMetadata->getIdentifier()) . ' = ?')
                 ->fetchOne($id, $hydrationMode);
     }
 
@@ -326,7 +326,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      *
      * @param Doctrine_Record $record       record to be added
      * @return boolean
-     * @todo Better name? registerRecord?
+     * @todo Better name? registerRecord? Move elsewhere to the new location of the identity maps.
      */
     public function addRecord(Doctrine_Record $record)
     {
@@ -348,6 +348,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      *
      * @param Doctrine_Record $record       record to be removed
      * @return boolean
+     * @todo Move elsewhere to the new location of the identity maps.
      */
     public function removeRecord(Doctrine_Record $record)
     {
@@ -371,7 +372,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     public function getRecord(array $data)
     {
         if ( ! empty($data)) {
-            $identifierFieldNames = $this->_table->getIdentifier();
+            $identifierFieldNames = $this->_classMetadata->getIdentifier();
 
             if ( ! is_array($identifierFieldNames)) {
                 $identifierFieldNames = array($identifierFieldNames);
@@ -388,8 +389,6 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
             }
 
             if ($found) {
-                //$recordName = $this->getClassnameToReturn();
-                //$record = new $recordName($this, true);
                 $record = new $this->_domainClassName($this, true, $data);
                 $data = array();
                 return $record;
@@ -402,60 +401,16 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                 $record = $this->_identityMap[$id];
                 $record->hydrate($data);
             } else {
-                //$recordName = $this->getClassnameToReturn();
-                //$record = new $recordName($this);
                 $record = new $this->_domainClassName($this, false, $data);
                 $this->_identityMap[$id] = $record;
             }
             $data = array();
         } else {
-            //$recordName = $this->getClassnameToReturn();
-            //$record = new $recordName($this, true);
             $record = new $this->_domainClassName($this, true, $data);
         }
 
         return $record;
     }
-
-    /**
-     * Get the classname to return. Most often this is just the options['name']
-     *
-     * USED FOR SINGLE TABLE INHERITANCE & CLASS TABLE INHERITANCE.
-     *
-     * Check the subclasses option and the inheritanceMap for each subclass to see
-     * if all the maps in a subclass is met. If this is the case return that
-     * subclass name. If no subclasses match or if there are no subclasses defined
-     * return the name of the class for this tables record.
-     *
-     * @todo this function could use reflection to check the first time it runs
-     * if the subclassing option is not set.
-     *
-     * @return string The name of the class to create
-     *
-     */
-    /*public function getClassnameToReturn()
-    {
-        $subClasses = $this->_table->getOption('subclasses');
-        if ( ! isset($subClasses)) {
-            return $this->_domainClassName;
-        }
-        
-        foreach ($subClasses as $subclass) {
-            $mapper = $this->_conn->getMapper($subclass);
-            $nomatch = false;
-            $inheritanceMap = $this->getDiscriminatorColumn($subclass);
-            foreach ($inheritanceMap as $key => $value) {
-                if ( ! isset($this->_data[$key]) || $this->_data[$key] != $value) {
-                    $nomatch = true;
-                    break;
-                }
-            }
-            if ( ! $nomatch) {
-                return $mapper->getComponentName();
-            }
-        }
-        return $this->_domainClassName;
-    }*/
 
     /**
      * @param $id                       database row id
@@ -464,9 +419,9 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     final public function getProxy($id = null)
     {
         if ($id !== null) {
-            $identifierColumnNames = $this->_table->getIdentifierColumnNames();
+            $identifierColumnNames = $this->_classMetadata->getIdentifierColumnNames();
             $query = 'SELECT ' . implode(', ', $identifierColumnNames)
-                . ' FROM ' . $this->_table->getTableName()
+                . ' FROM ' . $this->_classMetadata->getTableName()
                 . ' WHERE ' . implode(' = ? && ', $identifierColumnNames) . ' = ?';
             $query = $this->applyInheritance($query);
 
@@ -478,6 +433,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                 return false;
             }
         }
+        
         return $this->getRecord($data);
     }
 
@@ -492,11 +448,12 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         if ( ! empty($inheritanceMap)) {
             $a = array();
             foreach ($inheritanceMap as $field => $value) {
-                $a[] = $this->_table->getColumnName($field) . ' = ?';
+                $a[] = $this->_classMetadata->getColumnName($field) . ' = ?';
             }
             $i = implode(' AND ', $a);
             $where .= ' AND ' . $i;
         }
+        
         return $where;
     }
 
@@ -507,7 +464,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      */
     public function count()
     {
-        $a = $this->_conn->execute('SELECT COUNT(1) FROM ' . $this->_table->getOption('tableName'))->fetch(Doctrine::FETCH_NUM);
+        $a = $this->_conn->execute('SELECT COUNT(1) FROM ' . $this->_classMetadata->getOption('tableName'))->fetch(Doctrine::FETCH_NUM);
         return current($a);
     }
 
@@ -551,7 +508,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         } else if ($value === null) {
             return null;
         } else {
-            $type = $this->_table->getTypeOf($fieldName);
+            $type = $this->_classMetadata->getTypeOf($fieldName);
 
             switch ($type) {
                 case 'integer':
@@ -559,7 +516,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
                     // don't do any casting here PHP INT_MAX is smaller than what the databases support
                 break;
                 case 'enum':
-                    return $this->_table->enumValue($fieldName, $value);
+                    return $this->_classMetadata->enumValue($fieldName, $value);
                 break;
                 case 'boolean':
                     return (boolean) $value;
@@ -592,10 +549,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * getter for associated tree
      *
      * @return mixed  if tree return instance of Doctrine_Tree, otherwise returns false
+     * @todo Part of the NestedSet Behavior plugin. Move outta here some day...
      */
     public function getTree()
     {
-        return $this->_table->getTree();
+        return $this->_classMetadata->getTree();
     }
     
     /**
@@ -604,10 +562,11 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      * determine if table acts as tree
      *
      * @return mixed  if tree return true, otherwise returns false
+     * @todo Part of the NestedSet Behavior plugin. Move outta here some day...
      */
     public function isTree()
     {
-        return $this->_table->isTree();
+        return $this->_classMetadata->isTree();
     }
 
     /**
@@ -675,20 +634,22 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         } else if (substr($method, 0, 9) == 'findOneBy') {
             $by = substr($method, 9, strlen($method));
             $method = 'findOneBy';
-        }
+        }/* else {
+            throw new Doctrine_Mapper_Exception("Unknown method '$method'.");
+        }*/
         
         if (isset($by)) {
             if ( ! isset($arguments[0])) {
-                throw new Doctrine_Table_Exception('You must specify the value to findBy');
+                throw new Doctrine_Mapper_Exception('You must specify the value to findBy');
             }
             
             $fieldName = Doctrine::tableize($by);
             $hydrationMode = isset($arguments[1]) ? $arguments[1]:null;
             
-            if ($this->_table->hasField($fieldName)) {
+            if ($this->_classMetadata->hasField($fieldName)) {
                 return $this->$method($fieldName, $arguments[0], $hydrationMode);
-            } else if ($this->_table->hasRelation($by)) {
-                $relation = $this->_table->getRelation($by);
+            } else if ($this->_classMetadata->hasRelation($by)) {
+                $relation = $this->_classMetadata->getRelation($by);
                 
                 if ($relation['type'] === Doctrine_Relation::MANY) {
                     throw new Doctrine_Table_Exception('Cannot findBy many relationship.');
@@ -729,7 +690,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         
         try {
             $conn->beginInternalTransaction();
-            $saveLater = $this->saveRelated($record);
+            $saveLater = $this->_saveRelated($record);
             //echo "num savelater:" . count($saveLater) . "<br />";
 
             $record->state($state);
@@ -876,13 +837,13 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     }
     
     /**
-     * saveRelated
+     * _saveRelated
      * saves all related records to $record
      *
      * @throws PDOException         if something went wrong at database level
      * @param Doctrine_Record $record
      */
-    protected function saveRelated(Doctrine_Record $record)
+    protected function _saveRelated(Doctrine_Record $record)
     {
         $saveLater = array();
         foreach ($record->getReferences() as $k => $v) {
@@ -969,7 +930,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     {
         $event = new Doctrine_Event($record, Doctrine_Event::RECORD_UPDATE);
         $record->preUpdate($event);
-        $table = $this->_table;
+        $table = $this->_classMetadata;
         $this->getRecordListener()->preUpdate($event);
 
         if ( ! $event->skipOperation) {
@@ -986,7 +947,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     {
         $identifier = $record->identifier();
         $array = $record->getPrepared();
-        $this->_conn->update($this->_table, $array, $identifier);
+        $this->_conn->update($this->_classMetadata, $array, $identifier);
         $record->assignIdentifier(true);
     }
     
@@ -1048,7 +1009,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         $record->preDelete($event);
         $this->getRecordListener()->preDelete($event);
         
-        $table = $this->_table;
+        $table = $this->_classMetadata;
 
         $state = $record->state();
         $record->state(Doctrine_Record::STATE_LOCKED);
@@ -1074,7 +1035,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
 
             $record->state(Doctrine_Record::STATE_TDIRTY);
 
-            $conn->delete($this->_table, $record->identifier());
+            $conn->delete($this->_classMetadata, $record->identifier());
             $record->state(Doctrine_Record::STATE_TCLEAN);
 
             $this->removeRecord($record);
@@ -1095,7 +1056,7 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      */
     protected function deleteComposites(Doctrine_Record $record)
     {
-        foreach ($this->_table->getRelations() as $fk) {
+        foreach ($this->_classMetadata->getRelations() as $fk) {
             if ($fk->isComposite()) {
                 $obj = $record->get($fk->getAlias());
                 if ($obj instanceof Doctrine_Record && 
@@ -1113,12 +1074,12 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
     
     public function getTable()
     {
-        return $this->_table;
+        return $this->_classMetadata;
     }
 
     public function getFieldName($columnName)
     {
-        return $this->_table->getFieldName($columnName);
+        return $this->_classMetadata->getFieldName($columnName);
     }
     
     public function getFieldNames()
@@ -1126,13 +1087,13 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
         if ($this->_fieldNames) {
             return $this->_fieldNames;
         }
-        $this->_fieldNames = $this->_table->getFieldNames();
+        $this->_fieldNames = $this->_classMetadata->getFieldNames();
         return $this->_fieldNames;
     }
     
     public function getOwningTable($fieldName)
     {
-        return $this->_table;
+        return $this->_classMetadata;
     }
     
     public function getIdentityMap()

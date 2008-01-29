@@ -135,22 +135,29 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     protected $_errorStack;
 
     /**
-     * @var array $_references              an array containing all the references
+     * The names of all relations.
+     *
+     * @var array $_references              
      */
-    protected $_references     = array();
+    protected $_references = array();
 
     /**
-     * @var integer $index                  this index is used for creating object identifiers
+     * Index used for creating object identifiers (oid's).
+     *
+     * @var integer $index                  
      */
     private static $_index = 1;
 
     /**
-     * @var integer $oid                    object identifier, each Record object has a unique object identifier
+     * The object identifier of the object. Each object has a unique identifier during runtime.
+     * 
+     * @var integer $oid                    
      */
     private $_oid;
 
     /**
-     * constructor
+     * Constructor.
+     *
      * @param Doctrine_Table|null $table       a Doctrine_Table object or null,
      *                                         if null the table object is retrieved from current connection
      *
@@ -162,15 +169,12 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function __construct($mapper = null, $isNewEntry = false, array $data = array())
     {
-        //echo get_class($this) . "<br />";
         if (isset($mapper) && $mapper instanceof Doctrine_Mapper_Abstract) {
-            //echo "two<br />";
             $class = get_class($this);
             $this->_mapper = Doctrine_Manager::getInstance()->getMapper($class);
             $this->_table = $this->_mapper->getTable();
             $exists = ! $isNewEntry;
         } else {
-            //echo "three<br />";
             $this->_mapper = Doctrine_Manager::getInstance()->getMapper(get_class($this));
             $this->_table = $this->_mapper->getTable();
             $exists = false;
