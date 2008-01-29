@@ -138,11 +138,6 @@ abstract class Doctrine_Record_Generator extends Doctrine_Record_Abstract
 
         $this->_table = new Doctrine_Table($this->_options['className'], $conn);
         
-        try {
-            throw new Exception();
-        } catch (Exception $e) {
-            echo $e->getTraceAsString() . "<br />";
-        }
         $conn->addTable($this->_table);
 
         $fk = $this->buildForeignKeys($this->_options['table']);
