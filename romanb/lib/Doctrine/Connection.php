@@ -63,20 +63,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     protected $dbh;
 
     /**
+     * The metadata factory is used to retrieve the metadata of classes.
      *
-     */
-    protected $_tableFactory;
-
-    /**
-     * An array containing all the initialized Doctrine_Table objects
-     * keys representing component names and values as Doctrine_Table objects.
-     *
-     * @var array
-     */
-    protected $tables = array();
-
-    /**
-     *
+     * @var Doctrine_ClassMetadata_Factory
      */
     protected $_metadataFactory;
     
@@ -237,7 +226,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         }
 
         $this->setParent($manager);
-        $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this);
 
         $this->setAttribute(Doctrine::ATTR_CASE, Doctrine::CASE_NATURAL);
         $this->setAttribute(Doctrine::ATTR_ERRMODE, Doctrine::ERRMODE_EXCEPTION);
@@ -1112,6 +1100,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      */
     public function getClassMetadata($className)
     {
+        if ( ! $this->_metadataFactory) {
+            $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this);
+        }
+        
         return $this->_metadataFactory->getMetadataFor($className);
     }
     
@@ -1157,10 +1149,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * @return array
      */
-    public function getTables()
+    /*public function getTables()
     {
         return $this->tables;
-    }
+    }*/
 
     /**
      *
@@ -1205,7 +1197,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param $table                a Doctrine_Table object to be added into registry
      * @return boolean
      */
-    public function addTable(Doctrine_Table $table)
+    /*public function addTable(Doctrine_Table $table)
     {
         $name = $table->getComponentName();
 
@@ -1215,7 +1207,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $this->tables[$name] = $table;
         
         return true;
-    }
+    }*/
 
     /**
      * create

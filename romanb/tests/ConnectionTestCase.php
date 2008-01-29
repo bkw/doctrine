@@ -196,11 +196,6 @@ class Doctrine_Connection_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(Doctrine_Lib::getConnectionStateAsString($this->connection->transaction->getState()), 'open');
     }
 
-    public function testGetTables() 
-    {
-        $this->assertTrue(is_array($this->connection->getTables()));
-    }
-
     public function testRollback() 
     {
         $this->connection->beginTransaction();

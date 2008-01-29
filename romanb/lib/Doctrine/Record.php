@@ -149,13 +149,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function __construct($mapper = null, $isNewEntry = false, array $data = array())
     {
         //echo get_class($this) . "<br />";
-        if (isset($mapper) && $mapper instanceof Doctrine_Table) {
-            //echo "one<br />";
-            $this->_table = $mapper;
-            //$this->_mapper = Doctrine_Manager::getInstance()->getMapper(get_class($this));
-            $exists = ! $isNewEntry;
-            return;
-        } else if (isset($mapper) && $mapper instanceof Doctrine_Mapper_Abstract) {
+        if (isset($mapper) && $mapper instanceof Doctrine_Mapper_Abstract) {
             //echo "two<br />";
             $class = get_class($this);
             $this->_mapper = Doctrine_Manager::getInstance()->getMapper($class);
