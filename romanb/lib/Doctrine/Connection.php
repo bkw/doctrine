@@ -1079,7 +1079,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function getClassMetadata($className)
     {
         if ( ! $this->_metadataFactory) {
-            $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this);
+            $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this,
+                    new Doctrine_ClassMetadata_CodeDriver());
         }
         
         return $this->_metadataFactory->getMetadataFor($className);

@@ -16,10 +16,10 @@ class Doctrine_ClassMetadata_Factory
      */
     protected $_loadedMetadata = array();
     
-    public function __construct(Doctrine_Connection $conn /*Doctrine_MetadataClass_Driver $driver*/)
+    public function __construct(Doctrine_Connection $conn, $driver)
     {
         $this->_conn = $conn;
-        //$this->_driver = $driver;
+        $this->_driver = $driver;
     }
     
     /**
@@ -146,8 +146,8 @@ class Doctrine_ClassMetadata_Factory
         // save parents
         $class->setOption('parents', $names);
 
-        // set up metadata mapping
-        $this->_loadMetadataFromCode($class, $name);
+        // load further metadata
+        $this->_driver->loadMetadataForClass($name, $class);
         
         $tableName = $class->getTableName();
         if ( ! isset($tableName)) {
@@ -164,10 +164,10 @@ class Doctrine_ClassMetadata_Factory
      *
      * @todo Move to code driver.
      */
-    protected function _loadMetadataFromCode($class, $name)
+    /*protected function _loadMetadataFromCode($class, $name)
     {
         call_user_func_array(array($name, 'initMetadata'), array($class));
-    }
+    }*/
     
     /**
      * Initializes the class identifier(s)/primary key(s).
