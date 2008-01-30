@@ -154,6 +154,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
      */
     protected $_options      = array(
             'tableName'      => null,
+            'schemaName'      => null,
             'sequenceName'   => null,
             'inheritanceType' => null,
             'inheritanceMap' => array(),
@@ -740,13 +741,27 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
     }
     
     /**
+     * getSchemaName
+     *  return the database schema of table
+     * @return String
+     */
+    public function getSchemaName()
+    {
+        return $this->_options['schemaName'];
+    }
+    /**
      * getTableName
      *
      * @return void
      */
     public function getTableName()
     {
-        return $this->_options['tableName'];
+        if ($this->getSchemaName() ){
+            return $this->_options['schemaName'].$this->_options['tableName'];
+        }else{
+            return $this->_options['tableName'];  
+        }
+        
     }
     
     public function bindRelation($args, $type)
@@ -1111,6 +1126,16 @@ class Doctrine_Table extends Doctrine_Configurable implements Serializable
         }
         return $this->_options['queryParts'][$queryPart];
     }
+    
+    /**
+     * setSchemaName
+     *
+     * @param string $schemaName 
+     * @return void
+     */
+    public function setSchemaName($schemaName)
+    {
+    }    
 
     /**
      * setTableName

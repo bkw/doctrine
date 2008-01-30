@@ -31,7 +31,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-final class Doctrine
+class Doctrine
 {
     /**
      * DEPRECATED ATTRIBUTE CONSTANT NAMES AND VALUES

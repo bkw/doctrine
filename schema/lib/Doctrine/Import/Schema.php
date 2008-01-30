@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -146,7 +146,7 @@ class Doctrine_Import_Schema
      */
     public function importSchema($schema, $format = 'yml', $directory = null, $models = array())
     {
-        $builder = new Doctrine_Import_Builder();
+        $builder = new Doctrine_Builder_Record();
         $builder->setTargetPath($directory);
         $builder->setOptions($this->getOptions());
         
