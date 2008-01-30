@@ -38,7 +38,7 @@ class Doctrine_Template_Listener_Timestampable extends Doctrine_Record_Listener
      * @var string
      */
     protected $_options = array();
-    
+
     /**
      * __construct
      *
@@ -49,7 +49,7 @@ class Doctrine_Template_Listener_Timestampable extends Doctrine_Record_Listener
     {
         $this->_options = $options;
     }
-    
+
     /**
      * preInsert
      *
@@ -68,7 +68,7 @@ class Doctrine_Template_Listener_Timestampable extends Doctrine_Record_Listener
             $event->getInvoker()->$updatedName = $this->getTimestamp('updated');
         }
     }
-    
+
     /**
      * preUpdate
      *
@@ -77,12 +77,12 @@ class Doctrine_Template_Listener_Timestampable extends Doctrine_Record_Listener
      */
     public function preUpdate(Doctrine_Event $event)
     {
-        if(!$this->_options['updated']['disabled']) {
+        if( ! $this->_options['updated']['disabled']) {
             $updatedName = $this->_options['updated']['name'];
             $event->getInvoker()->$updatedName = $this->getTimestamp('updated');
         }
     }
-    
+
     /**
      * getTimestamp
      *
@@ -94,13 +94,17 @@ class Doctrine_Template_Listener_Timestampable extends Doctrine_Record_Listener
     public function getTimestamp($type)
     {
         $options = $this->_options[$type];
-        
-        if ($options['type'] == 'date') {
-            return date($options['format'], time());
-        } else if ($options['type'] == 'timestamp') {
-            return date($options['format'], time());
+
+        if ($options['expression'] !== false && is_string($options['expression'])) {
+            return new Doctrine_Expression($options['expression']);
         } else {
-            return time();
+            if ($options['type'] == 'date') {
+                return date($options['format'], time());
+            } else if ($options['type'] == 'timestamp') {
+                return date($options['format'], time());
+            } else {
+                return time();
+            }
         }
     }
 }
