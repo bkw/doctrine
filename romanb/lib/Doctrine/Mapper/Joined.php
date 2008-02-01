@@ -212,20 +212,20 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
     
     public function getOwningTable($fieldName)
     {        
-        if ($this->_classMetadata->hasField($fieldName)) {
+        if ($this->_classMetadata->hasField($fieldName) && ! $this->_classMetadata->isInheritedField($fieldName)) {
             return $this->_classMetadata;
         }
         
         foreach ($this->_classMetadata->getOption('parents') as $parentClass) {
             $parentTable = $this->_conn->getMetadata($parentClass);
-            if ($parentTable->hasField($fieldName)) {
+            if ($parentTable->hasField($fieldName) && ! $parentTable->isInheritedField($fieldName)) {
                 return $parentTable;
             }
         }
         
         foreach ((array)$this->_classMetadata->getOption('subclasses') as $subClass) {
             $subTable = $this->_conn->getMetadata($subClass);
-            if ($subTable->hasField($fieldName)) {
+            if ($subTable->hasField($fieldName) && ! $subTable->isInheritedField($fieldName)) {
                 return $subTable;
             }
         }
@@ -243,12 +243,13 @@ class Doctrine_Mapper_Joined extends Doctrine_Mapper_Abstract
         $component = $table->getClassName();
         $array = $record->getPrepared();
         
-        $classes = array_merge(array($component), $this->_classMetadata->getOption('parents'));
+        $classes = array_merge(array($component), $this->_classMetadata->getParentClasses());
         
         foreach ($classes as $class) {
-            $table = $this->_conn->getMetadata($class);
-            foreach ($table->getColumns() as $columnName => $definition) {
-                if (isset($definition['primary'])) {
+            $metadata = $this->_conn->getMetadata($class);
+            foreach ($metadata->getColumns() as $columnName => $definition) {
+                if ((isset($definition['primary']) && $definition['primary'] === true) ||
+                        (isset($definition['inherited']) && $definition['inherited'] === true)) {
                     continue;
                 }
                 $fieldName = $table->getFieldName($columnName);

@@ -63,6 +63,40 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         //var_dump($suManagerClass->getColumns());
     }
     
+    public function testExportableFormatOfClassInClassTableInheritanceHierarchy()
+    {
+        $userClass = $this->conn->getMetadata('Metadata_User');
+        $userClassExportableFormat = $userClass->getExportableFormat();
+        $this->assertEqual(4, count($userClassExportableFormat['columns']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['cti_id']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['cti_id']['primary']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['cti_id']['autoincrement']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['cti_foo']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['cti_name']));
+        $this->assertTrue(isset($userClassExportableFormat['columns']['type']));
+        
+        $managerClass = $this->conn->getMetadata('Metadata_Manager');
+        $managerClassExportableFormat = $managerClass->getExportableFormat();
+        $this->assertEqual(2, count($managerClassExportableFormat['columns']));
+        $this->assertTrue(isset($managerClassExportableFormat['columns']['cti_id']));
+        $this->assertTrue(isset($managerClassExportableFormat['columns']['cti_id']['primary']));
+        $this->assertFalse(isset($managerClassExportableFormat['columns']['cti_id']['autoincrement']));
+        
+        $customerClass = $this->conn->getMetadata('Metadata_Customer');
+        $customerClassExportableFormat = $customerClass->getExportableFormat();
+        $this->assertEqual(2, count($customerClassExportableFormat['columns']));
+        $this->assertTrue(isset($customerClassExportableFormat['columns']['cti_id']));
+        $this->assertTrue(isset($customerClassExportableFormat['columns']['cti_id']['primary']));
+        $this->assertFalse(isset($customerClassExportableFormat['columns']['cti_id']['autoincrement']));
+        
+        $superManagerClass = $this->conn->getMetadata('Metadata_SuperManager');
+        $superManagerClassExportableFormat = $superManagerClass->getExportableFormat();
+        $this->assertEqual(2, count($superManagerClassExportableFormat['columns']));
+        $this->assertTrue(isset($superManagerClassExportableFormat['columns']['cti_id']));
+        $this->assertTrue(isset($superManagerClassExportableFormat['columns']['cti_id']['primary']));
+        $this->assertFalse(isset($superManagerClassExportableFormat['columns']['cti_id']['autoincrement']));
+    }
+    
     public function testMetadataSetupOnSingleTableInheritanceHierarchy()
     {        
         $userClass = $this->conn->getMetadata('Metadata_STI_User');

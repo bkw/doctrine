@@ -1028,7 +1028,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $event = new Doctrine_Event($this, Doctrine_Event::CONN_ERROR);
         $this->getListener()->preError($event);
 
-        /*if (strstr($e->getMessage(), 'no such table')) {
+        /*if (strstr($e->getMessage(), 'no such column')) {
             echo $e->getMessage() . "<br />" . $e->getTraceAsString() . "<br />";
         }*/
         

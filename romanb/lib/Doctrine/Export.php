@@ -1152,9 +1152,11 @@ class Doctrine_Export extends Doctrine_Connection_Module
                 continue;
             }
             
-            //echo $name . "<br />";
             $classMetadata = $this->conn->getClassMetadata($name);
             
+            // In Class Table Inheritance we have to make sure that ALL tables are exported
+            // as soon as ONE table is exported, because the data of one class is stored
+            // across many tables.
             if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
                 //echo "joined.<br />";
                 $parents = $classMetadata->getOption('parents');
@@ -1164,23 +1166,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
                     $sql = array_merge($sql, (array) $query);
                     $finishedClasses[] = $parent;
                 }
-            }/* else if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-                echo "single table.<br />";
-                $parents = $classMetadata->getOption('parents');
-                if ($parents) {
-                    $rootClassMetadata = $classMetadata->getConnection()->getClassMetadata(array_pop($parents));
-                } else {
-                    $rootClassMetadata = $classMetadata;
-                }
-                $subClasses = $rootClassMetadata->getOption('subclasses');
-                $data = $rootClassMetadata->getExportableFormat();
-                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-                $sql = array_merge($sql, (array) $query);
-                $finishedClasses = array_merge($finishedClasses, array($rootClassMetadata->getClassName()), $subClasses);
-            } else if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-                echo "table per class.<br />";
-                
-            }*/
+            }
             
             $data = $classMetadata->getExportableFormat();
             $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);

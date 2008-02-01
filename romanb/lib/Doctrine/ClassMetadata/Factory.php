@@ -102,6 +102,7 @@ class Doctrine_ClassMetadata_Factory
                 unset($definition['autoincrement']);
             }*/
             $fullName = "$name as " . $parentClass->getFieldName($name);
+            $definition['inherited'] = true;
             $subClass->setColumn($fullName, $definition['type'], $definition['length'],
                     $definition);
         }

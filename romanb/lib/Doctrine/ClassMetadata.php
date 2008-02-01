@@ -957,6 +957,14 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
+     * 
+     */
+    public function getParentClasses()
+    {
+        return $this->getOption('parents');
+    }
+    
+    /**
      * Sets the inheritance type used by the class.
      *
      * @param integer $type
@@ -1044,7 +1052,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
 
     /**
      * getExportableFormat
-     * Returns an array with the DDL for this table object.
+     * Returns an array with all the information needed to create the main database table
+     * for the class.
      *
      * @return array
      * @todo Move somewhere else ... somehow this seems wrong here. Exporting is a separate task.
@@ -1068,6 +1077,30 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
             foreach ($subClasses as $subClass) {
                 $subClassMetadata = $this->_conn->getClassMetadata($subClass);
                 $allColumns = array_merge($allColumns, $subClassMetadata->getColumns());
+            }
+        } else if ($this->_inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
+            // Remove inherited, non-pk fields. They're not in the table of this class
+            foreach ($allColumns as $name => $definition) {
+                if (isset($definition['primary']) && $definition['primary'] === true) {
+                    if ($this->getParentClasses() && isset($definition['autoincrement'])) {
+                        unset($allColumns[$name]['autoincrement']);
+                    }
+                    continue;
+                }
+                if (isset($definition['inherited']) && $definition['inherited'] === true) {
+                    unset($allColumns[$name]);
+                }
+            }
+        } else if ($this->_inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
+            // If this is a subclass, just remove existing autoincrement options on the pk
+            if ($this->getParentClasses()) {
+                foreach ($allColumns as $name => $definition) {
+                    if (isset($definition['primary']) && $definition['primary'] === true) {
+                        if (isset($definition['autoincrement'])) {
+                            unset($allColumns[$name]['autoincrement']);
+                        }
+                    }
+                }
             }
         }
 
@@ -1250,6 +1283,14 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function getFilters()
     {
         return $this->_filters;
+    }
+    
+    /**
+     * 
+     */
+    public function isInheritedField($fieldName)
+    {
+        return isset($this->_columns[$this->getColumnName($fieldName)]['inherited']);
     }
     
     /**
