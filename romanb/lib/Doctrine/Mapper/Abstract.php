@@ -444,16 +444,22 @@ abstract class Doctrine_Mapper_Abstract extends Doctrine_Configurable implements
      */
     final public function applyInheritance($where)
     {
-        $inheritanceMap = $this->getDiscriminatorColumn();
+        $discCol = $this->_classMetadata->getInheritanceOption('discriminatorColumn');
+        if ( ! $discCol) {
+            return $where;
+        }
+        
+        $discMap = $this->_classMetadata->getInheritanceOption('discriminatorMap');
+        $inheritanceMap = array($discCol => array_search($this->_domainClassName, $discMap));
         if ( ! empty($inheritanceMap)) {
             $a = array();
-            foreach ($inheritanceMap as $field => $value) {
-                $a[] = $this->_classMetadata->getColumnName($field) . ' = ?';
+            foreach ($inheritanceMap as $column => $value) {
+                $a[] = $column . ' = ?';
             }
             $i = implode(' AND ', $a);
             $where .= ' AND ' . $i;
         }
-        
+
         return $where;
     }
 

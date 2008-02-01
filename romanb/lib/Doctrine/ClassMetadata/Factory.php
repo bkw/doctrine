@@ -119,11 +119,11 @@ class Doctrine_ClassMetadata_Factory
     protected function _loadMetadata(Doctrine_ClassMetadata $class, $name)
     {
         if ( ! class_exists($name) || empty($name)) {
-            try {
+            /*try {
                 throw new Exception();
             } catch (Exception $e) {
                 echo $e->getTraceAsString();
-            }
+            }*/
             throw new Doctrine_Exception("Couldn't find class " . $name . ".");
         }
 

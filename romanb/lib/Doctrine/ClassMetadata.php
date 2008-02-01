@@ -194,9 +194,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * 
      */
     protected $_inheritanceOptions = array(
-            'discriminatorColumn' => 'dtype',
+            'discriminatorColumn' => null,
             'discriminatorMap'    => array(),
-            'discriminatorType'   => 'integer',
             'joinSubclasses'      => true
             );
     
@@ -935,9 +934,26 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return $this->_inheritanceType;
     }
     
+    /**
+     * Sets the subclasses of the class.
+     * All entity classes that participate in a hierarchy and have subclasses
+     * need to declare them in this way.
+     *
+     * @param array $subclasses  The names of all subclasses.
+     */
     public function setSubclasses(array $subclasses)
     {
         $this->setOption('subclasses', $subclasses);        
+    }
+    
+    /**
+     * Gets the names of all subclasses.
+     *
+     * @return array  The names of all subclasses.
+     */
+    public function getSubclasses()
+    {
+        return $this->getOption('subclasses');
     }
     
     /**
@@ -975,8 +991,9 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     
     public function getInheritanceOption($name)
     {
-        if ( ! isset($this->_inheritanceOptions[$name])) {
-            throw new Doctrine_MetadataClass_Exception("Unknown inheritance option: '$name'.");
+        if ( ! array_key_exists($name, $this->_inheritanceOptions)) {
+            echo $name;
+            throw new Doctrine_ClassMetadata_Exception("Unknown inheritance option: '$name'.");
         }
         
         return $this->_inheritanceOptions[$name];
@@ -989,27 +1006,21 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     
     public function setInheritanceOption($name, $value)
     {
-        if ( ! isset($this->_inheritanceOptions[$name])) {
-            throw new Doctrine_MetadataClass_Exception("Unknown inheritance option: '$name'.");
+        if ( ! array_key_exists($name, $this->_inheritanceOptions)) {
+            throw new Doctrine_ClassMetadata_Exception("Unknown inheritance option: '$name'.");
         }
         
         switch ($name) {
             case 'discriminatorColumn':
-                if ( ! is_string($value)) {
-                    throw new Doctrine_MetadataClass_Exception("Invalid value '$value' for option"
+                if ( $value !== null && ! is_string($value)) {
+                    throw new Doctrine_ClassMetadata_Exception("Invalid value '$value' for option"
                             . " 'discriminatorColumn'.");
                 }
                 break;
             case 'discriminatorMap':
                 if ( ! is_array($value)) {
-                    throw new Doctrine_MetadataClass_Exception("Value for option 'discriminatorMap'"
+                    throw new Doctrine_ClassMetadata_Exception("Value for option 'discriminatorMap'"
                             . " must be an array.");
-                }
-                break;
-            case 'discriminatorType':
-                if ($value != "integer" && $value != "string") {
-                    throw new Doctrine_MetadataClass_Exception("Value for option 'discriminatorType'"
-                            . " can only be 'string' or 'integer'.");
                 }
                 break;
         }

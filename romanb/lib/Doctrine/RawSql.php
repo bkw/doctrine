@@ -81,6 +81,7 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
         } else {
             $this->_sqlParts[$queryPartName][] = $queryPart;
         }
+        
         return $this;
     }
 
@@ -324,7 +325,7 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
 
                 $this->_queryComponents[$componentAlias] = array(
                         'table'    => $relation->getTable(),
-                        'mapper' => $this->_conn->getMapper($component),
+                        'mapper'   => $this->_conn->getMapper($component),
                         'parent'   => $parent,
                         'relation' => $relation);
             }

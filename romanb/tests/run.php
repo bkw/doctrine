@@ -186,10 +186,14 @@ $query_tests->addTestCase(new Doctrine_Query_MultipleAggregateValue_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_AggregateValue_TestCase());
 ##
 
+# Passes with filter=query or filter=query_referencemodel but fail when running the
+# whole suite ...
+$query_tests->addTestCase(new Doctrine_Query_ReferenceModel_TestCase());
+#
+
 $query_tests->addTestCase(new Doctrine_Query_Condition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin2_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_ReferenceModel_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_ComponentAlias_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_ShortAliases_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Expression_TestCase());

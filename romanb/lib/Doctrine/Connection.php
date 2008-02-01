@@ -1087,10 +1087,21 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
     
     /**
+     * Sets the driver that is used to obtain metadata informations about entity
+     * classes.
+     *
+     * @param $driver  The driver to use.
+     */
+    public function setClassMetadataDriver($driver)
+    {
+        $this->_metadataFactory->setDriver($driver);
+    }
+    
+    /**
      * Gets a mapper for the specified domain class that is used to map instances of
      * the class between the relational database and their object representation.
      *
-     * @return Doctrine_Mapper_Abstract  The mapper object.
+     * @return Doctrine_Mapper  The mapper object.
      * @todo package:orm  
      */
     public function getMapper($className)
@@ -1124,6 +1135,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
+     * Gets all mappers that are currently maintained by the connection.
      *
      * @todo package:orm
      */
@@ -1133,7 +1145,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * returns an iterator that iterators through all
+     * returns an iterator that iterates through all
      * initialized table objects
      *
      * <code>
@@ -1150,9 +1162,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * returns the count of initialized table objects
+     * Returns the number of queries executed by the connection.
      *
      * @return integer
+     * @todo Better name: getQueryCount()
      */
     public function count()
     {

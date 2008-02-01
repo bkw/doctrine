@@ -25,10 +25,9 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $userClass = $this->conn->getMetadata('Metadata_User');
         $this->assertTrue($userClass instanceof Doctrine_ClassMetadata);
         $this->assertEqual('cti_user', $userClass->getTableName());
-        $this->assertEqual(3, count($userClass->getFields()));
+        $this->assertEqual(4, count($userClass->getFields()));
         $this->assertIdentical(array(), $userClass->getOption('parents'));
         $this->assertEqual('type', $userClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $userClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -40,9 +39,8 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($managerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_User'), $managerClass->getOption('parents'));
         $this->assertEqual('cti_manager', $managerClass->getTableName());
-        $this->assertEqual(4, count($managerClass->getFields()));
+        $this->assertEqual(5, count($managerClass->getFields()));
         $this->assertEqual('type', $managerClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $managerClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -54,9 +52,8 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($suManagerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_Manager', 'Metadata_User'), $suManagerClass->getOption('parents'));
         $this->assertEqual('cti_supermanager', $suManagerClass->getTableName());
-        $this->assertEqual(5, count($suManagerClass->getFields()));
+        $this->assertEqual(6, count($suManagerClass->getFields()));
         $this->assertEqual('type', $suManagerClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $suManagerClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -71,10 +68,9 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $userClass = $this->conn->getMetadata('Metadata_STI_User');
         $this->assertTrue($userClass instanceof Doctrine_ClassMetadata);
         $this->assertEqual('cti_user', $userClass->getTableName());
-        $this->assertEqual(3, count($userClass->getFields()));
+        $this->assertEqual(4, count($userClass->getFields()));
         $this->assertIdentical(array(), $userClass->getOption('parents'));
         $this->assertEqual('type', $userClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $userClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -85,9 +81,8 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($managerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_STI_User'), $managerClass->getOption('parents'));
         $this->assertEqual('cti_user', $managerClass->getTableName());
-        $this->assertEqual(4, count($managerClass->getFields()));
+        $this->assertEqual(5, count($managerClass->getFields()));
         $this->assertEqual('type', $managerClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $managerClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -99,9 +94,8 @@ class Doctrine_Metadata_Factory_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($suManagerClass instanceof Doctrine_ClassMetadata);
         $this->assertIdentical(array('Metadata_STI_Manager', 'Metadata_STI_User'), $suManagerClass->getOption('parents'));
         $this->assertEqual('cti_user', $suManagerClass->getTableName());
-        $this->assertEqual(5, count($suManagerClass->getFields()));
+        $this->assertEqual(6, count($suManagerClass->getFields()));
         $this->assertEqual('type', $suManagerClass->getInheritanceOption('discriminatorColumn'));
-        $this->assertEqual('integer', $suManagerClass->getInheritanceOption('discriminatorType'));
         $this->assertIdentical(array(
               1 => 'CTI_User',
               2 => 'CTI_Manager',
@@ -120,7 +114,6 @@ class Metadata_User extends Doctrine_Record
         $class->setTableName('cti_user');
         $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED,
                 array('discriminatorColumn' => 'type',
-                      'discriminatorType' => 'integer',
                       'discriminatorMap' => array(
                           1 => 'CTI_User',
                           2 => 'CTI_Manager',
@@ -132,6 +125,7 @@ class Metadata_User extends Doctrine_Record
         $class->mapField('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
         $class->mapField('cti_foo as foo', 'integer', 4);
         $class->mapField('cti_name as name', 'string', 50);
+        $class->mapField('type', 'integer', 1);
         
         //$class->setNamedQuery('findByName', 'SELECT u.* FROM User u WHERE u.name = ?');
     }
@@ -174,7 +168,6 @@ class Metadata_STI_User extends Doctrine_Record
         $class->setTableName('cti_user');
         $class->setInheritanceType(Doctrine::INHERITANCETYPE_SINGLE_TABLE,
                 array('discriminatorColumn' => 'type',
-                      'discriminatorType' => 'integer',
                       'discriminatorMap' => array(
                           1 => 'CTI_User',
                           2 => 'CTI_Manager',
@@ -186,6 +179,7 @@ class Metadata_STI_User extends Doctrine_Record
         $class->mapField('cti_id as id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
         $class->mapField('cti_foo as foo', 'integer', 4);
         $class->mapField('cti_name as name', 'string', 50);
+        $class->mapField('type', 'integer', 1);
         
         //$class->setNamedQuery('findByName', 'SELECT u.* FROM User u WHERE u.name = ?');
     }
@@ -205,8 +199,8 @@ class Metadata_STI_Customer extends Metadata_STI_User
 {
     public static function initMetadata($class)
     {
-        $this->setTableName('cti_customer');
-        $this->hasColumn('ctic_bonuspoints as bonuspoints', 'varchar', 50, array());
+        $class->setTableName('cti_customer');
+        $class->setColumn('ctic_bonuspoints as bonuspoints', 'varchar', 50, array());
     }
 }
 
