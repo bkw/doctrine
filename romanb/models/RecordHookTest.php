@@ -7,35 +7,35 @@ class RecordHookTest extends Doctrine_Record
     {
         $class->setColumn('name', 'string', null, array('primary' => true));
     }
-    public function preSave($event)
+    public function preSave(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function postSave($event)
+    public function postSave(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function preInsert($event)
+    public function preInsert(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function postInsert($event)
+    public function postInsert(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function preUpdate($event)
+    public function preUpdate(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function postUpdate($event)
+    public function postUpdate(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function preDelete($event)
+    public function preDelete(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }
-    public function postDelete($event)
+    public function postDelete(Doctrine_Event $event)
     {
         $this->_messages[] = __FUNCTION__;
     }

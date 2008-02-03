@@ -314,56 +314,56 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the serializing procedure.
      */
-    public function preSerialize($event)
+    public function preSerialize(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the serializing procedure.
      */
-    public function postSerialize($event)
+    public function postSerialize(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the serializing procedure.
      */
-    public function preUnserialize($event)
+    public function preUnserialize(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the serializing procedure.
      */
-    public function postUnserialize($event)
+    public function postUnserialize(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the saving procedure.
      */
-    public function preSave($event)
+    public function preSave(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the saving procedure.
      */
-    public function postSave($event)
+    public function postSave(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the deletion procedure.
      */
-    public function preDelete($event)
+    public function preDelete(Doctrine_Event $event)
     { }
     
     /**
      * Empty template method to provide concrete Record classes with the possibility
      * to hook into the deletion procedure.
      */
-    public function postDelete($event)
+    public function postDelete(Doctrine_Event $event)
     { }
     
     /**
@@ -371,7 +371,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * to hook into the saving procedure only when the record is going to be
      * updated.
      */
-    public function preUpdate($event)
+    public function preUpdate(Doctrine_Event $event)
     { }
     
     /**
@@ -379,7 +379,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * to hook into the saving procedure only when the record is going to be
      * updated.
      */
-    public function postUpdate($event)
+    public function postUpdate(Doctrine_Event $event)
     { }
     
     /**
@@ -387,7 +387,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * to hook into the saving procedure only when the record is going to be
      * inserted into the data store the first time.
      */
-    public function preInsert($event)
+    public function preInsert(Doctrine_Event $event)
     { }
     
     /**
@@ -395,7 +395,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * to hook into the saving procedure only when the record is going to be
      * inserted into the data store the first time.
      */
-    public function postInsert($event)
+    public function postInsert(Doctrine_Event $event)
     { }
     
     /**
