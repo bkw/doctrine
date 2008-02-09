@@ -1,5 +1,5 @@
 The installation of doctrine is very easy. Just get the latest revision of
-Doctrine from http://svn.phpdoctrine.org/trunk. 
+Doctrine from http://svn.phpdoctrine.org/branches/0.10. 
 
 You need a SVN (Subversion) client for downloading Doctrine.
 
