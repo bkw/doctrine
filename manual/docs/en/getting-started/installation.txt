@@ -10,7 +10,7 @@ svn co http://svn.phpdoctrine.org/trunk .
 </code>
 
 If you do not have a SVN client, chose one from the list below. Find the
-**Checkout** option and enter http://svn.phpdoctrine.org/trunk in the **path** or **repository url** parameter. There is no need for a username or password to check out Doctrine. 
+**Checkout** option and enter http://svn.phpdoctrine.org/branches/0.10 in the **path** or **repository url** parameter. There is no need for a username or password to check out Doctrine. 
 
 * [http://tortoisesvn.tigris.org/ TortoiseSVN] a Windows application that  integrates into Windows Explorer
 * [http://www.apple.com/downloads/macosx/development_tools/svnx.html svnx] a  Mac OS X GUI svn application 
