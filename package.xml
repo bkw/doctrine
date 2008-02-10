@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.1" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
- <channel>pear.php.net</channel>
+ <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
  <description>Doctrine is an ORM (object relational mapper) for PHP 5.2.x+ that sits on top of a powerful DBAL (database abstraction layer). One of its key features is the ability to optionally write database queries in an OO (object oriented) SQL-dialect called DQL inspired by Hibernates HQL. This provides developers with a powerful alternative to SQL that maintains a maximum of flexibility without requiring needless code duplication.</description>
  <lead>
