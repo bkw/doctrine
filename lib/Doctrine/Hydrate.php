@@ -1037,7 +1037,7 @@ class Doctrine_Hydrate extends Doctrine_Locator_Injectable implements Serializab
         $componentName = $rootMap['table']->getComponentName();
         $isSimpleQuery = count($this->_aliasMap) <= 1;
 
-        if ($hydrationMode === Doctrine::HYDRATE_ARRAY) {
+        if ($hydrationMode == Doctrine::HYDRATE_ARRAY) {
             $driver = new Doctrine_Hydrate_Array();
         } else {
             $driver = new Doctrine_Hydrate_Record();
