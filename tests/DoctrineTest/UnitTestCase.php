@@ -60,6 +60,25 @@ class UnitTestCase
             $this->_fail();
         }
     }
+
+    public function assertNull($expr)
+    {
+        if (is_null($expr)) {
+            $this->pass();
+        } else {
+            $this->fail();
+        }
+    }
+
+    public function assertNotNull($expr)
+    {
+        if (is_null($expr)) {
+            $this->fail();
+        } else {
+            $this->pass();
+        }
+    }
+
     public function pass() 
     {
         $this->_passed++;
