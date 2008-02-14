@@ -104,13 +104,15 @@ class Doctrine_Export_Pgsql_TestCase extends Doctrine_UnitTestCase
     {
         $name = 'mytable';
         $fields  = array('name' => array('type' => 'char', 'length' => 10, 'default' => 'def'),
-                         'type' => array('type' => 'integer', 'length' => 3, 'default' => 12)
+                         'type' => array('type' => 'integer', 'length' => 3, 'default' => 12),
+                         'is_active' => array('type' => 'boolean', 'default'=>'0'),
+                         'is_admin'  => array('type' => 'boolean', 'default'=>'true'),
                          );
                          
         $options = array('primary' => array('name', 'type'));
         $this->export->createTable($name, $fields, $options);
 
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10) DEFAULT \'def\', type INT DEFAULT 12, PRIMARY KEY(name, type))');
+        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10) DEFAULT \'def\', type INT DEFAULT 12, is_active BOOLEAN DEFAULT false, is_admin BOOLEAN DEFAULT true, PRIMARY KEY(name, type))');
     }
     public function testCreateTableSupportsMultiplePks()
      {
