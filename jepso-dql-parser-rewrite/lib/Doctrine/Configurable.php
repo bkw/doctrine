@@ -50,7 +50,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
      *                                      implementation classes
      */
     protected $_impl = array();
-    
+
     /**
      * @var array $_params                  an array of user defined parameters
      */
@@ -66,6 +66,10 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
      * // or
      *
      * $manager->setAttribute('portability', Doctrine::PORTABILITY_ALL);
+     *
+     * // or
+     *
+     * $manager->setAttribute('portability', 'all');
      * </code>
      *
      * @param mixed $attribute              either a Doctrine::ATTR_* integer constant or a string
@@ -75,18 +79,31 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
      * @throws Doctrine_Exception           if the value is invalid
      * @return void
      */
-    public function setAttribute($attribute,$value)
+    public function setAttribute($attribute, $value)
     {
         if (is_string($attribute)) {
             $upper = strtoupper($attribute);
 
-            $const = 'Doctrine::ATTR_' . $attribute;
+            $const = 'Doctrine::ATTR_' . $upper;
+
             if (defined($const)) {
-                $this->_state = constant($const);
+                $attribute = constant($const);
+                $this->_state = $attribute;
             } else {
-                throw new Doctrine_Exception('Unknown attribute ' . $attribute);
+                throw new Doctrine_Exception('Unknown attribute: "' . $attribute . '"');
             }
         }
+
+        if (is_string($value) && isset($upper)) {
+            $const = 'Doctrine::' . $upper . '_' . strtoupper($value);
+
+            if (defined($const)) {
+                $value = constant($const);
+            } else {
+                throw new Doctrine_Exception('Unknown attribute value: "' . $value . '"');
+            }
+        }
+
         switch ($attribute) {
             case Doctrine::ATTR_FETCHMODE:
                 throw new Doctrine_Exception('Deprecated attribute. See http://www.phpdoctrine.org/documentation/manual?chapter=configuration');
@@ -94,8 +111,8 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
                 $this->setEventListener($value);
                 break;
             case Doctrine::ATTR_COLL_KEY:
-                if ( ! ($this instanceof Doctrine_Table)) {
-                    throw new Doctrine_Exception("This attribute can only be set at table level.");
+                if ( ! ($this instanceof Doctrine_ClassMetadata)) {
+                    throw new Doctrine_Exception("This attribute can only be set at class level.");
                 }
                 if ($value !== null && ! $this->hasField($value)) {
                     throw new Doctrine_Exception("Couldn't set collection key attribute. No such field '$value'");
@@ -158,36 +175,36 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
     	if ($namespace == null) {
     	    $namespace = $this->getAttribute(Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE);
     	}
-    	
+
     	if ( ! isset($this->_params[$namespace])) {
     	    return null;
     	}
 
         return $this->_params[$namespace];
     }
-    
+
     public function getParamNamespaces()
     {
         return array_keys($this->_params);
     }
 
-    public function setParam($name, $value, $namespace = null) 
+    public function setParam($name, $value, $namespace = null)
     {
     	if ($namespace == null) {
     	    $namespace = $this->getAttribute(Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE);
     	}
-    	
+
     	$this->_params[$namespace][$name] = $value;
-    	
+
     	return $this;
     }
-    
-    public function getParam($name, $value, $namespace) 
+
+    public function getParam($name, $value, $namespace)
     {
     	if ($namespace == null) {
     	    $namespace = $this->getAttribute(Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE);
     	}
-    	
+
         if ( ! isset($this->_params[$name])) {
             if (isset($this->parent)) {
                 return $this->parent->getParam($name);
@@ -196,7 +213,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
         }
         return $this->_params[$name];
     }
-    
+
     /**
      * setImpl
      * binds given class to given template name
@@ -230,8 +247,8 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
         }
         return $this->_impl[$template];
     }
-    
-    
+
+
     public function hasImpl($template)
     {
         if ( ! isset($this->_impl[$template])) {
@@ -281,7 +298,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
             if (isset($this->parent)) {
                 return $this->parent->getRecordListener();
             }
-            return null;
+            $this->attributes[Doctrine::ATTR_RECORD_LISTENER] = new Doctrine_Record_Listener();
         }
         return $this->attributes[Doctrine::ATTR_RECORD_LISTENER];
     }
@@ -303,6 +320,11 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
 
         return $this;
     }
+    /*
+    public function removeRecordListeners()
+    {
+        $this->attributes[Doctrine::ATTR_RECORD_LISTENER] = 
+    }*/
 
     /**
      * addListener
@@ -347,8 +369,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
     public function setListener($listener)
     {
         if ( ! ($listener instanceof Doctrine_EventListener_Interface)
-            && ! ($listener instanceof Doctrine_Overloadable)
-        ) {
+                && ! ($listener instanceof Doctrine_Overloadable)) {
             throw new Doctrine_EventListener_Exception("Couldn't set eventlistener. EventListeners should implement either Doctrine_EventListener_Interface or Doctrine_Overloadable");
         }
         $this->attributes[Doctrine::ATTR_LISTENER] = $listener;
@@ -373,7 +394,7 @@ abstract class Doctrine_Configurable extends Doctrine_Locator_Injectable
         if (isset($this->attributes[$attribute])) {
             return $this->attributes[$attribute];
         }
-        
+
         if (isset($this->parent)) {
             return $this->parent->getAttribute($attribute);
         }

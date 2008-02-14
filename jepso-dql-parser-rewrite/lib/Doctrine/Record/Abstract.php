@@ -33,38 +33,55 @@ Doctrine::autoload('Doctrine_Access');
 abstract class Doctrine_Record_Abstract extends Doctrine_Access
 {
     /**
-     * @param Doctrine_Table $_table     reference to associated Doctrine_Table instance
+     * The metadata container that describes the entity class.
+     *
+     * @param Doctrine_ClassMetadata
      */
     protected $_table;
     
     /**
      *
-     * @var Doctrine_Mapper_Abstract
+     * @var Doctrine_Mapper
      */
     protected $_mapper;
-
-    public function setTableDefinition()
-    {
-    	
-    }
     
+    /**
+     * @deprecated
+     */
+    public function setTableDefinition()
+    {}
+    
+    /**
+     * @deprecated
+     */
     public function setUp()
-    {
-    	
-    }	
-
+    {}
 
     /**
      * getTable
-     * returns the associated table object
+     * returns the table object for this record
      *
-     * @return Doctrine_Table               the associated table object
+     * @return Doctrine_Table        a Doctrine_Table object
+     * @deprecated
      */
     public function getTable()
+    {
+        return $this->getClassMetadata();
+    }
+
+    /**
+     * Gets the ClassMetadata object that describes the entity class.
+     */
+    public function getClassMetadata()
     {
         return $this->_table;
     }
     
+    /**
+     * Returns the mapper of the entity.
+     *
+     * @return Doctrine_Mapper
+     */
     public function getMapper()
     {
         return $this->_mapper;
@@ -105,51 +122,12 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
 
         return $this;
     }
-
-    /**
-     * index
-     * defines or retrieves an index
-     * if the second parameter is set this method defines an index
-     * if not this method retrieves index named $name
-     *
-     * @param string $name              the name of the index
-     * @param array $definition         the definition array
-     * @return mixed
-     */
-    public function index($name, array $definition = array())
-    {
-        if ( ! $definition) {
-            return $this->_table->getIndex($name);
-        } else {
-            return $this->_table->addIndex($name, $definition);
-        }
-    }
+    
     public function setAttribute($attr, $value)
     {
         $this->_table->setAttribute($attr, $value);
     }
-    public function setTableName($tableName)
-    {
-        $this->_table->setTableName($tableName);
-    }
     
-    /**
-     *
-     * @deprecated Use setSubclasses()
-     */
-    public function setInheritanceMap($map)
-    {
-        $this->_table->setOption('inheritanceMap', $map);
-    }
-
-    public function setSubclasses($map)
-    {
-        //echo "setting inheritance map on " . get_class($this) . "<br />";
-        $this->_table->setOption('inheritanceMap', $map);
-        $this->_table->setOption('subclasses', array_keys($map));
-        $this->_table->setInheritanceType(Doctrine::INHERITANCETYPE_SINGLE_TABLE);
-    }
-
     /**
      * attribute
      * sets or retrieves an option
@@ -172,235 +150,5 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
         } else {
             $this->_table->setAttribute($attr, $value);
         }    
-    }
-
-    /**
-     * option
-     * sets or retrieves an option
-     *
-     * @see Doctrine_Table::$options    availible options
-     * @param mixed $name               the name of the option
-     * @param mixed $value              options value
-     * @return mixed
-     */
-    public function option($name, $value = null)
-    {
-        if ($value === null) {
-            if (is_array($name)) {
-                foreach ($name as $k => $v) {
-                    $this->_table->setOption($k, $v);
-                }
-            } else {
-                return $this->_table->getOption($name);
-            }
-        } else {
-            $this->_table->setOption($name, $value);
-        }
-    }
-
-    /**
-     * DEPRECATED ALSO? - REMOVE SOON
-     *
-     * ownsOne
-     * binds One-to-One composite relation
-     *
-     * @param string $componentName     the name of the related component
-     * @param string $options           relation options
-     * @see Doctrine_Relation::_$definition
-     * @return Doctrine_Record          this object
-     */
-    public function ownsOne()
-    {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::ONE_COMPOSITE);
-        
-        return $this;
-    }
-
-    /**
-     * DEPRECATED - REMOVE SOON
-     *
-     * ownsMany
-     * binds One-to-Many / Many-to-Many composite relation
-     *
-     * @param string $componentName     the name of the related component
-     * @param string $options           relation options
-     * @see Doctrine_Relation::_$definition
-     * @return Doctrine_Record          this object
-     */
-    public function ownsMany()
-    {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::MANY_COMPOSITE);
-        return $this;
-    }
-
-    /**
-     * hasOne
-     * binds One-to-One aggregate relation
-     *
-     * @param string $componentName     the name of the related component
-     * @param string $options           relation options
-     * @see Doctrine_Relation::_$definition
-     * @return Doctrine_Record          this object
-     */
-    public function hasOne()
-    {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::ONE_AGGREGATE);
-
-        return $this;
-    }
-
-    /**
-     * hasMany
-     * binds One-to-Many / Many-to-Many aggregate relation
-     *
-     * @param string $componentName     the name of the related component
-     * @param string $options           relation options
-     * @see Doctrine_Relation::_$definition
-     * @return Doctrine_Record          this object
-     */
-    public function hasMany()
-    {
-        $this->_table->bind(func_get_args(), Doctrine_Relation::MANY_AGGREGATE);
-
-        return $this;
-    }
-
-    /**
-     * hasColumn
-     * sets a column definition
-     *
-     * @param string $name
-     * @param string $type
-     * @param integer $length
-     * @param mixed $options
-     * @return void
-     */
-    public function hasColumn($name, $type, $length = 2147483647, $options = "")
-    {
-        $this->_table->setColumn($name, $type, $length, $options);
-    }
-    public function hasColumns(array $definitions)
-    {
-        foreach ($definitions as $name => $options) {
-            $this->hasColumn($name, $options['type'], $options['length'], $options);
-        }
-    } 
-    /**
-     * loadTemplate
-     *
-     * @param string $template
-     */
-    public function loadTemplate($template, array $options = array())
-    {
-        $this->actAs($template, $options);
-    }
-
-    /**
-     * bindQueryParts
-     * binds query parts to given component
-     *
-     * @param array $queryParts         an array of pre-bound query parts
-     * @return Doctrine_Record          this object
-     */
-    public function bindQueryParts(array $queryParts)
-    {
-        if (!$this->_table) {
-            try {
-                throw new Exception();
-            } catch (Exception $e) {
-                echo $e->getTraceAsString() . "<br />";
-            }
-        }
-    	$this->_table->bindQueryParts($queryParts);
-
-        return $this;
-    }
-
-    public function loadGenerator(Doctrine_Record_Generator $generator)
-    {
-    	$generator->initialize($this->_table);
-
-        $this->_table->addGenerator($generator, get_class($generator));
-    }
-
-
-    /**
-     * actAs
-     * loads the given plugin
-     *
-     * @param mixed $tpl
-     * @param array $options
-     */
-    public function actAs($tpl, array $options = array())
-    {
-        if ( ! is_object($tpl)) {
-            if (class_exists($tpl, true)) {
-                $tpl = new $tpl($options);
-            } else {
-                $className = 'Doctrine_Template_' . $tpl;
-
-                if ( ! class_exists($className, true)) {
-                    throw new Doctrine_Record_Exception("Couldn't load plugin.");
-                }
-
-
-                $tpl = new $className($options);
-            }
-        }
-
-        if ( ! ($tpl instanceof Doctrine_Template)) {
-            throw new Doctrine_Record_Exception('Loaded plugin class is not an instance of Doctrine_Template.');
-        }
-
-        $className = get_class($tpl);
-
-        $this->_table->addTemplate($className, $tpl);
-
-        $tpl->setTable($this->_table);
-        $tpl->setUp();
-        $tpl->setTableDefinition();
-
-        return $this;
-    }
-    
-    /**
-     * 
-     *
-     */
-    public function setInheritanceType($type, array $options = null)
-    {
-        if ($type == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-            $this->setSubclasses($options);
-        } else if ($type == Doctrine::INHERITANCETYPE_JOINED) {
-            $this->setSubclasses($options);
-        } else if ($type == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-            // concrete table inheritance ...
-        }
-        $this->_table->setInheritanceType($type);
-    }
-    
-    protected function _getMapper($className)
-    {
-        
-    }
-
-    /**
-     * check
-     * adds a check constraint
-     *
-     * @param mixed $constraint     either a SQL constraint portion or an array of CHECK constraints
-     * @param string $name          optional constraint name
-     * @return Doctrine_Record      this object
-     */
-    public function check($constraint, $name = null)
-    {
-        if (is_array($constraint)) {
-            foreach ($constraint as $name => $def) {
-                $this->_table->addCheckConstraint($def, $name);
-            }
-        } else {
-            $this->_table->addCheckConstraint($constraint, $name);
-        }
-        return $this;
     }
 }

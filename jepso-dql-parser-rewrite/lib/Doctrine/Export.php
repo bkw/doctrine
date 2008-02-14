@@ -748,7 +748,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
             }
 
             if ($field['type'] === 'boolean') {
-                $fields['default'] = $this->conn->convertBooleans($field['default']);
+                $field['default'] = $this->conn->convertBooleans($field['default']);
             }
             $default = ' DEFAULT ' . $this->conn->quote($field['default'], $field['type']);
         }
@@ -1068,7 +1068,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
      * @return void
      */
     public function exportClasses(array $classes)
-    {
+    { 
         $connections = array();
         foreach ($classes as $class) {
             $record = new $class();
@@ -1076,13 +1076,15 @@ class Doctrine_Export extends Doctrine_Connection_Module
             $connectionName = Doctrine_Manager::getInstance()->getConnectionName($connection);
 
             if ( ! isset($connections[$connectionName])) {
-                $connections[$connectionName] = array();
-                $connections[$connectionName]['create_tables'] = array();
-                $connections[$connectionName]['create_sequences'] = array();
-                $connections[$connectionName]['alters'] = array();
+                $connections[$connectionName] = array(
+                    'create_tables' => array(),
+                    'create_sequences' => array(),
+                    'alters' => array()
+                );
             }
 
             $sql = $this->exportClassesSql(array($class));
+
             // Build array of all the creates
             // We need these to happen first
             foreach ($sql as $key => $query) {
@@ -1137,29 +1139,37 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *                                          occurred during the create table operation
      * @param array $classes
      * @return void
+     * @todo package:orm
      */
     public function exportClassesSql(array $classes)
     {
         $models = Doctrine::filterInvalidModels($classes);
 
         $sql = array();
-
+        $finishedClasses = array();
+        
         foreach ($models as $name) {
-            $record = new $name();
-            $table  = $record->getTable();
-
-            $parents = $table->getOption('joinedParents');
-
-            foreach ($parents as $parent) {
-                $data  = $table->getConnection()->getTable($parent)->getExportableFormat();
-
-                $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
-
-                $sql = array_merge($sql, (array) $query);
+            if (in_array($name, $finishedClasses)) {
+                continue;
             }
-
-            $data = $table->getExportableFormat();
-
+            
+            $classMetadata = $this->conn->getClassMetadata($name);
+            
+            // In Class Table Inheritance we have to make sure that ALL tables are exported
+            // as soon as ONE table is exported, because the data of one class is stored
+            // across many tables.
+            if ($classMetadata->getInheritanceType() == Doctrine::INHERITANCETYPE_JOINED) {
+                //echo "joined.<br />";
+                $parents = $classMetadata->getOption('parents');
+                foreach ($parents as $parent) {
+                    $data = $classMetadata->getConnection()->getClassMetadata($parent)->getExportableFormat();
+                    $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
+                    $sql = array_merge($sql, (array) $query);
+                    $finishedClasses[] = $parent;
+                }
+            }
+            
+            $data = $classMetadata->getExportableFormat();
             $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
 
             if (is_array($query)) {
@@ -1168,8 +1178,8 @@ class Doctrine_Export extends Doctrine_Connection_Module
                 $sql[] = $query;
             }
 
-            if ($table->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_PLUGINS) {
-                $sql = array_merge($sql, $this->exportGeneratorsSql($table));
+            if ($classMetadata->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_PLUGINS) {
+                $sql = array_merge($sql, $this->exportGeneratorsSql($classMetadata));
             }
         }
 
@@ -1185,8 +1195,9 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *
      * @param Doctrine_Table $table     table object to retrieve the generators from
      * @return array                    an array of Doctrine_Record_Generator objects
+     * @todo package:orm
      */
-    public function getAllGenerators(Doctrine_Table $table)
+    public function getAllGenerators(Doctrine_ClassMetadata $table)
     {
         $generators = array();
 
@@ -1213,11 +1224,12 @@ class Doctrine_Export extends Doctrine_Connection_Module
      *
      * @param Doctrine_Table $table     the table in which the generators belong to
      * @return array                    an array of sql strings
+     * @todo package:orm
      */
-    public function exportGeneratorsSql(Doctrine_Table $table)
+    public function exportGeneratorsSql(Doctrine_ClassMetadata $class)
     {
     	$sql = array();
-        foreach ($this->getAllGenerators($table) as $name => $generator) {
+        foreach ($this->getAllGenerators($class) as $name => $generator) {
             $table = $generator->getTable();
 
             // Make sure plugin has a valid table
@@ -1266,7 +1278,7 @@ class Doctrine_Export extends Doctrine_Connection_Module
      * @return boolean                          whether or not the export operation was successful
      *                                          false if table already existed in the database
      */
-    public function exportTable(Doctrine_Table $table)
+    public function exportTable(Doctrine_ClassMetadata $metadata)
     {
         /**
         TODO: maybe there should be portability option for the following check
@@ -1276,10 +1288,10 @@ class Doctrine_Export extends Doctrine_Connection_Module
         */
 
         try {
-            $data = $table->getExportableFormat();
+            $data = $metadata->getExportableFormat();
 
             $this->conn->export->createTable($data['tableName'], $data['columns'], $data['options']);
-        } catch(Doctrine_Connection_Exception $e) {
+        } catch (Doctrine_Connection_Exception $e) {
             // we only want to silence table already exists errors
             if ($e->getPortableCode() !== Doctrine::ERR_ALREADY_EXISTS) {
                 throw $e;

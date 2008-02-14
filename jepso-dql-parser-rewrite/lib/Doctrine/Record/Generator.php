@@ -111,7 +111,7 @@ abstract class Doctrine_Record_Generator extends Doctrine_Record_Abstract
         return $this->_options;
     }
 
-    public function initialize(Doctrine_Table $table)
+    public function initialize($table)
     {
     	if ($this->_initialized) {
     	    return false;
@@ -188,7 +188,7 @@ abstract class Doctrine_Record_Generator extends Doctrine_Record_Abstract
      * @param Doctrine_Table $table     the table object that owns the plugin
      * @return array                    an array of foreign key definitions
      */
-    public function buildForeignKeys(Doctrine_Table $table)
+    public function buildForeignKeys($table)
     {
         $fk = array();
 
@@ -266,7 +266,7 @@ abstract class Doctrine_Record_Generator extends Doctrine_Record_Abstract
     {
         $options['className'] = $this->_options['className'];
 
-        $builder = new Doctrine_Import_Builder();
+        $builder = new Doctrine_Builder_Record();
 
         if ($this->_options['generateFiles']) {
             if (isset($this->_options['generatePath']) && $this->_options['generatePath']) {

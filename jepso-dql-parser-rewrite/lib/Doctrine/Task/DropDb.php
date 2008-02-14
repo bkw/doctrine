@@ -34,23 +34,25 @@ class Doctrine_Task_DropDb extends Doctrine_Task
 {
     public $description          =   'Drop database for all existing connections',
            $requiredArguments    =   array(),
-           $optionalArguments    =   array();
-    
+           $optionalArguments    =   array('force'  =>  'Whether or not to force the drop database task');
+
     public function execute()
     {
-        $answer = $this->ask('Are you sure you wish to drop your databases? (y/n)');
-        
-        if ($answer != 'y') {
-            $this->notify('Successfully cancelled');
-            
-            return;
+        if ( ! $this->getArgument('force')) {
+            $answer = $this->ask('Are you sure you wish to drop your databases? (y/n)');
+
+            if ($answer != 'y') {
+                $this->notify('Successfully cancelled');
+
+                return;
+            }
         }
 
         $results = Doctrine::dropDatabases();
-        
+
         foreach ($results as $name => $result) {
             $msg = $result instanceof Exception ? 'Could not drop database for connection: "' .$name . '." Failed with exception: ' . $result->getMessage():$result;
-            
+
             $this->notify($msg);
         }
     }

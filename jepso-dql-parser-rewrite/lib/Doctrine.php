@@ -240,6 +240,7 @@ final class Doctrine
      * IMMEDIATE FETCHING
      * mode for immediate fetching
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_IMMEDIATE       = 0;
 
@@ -249,6 +250,7 @@ final class Doctrine
      * mode for batch fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_BATCH           = 1;
 
@@ -258,6 +260,7 @@ final class Doctrine
      * mode for offset fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_OFFSET          = 3;
 
@@ -267,6 +270,7 @@ final class Doctrine
      * mode for lazy offset fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_LAZY_OFFSET     = 4;
 
@@ -387,6 +391,7 @@ final class Doctrine
      *
      * mode for optimistic locking
      * @see self::ATTR_LOCK
+     * @deprecated???
      */
     const LOCK_OPTIMISTIC       = 0;
 
@@ -396,6 +401,7 @@ final class Doctrine
      * mode for pessimistic locking
      *
      * @see self::ATTR_LOCK
+     * @deprecated???
      */
     const LOCK_PESSIMISTIC      = 1;
 
@@ -596,6 +602,8 @@ final class Doctrine
      */
     private static $_loadedModelFiles = array();
 
+    private static $_pathModels = array();
+
     /**
      * __construct
      *
@@ -606,7 +614,17 @@ final class Doctrine
     {
         throw new Doctrine_Exception('Doctrine is static class. No instances can be created.');
     }
+
+    public static function getLoadedModelFiles()
+    {
+        return self::$_loadedModelFiles;
+    }
     
+    public static function getPathModels()
+    {
+        return self::$_pathModels;
+    }
+
     /**
      * getPath
      * returns the doctrine root
@@ -646,6 +664,8 @@ final class Doctrine
                         
                         if ($manager->getAttribute(Doctrine::ATTR_MODEL_LOADING) === Doctrine::MODEL_LOADING_CONSERVATIVE) {
                             self::$_loadedModelFiles[$e[0]] = $file->getPathName();
+                            self::$_pathModels[$file->getPathName()][$e[0]] = $e[0];
+
                             $loadedModels[] = $e[0];
                         } else {
                             $declaredBefore = get_declared_classes();
@@ -658,6 +678,8 @@ final class Doctrine
                                 foreach ($foundClasses as $className) {
                                     if (self::isValidModelClass($className) && !in_array($className, $loadedModels)) {
                                         $loadedModels[] = $className;
+
+                                        self::$_pathModels[$file->getPathName()][$className] = $className;
                                     }
                                 }
                             }
@@ -974,7 +996,7 @@ final class Doctrine
      */
     public static function generateMigrationClass($className, $migrationsPath)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationClass($className);
     }
@@ -988,7 +1010,7 @@ final class Doctrine
      */
     public static function generateMigrationsFromDb($migrationsPath)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationsFromDb();
     }
@@ -1002,7 +1024,7 @@ final class Doctrine
      */
     public static function generateMigrationsFromModels($migrationsPath, $modelsPath = null)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationsFromModels($modelsPath);
     }
