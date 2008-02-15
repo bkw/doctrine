@@ -274,4 +274,8 @@ $test->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
 $test->addTestCase(new Doctrine_Import_Schema_TestCase());
 $test->addTestCase(new Doctrine_Export_Schema_TestCase());
 
+$jwage = new GroupTest('Jwage', 'jwage');
+$jwage->addTestCase(new Doctrine_Jwage_TestCase());
+$test->addTestCase($jwage);
+
 $test->run();
