@@ -1121,8 +1121,9 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
             $this->_aliasMap = array();
             $this->pendingAggregates = array();
             $this->aggregateMap = array();
+            $this->_enumParams = array();
         }
-        $this->reset();   
+        $this->reset();
 
         // parse the DQL parts
         foreach ($this->_dqlParts as $queryPartName => $queryParts) {
