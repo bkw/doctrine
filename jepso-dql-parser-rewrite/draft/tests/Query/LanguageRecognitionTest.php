@@ -1,15 +1,14 @@
 <?php
-class Doctrine_Query_LanguageRecognition_TestCase extends Doctrine_UnitTestCase
+class Doctrine_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 {
     public function assertValidDql($dql)
     {
         $parser = new Doctrine_Query_Parser($dql);
 
-        try {
-            $parser->parse();
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
+        $parser->parse();
+
+        if ($parser->getSyntaxErrorCount() > 0) {
+            $this->fail(implode("\n", $parser->getErrors()));
         }
     }
 
@@ -17,11 +16,10 @@ class Doctrine_Query_LanguageRecognition_TestCase extends Doctrine_UnitTestCase
     {
         $parser = new Doctrine_Query_Parser($dql);
 
-        try {
-            $parser->parse();
-            $this->fail();
-        } catch (Exception $e) {
-            $this->pass();
+        $parser->parse();
+
+        if ($parser->getSyntaxErrorCount() == 0) {
+            $this->fail('No syntax errors were detected, when syntax errors were expected');
         }
     }
 

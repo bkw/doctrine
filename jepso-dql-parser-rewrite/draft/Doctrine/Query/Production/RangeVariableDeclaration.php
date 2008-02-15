@@ -20,7 +20,7 @@
  */
 
 /**
- * RangeVariableDeclaration = PathExpression [["AS"] IdentificationVariable]
+ * RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -34,13 +34,91 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 {
     public function execute(array $params = array())
     {
-        $this->PathExpression();
+        $builder = $this->_parser->getSqlBuilder();
+        $path = '';
+
+        if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
+
+            $component = $this->_parser->token['value'];
+            $path = $component;
+
+            if ($builder->hasAliasDeclaration($component)) {
+
+                $aliasDeclaration = $builder->getAliasDeclaration($component);
+                $table = $aliasDeclaration['table'];
+
+            } else {
+
+                // get the connection for the component
+                $manager = Doctrine_Manager::getInstance();
+                if ($manager->hasConnectionForComponent($component)) {
+                    $this->_parser->setConnection($manager->getConnectionForComponent($component));
+                }
+
+                $conn = $this->_parser->getConnection();
+
+                try {
+                    $table = $conn->getMetadata($component);
+                    $mapper = $conn->getMapper($component);
+                } catch (Doctrine_Exception $e) {
+                    $this->_parser->semanticalError($e->getMessage());
+                }
+
+                $aliasDeclaration = array(
+                    'table'  => $table,
+                    'mapper' => $mapper,
+                    'map'    => null
+                );
+            }
+
+            $parent = $path;
+        }
+
+        while ($this->_isNextToken('.')) {
+            $this->_parser->match('.');
+
+            if ( ! $builder->hasAliasDeclaration($component)) {
+                $builder->setAliasDeclaration($component, $aliasDeclaration);
+            }
+
+            if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
+                $component = $this->_parser->token['value'];
+                $path .= '.' . $component;
+
+                if ( ! isset($table)) {
+                    continue;
+                }
+
+                $relation = $table->getRelation($component);
+                $table = $relation->getTable();
+
+                $aliasDeclaration[$path] = array(
+                        'table'    => $table,
+                        'mapper'   => $this->_conn->getMapper($relation->getForeignComponentName()),
+                        'parent'   => $parent,
+                        'relation' => $relation,
+                        'map'      => null
+                );
+
+                $parent = $path;
+            }
+        }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
+
             $this->_parser->match(Doctrine_Query_Token::T_AS);
-            $this->IdentificationVariable();
+            $alias = $this->IdentificationVariable();
+
         } elseif ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->IdentificationVariable();
+
+            $alias = $this->IdentificationVariable();
+
+        } else {
+            $alias = $path;
         }
+
+        $this->_parser->getSqlBuilder()->setAliasDeclaration($alias, $aliasDeclaration);
+
+        return $alias;
     }
 }

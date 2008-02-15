@@ -34,15 +34,16 @@ class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Pr
 {
     public function execute(array $params = array())
     {
-        $token = $this->_parser->lookahead;
+        if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $alias = $this->_parser->token['value'];
 
-        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+            if ($this->_parser->getSqlBuilder()->hasAliasDeclaration($alias)) {
+                $this->_parser->semanticalError("Duplicate alias '$alias' in query.");
+            }
 
-        /*
-        if ( ! isValidIdentificationVariable($token['value'])) {
-            $this->error('"' . $name . '" is not a identification variable.');
+            return $alias;
         }
-        */
-        return $token;
+
+        return null;
     }
 }

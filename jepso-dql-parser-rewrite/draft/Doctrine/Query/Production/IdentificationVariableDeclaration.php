@@ -32,12 +32,31 @@
  */
 class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctrine_Query_Production
 {
+    private function _checkIndexBy($table, $column)
+    {
+        if ($table instanceof Doctrine_Table && ! $table->hasField($column)) {
+            $this->_parser->semanticalError(
+                "Cannot use key mapping. Column " . $column . " does not exist.",
+                $this->_parser->token
+            );
+        }
+    }
+
     public function execute(array $params = array())
     {
-        $rangeVarDecl = $this->RangeVariableDeclaration();
+        $builder = $this->_parser->getSqlBuilder();
+
+        $alias = $this->RangeVariableDeclaration();
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-            $this->IndexBy();
+            $column = $this->IndexBy();
+
+            $aliasDeclaration = $builder->getAliasDeclaration($alias);
+
+            $this->_checkIndexBy($aliasDeclaration['table'], $alias);
+            $aliasDeclaration['map'] = $column;
+
+            $builder->setAliasDeclaration($alias, $aliasDeclaration);
         }
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_LEFT) ||
@@ -47,7 +66,14 @@ class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctri
             $this->Join();
 
             if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-                $this->IndexBy();
+                $column = $this->IndexBy();
+
+                $aliasDeclaration = $builder->getAliasDeclaration($alias);
+
+                $this->_checkIndexBy($aliasDeclaration['table'], $alias);
+                $aliasDeclaration['map'] = $column;
+
+                $builder->setAliasDeclaration($alias, $aliasDeclaration);
             }
         }
     }

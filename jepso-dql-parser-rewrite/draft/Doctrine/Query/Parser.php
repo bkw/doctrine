@@ -59,9 +59,16 @@ class Doctrine_Query_Parser
     /**
      * The next token in the query string.
      *
-     * @var Doctrine_Query_Token
+     * @var array
      */
     public $lookahead;
+
+    /**
+     * The last matched token.
+     *
+     * @var array
+     */
+    public $token;
 
     /**
      * Array containing syntax and semantical errors detected in the query
@@ -70,6 +77,9 @@ class Doctrine_Query_Parser
      * @var array
      */
     protected $_errors = array();
+
+    protected $_semanticalErrorCount = 0;
+    protected $_syntaxErrorCount = 0;
 
     /**
      * The number of tokens read since last error in the input string
@@ -85,6 +95,10 @@ class Doctrine_Query_Parser
      * @var Doctrine_Query_Printer
      */
     protected $_printer;
+
+    protected $_query;
+
+    protected $_sqlBuilder;
 
     /**
      * The connection object used by this query.
@@ -103,6 +117,7 @@ class Doctrine_Query_Parser
     {
         $this->_scanner = new Doctrine_Query_Scanner($input);
         $this->_printer = new Doctrine_Query_Printer(true);
+        $this->_sqlBuilder = new Doctrine_Query_SqlBuilder;
 
         if ($conn === null) {
             $conn = Doctrine_Manager::getInstance()->getCurrentConnection();
@@ -119,6 +134,16 @@ class Doctrine_Query_Parser
     public function getConnection()
     {
         return $this->_conn;
+    }
+
+    public function setConnection(Doctrine_Connection $conn)
+    {
+        $this->_conn = $conn;
+    }
+
+    public function getSqlBuilder()
+    {
+        return $this->_sqlBuilder;
     }
 
     /**
@@ -144,6 +169,7 @@ class Doctrine_Query_Parser
      * error.
      *
      * @param int|string token type or value
+     * @return bool True, if tokens match; false otherwise.
      */
     public function match($token)
     {
@@ -155,27 +181,54 @@ class Doctrine_Query_Parser
 
         if ($isMatch) {
             $this->_printer->println($this->lookahead['value']);
+            $this->token = $this->lookahead;
             $this->lookahead = $this->_scanner->next();
             $this->_errorDistance++;
         } else {
-            $this->logError();
+            $this->syntaxError();
         }
+
+        return $isMatch;
     }
 
-    public function logError($message = '')
+    public function syntaxError($expected = '', $token = null)
     {
-        if ($message === '') {
-            if ($this->lookahead === null) {
-                $message = 'Unexpected end of string.';
-            } else {
-                $message = 'Unexpected "' . $this->lookahead['value'] . '"';
-            }
+        if ($token === null) {
+            $token = $this->lookahead;
         }
 
+        if ($expected !== '') {
+            $message = "Expected '$expected', got ";
+        } else {
+            $message = 'Unexpected ';
+        }
+
+        if ($this->lookahead === null) {
+            $message .= 'end of string.';
+        } else {
+            $message .= "'{$this->lookahead['value']}'";
+        }
+
+        $this->_syntaxErrorCount++;
+
+        $this->_logError('Error: ' . $message, $token);
+    }
+
+    public function semanticalError($message = '', $token = null)
+    {
+        $this->_semanticalErrorCount++;
+
+        if ($token === null) {
+            $token = $this->token;
+        }
+
+        $this->_logError('Warning: ' . $message, $token);
+    }
+
+    protected function _logError($message = '', $token)
+    {
         if ($this->_errorDistance >= self::MIN_ERROR_DISTANCE) {
-            if ($this->lookahead !== null) {
-                $message .= ' at position ' . $this->lookahead['position'];
-            }
+            $message = 'line 0, col ' . $token['position'] . ': ' . $message;
             $this->_errors[] = $message;
         }
 
@@ -202,10 +255,33 @@ class Doctrine_Query_Parser
         return $this->_printer;
     }
 
+    public function isErrors()
+    {
+        return $this->getErrorCount() > 0;
+    }
+
+    public function getErrorCount()
+    {
+        return count($this->_errors);
+    }
+
+    public function getSyntaxErrorCount()
+    {
+        return $this->_syntaxErrorCount;
+    }
+
+    public function getSemanticalErrorCount()
+    {
+        return $this->_semanticalErrorCount;
+    }
+
+    public function getErrors()
+    {
+        return $this->_errors;
+    }
+
     /**
      * Parses a query string.
-     *
-     * @throws Doctrine_Query_Parser_Exception if errors were detected in the query string
      */
     public function parse()
     {
@@ -214,13 +290,7 @@ class Doctrine_Query_Parser
         $this->getProduction('QueryLanguage')->execute();
 
         if ($this->lookahead !== null) {
-            $this->logError('End of string expected');
-        }
-
-        if (count($this->_errors)) {
-            $msg = 'Errors were detected during the query parsing ('
-                 . implode('; ', $this->_errors) . ').';
-            throw new Doctrine_Query_Parser_Exception($msg);
+            $this->syntaxError('end of string');
         }
     }
 }

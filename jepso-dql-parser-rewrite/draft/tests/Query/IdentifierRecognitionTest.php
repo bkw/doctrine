@@ -31,7 +31,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCase
+class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 {
     public function assertAliasDeclaration($alias, $declaration)
     {
@@ -43,7 +43,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $q = new Doctrine_Query();
 
         $q->from('User u');
-        
+
         $decl = $q->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
@@ -52,7 +52,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], null);
     }
-    
+
     public function testSingleAliasDeclarationWithIndexByIsSupported()
     {
         $q = new Doctrine_Query();
@@ -67,7 +67,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
     }
-    
+
     public function testQueryParserSupportsMultipleAliasDeclarations()
     {
         $q = new Doctrine_Query();
@@ -81,7 +81,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['parent'], null);
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
-        
+
         $decl = $q->getHydrator()->getAliasDeclaration('p');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
@@ -90,7 +90,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
     }
-    
+
     public function testQueryParserSupportsMultipleAliasDeclarationsWithIndexBy()
     {
         $q = new Doctrine_Query();
@@ -104,7 +104,7 @@ class Doctrine_Query_IdentifierRecognition_TestCase extends Doctrine_UnitTestCas
         $this->assertEqual($decl['parent'], null);
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
-        
+
         $decl = $q->getHydrator()->getAliasDeclaration('g');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);

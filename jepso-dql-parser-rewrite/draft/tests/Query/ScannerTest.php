@@ -1,13 +1,13 @@
 <?php
-class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
+class Doctrine_Query_ScannerTest extends Doctrine_OrmTestCase
 {
     public function testScannerRecognizesIdentifierWithLengthOfOneCharacter()
     {
         $scanner = new Doctrine_Query_Scanner('u');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
-        $this->assertEqual('u', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
+        $this->assertEquals('u', $token['value']);
     }
 
     public function testScannerRecognizesIdentifierConsistingOfLetters()
@@ -15,8 +15,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('someIdentifier');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
-        $this->assertEqual('someIdentifier', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
+        $this->assertEquals('someIdentifier', $token['value']);
     }
 
     public function testScannerRecognizesIdentifierIncludingDigits()
@@ -24,8 +24,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('s0m31d3nt1f13r');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
-        $this->assertEqual('s0m31d3nt1f13r', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
+        $this->assertEquals('s0m31d3nt1f13r', $token['value']);
     }
 
     public function testScannerRecognizesIdentifierIncludingUnderscore()
@@ -33,8 +33,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('some_identifier');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
-        $this->assertEqual('some_identifier', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_IDENTIFIER, $token['type']);
+        $this->assertEquals('some_identifier', $token['value']);
     }
 
     public function testScannerRecognizesDecimalInteger()
@@ -42,8 +42,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1234');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_INTEGER, $token['type']);
-        $this->assertEqual(1234, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_INTEGER, $token['type']);
+        $this->assertEquals(1234, $token['value']);
     }
 
     public function testScannerRecognizesFloat()
@@ -51,8 +51,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1.234');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.234, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.234, $token['value']);
     }
 
     public function testScannerRecognizesFloatWithExponent()
@@ -60,8 +60,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1.2e3');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.2e3, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.2e3, $token['value']);
     }
 
     public function testScannerRecognizesFloatWithExponent2()
@@ -69,8 +69,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('0.2e3');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(.2e3, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(.2e3, $token['value']);
     }
 
     public function testScannerRecognizesFloatWithNegativeExponent()
@@ -78,8 +78,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('7E-10');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(7E-10, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(7E-10, $token['value']);
     }
 
     public function testScannerRecognizesFloatBig()
@@ -87,8 +87,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1,234,567.89');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.23456789e6, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.23456789e6, $token['value']);
     }
 
     public function testScannerRecognizesFloatBigWrongPoint()
@@ -96,8 +96,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('12,34,56,7.89');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.23456789e6, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.23456789e6, $token['value']);
     }
 
     public function testScannerRecognizesFloatLocaleSpecific()
@@ -105,8 +105,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1,234');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.234, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.234, $token['value']);
     }
 
     public function testScannerRecognizesFloatLocaleSpecificBig()
@@ -114,8 +114,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1.234.567,89');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.23456789e6, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.23456789e6, $token['value']);
     }
 
     public function testScannerRecognizesFloatLocaleSpecificBigWrongPoint()
@@ -123,8 +123,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('12.34.56.7,89');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.23456789e6, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.23456789e6, $token['value']);
     }
 
     public function testScannerRecognizesFloatLocaleSpecificExponent()
@@ -132,8 +132,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('1,234e2');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(1.234e2, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(1.234e2, $token['value']);
     }
 
     public function testScannerRecognizesFloatLocaleSpecificExponent2()
@@ -141,8 +141,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('0,234e2');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertEqual(.234e2, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertEquals(.234e2, $token['value']);
     }
 
     public function testScannerRecognizesFloatContainingWhitespace()
@@ -150,13 +150,13 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('-   1.234e2');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_NONE, $token['type']);
-        $this->assertEqual('-', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_NONE, $token['type']);
+        $this->assertEquals('-', $token['value']);
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_FLOAT, $token['type']);
-        $this->assertNotEqual(-1.234e2, $token['value']);
-        $this->assertEqual(1.234e2, $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_FLOAT, $token['type']);
+        $this->assertNotEquals(-1.234e2, $token['value']);
+        $this->assertEquals(1.234e2, $token['value']);
     }
 
     public function testScannerRecognizesStringContainingWhitespace()
@@ -164,8 +164,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner("'This is a string.'");
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_STRING, $token['type']);
-        $this->assertEqual("'This is a string.'", $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_STRING, $token['type']);
+        $this->assertEquals("'This is a string.'", $token['value']);
     }
 
     public function testScannerRecognizesStringContainingSingleQuotes()
@@ -173,8 +173,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner("'abc''defg'''");
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_STRING, $token['type']);
-        $this->assertEqual("'abc''defg'''", $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_STRING, $token['type']);
+        $this->assertEquals("'abc''defg'''", $token['value']);
     }
 
     public function testScannerRecognizesInputParameter()
@@ -182,8 +182,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner('?');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_INPUT_PARAMETER, $token['type']);
-        $this->assertEqual('?', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_INPUT_PARAMETER, $token['type']);
+        $this->assertEquals('?', $token['value']);
     }
 
     public function testScannerRecognizesNamedInputParameter()
@@ -191,8 +191,8 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
         $scanner = new Doctrine_Query_Scanner(':name');
 
         $token = $scanner->next();
-        $this->assertEqual(Doctrine_Query_Token::T_INPUT_PARAMETER, $token['type']);
-        $this->assertEqual(':name', $token['value']);
+        $this->assertEquals(Doctrine_Query_Token::T_INPUT_PARAMETER, $token['type']);
+        $this->assertEquals(':name', $token['value']);
     }
 
     public function testScannerTokenizesASimpleQueryCorrectly()
@@ -270,9 +270,9 @@ class Doctrine_Query_Scanner_TestCase extends Doctrine_UnitTestCase
 
         foreach ($tokens as $expected) {
             $actual = $scanner->next();
-            $this->assertEqual($expected['value'], $actual['value']);
-            $this->assertEqual($expected['type'], $actual['type']);
-            $this->assertEqual($expected['position'], $actual['position']);
+            $this->assertEquals($expected['value'], $actual['value']);
+            $this->assertEquals($expected['type'], $actual['type']);
+            $this->assertEquals($expected['position'], $actual['position']);
         }
 
         $this->assertNull($scanner->next());
