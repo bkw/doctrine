@@ -288,6 +288,10 @@ $data->addTestCase(new Doctrine_Data_Import_TestCase());
 $data->addTestCase(new Doctrine_Data_Export_TestCase());
 $test->addTestCase($data);
 
+$jwage = new GroupTest('Jwage', 'jwage');
+$jwage->addTestCase(new Doctrine_Jwage_TestCase());
+$test->addTestCase($jwage);
+
 $test->run();
 
 echo memory_get_peak_usage() / 1024 . "\n";
