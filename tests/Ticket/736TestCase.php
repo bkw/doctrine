@@ -25,8 +25,10 @@ class Doctrine_Ticket_736_TestCase extends Doctrine_UnitTestCase
     
     public function prepareTables()
     {
+        $this->tables = array();
         $this->tables[] = 'T736_Module';
         $this->tables[] = 'T736_ModuleDelegate';
+        parent::prepareTables();
     }
 
     public function testForHydrationOverwrintingLocalInstancesWhenItShouldnt()
@@ -34,7 +36,8 @@ class Doctrine_Ticket_736_TestCase extends Doctrine_UnitTestCase
         $module = Doctrine_Manager::getInstance()->getTable("T736_Module")->find(1);
         $module->moduledata->content = "foo";
         $module->moduledata->save();
-	$this->assertTrue($module->moduledata->content == "foo"); // should be "foo" is "Lorem Ipsum and so on..."
+	    $this->assertTrue($module->moduledata->content == "foo"); // should be "foo" is "Lorem Ipsum and so on..."
+	    
     }
 }
 
