@@ -1121,7 +1121,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
             $this->_aliasMap = array();
             $this->pendingAggregates = array();
             $this->aggregateMap = array();
-            $this->_enumParams = array();
         }
         $this->reset();
 
@@ -1851,6 +1850,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
         }
         // append parameters
         $params = array_merge($this->getParams(), $params);
+
+        $params = $this->convertEnums($params);
 
         $results = $this->getConnection()->fetchAll($q, $params);
 
