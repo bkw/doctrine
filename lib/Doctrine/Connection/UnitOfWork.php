@@ -673,7 +673,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
         if (empty($seq) && count($keys) == 1 && $keys[0] == $table->getIdentifier() &&
             $table->getIdentifierType() != Doctrine::IDENTIFIER_NATURAL) {
 
-            if (strtolower($this->conn->getName()) == 'pgsql') {
+            if (strtolower($this->conn->getDriverName()) == 'pgsql') {
                 $seq = $table->getTableName() . '_' . $keys[0];
             }
 

@@ -28,7 +28,7 @@ print_r($models);
 $models = Doctrine::getLoadedModels();
 
 // Pass an array of classes to the above method and it will filter out the ones that are not Doctrine_Records
-$models = Doctrine::getLoadedModels(array('User', 'Formatter', 'Doctrine_Record'));
+$models = Doctrine::filterInvalidModels(array('User', 'Formatter', 'Doctrine_Record'));
 print_r($models); // would return array('User') because Formatter and Doctrine_Record are not Doctrine_Records
 
 // Get Doctrine_Connection object for an actual table name

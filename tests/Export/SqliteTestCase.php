@@ -32,23 +32,17 @@
  */
 class Doctrine_Export_Sqlite_TestCase extends Doctrine_UnitTestCase 
 {
-    public function testCreateDatabaseDoesNotExecuteSql() 
+    public function testCreateDatabaseDoesNotExecuteSqlAndCreatesSqliteFile()
     {
-        try {
-            $this->export->createDatabase('db');
-            $this->fail();
-        } catch(Doctrine_Export_Exception $e) {
-            $this->pass();
-        }
+        $this->export->createDatabase('sqlite.db');
+      
+        $this->assertTrue(file_exists('sqlite.db'));
     }
-    public function testDropDatabaseDoesNotExecuteSql() 
+    public function testDropDatabaseDoesNotExecuteSqlAndDeletesSqliteFile()
     {
-        try {
-            $this->export->dropDatabase('db');
-            $this->fail();
-        } catch(Doctrine_Export_Exception $e) {
-            $this->pass();
-        }
+        $this->export->dropDatabase('sqlite.db');
+
+        $this->assertFalse(file_exists('sqlite.db'));
     }
     public function testCreateTableSupportsAutoincPks() 
     {
