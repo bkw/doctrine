@@ -36,7 +36,7 @@ class Doctrine_Sequence_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $this->sequence->currId('user');
 
-        $this->assertEqual($this->adapter->pop(), 'SELECT MAX(id) FROM user_seq');
+        $this->assertEqual($this->adapter->pop(), 'SELECT MAX(id) FROM user');
     }
     public function testNextIdExecutesSql() 
     {
@@ -44,9 +44,9 @@ class Doctrine_Sequence_Mysql_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($id, 1);
 
-        $this->assertEqual($this->adapter->pop(), 'DELETE FROM user_seq WHERE id < 1');
+        $this->assertEqual($this->adapter->pop(), 'DELETE FROM user WHERE id < 1');
         $this->assertEqual($this->adapter->pop(), 'LAST_INSERT_ID()');
-        $this->assertEqual($this->adapter->pop(), 'INSERT INTO user_seq (id) VALUES (NULL)');
+        $this->assertEqual($this->adapter->pop(), 'INSERT INTO user (id) VALUES (NULL)');
     }
     public function testLastInsertIdCallsPdoLevelEquivalent() 
     {
