@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-02-13</date>
- <time>21:47:17</time>
+ <date>2008-02-15</date>
+ <time>22:20:21</time>
  <version>
-  <release>0.10.0</release>
-  <api>0.10.0</api>
+  <release>0.10.1</release>
+  <api>0.10.1</api>
  </version>
  <stability>
   <release>beta</release>
@@ -1175,6 +1175,7 @@ requiring needless code duplication.</description>
      <file name="736TestCase.php" role="test" />
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
+     <file name="786TestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1227,6 +1228,7 @@ requiring needless code duplication.</description>
     <file name="ImportTestCase.php" role="test" />
     <file name="index.php" role="test" />
     <file name="IntegrityActionTestCase.php" role="test" />
+    <file name="JwageTestCase.php" role="test" />
     <file name="ManagerTestCase.php" role="test" />
     <file name="MigrationTestCase.php" role="test" />
     <file name="NewCoreTestCase.php" role="test" />
@@ -1558,15 +1560,15 @@ requiring needless code duplication.</description>
  <changelog>
   <release>
    <version>
-    <release>1.0.0</release>
-    <api>1.0.0</api>
+    <release>0.10.1</release>
+    <api>0.10.1</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2008-02-13</date>
-   <license uri="http://phpdoctrine.net/license">LGPL license</license>
+   <date>2008-02-15</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1581,19 +1583,6 @@ requiring needless code duplication.</description>
    <date>2008-02-13</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
-  </release>
-  <release>
-   <version>
-    <release>0.9</release>
-    <api>0.9</api>
-   </version>
-   <stability>
-    <release>beta</release>
-    <api>beta</api>
-   </stability>
-   <date>2008-02-06</date>
-   <license uri="http://phpdoctrine.net/license">MIT license</license>
-   <notes>barfoo</notes>
   </release>
  </changelog>
 </package>
