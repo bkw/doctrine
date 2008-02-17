@@ -280,17 +280,17 @@ class Orm_Component_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testIndexByClauseWithOneComponent()
     {
-        $this->assertValidDql('FROM Record_City c INDEX BY c.name');
+        $this->assertValidDql('FROM Record_City c INDEX BY name');
     }
 
     public function testIndexBySupportsJoins()
     {
-        $this->assertValidDql('FROM Record_Country c LEFT JOIN c.City c2 INDEX BY c2.name');
+        $this->assertValidDql('FROM Record_Country c LEFT JOIN c.City c2 INDEX BY name');
     }
 
     public function testIndexBySupportsJoins2()
     {
-        $this->assertValidDql('FROM User u INDEX BY u.name LEFT JOIN u.Phonenumber p INDEX BY p.phonenumber');
+        $this->assertValidDql('FROM User u INDEX BY name LEFT JOIN u.Phonenumber p INDEX BY phonenumber');
     }
 
     public function testBetweenExpressionSupported()

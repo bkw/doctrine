@@ -20,7 +20,7 @@
  */
 
 /**
- * IndexBy = "INDEX" "BY" PathExpression
+ * IndexBy = "INDEX" "BY" identifier
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -32,10 +32,29 @@
  */
 class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
 {
+    private function _processIndexBy($alias, $column)
+    {
+        $queryObject = $this->_parser->getQueryObject();
+        $queryComponent = $queryObject->getQueryComponent($alias);
+        $metadata = $queryComponent['metadata'];
+
+        if ($metadata instanceof Doctrine_ClassMetadata && ! $metadata->hasField($column)) {
+            $this->_parser->semanticalError(
+                "Cannot use key mapping. Column " . $column . " does not exist.",
+                $this->_parser->token
+            );
+        }
+
+        $queryComponent['map'] = $column;
+        $queryObject->setQueryComponent($alias, $queryComponent);
+    }
+
     public function execute(array $params = array())
     {
         $this->_parser->match(Doctrine_Query_Token::T_INDEX);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
-        $this->PathExpression();
+        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+
+        $this->_processIndexBy($params['alias'], $this->_parser->token['value']);
     }
 }

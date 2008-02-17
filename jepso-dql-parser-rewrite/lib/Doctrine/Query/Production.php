@@ -81,7 +81,14 @@ abstract class Doctrine_Query_Production
     public function __call($method, $args)
     {
         $this->_parser->getPrinter()->startProduction($method);
-        $retval = $this->_parser->getProduction($method)->execute($args);
+
+        if (is_array($args[0])) {
+            $params = $args[0];
+        } else {
+            $params = array($args[0]);
+        }
+
+        $retval = $this->_parser->getProduction($method)->execute($params);
         $this->_parser->getPrinter()->endProduction();
 
         return $retval;

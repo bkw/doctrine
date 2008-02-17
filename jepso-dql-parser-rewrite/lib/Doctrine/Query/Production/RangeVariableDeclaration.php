@@ -45,7 +45,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             if ($queryObject->hasQueryComponent($component)) {
 
                 $queryComponent = $queryObject->getQueryComponent($component);
-                $table = $queryComponent['table'];
+                $metadata = $queryComponent['metadata'];
 
             } else {
 
@@ -58,16 +58,16 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                 $conn = $queryObject->getConnection();
 
                 try {
-                    $table = $conn->getMetadata($component);
+                    $metadata = $conn->getMetadata($component);
                     $mapper = $conn->getMapper($component);
                 } catch (Doctrine_Exception $e) {
                     $this->_parser->semanticalError($e->getMessage());
                 }
 
                 $queryComponent = array(
-                    'table'  => $table,
-                    'mapper' => $mapper,
-                    'map'    => null
+                    'metadata'  => $metadata,
+                    'mapper'    => $mapper,
+                    'map'       => null
                 );
             }
 
@@ -90,10 +90,10 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                 }
 
                 $relation = $table->getRelation($component);
-                $table = $relation->getTable();
+                $metadata = $relation->getTable();
 
                 $queryComponent = array(
-                        'table'    => $table,
+                        'metadata' => $metadata,
                         'mapper'   => $this->_conn->getMapper($relation->getForeignComponentName()),
                         'parent'   => $parent,
                         'relation' => $relation,

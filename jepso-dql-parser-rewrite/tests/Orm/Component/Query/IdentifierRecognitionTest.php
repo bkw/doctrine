@@ -36,31 +36,31 @@ class Orm_Component_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testSingleAliasDeclarationIsSupported()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM User u');
+        $query->setDql('FROM CmsUser u');
         $query->parse();
 
-        $decl = $query->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getQueryComponent('u');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
-        $this->assertEqual($decl['relation'], null);
-        $this->assertEqual($decl['parent'], null);
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], null);
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
+        $this->assertEquals(null, $decl['relation']);
+        $this->assertEquals(null, $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals(null, $decl['map']);
     }
 
     public function testSingleAliasDeclarationWithIndexByIsSupported()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM User u INDEX BY name');
+        $query->setDql('FROM CmsUser u INDEX BY name');
         $query->parse();
 
-        $decl = $query->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getQueryComponent('u');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
-        $this->assertEqual($decl['relation'], null);
-        $this->assertEqual($decl['parent'], null);
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'name');
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
+        $this->assertEquals(null, $decl['relation']);
+        $this->assertEquals(null, $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('name', $decl['map']);
     }
 
     public function testQueryParserSupportsMultipleAliasDeclarations()
@@ -69,51 +69,51 @@ class Orm_Component_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $query->setDql('FROM User u INDEX BY name LEFT JOIN u.Phonenumber p');
         $query->parse();
 
-        $decl = $query->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getQueryComponent('u');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
-        $this->assertEqual($decl['relation'], null);
-        $this->assertEqual($decl['parent'], null);
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'name');
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
+        $this->assertEquals(null, $decl['relation']);
+        $this->assertEquals(null, $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getHydrator()->getAliasDeclaration('p');
+        $decl = $query->getQueryComponent('p');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
-        $this->assertEqual($decl['parent'], 'u');
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'name');
+        $this->assertEquals('u', $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('name', $decl['map']);
     }
 
     public function testQueryParserSupportsMultipleAliasDeclarationsWithIndexBy()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY p.phonenumber');
+        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY phonenumber');
         $query->parse();
 
-        $decl = $query->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getQueryComponent('u');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
-        $this->assertEqual($decl['relation'], null);
-        $this->assertEqual($decl['parent'], null);
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'name');
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
+        $this->assertEquals(null, $decl['relation']);
+        $this->assertEquals(null, $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getHydrator()->getAliasDeclaration('g');
+        $decl = $query->getQueryComponent('g');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
-        $this->assertEqual($decl['parent'], 'u');
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'name');
+        $this->assertEquals('u', $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getHydrator()->getAliasDeclaration('p');
+        $decl = $query->getQueryComponent('p');
 
-        $this->assertTrue($decl['table'] instanceof Doctrine_Table);
+        $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
-        $this->assertEqual($decl['parent'], 'g');
-        $this->assertEqual($decl['agg'], null);
-        $this->assertEqual($decl['map'], 'phonenumber');
+        $this->assertEquals('g', $decl['parent']);
+        $this->assertEquals(null, $decl['agg']);
+        $this->assertEquals('phonenumber', $decl['map']);
     }
 }

@@ -37,7 +37,7 @@ class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Pr
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
             $alias = $this->_parser->token['value'];
 
-            if ($this->_parser->getSqlBuilder()->hasAliasDeclaration($alias)) {
+            if ($this->_parser->getQueryObject()->hasQueryComponent($alias)) {
                 $this->_parser->semanticalError("Duplicate alias '$alias' in query.");
             }
 

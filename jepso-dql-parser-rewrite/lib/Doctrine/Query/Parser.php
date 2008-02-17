@@ -98,8 +98,6 @@ class Doctrine_Query_Parser
 
     protected $_queryObject;
 
-    protected $_sqlBuilder;
-
     /**
      * Creates a new query parser object.
      *
@@ -109,18 +107,12 @@ class Doctrine_Query_Parser
     {
         $this->_scanner = new Doctrine_Query_Scanner($queryObject->getDql());
         $this->_printer = new Doctrine_Query_Printer(true);
-        $this->_sqlBuilder = new Doctrine_Query_SqlBuilder;
         $this->_queryObject = $queryObject;
     }
 
     public function getQueryObject()
     {
         return $this->_queryObject;
-    }
-
-    public function getSqlBuilder()
-    {
-        return $this->_sqlBuilder;
     }
 
     /**

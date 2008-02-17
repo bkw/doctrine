@@ -35,10 +35,10 @@ GroupByItem = PathExpression
 UpdateItem = PathExpression "=" (Expression | "NULL")
 
 IdentificationVariableDeclaration = RangeVariableDeclaration [IndexBy] {Join [IndexBy]}
-RangeVariableDeclaration = PathExpression [["AS"] IdentificationVariable]
+RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
 
 Join = ["LEFT" | "INNER"] "JOIN" RangeVariableDeclaration [("ON" | "WITH") ConditionalExpression]
-IndexBy = "INDEX" "BY" PathExpression
+IndexBy = "INDEX" "BY" identifier
 
 ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
 ConditionalTerm       = ConditionalFactor {"AND" ConditionalFactor}
