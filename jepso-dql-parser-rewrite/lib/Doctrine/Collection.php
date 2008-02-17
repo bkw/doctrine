@@ -184,7 +184,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         unset($vars['expanded']);
         unset($vars['generator']);
 
-        $vars['_table'] = $vars['_table']->getComponentName();
+        $vars['_mapper'] = $vars['_mapper']->getComponentName();
 
         return serialize($vars);
     }
@@ -194,6 +194,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * This method is automatically called everytime a Doctrine_Collection object is unserialized.
      *
      * Part of the implementation of the Serializable interface.
+     *
+     * @param string $serialized The serialized data
      *
      * @return void
      */
@@ -241,7 +243,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function getKeyColumn()
     {
-        return $this->column;
+        return $this->keyColumn;
     }
 
     /**
@@ -463,8 +465,12 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * @param Doctrine_Record $record
      * @return void
      */
-    public function set($key, Doctrine_Record $record)
+    public function set($key, $record)
     {
+        if( ! $record instanceOf Doctrine_Record) {
+            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record');
+        }
+
         if (isset($this->referenceField)) {
             $record->set($this->referenceField, $this->reference, false);
         }
@@ -477,8 +483,12 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * @param string $key                          optional key for the record
      * @return boolean
      */
-    public function add(Doctrine_Record $record, $key = null)
+    public function add($record, $key = null)
     {
+        if( ! $record instanceOf Doctrine_Record) {
+            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record');
+        }
+
         if (isset($this->referenceField)) {
             $value = $this->reference->get($this->relation->getLocalFieldName());
 
@@ -507,6 +517,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             return true;
         }
 
+         // why is this not checked when the keyColumn is set? 
         if (isset($this->keyColumn)) {
             $value = $record->get($this->keyColumn);
             if ($value === null) {

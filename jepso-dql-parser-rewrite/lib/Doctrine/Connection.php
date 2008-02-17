@@ -253,6 +253,19 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
+     * setOption
+     * 
+     * Set option value
+     *
+     * @param string $option 
+     * @return void
+     */
+    public function setOption($option, $value)
+    {
+      return $this->options[$option] = $value;
+    }
+
+    /**
      * getAttribute
      * retrieves a database connection attribute
      *
@@ -328,11 +341,26 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         return $this->_name;
     }
 
+    /**
+     * setName
+     *
+     * Sets the name of the connection
+     *
+     * @param string $name 
+     * @return void
+     */
     public function setName($name)
     {
         $this->_name = $name;
     }
 
+    /**
+     * getDriverName
+     *
+     * Gets the name of the instance driver
+     *
+     * @return void
+     */
     public function getDriverName()
     {
         return $this->driverName;
