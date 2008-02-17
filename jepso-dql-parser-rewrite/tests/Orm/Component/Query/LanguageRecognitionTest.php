@@ -1,10 +1,12 @@
 <?php
-class Doctrine_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
+class Orm_Component_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 {
     public function assertValidDql($dql)
     {
-        $parser = new Doctrine_Query_Parser($dql);
+        $query = new Doctrine_Query;
+        $query->setDql($dql);
 
+        $parser = new Doctrine_Query_Parser($query);
         $parser->parse();
 
         if ($parser->getSyntaxErrorCount() > 0) {
@@ -14,8 +16,10 @@ class Doctrine_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function assertInvalidDql($dql)
     {
-        $parser = new Doctrine_Query_Parser($dql);
+        $query = new Doctrine_Query;
+        $query->setDql($dql);
 
+        $parser = new Doctrine_Query_Parser($query);
         $parser->parse();
 
         if ($parser->getSyntaxErrorCount() == 0) {

@@ -96,49 +96,26 @@ class Doctrine_Query_Parser
      */
     protected $_printer;
 
-    protected $_query;
+    protected $_queryObject;
 
     protected $_sqlBuilder;
 
     /**
-     * The connection object used by this query.
-     *
-     * @var Doctrine_Connection
-     */
-    protected $_conn;
-
-    /**
      * Creates a new query parser object.
      *
-     * @param string $input query string to be parsed
-     * @param Doctrine_Connection The connection object the query will use.
+     * @param Doctrine_Query $queryObject The query object to be used for parsing.
      */
-    public function __construct($input, Doctrine_Connection $conn = null)
+    public function __construct(Doctrine_Query $queryObject)
     {
-        $this->_scanner = new Doctrine_Query_Scanner($input);
+        $this->_scanner = new Doctrine_Query_Scanner($queryObject->getDql());
         $this->_printer = new Doctrine_Query_Printer(true);
         $this->_sqlBuilder = new Doctrine_Query_SqlBuilder;
-
-        if ($conn === null) {
-            $conn = Doctrine_Manager::getInstance()->getCurrentConnection();
-        }
-
-        $this->_conn = $conn;
+        $this->_queryObject = $queryObject;
     }
 
-    /**
-     * Returns the connection object used by the query.
-     *
-     * @return Doctrine_Connection
-     */
-    public function getConnection()
+    public function getQueryObject()
     {
-        return $this->_conn;
-    }
-
-    public function setConnection(Doctrine_Connection $conn)
-    {
-        $this->_conn = $conn;
+        return $this->_queryObject;
     }
 
     public function getSqlBuilder()
@@ -292,5 +269,10 @@ class Doctrine_Query_Parser
         if ($this->lookahead !== null) {
             $this->syntaxError('end of string');
         }
+    }
+
+    public function getSql()
+    {
+        return '';
     }
 }

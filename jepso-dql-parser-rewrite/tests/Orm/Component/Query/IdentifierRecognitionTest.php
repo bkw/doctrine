@@ -31,20 +31,15 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
+class Orm_Component_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 {
-    public function assertAliasDeclaration($alias, $declaration)
-    {
-
-    }
-
     public function testSingleAliasDeclarationIsSupported()
     {
-        $q = new Doctrine_Query();
+        $query = new Doctrine_Query;
+        $query->setDql('FROM User u');
+        $query->parse();
 
-        $q->from('User u');
-
-        $decl = $q->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -55,11 +50,11 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 
     public function testSingleAliasDeclarationWithIndexByIsSupported()
     {
-        $q = new Doctrine_Query();
+        $query = new Doctrine_Query;
+        $query->setDql('FROM User u INDEX BY name');
+        $query->parse();
 
-        $q->from('User u INDEX BY name');
-
-        $decl = $q->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -70,11 +65,11 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 
     public function testQueryParserSupportsMultipleAliasDeclarations()
     {
-        $q = new Doctrine_Query();
+        $query = new Doctrine_Query;
+        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.Phonenumber p');
+        $query->parse();
 
-        $q->from('User u INDEX BY name LEFT JOIN u.Phonenumber p');
-
-        $decl = $q->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -82,7 +77,7 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
 
-        $decl = $q->getHydrator()->getAliasDeclaration('p');
+        $decl = $query->getHydrator()->getAliasDeclaration('p');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -93,11 +88,11 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 
     public function testQueryParserSupportsMultipleAliasDeclarationsWithIndexBy()
     {
-        $q = new Doctrine_Query();
+        $query = new Doctrine_Query;
+        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY p.phonenumber');
+        $query->parse();
 
-        $q->from('User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY name INDEX BY p.phonenumber');
-
-        $decl = $q->getHydrator()->getAliasDeclaration('u');
+        $decl = $query->getHydrator()->getAliasDeclaration('u');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertEqual($decl['relation'], null);
@@ -105,7 +100,7 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
 
-        $decl = $q->getHydrator()->getAliasDeclaration('g');
+        $decl = $query->getHydrator()->getAliasDeclaration('g');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -113,7 +108,7 @@ class Doctrine_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEqual($decl['agg'], null);
         $this->assertEqual($decl['map'], 'name');
 
-        $decl = $q->getHydrator()->getAliasDeclaration('p');
+        $decl = $query->getHydrator()->getAliasDeclaration('p');
 
         $this->assertTrue($decl['table'] instanceof Doctrine_Table);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);

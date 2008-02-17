@@ -34,28 +34,28 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 {
     public function execute(array $params = array())
     {
-        $builder = $this->_parser->getSqlBuilder();
         $path = '';
+        $queryObject = $this->_parser->getQueryObject();
 
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
 
             $component = $this->_parser->token['value'];
             $path = $component;
 
-            if ($builder->hasAliasDeclaration($component)) {
+            if ($queryObject->hasQueryComponent($component)) {
 
-                $aliasDeclaration = $builder->getAliasDeclaration($component);
-                $table = $aliasDeclaration['table'];
+                $queryComponent = $queryObject->getQueryComponent($component);
+                $table = $queryComponent['table'];
 
             } else {
 
                 // get the connection for the component
                 $manager = Doctrine_Manager::getInstance();
                 if ($manager->hasConnectionForComponent($component)) {
-                    $this->_parser->setConnection($manager->getConnectionForComponent($component));
+                    $queryObject->setConnection($manager->getConnectionForComponent($component));
                 }
 
-                $conn = $this->_parser->getConnection();
+                $conn = $queryObject->getConnection();
 
                 try {
                     $table = $conn->getMetadata($component);
@@ -64,7 +64,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                     $this->_parser->semanticalError($e->getMessage());
                 }
 
-                $aliasDeclaration = array(
+                $queryComponent = array(
                     'table'  => $table,
                     'mapper' => $mapper,
                     'map'    => null
@@ -77,8 +77,8 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
         while ($this->_isNextToken('.')) {
             $this->_parser->match('.');
 
-            if ( ! $builder->hasAliasDeclaration($component)) {
-                $builder->setAliasDeclaration($component, $aliasDeclaration);
+            if ( ! $queryObject->hasQueryComponent($path)) {
+                $queryObject->setQueryComponent($path, $queryComponent);
             }
 
             if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
@@ -92,7 +92,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                 $relation = $table->getRelation($component);
                 $table = $relation->getTable();
 
-                $aliasDeclaration[$path] = array(
+                $queryComponent = array(
                         'table'    => $table,
                         'mapper'   => $this->_conn->getMapper($relation->getForeignComponentName()),
                         'parent'   => $parent,
@@ -117,7 +117,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             $alias = $path;
         }
 
-        $this->_parser->getSqlBuilder()->setAliasDeclaration($alias, $aliasDeclaration);
+        $queryObject->setQueryComponent($alias, $queryComponent);
 
         return $alias;
     }
