@@ -200,6 +200,20 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($record->age, 11);
     }
     
+    public function testValidationSkipsOwnerOption()
+    {
+        $this->conn->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $record = $this->conn->getTable('CTITest')->find(1);
+        try {
+            $record->name = "winston";
+            $this->assertTrue($record->isValid());
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+        $this->conn->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
+    
     public function testDeleteIssuesQueriesOnAllJoinedTables()
     {
         $this->conn->clear();
