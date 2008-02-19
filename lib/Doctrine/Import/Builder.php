@@ -335,7 +335,7 @@ END;
         
         $i = 0;
         
-        if (isset($options['inheritance']['extends']) && !(isset($options['override_parent']) && $options['override_parent'] == false)) {
+        if (isset($options['inheritance']['extends']) && !(isset($options['override_parent']) || $options['override_parent'] == false)) {
             $ret[$i] = "    parent::setTableDefinition();";
             $i++;
         }
