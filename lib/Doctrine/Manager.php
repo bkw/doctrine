@@ -673,7 +673,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     {
         $i = $this->_currIndex;
         if ( ! isset($this->_connections[$i])) {
-            throw new Doctrine_Connection_Exception();
+            throw new Doctrine_Connection_Exception('No connection is defined');
         }
         return $this->_connections[$i];
     }
