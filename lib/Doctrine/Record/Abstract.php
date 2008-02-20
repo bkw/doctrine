@@ -37,6 +37,15 @@ abstract class Doctrine_Record_Abstract extends Doctrine_Access
      */
     protected $_table;
 
+    public function setTableDefinition()
+    {
+    	
+    }
+    public function setUp()
+    {
+    	
+    }
+
     /**
      * addListener
      *
