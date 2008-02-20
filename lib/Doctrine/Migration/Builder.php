@@ -157,8 +157,8 @@ END;
      */
     public function generateMigrationsFromModels($modelsPath = null)
     {
-        if ($modelsPath) {
-            $models = Doctrine::loadModels($modelsPath);
+        if ($modelsPath !== null) {
+            $models = Doctrine::filterInvalidModels(Doctrine::loadModels($modelsPath));
         } else {
             $models = Doctrine::getLoadedModels();
         }
@@ -174,26 +174,28 @@ END;
             $down = $this->buildDropTable($export);
             
             $className = 'Add'.Doctrine::classify($export['tableName']);
-            
+
             $this->generateMigrationClass($className, array(), $up, $down);
         }
         
-        $className = 'ApplyForeignKeyConstraints';
+        if ( ! empty($foreignKeys)) {
+            $className = 'ApplyForeignKeyConstraints';
         
-        $up = '';
-        $down = '';
-        foreach ($foreignKeys as $tableName => $definitions)    {
-            $tableForeignKeyNames[$tableName] = array();
+            $up = '';
+            $down = '';
+            foreach ($foreignKeys as $tableName => $definitions)    {
+                $tableForeignKeyNames[$tableName] = array();
             
-            foreach ($definitions as $definition) {
-                $definition['name'] = $tableName . '_' . $definition['foreignTable'] . '_' . $definition['local'] . '_' . $definition['foreign'];
+                foreach ($definitions as $definition) {
+                    $definition['name'] = $tableName . '_' . $definition['foreignTable'] . '_' . $definition['local'] . '_' . $definition['foreign'];
                 
-                $up .= $this->buildCreateForeignKey($tableName, $definition);
-                $down .= $this->buildDropForeignKey($tableName, $definition);
+                    $up .= $this->buildCreateForeignKey($tableName, $definition);
+                    $down .= $this->buildDropForeignKey($tableName, $definition);
+                }
             }
-        }
         
-        $this->generateMigrationClass($className, array(), $up, $down);
+            $this->generateMigrationClass($className, array(), $up, $down);
+        }
         
         return true;
     }
@@ -290,6 +292,10 @@ END;
             $class = $this->buildMigrationClass($className, $fileName, $options, $up, $down);
             
             $path = $this->getMigrationsPath() . DIRECTORY_SEPARATOR . $fileName;
+            
+            if ( class_exists($className)) {
+                throw new Doctrine_Exception('Migration class with the name "' . $className . '" already exists.');
+            }
             
             file_put_contents($path, $class);
         }
