@@ -6,27 +6,29 @@ Below is a list of available tasks for managing your Doctrine implementation.
 
 <code>
 
-./cli build-all
-./cli build-all-load
-./cli build-all-reload
-./cli compile
-./cli create-db
-./cli create-tables
-./cli dql
-./cli drop-db
-./cli dump-data
-./cli generate-migration
-./cli generate-migrations-from-db
-./cli generate-migrations-from-models
-./cli generate-models-from-db
-./cli generate-models-from-yaml
-./cli generate-sql
-./cli generate-yaml-from-db
-./cli generate-yaml-from-models
-./cli load-data
-./cli load-dummy-data
-./cli migrate
-./cli rebuild-db
+Doctrine Command Line Interface
+
+./doctrine build-all
+./doctrine build-all-load
+./doctrine build-all-reload
+./doctrine compile
+./doctrine create-db
+./doctrine create-tables
+./doctrine dql
+./doctrine drop-db
+./doctrine dump-data
+./doctrine generate-migration
+./doctrine generate-migrations-db
+./doctrine generate-migrations-models
+./doctrine generate-models-db
+./doctrine generate-models-yaml
+./doctrine generate-sql
+./doctrine generate-yaml-db
+./doctrine generate-yaml-models
+./doctrine load-data
+./doctrine load-dummy-data
+./doctrine migrate
+./doctrine rebuild-db
 
 </code>
 
