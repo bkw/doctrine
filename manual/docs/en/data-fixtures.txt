@@ -120,15 +120,15 @@ Writing a fixtures file for a nested set tree is slightly different from writing
 
 <code type="yml">
 ---
-  Category:
-    Category_1:
-      title: Categories # the root node
-      children:
-        Category_2:
-          title: Category 1
-        Category_3:
-          title: Category 2
-          children:
-            Category_4:
-              title: Subcategory of Category 2
+Category:
+  Category_1:
+    title: Categories # the root node
+    children:
+      Category_2:
+        title: Category 1
+      Category_3:
+        title: Category 2
+        children:
+          Category_4:
+            title: Subcategory of Category 2
 </code>
