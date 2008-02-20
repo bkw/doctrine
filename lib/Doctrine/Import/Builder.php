@@ -335,7 +335,7 @@ END;
         
         $i = 0;
         
-        if (isset($options['inheritance']['extends']) && !(isset($options['override_parent']) || $options['override_parent'] == false)) {
+        if (isset($options['inheritance']['extends']) && ! (isset($options['override_parent']) && $options['override_parent'] == true)) {
             $ret[$i] = "    parent::setTableDefinition();";
             $i++;
         }
@@ -524,7 +524,7 @@ END;
         $ret = array();
         $i = 0;
         
-        if (isset($options['inheritance']['extends']) && !(isset($options['override_parent']) && $options['override_parent'] == false)) {
+        if (isset($options['inheritance']['extends']) && ! (isset($options['override_parent']) && $options['override_parent'] == true)) {
             $ret[$i] = "    parent::setUp();";
             $i++;
         }
@@ -701,7 +701,7 @@ END;
             $baseClass = $options;
             $baseClass['className'] = 'Base' . $baseClass['className'];
             $baseClass['abstract'] = true;
-            $baseClass['override_parent'] = true;
+            $baseClass['override_parent'] = false;
             $baseClass['is_base_class'] = true;
 
             $this->writeDefinition($baseClass, $columns, $relations, $indexes, $attributes, $templates, $actAs, $tableOptions);
