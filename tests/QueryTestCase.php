@@ -101,6 +101,16 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->parseClause("CONCAT('u.name', u.name)"), "CONCAT('u.name', e.name)");
     }
+    
+    public function testCountMaintainsParams()
+    {
+        $q = new Doctrine_Query();
+        $q->from('User u');
+        $q->leftJoin('u.Phonenumber p WITH p.id = ?', '11');
+        $q->where('u.id = ?', '15');
+        
+        $this->assertTrue($q->count(), 1);
+    }
 }
 class MyQuery extends Doctrine_Query
 {
