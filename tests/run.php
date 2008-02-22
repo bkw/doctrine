@@ -1,4 +1,4 @@
-f<?php
+<?php
 error_reporting(E_ALL | E_STRICT);
 ini_set('max_execution_time', 900);
 ini_set("date.timezone", "GMT+0");
