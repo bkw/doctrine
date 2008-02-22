@@ -15,6 +15,7 @@ class DoctrineTest_Reporter_Html extends DoctrineTest_Reporter {
   
   #messages
   {
+      font-family: courier new, monospace;
       border-left: 1px solid #333333;
       border-right: 1px solid #333333;
       background-color: #CCCCCC;
