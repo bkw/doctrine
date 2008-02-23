@@ -34,7 +34,7 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
 {
     public function testAggressiveModelLoading()
     {
-        $path = realpath('../models/ModelLoadingTest/Aggressive');
+        $path = realpath('ModelLoadingTest/Aggressive');
         
         $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_AGGRESSIVE);
 
@@ -54,7 +54,7 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
 
     public function testConservativeModelLoading()
     {
-        $path = realpath('../models/ModelLoadingTest/Conservative');
+        $path = realpath('ModelLoadingTest/Conservative');
 
         $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_CONSERVATIVE);
 

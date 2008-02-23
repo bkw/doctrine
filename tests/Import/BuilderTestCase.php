@@ -45,13 +45,13 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $schemaTestInheritanceChild1 = new ReflectionClass('SchemaTestInheritanceChild1');
         $schemaTestInheritanceChild2 = new ReflectionClass('SchemaTestInheritanceChild2');
 
-        /*
         $schemaTestInheritanceParentTable = new ReflectionClass('SchemaTestInheritanceParentTable');
         $schemaTestInheritanceChild1Table = new ReflectionClass('SchemaTestInheritanceChild1Table');
         $schemaTestInheritanceChild2Table = new ReflectionClass('SchemaTestInheritanceChild2Table');
-        */
 
+        $this->assertTrue($schemaTestInheritanceParent->isSubClassOf('Doctrine_Record'));
         $this->assertTrue($schemaTestInheritanceParent->isSubClassOf('BaseSchemaTestInheritanceParent'));
+        $this->assertTrue($schemaTestInheritanceParent->isSubClassOf('PackageSchemaTestInheritanceParent'));
         $this->assertTrue($schemaTestInheritanceChild1->isSubClassOf('BaseSchemaTestInheritanceChild1'));
         $this->assertTrue($schemaTestInheritanceChild2->isSubClassOf('BaseSchemaTestInheritanceChild2'));
         
@@ -62,13 +62,17 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($schemaTestInheritanceChild2->isSubClassOf('BaseSchemaTestInheritanceParent'));
         $this->assertTrue($schemaTestInheritanceChild2->isSubClassOf('SchemaTestInheritanceChild1'));
         $this->assertTrue($schemaTestInheritanceChild2->isSubClassOf('BaseSchemaTestInheritanceChild1'));
+        $this->assertTrue($schemaTestInheritanceChild2->isSubClassOf('PackageSchemaTestInheritanceParent'));
 
-        /*
         $this->assertTrue($schemaTestInheritanceParentTable->isSubClassOf('Doctrine_Table'));
         $this->assertTrue($schemaTestInheritanceChild1Table->isSubClassOf('SchemaTestInheritanceParentTable'));
         $this->assertTrue($schemaTestInheritanceChild1Table->isSubClassOf('PackageSchemaTestInheritanceParentTable'));
-        */
-        
+
+        $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('SchemaTestInheritanceParentTable'));
+        $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('PackageSchemaTestInheritanceParentTable'));
+        $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('SchemaTestInheritanceChild1Table'));
+        $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('PackageSchemaTestInheritanceChild1Table'));
+
         Doctrine_Lib::removeDirectories($path);
     }
 }

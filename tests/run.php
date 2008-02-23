@@ -89,6 +89,7 @@ $export->addTestCase(new Doctrine_Export_Oracle_TestCase());
 $export->addTestCase(new Doctrine_Export_Record_TestCase());
 $export->addTestCase(new Doctrine_Export_Mysql_TestCase());
 $export->addTestCase(new Doctrine_Export_Sqlite_TestCase());
+$export->addTestCase(new Doctrine_Export_Schema_TestCase());
 $test->addTestCase($export);
 
 //$test->addTestCase(new Doctrine_CascadingDelete_TestCase());
@@ -103,6 +104,8 @@ $import->addTestCase(new Doctrine_Import_Mssql_TestCase());
 $import->addTestCase(new Doctrine_Import_Pgsql_TestCase());
 $import->addTestCase(new Doctrine_Import_Oracle_TestCase());
 $import->addTestCase(new Doctrine_Import_Sqlite_TestCase());
+$import->addTestCase(new Doctrine_Import_Builder_TestCase());
+$import->addTestCase(new Doctrine_Import_Schema_TestCase());
 $test->addTestCase($import);
 
 // Expression module (not yet fully tested)
@@ -227,7 +230,6 @@ $record->addTestCase(new Doctrine_Record_ZeroValues_TestCase());
 //$record->addTestCase(new Doctrine_Record_SaveBlankRecord_TestCase());
 $record->addTestCase(new Doctrine_Record_Inheritance_TestCase());
 $record->addTestCase(new Doctrine_Record_Synchronize_TestCase());
-$record->addTestCase(new Doctrine_Import_Builder_TestCase());
 $test->addTestCase($record);
 
 $test->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
@@ -277,11 +279,6 @@ $test->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
 $parser = new GroupTest('Parser tests', 'parser');
 $parser->addTestCase(new Doctrine_Parser_TestCase());
 $test->addTestCase($parser);
-
-$schemaFiles = new GroupTest('Schema files', 'schema_files');
-$schemaFiles->addTestCase(new Doctrine_Import_Schema_TestCase());
-$schemaFiles->addTestCase(new Doctrine_Export_Schema_TestCase());
-$test->addTestCase($schemaFiles);
 
 $data = new GroupTest('Data exporting/importing fixtures', 'data_fixtures');
 $data->addTestCase(new Doctrine_Data_Import_TestCase());
