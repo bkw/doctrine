@@ -1,5 +1,5 @@
 ---
-User:
+SchemaTestUser:
   actAs: [Timestampable]
   columns:
     id:
@@ -10,7 +10,8 @@ User:
       type: string(255)
     password:
       type: string(255)
-Profile:
+
+SchemaTestProfile:
   actAs: [Timestampable]
   columns:
     id:
@@ -26,11 +27,12 @@ Profile:
     last_name:
       type: string(255)
   relations:
-    User: 
+    SchemaTestUser: 
       foreignType: one
-    Contact:
+    SchemaTestContact:
       foreignType: one
-Contact:
+
+SchemaTestContact:
   actAs: [Timestampable]
   columns:
     id:
@@ -39,7 +41,8 @@ Contact:
       autoincrement: true
     name:
       type: string(255)
-Phonenumber:
+
+SchemaTestPhonenumber:
   actAs: [Timestampable]
   columns:
     id:
@@ -51,5 +54,33 @@ Phonenumber:
     phone_number:
       type: integer(4)
   relations:
-    Contact:
+    SchemaTestContact:
       foreignAlias: Phonenumbers
+
+SchemaTestInheritanceParent:
+  package: Parent
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    type:
+      type: string(255)
+  options:
+    subclasses: [SchemaTestInheritanceChild1]
+
+SchemaTestInheritanceChild1:
+  package: Child1
+  inheritance:
+    extends: SchemaTestInheritanceParent
+    keyField: type
+    keyValue: child1
+
+SchemaTestInheritanceChild2:
+  package: Child2
+  inheritance:
+    extends: SchemaTestInheritanceChild1
+    keyField: type
+    keyValue: child2

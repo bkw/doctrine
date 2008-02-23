@@ -120,6 +120,7 @@ $test->addTestCase($expression);
 
 // Core
 $core = new GroupTest('Core tests: Access, Configurable, Manager, Connection, Table, UnitOfWork, Collection, Hydrate, Tokenizer','core');
+$core->addTestCase(new Doctrine_Base_TestCase());
 $core->addTestCase(new Doctrine_Access_TestCase());
 //$core->addTestCase(new Doctrine_Configurable_TestCase());
 $core->addTestCase(new Doctrine_Manager_TestCase());
@@ -226,6 +227,7 @@ $record->addTestCase(new Doctrine_Record_ZeroValues_TestCase());
 //$record->addTestCase(new Doctrine_Record_SaveBlankRecord_TestCase());
 $record->addTestCase(new Doctrine_Record_Inheritance_TestCase());
 $record->addTestCase(new Doctrine_Record_Synchronize_TestCase());
+$record->addTestCase(new Doctrine_Import_Builder_TestCase());
 $test->addTestCase($record);
 
 $test->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
@@ -242,8 +244,6 @@ $test->addTestCase(new Doctrine_RawSql_TestCase());
 $test->addTestCase(new Doctrine_NewCore_TestCase());
 
 $test->addTestCase(new Doctrine_Template_TestCase());
-
-//$test->addTestCase(new Doctrine_Import_Builder_TestCase());
 $test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 
 // Search tests

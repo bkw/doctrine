@@ -37,16 +37,20 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
     
     public function testYmlImport()
     {
+        $path = realpath(dirname(__FILE__) . '/../..') . '/models/test_generated';
+        
         $import = new Doctrine_Import_Schema();
-        $import->importSchema('schema.yml', 'yml', 'classes');
+        $import->importSchema('schema.yml', 'yml', $path);
         
-        if ( ! file_exists('classes/User.php')) {
+        if ( ! file_exists($path . '/SchemaTestUser.php')) {
             $this->fail();
         }
         
-        if ( ! file_exists('classes/Profile.php')) {
+        if ( ! file_exists($path . '/SchemaTestProfile.php')) {
             $this->fail();
         }
+
+        Doctrine_Lib::removeDirectories($path);
     }
     
     public function testBuildSchema()
@@ -54,7 +58,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $schema = new Doctrine_Import_Schema();
         $array = $schema->buildSchema('schema.yml', 'yml');
         
-        $model = $array['User'];
+        $model = $array['SchemaTestUser'];
 
         $this->assertTrue(array_key_exists('connection', $model));
         $this->assertTrue(array_key_exists('className', $model));
@@ -67,6 +71,9 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(array_key_exists('actAs', $model) && is_array($model['actAs']));
         $this->assertTrue(array_key_exists('options', $model) && is_array($model['options']));
         $this->assertTrue(array_key_exists('package', $model));
+        $this->assertTrue(array_key_exists('inheritance', $model) && is_array($model['inheritance']));
+        $this->assertTrue(array_key_exists('detect_relations', $model) && is_bool($model['detect_relations']));
+        $this->assertTrue(array_key_exists('generate_accessors', $model) && is_bool($model['generate_accessors']));
     }
     
     public function testSchemaRelationshipCompletion()
