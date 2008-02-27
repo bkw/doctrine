@@ -563,7 +563,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $tmp = array();
 
         foreach (array_keys($identifier) as $id) {
-            $tmp[] = $id . ' = ?';
+            $tmp[] = $this->quoteIdentifier($id) . ' = ?';
         }
 
         $query = 'DELETE FROM '
@@ -592,10 +592,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $set = array();
         foreach ($values as $name => $value) {
             if ($value instanceof Doctrine_Expression) {
-                $set[] = $name . ' = ' . $value->getSql();
+                $set[] = $this->quoteIdentifier($name) . ' = ' . $value->getSql();
                 unset($values[$name]);
             } else {
-                $set[] = $name . ' = ?';
+                $set[] = $this->quoteIdentifier($name) . ' = ?';
             }
         }
 
