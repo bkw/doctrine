@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL|E_STRICT);
+
 function autoload($className)
 {
     if (class_exists($className, false)) {
