@@ -1600,19 +1600,6 @@ requiring needless code duplication.</description>
   </release>
   <release>
    <version>
-    <release>1.0.0</release>
-    <api>1.0.0</api>
-   </version>
-   <stability>
-    <release>beta</release>
-    <api>beta</api>
-   </stability>
-   <date>2008-02-13</date>
-   <license uri="http://phpdoctrine.net/license">LGPL license</license>
-   <notes>-</notes>
-  </release>
-  <release>
-   <version>
     <release>0.10.0</release>
     <api>0.10.0</api>
    </version>
