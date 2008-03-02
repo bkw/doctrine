@@ -7,10 +7,165 @@ model definitions/classes. This makes Doctrine model definitions much more porta
 Schema files support all the normal things you would write with manual php code. Component to 
 connection binding, relationships, attributes, templates/behaviors, indexes, etc.
 
+++ Short Hand Syntax
+
+Doctrine offers the ability to specify schema in a short hand syntax. A lot of the schema parameters 
+have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its 
+defaults. Below is an example of schema taking advantage of all the shorthand features.
+
+<code type="php">
+---
+detect_relations: true
+
+User:
+  columns:
+    username: string
+    password: string
+    contact_id: integer
+
+Contact:
+  columns:
+    first_name: string
+    last_name: string
+    phone: string
+    email: string
+    address: string
+</code>
+
+++ Expanded Syntax
+
+Here is the none short hand form of the above schema.
+
+<code type="php">
+---
+detect_relations: true
+
+User:
+  columns:
+    username:
+      type: string(255)
+    password:
+      type: string(255)
+    contact_id:
+      type: integer
+  relations:
+    Contact:
+      class: Contact
+      local: contact_id
+      foreign: id
+      foreignAlias: User
+      foreignType: one
+      type: one
+
+Contact:
+  columns:
+    first_name:
+      type: string(255)
+    last_name:
+      type: string(255)
+    phone:
+      type: string(255)
+    email:
+      type: string(255)
+    address:
+      type: string(255)
+  relations:
+    User:
+      class: User
+      local: id
+      foreign: contact_id
+      foreignAlias: Contact
+      foreignType: one
+      type: one
+</code>
+
 ++ Relationships
 
 When specifying relationships it is only necessary to specify the relationship on the end where 
-the foreign key exists, although both ways are supported.
+the foreign key exists. When the schema file is parsed, it inflects the relationship and builds the 
+opposite end automatically. If you specify the other end of the relationship manually, the auto 
+generation will have no effect.
+
+Doctrine will also attempt to guess the local and foreign key names based on the class involved in the 
+relationship. You will notice that all of our example schemas do not include the specific local and 
+foreign keys because it is able to guess them.
+
++++ Detect Relations
+
+Doctrine offers the ability to specify a detect_relations options. This feature provides automatic 
+relationship building based on column names. If you have a User model with a contact_id and a class 
+with the name Contact exists, it will automatically create the relationships between the two.
+
++++ Customizing Relationships
+
+Doctrine only requires that you specify the relationship on the end where the foreign key exists. The 
+opposite end of the relationship will be inflected and built on the opposite end. The schema syntax 
+offers the ability to customize the relationship alias and type of the opposite end. This is good news 
+because it means you can maintain all the relevant relationship information in one place. Below is an 
+example of how to customize the alias and type of the opposite end of the relationship. It demonstrates 
+the relationships User hasOne Contact and Contact hasOne User as UserModel. Normally it would have 
+automatically generated User hasOne Contact and Contact hasMany User. The foreignType and foreignAlias 
+keywords allow you to customize the foreign relationship.
+
+<code type="yaml">
+---
+User:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    contact_id:
+      type: integer(4)
+    username:
+      type: string(255)
+    password:
+      type: string(255)
+  relations:
+    Contact:
+      foreignType: one
+      foreignAlias: UserModel
+
+Contact:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+</code>
+
+Here is an example schema:
+
+<code type="yaml">
+---
+detect_relations: true
+
+User:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    contact_id:
+      type: integer(4)
+    username:
+      type: string(255)
+    password:
+      type: string(255)
+
+Contact:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+</code>
+
+The resulting relationships will be User hasOne Contact and Contact hasMany User.
 
 +++ One to One
 
@@ -112,7 +267,9 @@ GroupUser:
       primary: true
 </code>
 
-++ Connection Binding
+++ Features & Examples
+
++++ Connection Binding
 
 <code type="php">
 Doctrine::connection('mysql://jwage:pass@localhost/connection1', 'connection1');
@@ -135,7 +292,7 @@ User:
       type: string(255)
 </code>
 
-++ Attributes
++++ Attributes
 
 <code type="yaml">
 ---
@@ -157,7 +314,7 @@ User:
     validate: false
 </code>
 
-++ Enums
++++ Enums
 
 <code type="yaml">
 ---
@@ -177,7 +334,7 @@ TvListing:
      values: ['US', 'CA']
 </code>
 
-++ Templates
++++ Templates
 
 <code type="yaml">
 ---
@@ -200,7 +357,7 @@ User:
       option2: value
 </code>
 
-++ ActAs
++++ ActAs
 
 <code type="yaml">
 ---
@@ -222,7 +379,7 @@ User:
       fields: [username]
 </code>
 
-++ Options
++++ Options
 
 <code type="yaml">
 ---
@@ -245,7 +402,7 @@ User:
     charset: utf8
 </code>
 
-++ Indexes
++++ Indexes
 
 Please see chapter [doc basic-schema-mapping :index :name] for more information about indexes and 
 their options.
@@ -284,7 +441,7 @@ model class.
 $this->index('name_index', array('fields' => array('first_name' => array( 'sorting' => 'ASC', 'length' => '10', 'primary' => true ), 'last_name' => array( ) ), 'type' => 'unique'));
 </code>
 
-++ Inheritance
++++ Inheritance
 
 <code type="yaml">
 ---
@@ -307,7 +464,111 @@ Group:
     extends: Entity
 </code>
 
-++ Generating Models
++++ Generate Accessors
+
+When the generate_accessors: true option is present in a schema file, it will generate propel orm style 
+get and set accessors in the Base model definition. For example setFieldName() and getFieldName() would 
+then be possible in your models.
+
+Example:
+<code type="yaml">
+---
+generate_accessors: true
+
+User:
+  columns:
+    username:
+      type: string(255)
+</code>
+
++++ Column Aliases
+
+If you want the ability alias a column name as something other than the column name in the database 
+this is possible with the " as alias_name" string after the column name.
+
+Example:
+<code type="yaml">
+---
+User:
+  columns:
+    login:
+      name: login as username
+      type: string(255)
+    password:
+      type: string(255)
+</code>
+
+The above example would allow you to access the login column name from the alias "username".
+
++++ Packages
+
+Doctrine offers the "package" parameter which will generate the models in to sub folders. With large 
+schema files this will allow you to better organize your schemas in to folders.
+
+<code type="yaml">
+---
+User:
+  package: User
+  columns:
+    username: string(255)
+</code>
+
+The model files from this schema file would be put in a folder named User. You can specify more sub 
+folders by doing "package: User.Models" and the models would be in User/Models
+
++++ Global Schema Information
+
+Doctrine schemas allow you to specify certain parameters that will apply to all of the models defined 
+in the schema file. Below you can find an example on what global parameters you can set for schema files.
+
+List of global parameters:
+
+connection
+attributes
+templates
+actAs
+options
+package
+inheritance
+detect_relations
+generate_accessors
+
+<code type="yaml">
+---
+connection: conn_name1
+actAs: [Timestampable]
+options:
+  type: INNODB
+package: User
+detect_relations: true
+generate_accessors: true
+
+User:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    contact_id:
+      type: integer(4)
+    username:
+      type: string(255)
+    password:
+      type: string(255)
+
+Contact:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+</code>
+
+All of the settings at the top will be applied to every model which is defined in that yaml file.
+
+++ Using Schema Files
 
 Once you have defined your schema files you need some code to 
 <code type="php">
@@ -321,5 +582,5 @@ $options = array('packagesPrefix'        =>  'Package',             // What to p
                  'suffix'                =>  '.php');               // Extension for your generated models
 
 // This code will generate the models for schema.yml at /path/to/generate/models
-Doctrine::generateModelsFromYaml('schema.yml', '/path/to/generate/models', $options);
+Doctrine::generateModelsFromYaml('/path/to/directory/with/yaml/schema/files', '/path/to/generate/models', $options);
 </code>
