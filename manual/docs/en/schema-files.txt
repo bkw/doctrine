@@ -13,7 +13,7 @@ Doctrine offers the ability to specify schema in a short hand syntax. A lot of t
 have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its 
 defaults. Below is an example of schema taking advantage of all the shorthand features.
 
-<code type="php">
+<code type="yaml">
 ---
 detect_relations: true
 
@@ -36,7 +36,7 @@ Contact:
 
 Here is the none short hand form of the above schema.
 
-<code type="php">
+<code type="yaml">
 ---
 detect_relations: true
 

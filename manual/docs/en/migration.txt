@@ -61,6 +61,10 @@ Here is a list of the available methods you can use to alter your database in yo
 public function createTable($tableName, array $fields = array(), array $options = array())
 public function dropTable($tableName)
 public function renameTable($oldTableName, $newTableName)
+public function createConstraint($tableName, $constraintName, array $definition)
+public function dropConstraint($tableName, $constraintName, $primary = false)
+public function createForeignKey($tableName, array $definition)
+public function dropForeignKey($tableName, $fkName)
 public function addColumn($tableName, $columnName, $type, array $options = array())
 public function renameColumn($tableName, $oldColumnName, $newColumnName)
 public function changeColumn($tableName, $columnName, $type, array $options = array())
@@ -71,7 +75,10 @@ public function removeIndex($tableName, $indexName)
 
 +++ Altering Data
 
-You can alter table directly in your up() and down() methods like you normally would by creating new model instances and calling save() or creating queries and deleting data.
+Sometimes you may need to alter the data in the database with your models. Since you may create a table 
+or make a change, you have to do the data altering after the up() or down() method is processed. We have 
+hooks in place for this named preUp(), postUp(), preDown(), and postDown(). Define these methods and 
+they will be triggered after the migration version is executed.
 
 <code type="php">
 // XXX_add_user.class.php
@@ -79,18 +86,25 @@ class AddUser extends Doctrine_Migration
 {
     public function up()
     {
-        // Add new user
-        $user = new User();
-        $user->loginname = 'jwage';
-        $user->save();
+        $this->createTable('migration_test', array('field1' => array('type' => 'string')));
     }
     
+    public function postUp()
+    {
+      $migrationTest = new MigrationTest();
+      $migrationTest->field1 = 'test';
+      $migrationTest->save();
+    }
+
     public function down()
     {
-        // Delete the user we added in the up
-        $query = new Doctrine_Query();
-        $query->delete('User')->from('User u')->where('u.loginname = ?', 'jwage')->execute();
-        
+        $this->dropTable('migration_test');
+    }
+    
+    public function postDown()
+    {
+        $migrationTest = Doctrine::getTable('MigrationTest')->findOneByField1('test');
+        $migrationTest->delete();
     }
 }
 </code>
@@ -106,3 +120,6 @@ $migration->migrate(0); // takes you from 3 to 0
 
 echo $migration->getCurrentVersion(); // 0
 </code>
+
+
+This functionality is allow allowed from the Doctrine command line interface.
