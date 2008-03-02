@@ -4,19 +4,9 @@ on other components and what columns it has. It may access the related component
 
 The classes that inherit {{Doctrine_Record}} are called components. There should be atleast one component for each database table.
 
-There are couple of ways for creating new records. Propably the easiest is using native php new -operator. The other ways are calling {{Doctrine_Table::create()}} or {{Doctrine_Connection::create()}}. The last two exists only for backward compatibility. The recommended way of creating new objects is the new operator.
+You can instantiate and use your models like the following below.
 
 <code type="php">
-$user = $conn->create("User");
-
-// alternative way:
-
-$table = $conn->getTable("User");
-
-$user = $table->create();
-
-// the simpliest way:
-
 $user = new User();
 
 // records support array access
@@ -34,6 +24,8 @@ Every record has an object identifier, which is an internal unique identifier. Y
 Each assigned column property of {{Doctrine_Record}} represents a database table column. As you've learned in the previous chapters the column definitions can be achieved with the hasColumn() method. Now accessing the columns is easy. You can use any of the means described above. The recommended way is using the ArrayAccess as it makes it easy to switch between record and array fetching when needed.
 
 <code type="php">
+$table = Doctrine::getTable('User');
+
 $user = $table->find(3);
 
 // access property through overloading

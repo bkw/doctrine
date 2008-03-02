@@ -60,7 +60,7 @@ svn update
 You can install Doctrine via PEAR with the following command:
 
 <code type="bash"> 
-pear install http://pear.phpdoctrine.org/Doctrine-0.10.1
+pear install http://pear.phpdoctrine.org/Doctrine-0.10.2
 </code>
 
 
@@ -73,4 +73,19 @@ Under Linux you can extract the .tgz package with the following command line ins
 
 <code type="bash"> 
 tar xzf Doctrine-0.10.1.tgz
-</code> 
+</code>
+
++++ Sandbox Package
+
+Doctrine also provides a special package which is a zero configuration Doctrine implementation. It 
+includes a fully featured command line interface for managing your schema files, migrations, 
+database connections, data fixtures, and many other features. You can read about the sandbox package 
+and how to use it in the [doc utilities :name] chapter under the Sandbox section.
+
+Below you will find the url to a tutorial on how to how to get started using 
+Doctrine with the sandbox package. With the sandbox and this tutorial you can get Doctrine up 
+and running in under 5 minutes. The tutorial offers example schema files, data fixtures, and a simple 
+script for managing a "User" model with Doctrine. Simple create, update, delete functionality.
+
+The tutorial can be found here http://trac.phpdoctrine.org/wiki/MyFirstProject and the sandbox package 
+can be downloaded from here http://www.phpdoctrine.org/download

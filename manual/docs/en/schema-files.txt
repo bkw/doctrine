@@ -1,12 +1,16 @@
 ++ Introduction
 
-The purpose of schema files is to allow you to manage your model definitions directly from a yaml file rather then editing php code. The yaml schema file is parsed and used to generate all your model definitions/classes. This makes Doctrine model definitions much more portable.
+The purpose of schema files is to allow you to manage your model definitions directly from a yaml 
+file rather then editing php code. The yaml schema file is parsed and used to generate all your 
+model definitions/classes. This makes Doctrine model definitions much more portable.
 
-Schema files support all the normal things you would write with manual php code. Component to connection binding, relationships, attributes, templates/behaviors, indexes, etc.
+Schema files support all the normal things you would write with manual php code. Component to 
+connection binding, relationships, attributes, templates/behaviors, indexes, etc.
 
 ++ Relationships
 
-When specifying relationships it is only necessary to specify the relationship on the end where the foreign key exists, although both ways are supported.
+When specifying relationships it is only necessary to specify the relationship on the end where 
+the foreign key exists, although both ways are supported.
 
 +++ One to One
 
@@ -243,7 +247,8 @@ User:
 
 ++ Indexes
 
-Please see chapter [doc basic-schema-mapping :index :name] for more information about indexes and their options.
+Please see chapter [doc basic-schema-mapping :index :name] for more information about indexes and 
+their options.
 
 schema.yml
 <code type="yml">
@@ -272,7 +277,8 @@ UserProfile:
       type: unique
 </code>
 
-This is the PHP line of code that is auto-generated inside setTableDefinition() inside your base model class.
+This is the PHP line of code that is auto-generated inside setTableDefinition() inside your base 
+model class.
 
 <code type="php">
 $this->index('name_index', array('fields' => array('first_name' => array( 'sorting' => 'ASC', 'length' => '10', 'primary' => true ), 'last_name' => array( ) ), 'type' => 'unique'));

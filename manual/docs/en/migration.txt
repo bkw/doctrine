@@ -1,8 +1,13 @@
-The Doctrine Migration tools allow you to migrate databases and it issues alter table statements directly to your databases when you need to deploy database changes.
+The Doctrine Migration tools allow you to migrate databases and it issues alter table statements 
+directly to your databases when you need to deploy database changes.
 
 ++ Writing Migration Classes
 
-Migration classes consist of a simple class that extends from Doctrine_Migration. You can define a public up() and down() method that is meant for doing and undoing changes to a database for that migration step. The class name is completely arbitrary, but the name of the file which contains the class must have a prefix containing the number it represents in the migration process. Example: XXX_representative_name.class.php
+Migration classes consist of a simple class that extends from Doctrine_Migration. You can define 
+a public up() and down() method that is meant for doing and undoing changes to a database for that 
+migration step. The class name is completely arbitrary, but the name of the file which contains the 
+class must have a prefix containing the number it represents in the migration process. 
+Example: XXX_representative_name.class.php
 
 <code type="php">
 // 001_add_table.class.php
