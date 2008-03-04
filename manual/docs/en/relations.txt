@@ -683,7 +683,7 @@ class Phonenumber extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->index('product_id', array('fields' => 'user_id'));
+        $this->index('user_id_idx', array('fields' => 'user_id'));
 
         $this->hasOne('User', array('local' => 'user_id',
                                     'foreign' => 'id',
