@@ -765,8 +765,8 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         unset($user);
         $user = $this->objTable->find(5);
         $this->assertEqual($user->Group->count(), 3);
-        $this->assertEqual($user->Group[1]->id, 2);
-        $this->assertEqual($user->Group[2]->id, 3);
+        $this->assertEqual($user->Group[1]->id, 1);
+        $this->assertEqual($user->Group[2]->id, 2);
 
         $user->unlink('Group', array($group1->id, $group2->id));
         $this->assertEqual($user->Group->count(), 1);
@@ -791,12 +791,12 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $user = $this->objTable->find(5);
         $this->assertEqual($user->Group->count(), 2);
-        $this->assertEqual($user->Group[0]->identifier(), $group1->identifier());
-        $this->assertEqual($user->Group[1]->identifier(), $group2->identifier());
+        $this->assertEqual($user->Group[0]->identifier(), $group2->identifier());
+        $this->assertEqual($user->Group[1]->identifier(), $group1->identifier());
 
         $user->unlink('Group');
         $user->save();
-        unset($user);
+        $user->free();
 
         $user = $this->objTable->find(5);
         $this->assertEqual($user->Group->count(), 0);
