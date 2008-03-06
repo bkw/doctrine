@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -299,5 +299,14 @@ class Doctrine_UnitTestCase extends UnitTestCase
         }
 
         $this->init = true;
+    }
+    
+    public function tearDown()
+    {
+        /*foreach ($this->tables as $table) {
+            foreach ($this->conn->getMapper($table)->getRepository() as $obj) {
+                $obj->free();
+            }
+        }*/
     }
 }

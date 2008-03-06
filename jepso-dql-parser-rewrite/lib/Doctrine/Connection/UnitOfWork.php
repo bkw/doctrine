@@ -25,38 +25,90 @@ Doctrine::autoload('Doctrine_Connection_Module');
  * @package     Doctrine
  * @subpackage  Connection
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  * @todo package:orm. Figure out a useful implementation.
  */
 class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
 {
+    /**
+     * A map of all currently managed entities.
+     *
+     * @var array
+     */
+    protected $_managedEntities = array();
+    
+    /**
+     * The identity map that holds references to all managed entities that have
+     * an identity. The entities are grouped by their class name.
+     */
+    protected $_identityMap = array();
+    
+    /**
+     * Boolean flag that indicates whether the unit of work immediately executes any
+     * database operations or whether these operations are postponed until the
+     * unit of work is flushed/committed.
+     *
+     * @var boolean
+     */
     protected $_autoflush = true;
+    
+    /**
+     * A list of all postponed inserts.
+     */
     protected $_inserts = array();
+    
+    /**
+     * A list of all postponed updates.
+     */
     protected $_updates = array();
+    
+    /**
+     * A list of all postponed deletes.
+     */
     protected $_deletes = array();
     
+    /**
+     * The dbal connection used by the unit of work.
+     *
+     * @var Doctrine_Connection
+     * @todo Allow multiple connections for transparent master-slave replication.
+     */
+    protected $_conn;
+    
+    /**
+     * Flushes the unit of work, executing all operations that have been postponed
+     * up to this point.
+     *
+     */
     public function flush()
     {
         // get the flush tree
         $tree = $this->buildFlushTree($this->conn->getMappers());
-
+        
+        $tree = array_combine($tree, array_fill(0, count($tree), array()));
+        
+        foreach ($this->_managedEntities as $oid => $entity) {
+            $className = $entity->getClassName();
+            $tree[$className][] = $entity;
+        }
+        
         // save all records
-        foreach ($tree as $name) {
-            $mapper = $this->conn->getMapper($name);
-            foreach ($mapper->getRepository() as $record) {
-                //echo $record->getOid() . "<br />";
-                $mapper->saveSingleRecord($record);
+        foreach ($tree as $className => $entities) {
+            $mapper = $this->conn->getMapper($className);
+            foreach ($entities as $entity) {
+                $mapper->saveSingleRecord($entity);
             }
         }
-
+        
         // save all associations
-        foreach ($tree as $name) {
-            $mapper = $this->conn->getMapper($name);
-            foreach ($mapper->getRepository() as $record) {
-                $mapper->saveAssociations($record);
+        foreach ($tree as $className => $entities) {
+            $mapper = $this->conn->getMapper($className);
+            foreach ($entities as $entity) {
+                $mapper->saveAssociations($entity);
             }
         }
     }
@@ -92,12 +144,12 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
     {
         $tree = array();
         foreach ($mappers as $k => $mapper) {
-            if ( ! ($mapper instanceof Doctrine_Mapper_Abstract)) {
+            if ( ! ($mapper instanceof Doctrine_Mapper)) {
                 $mapper = $this->conn->getMapper($mapper);
             }
-            $nm     = $mapper->getComponentName();
+            $nm = $mapper->getComponentName();
 
-            $index  = array_search($nm, $tree);
+            $index = array_search($nm, $tree);
 
             if ($index === false) {
                 $tree[] = $nm;
@@ -117,7 +169,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
 
             foreach ($rels as $rel) {
                 $name   = $rel->getTable()->getComponentName();
-                $index2 = array_search($name,$tree);
+                $index2 = array_search($name, $tree);
                 $type   = $rel->getType();
 
                 // skip self-referenced relations
@@ -142,7 +194,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                             continue;
 
                         unset($tree[$index2]);
-                        array_splice($tree,$index,0,$name);
+                        array_splice($tree, $index, 0, $name);
                     } else {
                         array_unshift($tree,$name);
                         $index++;
@@ -151,8 +203,9 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                     $t = $rel->getAssociationFactory();
                     $n = $t->getComponentName();
 
-                    if ($index2 !== false)
+                    if ($index2 !== false) {
                         unset($tree[$index2]);
+                    }
 
                     array_splice($tree, $index, 0, $name);
                     $index++;
@@ -172,7 +225,8 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                 }
             }
         }
-        return array_values($tree);
+        
+        return $tree;
     }
     
     /**
@@ -186,6 +240,114 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
     public function saveAll()
     {
         return $this->flush();
+    }
+    
+    /**
+     * Adds an entity to the pool of managed entities.
+     *
+     */
+    public function manage(Doctrine_Record $entity)
+    {
+        $oid = $entity->getOid();
+        if ( ! isset($this->_managedEntities[$oid])) {
+            $this->_managedEntities[$oid] = $entity;
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets a managed entity by it's object id (oid).
+     *
+     * @param integer $oid  The object id.
+     * @throws Doctrine_Table_Repository_Exception
+     */
+    public function getByOid($oid)
+    {
+        if ( ! isset($this->_managedEntities[$oid])) {
+            throw new Doctrine_Connection_Exception("Unknown object identifier '$oid'.");
+        }
+        return $this->_managedEntities[$oid];
+    }
+    
+    /**
+     * @param integer $oid                  object identifier
+     * @return boolean                      whether ot not the operation was successful
+     */
+    public function detach(Doctrine_Record $entity)
+    {
+        $oid = $entity->getOid();
+        if ( ! isset($this->_managedEntities[$oid])) {
+            return false;
+        }
+        unset($this->_managedEntities[$oid]);
+        return true;
+    }
+    
+    /**
+     * Detaches all currently managed entities.
+     *
+     * @return integer   The number of detached entities.
+     */
+    public function detachAll()
+    {
+        $numDetached = count($this->_managedEntities);
+        $this->_managedEntities = array();
+        return $numDetached;
+    }
+    
+    /**
+     * Checks whether an entity is managed.
+     * 
+     * @param Doctrine_Record $entity  The entity to check.
+     * @return boolean  TRUE if the entity is currently managed by doctrine, FALSE otherwise.
+     */
+    public function isManaged(Doctrine_Record $entity)
+    {
+        return isset($this->_managedEntities[$entity->getOid()]);
+    }
+    
+    /**
+     * Registers an entity in the identity map.
+     * 
+     * @return boolean  TRUE if the registration was successful, FALSE if the identity of
+     *                  the entity in question is already managed.
+     * @throws Doctrine_Connection_Exception  If the entity has no (database) identity.
+     */
+    public function registerIdentity(Doctrine_Record $entity)
+    {
+        $id = implode(' ', $entity->identifier());
+        if ( ! $id) {
+            throw new Doctrine_Connection_Exception("Entity with oid '" . $entity->getOid()
+                    . "' has no database identity and therefore can't be added to the identity map.");
+        }
+        $className = $entity->getClassMetadata()->getRootClassName();
+        if (isset($this->_identityMap[$className][$id])) {
+            return false;
+        }
+        $this->_identityMap[$className][$id] = $entity;
+        return true;
+    }
+    
+    public function unregisterIdentity(Doctrine_Record $entity)
+    {
+        $id = implode(' ', $entity->identifier());
+        if ( ! $id) {
+            throw new Doctrine_Connection_Exception("Entity with oid '" . $entity->getOid()
+                    . "' has no database identity and therefore can't be removed from the identity map.");
+        }
+        $className = $entity->getClassMetadata()->getRootClassName();
+        if (isset($this->_identityMap[$className][$id])) {
+            unset($this->_identityMap[$className][$id]);
+            return true;
+        }
+
+        return false;
+    }
+    
+    public function containsIdentity(Doctrine_Record $entity)
+    {
+        
     }
     
 }

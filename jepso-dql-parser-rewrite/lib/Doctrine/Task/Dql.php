@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Task
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 2761 $
  * @author      Jonathan H. Wage <jwage@mac.com>
@@ -45,11 +45,12 @@ class Doctrine_Task_Dql extends Doctrine_Task
 
         $query = new Doctrine_Query();
 
-        $params = explode(',', $this->getArgument('params'));
+        $params = $this->getArgument('params');
+        $params = $params ? explode(',', $params):array();
 
         $this->notify('executing: "' . $dql . '" (' . implode(', ', $params) . ')');
 
-        $results = $query->query($dql, $params);
+        $results = $query->query($dql);
 
         $this->_printResults($results);
     }

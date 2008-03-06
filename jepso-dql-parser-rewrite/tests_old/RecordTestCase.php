@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -269,7 +269,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testCompositePK() {
         $record = new EntityReference();
-        $this->assertEqual($record->getTable()->getIdentifier(), array("entity1","entity2"));
+        $this->assertEqual((array)$record->getTable()->getIdentifier(), array("entity1","entity2"));
         $this->assertEqual($record->getTable()->getIdentifierType(), Doctrine::IDENTIFIER_COMPOSITE);
         $this->assertEqual($record->identifier(), array("entity1" => null, "entity2" => null));
         $this->assertEqual($record->state(), Doctrine_Record::STATE_TCLEAN);
@@ -391,15 +391,12 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->name, "Jack Daniels");
         $this->assertEqual($user->created, null);
         $this->assertEqual($user->updated, null);
-        $this->assertEqual($user->getMapper()->getData(), array());
-
     }
     
     public function testNewOperator() 
     {
         $table = $this->connection->getClassMetadata("User");
 
-        $this->assertEqual($this->connection->getMapper("User")->getData(), array());
         $user = new User();
         $this->assertEqual(Doctrine_Lib::getRecordStateAsString($user->state()), Doctrine_Lib::getRecordStateAsString(Doctrine_Record::STATE_TCLEAN));
         $user->name = "John Locke";
@@ -828,12 +825,12 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $user = $this->objTable->find(5);
         $this->assertEqual($user->Group->count(), 2);
-        $this->assertEqual($user->Group[0]->identifier(), $group1->identifier());
-        $this->assertEqual($user->Group[1]->identifier(), $group2->identifier());
+        $this->assertEqual($user->Group[0]->identifier(), $group2->identifier());
+        $this->assertEqual($user->Group[1]->identifier(), $group1->identifier());
 
         $user->unlink('Group');
         $user->save();
-        unset($user);
+        $user->free();
 
         $user = $this->objTable->find(5);
         $this->assertEqual($user->Group->count(), 0);

@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Hydrate.php 3192 2007-11-19 17:55:23Z romanb $
+ *  $Id$
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,17 +20,17 @@
  */
 
 /**
- * Doctrine_Hydrate is a base class for Doctrine_RawSql and Doctrine_Query.
- * Its purpose is to populate object graphs.
- *
+ * The hydrator has the tedious task to construct object or array graphs out of
+ * a database result set.
  *
  * @package     Doctrine
- * @subpackage  Hydrate
+ * @subpackage  Hydrator
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 3192 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  */
 class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
 {    
@@ -56,7 +56,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
      *                              'map' => Custom index to use as the key in the result (if any)
      *                              )
      *                         )
-     * @return array
+     * @return mixed  The created object/array graph.
      */
     public function hydrateResultSet($stmt, $tableAliases, $hydrationMode = null)
     {
@@ -104,10 +104,11 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         }
 
         // Initialize
-        foreach ($this->_queryComponents as $dqlAlias => $data) {
-            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
-            $componentName = $data['mapper']->getComponentName();
-            $listeners[$componentName] = $data['mapper']->getRecordListener();
+        foreach ($this->_queryComponents as $dqlAlias => $component) {
+            // disable lazy-loading of related elements during hydration
+            $component['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+            $componentName = $component['mapper']->getComponentName();
+            $listeners[$componentName] = $component['mapper']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
             $prev[$dqlAlias] = array();
             $id[$dqlAlias] = '';
@@ -224,7 +225,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             }
             $id[$rootAlias] = '';
         }
-        
+
         $stmt->closeCursor();
         
         $driver->flush();
@@ -294,22 +295,28 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         foreach ($data as $key => $value) {
             // Parse each column name only once. Cache the results.
             if ( ! isset($cache[$key])) {
+                // cache general information like the column name <-> field name mapping
                 $e = explode('__', $key);
-                $last = strtolower(array_pop($e));
+                $columnName = strtolower(array_pop($e));
                 $cache[$key]['dqlAlias'] = $this->_tableAliases[strtolower(implode('__', $e))];
                 $mapper = $this->_queryComponents[$cache[$key]['dqlAlias']]['mapper'];
-                $table = $mapper->getTable();
-                $fieldName = $mapper->getFieldName($last);
+                $classMetadata = $mapper->getClassMetadata();
+                $fieldName = $mapper->getFieldName($columnName);
                 $cache[$key]['fieldName'] = $fieldName;
-                if ($table->isIdentifier($fieldName)) {
+                
+                // cache identifier information
+                if ($classMetadata->isIdentifier($fieldName)) {
                     $cache[$key]['isIdentifier'] = true;
                 } else {
                     $cache[$key]['isIdentifier'] = false;
                 }
-                $type = $table->getTypeOfColumn($last);
+                
+                // cache type information
+                $type = $classMetadata->getTypeOfColumn($columnName);
                 if ($type == 'integer' || $type == 'string') {
                     $cache[$key]['isSimpleType'] = true;
                 } else {
+                    $cache[$key]['type'] = $type;
                     $cache[$key]['isSimpleType'] = false;
                 }
             }
@@ -329,7 +336,8 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             if ($cache[$key]['isSimpleType']) {
                 $rowData[$dqlAlias][$fieldName] = $value;
             } else {
-                $rowData[$dqlAlias][$fieldName] = $mapper->prepareValue($fieldName, $value);
+                $rowData[$dqlAlias][$fieldName] = $mapper->prepareValue(
+                        $fieldName, $value, $cache[$key]['type']);
             }
 
             if ( ! isset($nonemptyComponents[$dqlAlias]) && $value !== null) {

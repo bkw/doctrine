@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @author      Bjarte Stien Karlsen <doctrine@bjartek.org>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 3754 $
  */
@@ -43,6 +43,16 @@ class Orm_Component_AccessTest extends Doctrine_OrmTestCase
         parent::setUp();
         $this->user = new ForumUser();
     }
+
+    /*public function testAccessorOverridePerformance() {
+        $this->user->username;
+        $start = microtime(true);
+        for ($i = 0; $i < 1; $i++) {
+            $this->user->username;
+        }
+        $end = microtime(true);
+        echo ($end - $start) . " seconds" . PHP_EOL;
+    }*/
 
     /**
      * @test 

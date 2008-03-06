@@ -27,7 +27,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @version     $Revision: 1397 $
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @todo Composite key support?
  */
@@ -136,12 +136,12 @@ class Doctrine_Relation_Parser
             $this->getRelations();
             return $this->getRelation($alias, false);
         } else {
-            try {
+            /*try {
                 throw new Exception();
             } catch (Exception $e) {
                 //echo "" . "<br />";
                 ///echo $e->getTraceAsString() . "<br /><br /><br />";
-            }
+            }*/
             throw new Doctrine_Relation_Exception("Unknown relation '$alias'.");
         }
     }
@@ -171,19 +171,7 @@ class Doctrine_Relation_Parser
             $def = $this->completeAssocDefinition($def);
             $localClasses = array_merge($this->_table->getOption('parents'), array($this->_table->getClassName()));
 
-            // if the two many-many related components share the same table, we need
-            // custom relation names to distinguish the relations.
-            /*if ($this->_table->getInheritanceType() == Doctrine::INHERITANCETYPE_SINGLE_TABLE &&
-                    in_array($def['class'], $this->_table->getOption('subclasses'))) {
-                if ( ! isset($def['refRelationName']) || ! isset($def['refReverseRelationName'])) {
-                    throw new Doctrine_Relation_Exception("Incomplete relation. Many-to-many relations between "
-                            . "classes that share the same table (single table inheritance) need to specify "
-                            . "a 'refRelationName' and a 'refReverseRelationName' to distinguish relations.");
-                }            
-                $relationName = $def['refRelationName'];
-            } else {*/
-                $relationName = $def['refClass'];
-            //}
+            $relationName = $def['refClass'];
 
             if ( ! isset($this->_pending[$relationName]) && ! isset($this->_relations[$relationName])) {
                 $this->_completeManyToManyRelation($def);
@@ -222,12 +210,7 @@ class Doctrine_Relation_Parser
         $identifierColumnNames = $this->_table->getIdentifierColumnNames();
         $idColumnName = array_pop($identifierColumnNames);
         
-        // if the two many-many related components shared the same table, we need a relation name
-        // to distinguish the relations.
         $relationName = $def['refClass'];
-        /*if (isset($def['refRelationName'])) {
-           $relationName .= ' as ' . $def['refRelationName'];
-        }*/
         
         // add a relation pointing from the intermediary table to the table of this parser
         $parser = $def['refTable']->getRelationParser();
@@ -353,14 +336,14 @@ class Doctrine_Relation_Parser
     public function getIdentifiers($table)
     {
         $componentNameToLower = strtolower($table->getComponentName());
-        if (is_array($table->getIdentifier())) {
-            $columns = array();      
+        $idFieldNames = (array)$table->getIdentifier();
+        if (count($idFieldNames) > 1) {
+            $columns = array();
             foreach ((array) $table->getIdentifierColumnNames() as $identColName) {
                 $columns[] = $componentNameToLower . '_' . $identColName;
             }
         } else {
-            $columns = $componentNameToLower . '_' . $table->getColumnName(
-                    $table->getIdentifier());
+            $columns = $componentNameToLower . '_' . $table->getColumnName($idFieldNames[0]);
         }
 
         return $columns;
@@ -416,22 +399,12 @@ class Doctrine_Relation_Parser
     {
         $conn = $this->_table->getConnection();
         $def['table'] = $this->getImpl($def, 'class');
-        //$def['class'] = $def['table']->getComponentName();
         $def['localTable'] = $this->_table;
 
         $foreignClasses = array_merge($def['table']->getOption('parents'), array($def['class']));
         $localClasses   = array_merge($this->_table->getOption('parents'), array($this->_table->getClassName()));
 
         $localIdentifierColumnNames = $this->_table->getIdentifierColumnNames();
-        if ((count($localIdentifierColumnNames) - 1) < 0) {
-            echo $this->_table->getClassName();
-            var_dump($this->_table->getIdentifier());
-            try {
-                throw new Exception();
-            } catch (Exception $e) {
-                echo $e->getTraceAsString() . "<br />";
-            }
-        }
         $localIdColumnName = $localIdentifierColumnNames[count($localIdentifierColumnNames) - 1];
         $foreignIdentifierColumnNames = $def['table']->getIdentifierColumnNames();
         $foreignIdColumnName = $foreignIdentifierColumnNames[count($foreignIdentifierColumnNames) - 1];

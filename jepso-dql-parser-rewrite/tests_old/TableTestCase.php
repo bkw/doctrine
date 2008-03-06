@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -110,14 +110,16 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($fk->getType() == Doctrine_Relation::ONE_AGGREGATE);
 
         $this->assertTrue($fk->getLocal() == "email_id");
-        $this->assertTrue($fk->getForeign() == $fk->getTable()->getIdentifier());
+        $fkIdFieldNames = (array)$fk->getTable()->getIdentifier();
+        $this->assertTrue($fk->getForeign() == $fkIdFieldNames[0]);
 
 
         $fk = $this->objTable->getTable()->getRelation('Phonenumber');
         $this->assertTrue($fk instanceof Doctrine_Relation_ForeignKey);
         $this->assertTrue($fk->getTable() instanceof Doctrine_ClassMetadata);
         $this->assertTrue($fk->getType() == Doctrine_Relation::MANY);
-        $this->assertTrue($fk->getLocal() == $this->objTable->getTable()->getIdentifier());
+        $objTableIdFieldNames = (array)$this->objTable->getTable()->getIdentifier();
+        $this->assertTrue($fk->getLocal() == $objTableIdFieldNames[0]);
         $this->assertTrue($fk->getForeign() == 'entity_id');
 
 
@@ -135,11 +137,6 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
     public function testGetConnection() 
     {
         $this->assertTrue($this->objTable->getConnection() instanceof Doctrine_Connection);
-    }
-
-    public function testGetData() 
-    {
-        $this->assertTrue($this->objTable->getData() == array());
     }
 
     public function testSetSequenceName()

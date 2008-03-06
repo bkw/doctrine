@@ -27,7 +27,7 @@ Doctrine::autoload('Doctrine_Access');
  * @package     Doctrine
  * @subpackage  Collection
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -109,7 +109,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         $this->_mapper = $mapper;
 
         if ($keyColumn === null) {
-            $keyColumn = $mapper->getBoundQueryPart('indexBy');
+            $keyColumn = $mapper->getClassMetadata()->getBoundQueryPart('indexBy');
         }
 
         if ($keyColumn === null) {
@@ -214,7 +214,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
         $keyColumn = isset($array['keyColumn']) ? $array['keyColumn'] : null;
         if ($keyColumn === null) {
-            $keyColumn = $this->_mapper->getBoundQueryPart('indexBy');
+            $keyColumn = $this->_mapper->getClassMetadata()->getBoundQueryPart('indexBy');
         }
 
         if ($keyColumn !== null) {
@@ -426,15 +426,30 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     public function getPrimaryKeys()
     {
         $list = array();
-        $name = $this->_mapper->getTable()->getIdentifier();
+        $idFieldNames = (array)$this->_mapper->getClassMetadata()->getIdentifier();
 
         foreach ($this->data as $record) {
-            if (is_array($record) && isset($record[$name])) {
-                $list[] = $record[$name];
+            if (is_array($record)) {
+                if (count($idFieldNames) > 1) {
+                    $id = array();
+                    foreach ($idFieldNames as $fieldName) {
+                         if (isset($record[$fieldName])) {
+                             $id[] = $record[$fieldName];
+                         }
+                    }
+                    $list[] = $id;
+                } else {
+                    $idField = $idFieldNames[0];
+                    if (isset($record[$idField])) {
+                        $list[] = $record[$idField];
+                    }
+                }
             } else {
+                // @todo does not take composite keys into account
                 $list[] = $record->getIncremented();
             }
         }
+        
         return $list;
     }
 
@@ -464,11 +479,13 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * @param integer $key
      * @param Doctrine_Record $record
      * @return void
+     * @internal Can't type-hint the second parameter to Doctrine_Record because we need
+     *           to adhere to the Doctrine_Access::set() signature.
      */
     public function set($key, $record)
     {
-        if( ! $record instanceOf Doctrine_Record) {
-            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record');
+        if ( ! $record instanceOf Doctrine_Record) {
+            throw new Doctrine_Collection_Exception('Value variable in set is not an instance of Doctrine_Record');
         }
 
         if (isset($this->referenceField)) {
@@ -485,8 +502,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function add($record, $key = null)
     {
-        if( ! $record instanceOf Doctrine_Record) {
-            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record');
+        if ( ! $record instanceof Doctrine_Record) {
+            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record.');
         }
 
         if (isset($this->referenceField)) {
@@ -527,6 +544,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         } else {
             $this->data[] = $record;
         }
+        
         return true;
     }
 
@@ -614,7 +632,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                 $this->data[$key]->setRelated($name, $sub);
             }
         } else if ($rel instanceof Doctrine_Relation_Association) {
-            $identifier = $this->_mapper->getTable()->getIdentifier();
+            // @TODO composite key support
+            $identifier = (array)$this->_mapper->getClassMetadata()->getIdentifier();
             $asf        = $rel->getAssociationFactory();
             $name       = $table->getComponentName();
 
@@ -624,7 +643,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                 }
                 $sub = new Doctrine_Collection($rel->getForeignComponentName());
                 foreach ($coll as $k => $related) {
-                    if ($related->get($local) == $record[$identifier]) {
+                    $idField = $identifier[0];
+                    if ($related->get($local) == $record[$idField]) {
                         $sub->add($related->get($name));
                     }
                 }
@@ -888,6 +908,24 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         $this->data = array();
         return $this;
     }
+
+
+    public function free($deep = false)
+    {
+        foreach ($this->getData() as $key => $record) {
+            if ( ! ($record instanceof Doctrine_Null)) {
+                $record->free($deep);
+            }
+        }
+
+        $this->data = array();
+
+        if ($this->reference) {
+            $this->reference->free($deep);
+            $this->reference = null;
+        }
+    }
+
 
     /**
      * getIterator

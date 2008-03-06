@@ -26,7 +26,7 @@
  * @subpackage  Query
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -56,6 +56,11 @@ class Doctrine_Query_Registry
             $query = $this->_queries[$namespace][$key];
         } else {
             if ( ! isset($this->_queries[$key])) {
+                try {
+                    throw new Exception();
+                } catch (Exception $e) {
+                    echo $e->getTraceAsString() ."<br /><br />";
+                }
                 throw new Doctrine_Query_Registry_Exception('A query with the name ' . $key . ' does not exist.');
             }
             $query = $this->_queries[$key];

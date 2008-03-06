@@ -26,7 +26,7 @@
  * @package     Doctrine
  * @subpackage  Hydrate
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -52,10 +52,10 @@ class Doctrine_Hydrator_ArrayDriver
     /** 
      *
      */
-    public function isIdentifiable(array $data, Doctrine_Table $table)
+    /*public function isIdentifiable(array $data, Doctrine_Table $table)
     {
         return ( ! empty($data));
-    }
+    }*/
     
     /**
      *

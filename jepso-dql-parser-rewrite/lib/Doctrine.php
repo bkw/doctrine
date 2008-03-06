@@ -27,7 +27,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -207,7 +207,6 @@ final class Doctrine
     const ATTR_DEFAULT_PARAM_NAMESPACE  = 156;
     const ATTR_QUERY_CACHE              = 157;
     const ATTR_QUERY_CACHE_LIFESPAN     = 158;
-    const ATTR_AUTOLOAD_TABLE_CLASSES   = 160;
     const ATTR_MODEL_LOADING            = 161;
     const ATTR_LOCK                     = 162;
     const ATTR_HYDRATE                  = 163;
@@ -689,7 +688,14 @@ final class Doctrine
             }
         }
 
-        return self::filterInvalidModels($loadedModels);
+        // We do not want to filter invalid models when using conservative model loading
+        // The filtering requires that the class be loaded and inflected in order to determine if it is 
+        // a valid class.
+        if ($manager->getAttribute(Doctrine::ATTR_MODEL_LOADING) == Doctrine::MODEL_LOADING_CONSERVATIVE) {
+            return $loadedModels;
+        } else {
+            return self::filterInvalidModels($loadedModels);
+        }
     }
 
     /**
@@ -714,6 +720,7 @@ final class Doctrine
      * filterInvalidModels
      *
      * Filter through an array of classes and return all the classes that are valid models
+     * This will inflect the class, causing it to be loaded in to memory.
      *
      * @param classes  Array of classes to filter through, otherwise uses get_declared_classes()
      * @return array   $loadedModels
@@ -735,6 +742,7 @@ final class Doctrine
      * isValidModelClass
      *
      * Checks if what is passed is a valid Doctrine_Record
+     * Will load class in to memory in order to inflect it and find out information about the class
      *
      * @param   mixed   $class Can be a string named after the class, an instance of the class, or an instance of the class reflected
      * @return  boolean

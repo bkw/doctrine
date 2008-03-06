@@ -20,21 +20,31 @@
  */
 
 /**
- * A ClassMetadata instance holds all the information (metadata) of an entity and it's relations.
+ * A <tt>ClassMetadata</tt> instance holds all the information (metadata) of an entity and it's relations.
  * These informations are used for the proper object-relational mapping of the class.
  *
  * @package Doctrine
- * @author  Roman Borschel <roman@code-factory.org>
- * @since   1.0
+ * @subpackage ClassMetadata
+ * @author Roman Borschel <roman@code-factory.org>
+ * @since 1.0
  */
 class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializable
 {    
     /**
-     * The name of the domain class that is mapped to the database with this metadata.
+     * The name of the entity class that is mapped to the database with this metadata.
      * 
      * @var string
      */
     protected $_entityName;
+    
+    /**
+     * The name of the entity class that is at the root of the entity inheritance
+     * hierarchy. If the entity is not part of an inheritance hierarchy this is the same
+     * as the $_entityName.
+     *
+     * @var string
+     */
+    protected $_rootEntityName;
     
     /**
      * The name of the custom mapper class used for the entity class.
@@ -78,32 +88,16 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     protected $_inheritanceType = Doctrine::INHERITANCETYPE_TABLE_PER_CLASS;
     
     /**
-     * The name of the column that acts as a discriminator to identify the type of an
-     * object. Used in Single Table Inheritance and Class Table Inheritance.
-     *
-     * @var string
-     */
-    protected $_discriminatorColumn;
-    
-    /**
-     * The discriminator map contains the mapping of discriminator values (keys)
-     * to class names (values).
-     *
-     * @var array
-     */
-    protected $_discriminatorMap;
-    
-    /**
-     * An array containing all templates attached to the class.
+     * An array containing all behaviors attached to the class.
      *
      * @see Doctrine_Template
      * @var array $_templates
      * @todo Unify under 'Behaviors'.                 
      */
-    protected $_templates = array();
+    protected $_behaviors = array();
     
     /**
-     * An array containing all generators attached to this class.
+     * An array containing all behavior generators attached to the class.
      *
      * @see Doctrine_Record_Generator
      * @var array $_generators
@@ -120,10 +114,10 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     protected $_filters = array();
     
     /**
-     * An array of column definitions,
-     * keys are column names and values are column definitions
+     * The mapped columns and their mapping definitions.
+     * Keys are column names and values are definitions.
      *
-     * the definition array has atleast the following values:
+     * The definition array has atleast the following values:
      *
      *  -- type         the column type, eg. 'integer'
      *  -- length       the column length, eg. 11
@@ -136,7 +130,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      *
      * @var array $columns
      */
-    protected $_columns = array();
+    protected $_mappedColumns = array();
 
     /**
      * An array of field names. used to look up field names from column names.
@@ -157,6 +151,12 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     protected $_columnNames = array();
     
     /**
+     * Caches enum value mappings. Keys are field names and values arrays with the
+     * mapping.
+     */
+    protected $_enumValues = array();
+    
+    /**
      * @todo Implementation.
      */
     protected $_readOnlyFieldNames = array();
@@ -164,7 +164,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     /**
      * Tree object associated with the class.
      *
-     * @var Doctrine_Tree                
+     * @var Doctrine_Tree
+     * @todo Belongs to the NestedSet Behavior plugin.               
      */
     protected $_tree;
     
@@ -251,7 +252,13 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
             'collate'        => null,
             'indexes'        => array(),
             'checks'         => array()
-            );     
+            );
+            
+    /**
+     * @var array $_invokedMethods              method invoker cache
+     */
+    protected $_invokedMethods = array();
+        
     
     /**
      * Constructs a new metadata instance.
@@ -261,6 +268,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function __construct($entityName, Doctrine_Connection $conn)
     {        
         $this->_entityName = $entityName;
+        $this->_rootEntityName = $entityName;
         $this->_conn = $conn;
         $this->_parser = new Doctrine_Relation_Parser($this);
         $this->_filters[]  = new Doctrine_Record_Filter_Standard();
@@ -285,6 +293,11 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return $this->_entityName;
     }
     
+    public function getRootClassName()
+    {
+        return $this->_rootEntityName;
+    }
+    
     /**
      * @deprecated
      */
@@ -302,8 +315,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      */
     public function isIdentifier($fieldName)
     {
-        return ($fieldName === $this->getIdentifier() || 
-                in_array($fieldName, (array) $this->getIdentifier()));
+        return in_array($fieldName, (array)$this->getIdentifier());
     }
     
     /**
@@ -382,6 +394,17 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         
         return $this->_tableOptions[$name];
     }
+    
+    public function getBehaviorForMethod($method)
+    {
+        return (isset($this->_invokedMethods[$method])) ?
+                $this->_invokedMethods[$method] : false;
+    }
+    
+    public function addBehaviorMethod($method, $behavior)
+    {
+        $this->_invokedMethods[$method] = $class;
+    }
 
     /**
      * getOption
@@ -426,8 +449,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * getColumnName
      *
      * returns a column name for a field name.
-     * if the actual name for the alias cannot be found
-     * this method returns the given alias
+     * if the column name for the field cannot be found
+     * this method returns the given field name.
      *
      * @param string $alias         column alias
      * @return string               column name
@@ -437,25 +460,26 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         if (isset($this->_columnNames[$fieldName])) {
             return $this->_columnNames[$fieldName];
         }
-        
+
         return $fieldName;
     }
     
     /**
-     *
-     *
+     * @deprecated
      */
     public function getColumnDefinition($columnName)
     {
-        if ( ! isset($this->_columns[$columnName])) {
-            return false;
-        }
-        
-        return $this->_columns[$columnName];
+        return $this->getColumnMapping($columnName);
+    }
+    
+    public function getColumnMapping($columnName)
+    {
+        return isset($this->_mappedColumns[$columnName]) ?
+                $this->_mappedColumns[$columnName] : false;
     }
     
     /**
-     * getColumnAlias
+     * getFieldName
      * 
      * returns a column alias for a column name 
      * if no alias can be found the column name is returned.
@@ -480,7 +504,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
-     * Maps a column of the class' database table to a property of the entity.
+     * Maps a column of the class' database table to a field of the entity.
      *
      * @param string $name      The name of the column to map. Syntax: columnName [as propertyName].
      *                          The property name is optional. If not used the column will be 
@@ -557,16 +581,13 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         $options['length'] = $length;
         
         if ($prepend) {
-            $this->_columns = array_merge(array($name => $options), $this->_columns);
+            $this->_mappedColumns = array_merge(array($name => $options), $this->_mappedColumns);
         } else {
-            $this->_columns[$name] = $options;
+            $this->_mappedColumns[$name] = $options;
         }
 
         if ( ! empty($options['primary'])) {
-            if (isset($this->_identifier)) {
-                $this->_identifier = $this->_identifier; 
-            }
-            if ( ! in_array($fieldName, (array) $this->_identifier)) {
+            if ( ! in_array($fieldName, $this->_identifier)) {
                 $this->_identifier[] = $fieldName;
             }
         }
@@ -596,10 +617,22 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
-     * hasDefaultValues
-     * returns true if this class has default values, otherwise false
+     * Gets the names of all validators that are applied on a field.
      *
-     * @return boolean
+     * @param string  The field name.
+     * @return array  The names of all validators that are applied on the specified field.
+     */
+    public function getFieldValidators($fieldName)
+    {
+        $columnName = $this->getColumnName($fieldName);
+        return isset($this->_mappedColumns[$columnName]['validators']) ?
+                $this->_mappedColumns[$columnName]['validators'] : array();
+    }
+    
+    /**
+     * Checks whether the class mapped class has a default value on any field.
+     *
+     * @return boolean  TRUE if the entity has a default value on any field, otherwise false.
      */
     public function hasDefaultValues()
     {
@@ -616,30 +649,47 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function getDefaultValueOf($fieldName)
     {
         $columnName = $this->getColumnName($fieldName);
-        if ( ! isset($this->_columns[$columnName])) {
+        if ( ! isset($this->_mappedColumns[$columnName])) {
             throw new Doctrine_Table_Exception("Couldn't get default value. Column ".$columnName." doesn't exist.");
         }
-        if (isset($this->_columns[$columnName]['default'])) {
-            return $this->_columns[$columnName]['default'];
+        if (isset($this->_mappedColumns[$columnName]['default'])) {
+            return $this->_mappedColumns[$columnName]['default'];
         } else {
             return null;
         }
     }
     
     /**
+     * Gets the identifier (primary key) field(s) of the mapped class.
+     *
      * @return mixed
+     * @deprecated Use getIdentifierFieldNames()
      */
     public function getIdentifier()
     {
         return $this->_identifier;
     }
     
-    public function setIdentifier($identifier)
+    /**
+     * Gets the identifier (primary key) field(s) of the mapped class.
+     *
+     * @return mixed
+     */
+    public function getIdentifierFieldNames()
+    {
+        return $this->_identifier;
+    }
+    
+    public function setIdentifier(array $identifier)
     {
         $this->_identifier = $identifier;
     }
 
     /**
+     * Gets the type of the identifier (primary key) used by the mapped class. The type
+     * can be either <tt>Doctrine::IDENTIFIER_NATURAL</tt>, <tt>Doctrine::IDENTIFIER_AUTOINCREMENT</tt>,
+     * <tt>Doctrine::IDENTIFIER_SEQUENCE</tt> or <tt>Doctrine::IDENTIFIER_COMPOSITE</tt>.
+     * 
      * @return integer
      */
     public function getIdentifierType()
@@ -647,6 +697,9 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return $this->_identifierType;
     }
     
+    /**
+     * Sets the identifier type used by the mapped class.
+     */
     public function setIdentifierType($type)
     {
         $this->_identifierType = $type;
@@ -655,10 +708,16 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     /**
      * hasColumn
      * @return boolean
+     * @deprecated
      */
     public function hasColumn($columnName)
     {
-        return isset($this->_columns[$columnName]);
+        return isset($this->_mappedColumns[$columnName]);
+    }
+    
+    public function hasMappedColumn($columnName)
+    {
+        return isset($this->_mappedColumns[$columnName]);
     }
     
     /**
@@ -677,8 +736,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function getEnumValues($fieldName)
     {
         $columnName = $this->getColumnName($fieldName);
-        if (isset($this->_columns[$columnName]['values'])) {
-            return $this->_columns[$columnName]['values'];
+        if (isset($this->_mappedColumns[$columnName]['values'])) {
+            return $this->_mappedColumns[$columnName]['values'];
         } else {
             return array();
         }
@@ -692,18 +751,25 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * @return mixed
      */
     public function enumValue($fieldName, $index)
-    {
+    {        
         if ($index instanceof Doctrine_Null) {
             return $index;
         }
         
+        if (isset($this->_enumValues[$fieldName][$index])) {
+            return $this->_enumValues[$fieldName][$index];
+        }
+        
         $columnName = $this->getColumnName($fieldName);
         if ( ! $this->_conn->getAttribute(Doctrine::ATTR_USE_NATIVE_ENUM) &&
-                isset($this->_columns[$columnName]['values'][$index])) {
-            return $this->_columns[$columnName]['values'][$index];
+                isset($this->_mappedColumns[$columnName]['values'][$index])) {
+            $enumValue = $this->_mappedColumns[$columnName]['values'][$index];
+        } else {
+            $enumValue = $index;
         }
-
-        return $index;
+        $this->_enumValues[$fieldName][$index] = $enumValue;
+        
+        return $enumValue;
     }
 
     /**
@@ -728,20 +794,66 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * getColumnCount
      *
      * @return integer      the number of columns in this table
+     * @deprecated
      */
     public function getColumnCount()
     {
         return $this->_columnCount;
+    }
+    
+    /**
+     * getMappedColumnCount
+     *
+     * @return integer      the number of mapped columns in the class.
+     */
+    public function getMappedColumnCount()
+    {
+        return $this->_columnCount;
+    }
+    
+    /**
+     * 
+     * @return string  The name of the accessor (getter) method or NULL if the field does
+     *                 not have a custom accessor.
+     */
+    public function getCustomAccessor($fieldName)
+    {
+        $columnName = $this->getColumnName($fieldName);
+        return isset($this->_mappedColumns[$columnName]['accessor']) ?
+                $this->_mappedColumns[$columnName]['accessor'] : null;
+    }
+    
+    /**
+     * 
+     * @return string  The name of the mutator (setter) method or NULL if the field does
+     *                 not have a custom mutator.
+     */
+    public function getCustomMutator($fieldName)
+    {
+        $columnName = $this->getColumnName($fieldName);
+        return isset($this->_mappedColumns[$columnName]['mutator']) ?
+                $this->_mappedColumns[$columnName]['mutator'] : null;
     }
 
     /**
      * returns all columns and their definitions
      *
      * @return array
+     * @deprecated
      */
     public function getColumns()
     {
-        return $this->_columns;
+        return $this->_mappedColumns;
+    }
+    
+    /**
+     * Gets all mapped columns and their mapping definitions.
+     *
+     * @return array
+     */
+    public function getMappedColumns()
+    {
+        return $this->_mappedColumns;
     }
 
     /**
@@ -756,8 +868,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
 
         unset($this->_fieldNames[$columnName]);
 
-        if (isset($this->_columns[$columnName])) {
-            unset($this->_columns[$columnName]);
+        if (isset($this->_mappedColumns[$columnName])) {
+            unset($this->_mappedColumns[$columnName]);
             return true;
         }
         $this->_columnCount--;
@@ -773,7 +885,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function getColumnNames(array $fieldNames = null)
     {
         if ($fieldNames === null) {
-            return array_keys($this->_columns);
+            return array_keys($this->_mappedColumns);
         } else {
            $columnNames = array();
            foreach ($fieldNames as $fieldName) {
@@ -808,8 +920,16 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * getDefinitionOf
      *
      * @return mixed        array on success, false on failure
+     * @deprecated
      */
     public function getDefinitionOf($fieldName)
+    {
+        $columnName = $this->getColumnName($fieldName);
+        
+        return $this->getColumnDefinition($columnName);
+    }
+    
+    public function getMappingForField($fieldName)
     {
         $columnName = $this->getColumnName($fieldName);
         
@@ -820,8 +940,14 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * getTypeOf
      *
      * @return mixed        string on success, false on failure
+     * @deprecated
      */
     public function getTypeOf($fieldName)
+    {
+        return $this->getTypeOfColumn($this->getColumnName($fieldName));
+    }
+    
+    public function getTypeOfField($fieldName)
     {
         return $this->getTypeOfColumn($this->getColumnName($fieldName));
     }
@@ -833,7 +959,15 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      */
     public function getTypeOfColumn($columnName)
     {
-        return isset($this->_columns[$columnName]) ? $this->_columns[$columnName]['type'] : false;
+        return isset($this->_mappedColumns[$columnName]) ? $this->_mappedColumns[$columnName]['type'] : false;
+    }
+    
+    /**
+     * Gets the (maximum) length of a field.
+     */
+    public function getFieldLength($fieldName)
+    {
+        return $this->_mappedColumns[$this->getColumnName($fieldName)]['length'];
     }
     
     /**
@@ -846,33 +980,13 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return $this->getTableOption('tableName');
     }
     
-    /**
-     *
-     */
-    public function getFieldMapping($fieldName)
-    {
-        return $this->getDefinitionOf($fieldName);
-    }
-    
-    /**
-     * 
-     */
-    public function getFields()
-    {
-        return $this->_columns;
-    }
-    
     public function getInheritedFields()
     {
         
     }
     
-    public function getAllFields()
-    {
-        
-    }
-    
     /**
+     * Adds a named query.
      *
      * @param string $name  The name under which the query gets registered.
      * @param string $query The DQL query.
@@ -950,14 +1064,15 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
-     * getTemplates
-     * returns all templates attached to this table
+     * getBehaviors
+     * returns all behaviors attached to the class.
      *
      * @return array     an array containing all templates
+     * @todo Unify under 'Behaviors'
      */
-    public function getTemplates()
+    public function getBehaviors()
     {
-        return $this->_templates;
+        return $this->_behaviors;
     }
     
     /**
@@ -973,7 +1088,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     /**
      * Sets the subclasses of the class.
      * All entity classes that participate in a hierarchy and have subclasses
-     * need to declare them in this way.
+     * need to declare them this way.
      *
      * @param array $subclasses  The names of all subclasses.
      */
@@ -1004,6 +1119,8 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     
     /**
      * Gets the names of all parent classes.
+     *
+     * @return array  The names of all parent classes.
      */
     public function getParentClasses()
     {
@@ -1016,6 +1133,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     public function setParentClasses(array $classNames)
     {
         $this->_options['parents'] = $classNames;
+        $this->_rootEntityName = array_pop($classNames);
     }
     
     /**
@@ -1050,6 +1168,14 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         }
     }
     
+    /**
+     * Checks if the 2 options 'discriminatorColumn' and 'discriminatorMap' are present.
+     * If either of them is missing an exception is thrown.
+     *
+     * @param array $options  The options.
+     * @throws Doctrine_ClassMetadata_Exception  If at least one of the required discriminator
+     *                                           options is missing.
+     */
     private function _checkRequiredDiscriminatorOptions(array $options)
     {
         if ( ! isset($options['discriminatorColumn'])) {
@@ -1061,21 +1187,30 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         }
     }
     
+    /**
+     * Gets an inheritance option.
+     *
+     */
     public function getInheritanceOption($name)
     {
         if ( ! array_key_exists($name, $this->_inheritanceOptions)) {
-            echo $name;
             throw new Doctrine_ClassMetadata_Exception("Unknown inheritance option: '$name'.");
         }
         
         return $this->_inheritanceOptions[$name];
     }
     
+    /**
+     * Gets all inheritance options.
+     */
     public function getInheritanceOptions()
     {
         return $this->_inheritanceOptions;
     }
     
+    /**
+     * Sets an inheritance option.
+     */
     public function setInheritanceOption($name, $value)
     {
         if ( ! array_key_exists($name, $this->_inheritanceOptions)) {
@@ -1084,7 +1219,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         
         switch ($name) {
             case 'discriminatorColumn':
-                if ( $value !== null && ! is_string($value)) {
+                if ($value !== null && ! is_string($value)) {
                     throw new Doctrine_ClassMetadata_Exception("Invalid value '$value' for option"
                             . " 'discriminatorColumn'.");
                 }
@@ -1120,7 +1255,6 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * for the class.
      *
      * @return array
-     * @todo Move somewhere else ... somehow this seems wrong here. Exporting is a separate task.
      */
     public function getExportableFormat($parseForeignKeys = true)
     {
@@ -1244,29 +1378,29 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * @return void
      * @todo Unify under 'Behaviors'.
      */
-    public function getTemplate($template)
+    public function getBehavior($behaviorName)
     {
-        if ( ! isset($this->_templates[$template])) {
-            throw new Doctrine_Table_Exception('Template ' . $template . ' not loaded');
+        if ( ! isset($this->_behaviors[$behaviorName])) {
+            throw new Doctrine_Table_Exception('Template ' . $behaviorName . ' not loaded');
         }
 
-        return $this->_templates[$template];
+        return $this->_behaviors[$behaviorName];
     }
     
     /**
      * @todo Unify under 'Behaviors'.
      */
-    public function hasTemplate($template)
+    public function hasBehavior($behaviorName)
     {
-        return isset($this->_templates[$template]);
+        return isset($this->_behaviors[$behaviorName]);
     }
     
     /**
      * @todo Unify under 'Behaviors'.
      */
-    public function addTemplate($template, Doctrine_Template $impl)
+    public function addBehavior($behaviorName, Doctrine_Template $impl)
     {
-        $this->_templates[$template] = $impl;
+        $this->_behaviors[$behaviorName] = $impl;
 
         return $this;
     }
@@ -1313,14 +1447,14 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
-     * loadTemplate
+     * loadBehavior
      *
      * @param string $template
      * @todo Unify under 'Behaviors'.
      */
-    public function loadTemplate($template, array $options = array())
+    public function loadBehavior($behavior, array $options = array())
     {
-        $this->actAs($template, $options);
+        $this->actAs($behavior, $options);
     }
     
     /**
@@ -1337,6 +1471,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      *
      * @param  object Doctrine_Record_Filter $filter
      * @return object $this
+     * @todo Remove filters, if possible.
      */
     public function unshiftFilter(Doctrine_Record_Filter $filter)
     {
@@ -1384,6 +1519,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      * getFilters
      *
      * @return array $filters
+     * @todo Remove filters, if possible.
      */
     public function getFilters()
     {
@@ -1397,7 +1533,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
      */
     public function isInheritedField($fieldName)
     {
-        return isset($this->_columns[$this->getColumnName($fieldName)]['inherited']);
+        return isset($this->_mappedColumns[$this->getColumnName($fieldName)]['inherited']);
     }
     
     /**
@@ -1452,15 +1588,15 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
     }
     
     /**
-     * Serializes the metadata class.
+     * Serializes the metadata.
      *
      * Part of the implementation of the Serializable interface.
      *
-     * @return string  The serialized metadata class.
+     * @return string  The serialized metadata.
      */
     public function serialize()
     {
-        return serialize($this->_columns);
+        return serialize($this->_mappedColumns);
     }
     
     /**
@@ -1535,7 +1671,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
 
         $className = get_class($tpl);
 
-        $this->addTemplate($className, $tpl);
+        $this->addBehavior($className, $tpl);
 
         $tpl->setTable($this);
         $tpl->setUp();
@@ -1573,17 +1709,6 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         } else {
             $this->_tableOptions['checks'][] = $definition;
         }
-    }
-    
-    /**
-     * Mixes a predefined behaviour into the class.
-     * 
-     * @param string|object  The name of the behavior or the behavior object.
-     * @todo Implementation.
-     */
-    public function addBehavior($behavior)
-    {
-        // ...
     }
     
     /**
@@ -1631,6 +1756,11 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
         return false;
     }
     
+    public function isDiscriminatorColumn($columnName)
+    {
+        return $columnName === $this->_inheritanceOptions['discriminatorColumn'];
+    }
+    
     /**
      * hasOne
      * binds One-to-One aggregate relation
@@ -1662,6 +1792,7 @@ class Doctrine_ClassMetadata extends Doctrine_Configurable implements Serializab
 
         return $this;
     }
+
     
     /**
      *

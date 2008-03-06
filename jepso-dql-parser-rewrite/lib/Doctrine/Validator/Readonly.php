@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id$
- *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -18,17 +16,28 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-Doctrine::autoload('Doctrine_Exception');
+
 /**
- * Doctrine_Table_Repository_Exception
+ * Doctrine_Validator_Readonly
  *
  * @package     Doctrine
- * @subpackage  Table
+ * @subpackage  Validator
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
- * @since       1.0
- * @version     $Revision$
- * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @link        www.phpdoctrine.org
+ * @author      Adam Huttler <ahuttler@geminisbs.com>
  */
-class Doctrine_Table_Repository_Exception extends Doctrine_Exception
-{ }
+class Doctrine_Validator_Readonly
+{
+    /**
+     * checks if value has been modified
+     *
+     * @param mixed $value
+     * @return boolean
+     */
+    public function validate($value)
+    {
+        $modified = $this->invoker->getModified();
+        
+        return array_key_exists($this->field, $modified) ? false : true;
+    }
+}
