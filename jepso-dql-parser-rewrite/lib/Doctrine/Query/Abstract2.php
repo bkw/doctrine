@@ -29,8 +29,8 @@
  * @link        www.phpdoctrine.com
  * @since       1.0
  * @version     $Revision: 1393 $
- * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @todo        See {@link Doctrine_Query}
  */
 abstract class Doctrine_Query_Abstract2
@@ -407,8 +407,12 @@ abstract class Doctrine_Query_Abstract2
      * @param string $select Query SELECT part
      * @return Doctrine_Query
      */
-    public function addSelect($select)
+    public function addSelect($select = '')
     {
+        if ($select === '') {
+            return $this;
+        }
+
         return $this->_addDqlQueryPart('select', $select, true);
     }
 
@@ -700,7 +704,7 @@ abstract class Doctrine_Query_Abstract2
 
         list($sqlPart, $params) = $this->_processWhereInParams($params);
 
-        $where = $expr . ($not === true ? ' NOT ':'') . ' IN (' . $sqlPart . ')';
+        $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
 
         return $this->_returnWhereIn($where, $params);
     }
@@ -741,7 +745,7 @@ abstract class Doctrine_Query_Abstract2
 
         list($sqlPart, $params) = $this->_processWhereInParams($params);
 
-        $where = $expr . ($not === true ? ' NOT ':'') . ' IN (' . $sqlPart . ')';
+        $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
 
         return $this->_returnWhereIn($where, $params, 'AND');
     }
@@ -813,7 +817,7 @@ abstract class Doctrine_Query_Abstract2
 
         list($sqlPart, $params) = $this->_processWhereInParams($params);
 
-        $where = $expr . ($not === true ? ' NOT ':'') . ' IN (' . $sqlPart . ')';
+        $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
 
         return $this->_returnWhereIn($where, $params, 'OR');
     }

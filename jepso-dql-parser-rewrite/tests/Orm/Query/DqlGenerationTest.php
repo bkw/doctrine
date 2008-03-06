@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
@@ -40,6 +41,7 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $class = self::QueryClass;
         $q = new $class();
 
+        // select and from
         $q->select()->from('User u');
         $this->assertEquals('SELECT * FROM User u', $q->getDql());
         $q->free();
@@ -56,8 +58,33 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('SELECT u.id, u.name FROM User u', $q->getDql());
         $q->free();
 
-        $q->select('u.name AS myCustomname')->from('User u');
-        $this->assertEquals('SELECT u.name FROM User u', $q->getDql());
+        $q->select('u.name AS myCustomName')->from('User u');
+        $this->assertEquals('SELECT u.name AS myCustomName FROM User u', $q->getDql());
+        $q->free();
+
+        // addSelect and addFrom
+        $q->addSelect()->addFrom('User u');
+        $this->assertEquals('SELECT * FROM User u', $q->getDql());
+        $q->free();
+
+        $q->addSelect('u.*')->addFrom('User u');
+        $this->assertEquals('SELECT u.* FROM User u', $q->getDql());
+        $q->free();
+
+        $q->addSelect('u.id')->addFrom('User u');
+        $this->assertEquals('SELECT u.id FROM User u', $q->getDql());
+        $q->free();
+
+        $q->addSelect('u.id')->addSelect('u.name')->addFrom('User u');
+        $this->assertEquals('SELECT u.id, u.name FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('u.id')->addSelect('u.name')->addFrom('User u');
+        $this->assertEquals('SELECT u.id, u.name FROM User u', $q->getDql());
+        $q->free();
+
+        $q->addSelect('u.name AS myCustomName')->addFrom('User u');
+        $this->assertEquals('SELECT u.name AS myCustomName FROM User u', $q->getDql());
         $q->free();
     }
 
@@ -67,12 +94,40 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $class = self::QueryClass;
         $q = new $class();
 
+        $q->select()->distinct()->from('User u');
+        $this->assertEquals('SELECT DISTINCT * FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('u.name')->distinct(false)->from('User u');
+        $this->assertEquals('SELECT u.name FROM User u', $q->getDql());
+        $q->free();
+
+        $q->addSelect()->distinct(false)->from('User u');
+        $this->assertEquals('SELECT * FROM User u', $q->getDql());
+        $q->free();
+
         $q->select('u.name')->distinct()->from('User u');
         $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
         $q->free();
 
+        $q->select('u.name, u.email')->distinct()->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name, u.email FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('u.name')->addSelect('u.email')->distinct()->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name, u.email FROM User u', $q->getDql());
+        $q->free();
+
         $q->select('DISTINCT u.name')->from('User u');
         $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('DISTINCT u.name, u.email')->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name, u.email FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('DISTINCT u.name')->addSelect('u.email')->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name, u.email FROM User u', $q->getDql());
         $q->free();
     }
 
@@ -82,6 +137,23 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $class = self::QueryClass;
         $q = new $class();
 
+        $q->select('u.*')->from('User u')->join('u.Group g')->where('g.id = ?', 1);
+        $this->assertEquals('SELECT u.* FROM User u INNER JOIN u.Group g WHERE g.id = ?', $q->getDql());
+        $this->assertEquals(array(1), $q->getParams());
+        $q->free();
+
+        $q->select('u.*')->from('User u')->innerJoin('u.Group g')->where('g.id = ?', 1);
+        $this->assertEquals('SELECT u.* FROM User u INNER JOIN u.Group g WHERE g.id = ?', $q->getDql());
+        $this->assertEquals(array(1), $q->getParams());
+        $q->free();
+
+        $q->select('u.*')->from('User u')->leftJoin('u.Group g')->where('g.id IS NULL');
+        $this->assertEquals('SELECT u.* FROM User u LEFT JOIN u.Group g WHERE g.id IS NULL', $q->getDql());
+        $q->free();
+
+        $q->select('u.*')->from('User u')->leftJoin('u.UserGroup ug')->leftJoin('ug.Group g')->where('g.name = ?', 'admin');
+        $this->assertEquals('SELECT u.* FROM User u LEFT JOIN u.UserGroup ug LEFT JOIN ug.Group g WHERE g.name = ?', $q->getDql());
+        $q->free();
     }
 
 
@@ -90,19 +162,44 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $class = self::QueryClass;
         $q = new $class();
 
-        $q->select()->from('User u')->where('u.id = ?', 1);
-        $this->assertEquals('SELECT * FROM User u WHERE u.id = ?', $q->getDql());
-        $this->assertEquals(array(1), $q->getParams());
-        $q->free();
-
         $q->select('u.name')->from('User u')->where('u.id = ?', 1);
         $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ?', $q->getDql());
         $this->assertEquals(array(1), $q->getParams());
         $q->free();
 
-        $q->select('u.name AS myCustomName')->from('User u')->where('u.id = ?', 1);
-        $this->assertEquals('SELECT u.name AS myCustomName FROM User u WHERE u.id = ?', $q->getDql());
-        $this->assertEquals(array(1), $q->getParams());
+        $q->select('u.name')->from('User u')->where('u.id = ? AND u.type != ?', array(1, 'admin'));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND u.type != ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.id = ?', 1)->addWhere('u.type != ?', 'admin');
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND u.type != ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.id = ?', 1)->addWhereAnd('u.type != ?', 'admin');
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND u.type != ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('(u.id = ?', 1)->addWhereAnd('u.type != ?)', 'admin');
+        $this->assertEquals('SELECT u.name FROM User u WHERE (u.id = ? AND u.type != ?)', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.id = ? OR u.type != ?', array(1, 'admin'));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? OR u.type != ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.id = ?', 1)->addWhereOr('u.type != ?', 'admin');
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? OR u.type != ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin'), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('(u.id = ?', 1)->addWhereAnd('u.type != ?)', 'admin')->addWhereOr('u.email = ?', 'admin@localhost');
+        $this->assertEquals('SELECT u.name FROM User u WHERE (u.id = ? AND u.type != ?) OR u.email = ?', $q->getDql());
+        $this->assertEquals(array(1, 'admin', 'admin@localhost'), $q->getParams());
         $q->free();
     }
 
@@ -115,6 +212,31 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q->select('u.name')->from('User u')->whereIn('u.id', array(1, 2, 3, 4, 5));
         $this->assertEquals('SELECT u.name FROM User u WHERE u.id IN (?, ?, ?, ?, ?)', $q->getDql());
         $this->assertEquals(array(1, 2, 3, 4, 5), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->whereNotIn('u.id', array(1, 2, 3));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id NOT IN (?, ?, ?)', $q->getDql());
+        $this->assertEquals(array(1, 2, 3), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.type = ?', 'admin')->addWhereAndIn('u.id', array(1, 2));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.type = ? AND u.id IN (?, ?)', $q->getDql());
+        $this->assertEquals(array('admin', 1, 2), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->where('u.type = ?', 'admin')->addWhereAndNotIn('u.id', array(1, 2));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.type = ? AND u.id NOT IN (?, ?)', $q->getDql());
+        $this->assertEquals(array('admin', 1, 2), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->addWhereIn('u.type', array('admin', 'moderator'))->addWhereAndNotIn('u.id', array(1, 2, 3, 4));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.type IN (?, ?) AND u.id NOT IN (?, ?, ?, ?)', $q->getDql());
+        $this->assertEquals(array('admin', 'moderator', 1, 2, 3, 4), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->addWhereIn('u.type', array('admin', 'moderator'))->addWhereOrIn('u.id', array(1, 2, 3, 4));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.type IN (?, ?) OR u.id IN (?, ?, ?, ?)', $q->getDql());
+        $this->assertEquals(array('admin', 'moderator', 1, 2, 3, 4), $q->getParams());
         $q->free();
     }
 
