@@ -35,7 +35,7 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
 {
     const QueryClass = 'Doctrine_Query2';
 
-    public function testSimpleSelectGeneration()
+    public function testSelect()
     {
         $class = self::QueryClass;
         $q = new $class();
@@ -56,6 +56,40 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('SELECT u.id, u.name FROM User u', $q->getDql());
         $q->free();
 
+        $q->select('u.name AS myCustomname')->from('User u');
+        $this->assertEquals('SELECT u.name FROM User u', $q->getDql());
+        $q->free();
+    }
+
+
+    public function testSelectDistinct()
+    {
+        $class = self::QueryClass;
+        $q = new $class();
+
+        $q->select('u.name')->distinct()->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('DISTINCT u.name')->from('User u');
+        $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
+        $q->free();
+    }
+
+
+    public function testSelectJoin()
+    {
+        $class = self::QueryClass;
+        $q = new $class();
+
+    }
+
+
+    public function testSelectWhere()
+    {
+        $class = self::QueryClass;
+        $q = new $class();
+
         $q->select()->from('User u')->where('u.id = ?', 1);
         $this->assertEquals('SELECT * FROM User u WHERE u.id = ?', $q->getDql());
         $this->assertEquals(array(1), $q->getParams());
@@ -70,18 +104,17 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('SELECT u.name AS myCustomName FROM User u WHERE u.id = ?', $q->getDql());
         $this->assertEquals(array(1), $q->getParams());
         $q->free();
+    }
+
+
+    public function testSelectWhereIn()
+    {
+        $class = self::QueryClass;
+        $q = new $class();
 
         $q->select('u.name')->from('User u')->whereIn('u.id', array(1, 2, 3, 4, 5));
         $this->assertEquals('SELECT u.name FROM User u WHERE u.id IN (?, ?, ?, ?, ?)', $q->getDql());
         $this->assertEquals(array(1, 2, 3, 4, 5), $q->getParams());
-        $q->free();
-
-        $q->select('u.name')->distinct()->from('User u');
-        $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
-        $q->free();
-
-        $q->select('DISTINCT u.name')->from('User u');
-        $this->assertEquals('SELECT DISTINCT u.name FROM User u', $q->getDql());
         $q->free();
     }
 
