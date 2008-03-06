@@ -44,8 +44,16 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('SELECT * FROM User u', $q->getDql());
         $q->free();
 
+        $q->select('u.*')->from('User u');
+        $this->assertEquals('SELECT u.* FROM User u', $q->getDql());
+        $q->free();
+
         $q->select('u.id')->from('User u');
         $this->assertEquals('SELECT u.id FROM User u', $q->getDql());
+        $q->free();
+
+        $q->select('u.id, u.name')->from('User u');
+        $this->assertEquals('SELECT u.id, u.name FROM User u', $q->getDql());
         $q->free();
 
         $q->select()->from('User u')->where('u.id = ?', 1);
@@ -56,6 +64,16 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q->select('u.name')->from('User u')->where('u.id = ?', 1);
         $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ?', $q->getDql());
         $this->assertEquals(array(1), $q->getParams());
+        $q->free();
+
+        $q->select('u.name AS myCustomName')->from('User u')->where('u.id = ?', 1);
+        $this->assertEquals('SELECT u.name AS myCustomName FROM User u WHERE u.id = ?', $q->getDql());
+        $this->assertEquals(array(1), $q->getParams());
+        $q->free();
+
+        $q->select('u.name')->from('User u')->whereIn('u.id', array(1, 2, 3, 4, 5));
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id IN (?, ?, ?, ?, ?)', $q->getDql());
+        $this->assertEquals(array(1, 2, 3, 4, 5), $q->getParams());
         $q->free();
 
         $q->select('u.name')->distinct()->from('User u');

@@ -1146,7 +1146,7 @@ abstract class Doctrine_Query_Abstract2
     /**
      * _processWhereInParams
      *
-     * Processes the WHERE IN () parameters and return an associative array containing
+     * Processes the WHERE IN () parameters and return an indexed array containing
      * the sqlPart to be placed in SQL statement and the new parameters (that will be
      * bound in SQL execution)
      *
@@ -1156,8 +1156,10 @@ abstract class Doctrine_Query_Abstract2
     protected function _processWhereInParams($params = array())
     {
         return array(
-            'sqlPart' => array_reduce($params, array(&$this, '_processWhereInSqlPart')),
-            'params' => array_filter($params, array(&$this, '_processWhereInParamItem')),
+            // [0] => sqlPart
+            implode(', ', array_map(array(&$this, '_processWhereInSqlPart'), $params)),
+            // [1] => params
+            array_filter($params, array(&$this, '_processWhereInParamItem')),
         );
     }
 
@@ -1165,14 +1167,10 @@ abstract class Doctrine_Query_Abstract2
     /**
      * @nodoc
      */
-    protected function _processWhereInSqlPart($reduced, $value)
+    protected function _processWhereInSqlPart($value)
     {
-        if ($reduced != '') { $reduced .= ', '; }
-
         // [TODO] Add support to imbricated query (must deliver the hardest effort to Parser)
-        $reduced .=  ($value instanceof Doctrine_Expression) ? $value->getSql() : '?';
-
-        return $reduced;
+        return  ($value instanceof Doctrine_Expression) ? $value->getSql() : '?';
     }
 
 
