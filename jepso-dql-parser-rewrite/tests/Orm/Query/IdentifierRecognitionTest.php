@@ -31,7 +31,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Orm_Component_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
+class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 {
     public function testSingleAliasDeclarationIsSupported()
     {

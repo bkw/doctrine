@@ -1,5 +1,5 @@
 <?php
-class Orm_Component_Query_ScannerTest extends Doctrine_OrmTestCase
+class Orm_Query_ScannerTest extends Doctrine_OrmTestCase
 {
     public function testScannerRecognizesIdentifierWithLengthOfOneCharacter()
     {
