@@ -117,8 +117,8 @@ class Doctrine_I18n_TestCase extends Doctrine_UnitTestCase
     {
         $i = Doctrine_Query::create()->from('I18nTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
 
-        $this->assertEqual($i['Translation']['EN']['name'], 'some name');
-        $this->assertEqual($i['Translation']['EN']['title'], 'some title');
+        $this->assertEqual($i['Translation']['EN']['name'], 'updated name');
+        $this->assertEqual($i['Translation']['EN']['title'], 'updated title');
         $this->assertEqual($i['Translation']['EN']['lang'], 'EN');
 
         $this->assertEqual($i['Translation']['FI']['name'], 'joku nimi');
