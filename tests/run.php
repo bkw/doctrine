@@ -185,7 +185,6 @@ $test->addTestCase($event_listener);
 
 // Query tests
 $query_tests = new GroupTest('Query tests','query_test');
-$query_tests->addTestCase(new Doctrine_Query_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Condition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin2_TestCase());
