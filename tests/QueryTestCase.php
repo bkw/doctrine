@@ -112,6 +112,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($q->count(), 1);
     }
     
+    // ticket #821
     public function testQueryCopyClone()
     {
         $query = new Doctrine_Query();
