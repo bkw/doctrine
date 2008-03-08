@@ -145,9 +145,9 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->select('MAX(u.name)')->from('User u')->leftJoin('u.Phonenumber p')->groupby('u.id');
+        $q->select('MAX(u.name), u.*, p.*')->from('User u')->leftJoin('u.Phonenumber p')->groupby('u.id');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX(e.name) AS e__0 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
+        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id, MAX(e.name) AS e__0 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
         $users = $q->execute();
 
         $this->assertEqual($users->count(), 4);
@@ -180,39 +180,37 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
     public function testAggregateFunctionParser()
     {
         $q = new Doctrine_Query();
-        $func = $q->from('QueryTest_Item i')->parseFunctionExpression('SUM(i.price)');
-    
-        $this->assertEqual($func, 'SUM(i.price)');
+        $q->select('SUM(i.price)')->from('QueryTest_Item i');
+
+        $this->assertEqual($q->getSql(), 'SELECT SUM(q.price) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser2()
     {
         $q = new Doctrine_Query();
-        $func = $q->from('QueryTest_Item i')->parseFunctionExpression('SUM(i.price * i.quantity)');
+        $q->select('SUM(i.price * i.quantity)')->from('QueryTest_Item i');
 
-        $this->assertEqual($func, 'SUM(i.price * i.quantity)');
+        $this->assertEqual($q->getSql(), 'SELECT SUM(q.price * q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser3()
     {
         $q = new Doctrine_Query();
-        $func = $q->from('QueryTest_Item i')->parseFunctionExpression('MOD(i.price, i.quantity)');
+        $q->select('MOD(i.price, i.quantity)')->from('QueryTest_Item i');
 
-        $this->assertEqual($func, 'MOD(i.price, i.quantity)');
+        $this->assertEqual($q->getSql(), 'SELECT MOD(q.price, q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser4()
     {
         $q = new Doctrine_Query();
-        $func = $q->from('QueryTest_Item i')->parseFunctionExpression('CONCAT(i.price, i.quantity)');
+        $q->select('CONCAT(i.price, i.quantity)')->from('QueryTest_Item i');
 
-        $this->assertEqual($func, 'CONCAT(i.price, i.quantity)');
+        $this->assertEqual($q->getSql(), 'SELECT CONCAT(q.price, q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParsingSupportsMultipleComponentReferences()
     {
         $q = new Doctrine_Query();
         $q->select('SUM(i.price * i.quantity)')
           ->from('QueryTest_Item i');
-          
+
         $this->assertEqual($q->getQuery(), "SELECT SUM(q.price * q.quantity) AS q__0 FROM query_test__item q");
     }
-
-
 }
