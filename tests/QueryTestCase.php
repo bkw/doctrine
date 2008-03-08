@@ -111,6 +111,24 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         
         $this->assertTrue($q->count(), 1);
     }
+    
+    public function testQueryCopyClone()
+    {
+        $query = new Doctrine_Query();
+        $query->select('u.*')->from('User u');
+        $sql = $query->getSql();
+        
+        $data = $query->execute();
+        $query2 = $query->copy();
+        
+        $this->assertTrue($sql, $query2->getSql());
+        
+        $query2->limit(0);
+        $query2->offset(0);
+        $query2->select('COUNT(u.id) as nb');
+        
+        $this->assertTrue($query2->getSql(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
+    }
 }
 class MyQuery extends Doctrine_Query
 {
