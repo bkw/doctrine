@@ -73,8 +73,11 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
     {
         $query = new Doctrine_Query($this->connection);
         $query->update('EnumTest2 u')
-            ->set('u.status', '?', 'verified')
-            ->execute();
+            ->set('u.status', '?', 'verified');
+
+        $this->assertEqual($query->getSql(), 'UPDATE enum_test2 SET status = ?');   
+
+        $query->execute();
 
         try {
             $query = new Doctrine_Query($this->connection);
@@ -98,14 +101,12 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
 
         try {
             $query = new Doctrine_Query($this->connection);
-            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = 'open'")
+            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = ?")
               ->count(array('open'));
             $this->assertEqual($ret, 1);
         } catch (Exception $e) {
             $this->fail();
         }
-
-
     }
 
     public function testInAndNotIn() 
