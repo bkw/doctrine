@@ -84,3 +84,62 @@ SchemaTestInheritanceChild2:
     extends: SchemaTestInheritanceChild1
     keyField: type
     keyValue: child2
+
+# Simple Inheritance
+# All children share the columns of the parent
+SchemaTestSimpleInheritanceParent:
+  columns:
+    name: string(255)
+
+SchemaTestSimpleInheritanceChild:
+  inheritance:
+    type: simple
+    extends: SchemaTestSimpleInheritanceParent
+  columns:
+    description: string(255)
+
+# Class Table Inheritance
+# Individual tables, each model has its own columns, and they share id primary keys
+SchemaTestClassTableInheritanceParent:
+  columns:
+    name: string(255)
+
+SchemaTestClassTableInheritanceChild:
+  inheritance:
+    type: class_table
+    extends: SchemaTestClassTableInheritanceParent
+  columns:
+    title: string(255)
+    description: string(255)
+
+# Concrete Inheritance
+# Individual tables, all children share the columns of its parents
+SchemaTestConcreteInheritanceParent:
+  columns:
+    name: string(255)
+
+SchemaTestConcreteInheritanceChild:
+  inheritance:
+    type: concrete
+    extends: SchemaTestClassTableInheritanceParent
+  columns:
+    title: string(255)
+    description: string(255)
+
+# Column Aggregation Inheritance
+# Single table, all children columns are stored in the parent, parent class has a type method
+# Which is used to determine which child the record in the db belonds to
+SchemaTestColumnAggregationInheritanceParent:
+  columns:
+    name: string(255)
+    type: string(255)
+
+SchemaTestColumnAggregationInheritanceChild:
+  inheritance:
+    type: column_aggregation
+    keyField: type
+    keyValue: SchemaTestColumnAggregationInheritanceChild
+    extends: SchemaTestColumnAggregationInheritanceParent
+  columns:
+    title: string(255)
+    description: string(255)

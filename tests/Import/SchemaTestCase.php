@@ -37,7 +37,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
     
     public function testYmlImport()
     {
-        $path = realpath(dirname(__FILE__) . '/../..') . '/models/test_generated';
+        $path = dirname(__FILE__) . '/import_builder_test';
         
         $import = new Doctrine_Import_Schema();
         $import->importSchema('schema.yml', 'yml', $path);

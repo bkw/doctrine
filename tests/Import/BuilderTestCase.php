@@ -34,7 +34,7 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
 {
     public function testInheritanceGeneration()
     {
-        $path = realpath(dirname(__FILE__) . '/../..') . '/models/test_generated';
+        $path = dirname(__FILE__) . '/import_builder_test';
 
         $import = new Doctrine_Import_Schema();
         $import->importSchema('schema.yml', 'yml', $path);
@@ -72,6 +72,43 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('PackageSchemaTestInheritanceParentTable'));
         $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('SchemaTestInheritanceChild1Table'));
         $this->assertTrue($schemaTestInheritanceChild2Table->isSubClassOf('PackageSchemaTestInheritanceChild1Table'));
+
+        # Simple Inheritance
+        $schemaTestSimpleInheritanceParent = new ReflectionClass('SchemaTestSimpleInheritanceParent');
+        $schemaTestSimpleInheritanceChild = new ReflectionClass('SchemaTestSimpleInheritanceChild');
+
+        $this->assertTrue($schemaTestSimpleInheritanceParent->hasMethod('setTableDefinition'));
+        $this->assertTrue($schemaTestSimpleInheritanceChild->isSubClassOf('SchemaTestSimpleInheritanceParent'));
+
+        # Class Table Inheritance
+        $schemaTestClassTableInheritanceParent = new ReflectionClass('SchemaTestClassTableInheritanceParent');
+        $schemaTestClassTableInheritanceChild = new ReflectionClass('SchemaTestClassTableInheritanceChild');
+
+        # Concrete Inheritance
+        $schemaTestConcreteInheritanceParent = new ReflectionClass('SchemaTestConcreteInheritanceParent');
+        $schemaTestConcreteInheritanceChild = new ReflectionClass('SchemaTestConcreteInheritanceChild');
+
+        # Column Aggregation Inheritance
+        $schemaTestColumnAggregationInheritanceParent = new ReflectionClass('SchemaTestColumnAggregationInheritanceParent');
+        $schemaTestColumnAggregationInheritanceChild = new ReflectionClass('SchemaTestColumnAggregationInheritanceChild');
+
+        $sql = Doctrine::generateSqlFromArray(array('SchemaTestSimpleInheritanceParent', 'SchemaTestSimpleInheritanceChild'));
+        $this->assertEqual(count($sql), 1);
+        $this->assertEqual($sql[0], 'CREATE TABLE schema_test_simple_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), description VARCHAR(255))');
+
+        $sql = Doctrine::generateSqlFromArray(array('SchemaTestClassTableInheritanceParent', 'SchemaTestClassTableInheritanceChild'));
+        $this->assertEqual(count($sql), 2);
+        $this->assertEqual($sql[0], 'CREATE TABLE schema_test_class_table_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))');
+        $this->assertEqual($sql[1], 'CREATE TABLE schema_test_class_table_inheritance_child (id INTEGER, title VARCHAR(255), description VARCHAR(255), PRIMARY KEY(id))');
+
+        $sql = Doctrine::generateSqlFromArray(array('SchemaTestConcreteInheritanceParent', 'SchemaTestConcreteInheritanceChild'));
+        $this->assertEqual(count($sql), 2);
+        $this->assertEqual($sql[0], 'CREATE TABLE schema_test_concrete_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))');
+        $this->assertEqual($sql[1], 'CREATE TABLE schema_test_concrete_inheritance_child (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), title VARCHAR(255), description VARCHAR(255))');
+
+        $sql = Doctrine::generateSqlFromArray(array('SchemaTestColumnAggregationInheritanceParent', 'SchemaTestColumnAggregationInheritanceChild'));
+        $this->assertEqual(count($sql), 1);
+        $this->assertEqual($sql[0], 'CREATE TABLE schema_test_column_aggregation_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), type VARCHAR(255), title VARCHAR(255), description VARCHAR(255))');
 
         Doctrine_Lib::removeDirectories($path);
     }
