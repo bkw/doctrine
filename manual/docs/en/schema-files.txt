@@ -443,25 +443,88 @@ $this->index('name_index', array('fields' => array('first_name' => array( 'sorti
 
 +++ Inheritance
 
+Simple inheritance. Read about more about [doc relations:inheritance:simple-inheritance :index :name]. Any columns or relations added to the children classes will be moved to the parent.
+
 <code type="yaml">
 ---
 Entity:
-  actAs: [Timestampable]
   columns:
-    id:
-      type: integer(4)
-      primary: true
-      autoincrement: true
-    username:
-      type: string(255)
-    password:
-      type: string(255)
+    name: string(255)
+    username: string(255)
+    password: string(255)
+
 User:
   inheritance:
     extends: Entity
+    type: simple
+
 Group:
   inheritance:
     extends: Entity
+    type: simple
+</code>
+
+Class table inheritance. Read about more about [doc relations:inheritance:class-table-inheritance :index :name]
+
+<code type="yaml">
+---
+Entity:
+  columns:
+    name: string(255)
+
+User:
+  inheritance:
+    extends: Entity
+    type: class_table
+  columns:
+    username: string(255)
+    password: string(255)
+    age: integer(2)
+</code>
+
+Concrete inheritance. Read about more about [doc relations:inheritance:concrete-inheritance :index :name]
+
+<code type="yaml">
+---
+TextItem:
+  columns:
+    topic: string(255)
+
+Comment:
+  inheritance:
+    extends: TextItem
+    type: concrete
+  columns:
+    content: string(300)
+</code>
+
+Column aggregation inheritance. Read about more about [doc relations:inheritance:column-aggregation-inheritance :index :name]. Like simple inheritance, any columns or relationships added to the children will be automatically removed and moved to the parent.
+
+<code type="yaml">
+---
+Entity:
+  columns:
+    name: string(255)
+    type: string(255)         # Optional, will be automatically added when it is specified in the child class
+
+User:
+  inheritance:
+    extends: Entity
+    type: column_aggregation  # Optional, it is implied if a keyField or keyValue is present
+    keyField: type            # Optional, will default to 'type' and add it to the parent class if type is column aggregation
+    keyValue: User            # Optional, will default to the name of the child class if type is column aggregation
+  columns:
+    username: string(255)
+    password: string(255)
+
+Group:
+  inheritance:
+    extends: Entity
+    type: column_aggregation
+    keyField: type
+    keyValue: Group
+  columns:
+    description: string(255)
 </code>
 
 +++ Generate Accessors
