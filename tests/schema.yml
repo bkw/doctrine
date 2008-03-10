@@ -18,9 +18,9 @@ SchemaTestProfile:
       type: integer(4)
       primary: true
       autoincrement: true
-    user_id:
+    schema_test_user_id:
       type: integer(4)
-    contact_id:
+    schema_test_contact_id:
       type: integer(4)
     first_name:
       type: string(255)
@@ -49,7 +49,7 @@ SchemaTestPhonenumber:
       type: integer(4)
       primary: true
       autoincrement: true
-    contact_id:
+    schema_test_contact_id:
       type: integer(4)
     phone_number:
       type: integer(4)
@@ -68,8 +68,6 @@ SchemaTestInheritanceParent:
       type: string(255)
     type:
       type: string(255)
-  options:
-    subclasses: [SchemaTestInheritanceChild1]
 
 SchemaTestInheritanceChild1:
   package: Child1
