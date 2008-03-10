@@ -377,6 +377,9 @@ User:
   actAs:
     Sluggable:
       fields: [username]
+      name: slug    # defaults to 'slug'
+      type: string  # defaults to 'clob'
+      length: 255   # defaults to null. clob doesn't require a length
 </code>
 
 +++ Options

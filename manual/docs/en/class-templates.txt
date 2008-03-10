@@ -355,7 +355,7 @@ YAML Example
 User:
   actAs:
     Sluggable:
-      columns: [username]
+      fields: [username]
   columns:
     username:
       type: string(125)
