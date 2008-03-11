@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  $Id: Abstract.php 1393 2007-05-19 17:49:16Z zYne $
+ *  $Id: Abstract.php 1393 2008-03-06 17:49:16Z guilhermeblanco $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -384,36 +384,18 @@ abstract class Doctrine_Query_Abstract2
     /**
      * select
      *
-     * Sets the SELECT part of the query
-     *
-     * @param string $select Query SELECT part
-     * @return Doctrine_Query
-     */
-    public function select($select = '')
-    {
-        if ($select === '') {
-            return $this;
-        }
-
-        return $this->_addDqlQueryPart('select', $select);
-    }
-
-
-    /**
-     * addSelect
-     *
      * Adds fields to the SELECT part of the query
      *
      * @param string $select Query SELECT part
      * @return Doctrine_Query
      */
-    public function addSelect($select = '')
+    public function select($select = '', $override = false)
     {
         if ($select === '') {
             return $this;
         }
 
-        return $this->_addDqlQueryPart('select', $select, true);
+        return $this->_addDqlQueryPart('select', $select, ! $override);
     }
 
 
@@ -513,28 +495,14 @@ abstract class Doctrine_Query_Abstract2
     /**
      * from
      *
-     * Sets the FROM part of the query
-     *
-     * @param string $from Query FROM part
-     * @return Doctrine_Query
-     */
-    public function from($from)
-    {
-        return $this->_addDqlQueryPart('from', $from);
-    }
-
-
-    /**
-     * addFrom
-     *
      * Adds fields to the FROM part of the query
      *
      * @param string $from Query FROM part
      * @return Doctrine_Query
      */
-    public function addFrom($from)
+    public function from($from, $override = false)
     {
-        return $this->_addDqlQueryPart('from', $from, true);
+        return $this->_addDqlQueryPart('from', $from, ! $override);
     }
 
 
@@ -598,28 +566,32 @@ abstract class Doctrine_Query_Abstract2
     /**
      * where
      *
-     * Sets the WHERE part of the query
+     * Adds conditions to the WHERE part of the query
      *
-     * @param string $join Query WHERE part
+     * @param string $where Query WHERE part
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function where($where, $params = array())
+    public function where($where, $params = array(), $override = false)
     {
-        $this->_params['where'] = array();
+        if ($override) {
+            $this->_params['where'] = array();
+        }
 
         if (is_array($params)) {
-            $this->_params['where'] = $params;
+            $this->_params['where'] = array_merge($this->_params['where'], $params);
         } else {
             $this->_params['where'][] = $params;
         }
 
-        return $this->_addDqlQueryPart('where', $where);
+        return $this->_addDqlQueryPart(
+            'where', ($where instanceof Doctrine_Criteria) ? $where->getDql() : $where, ! $override
+        );
     }
 
 
     /**
-     * addWhere
+     * andWhere
      *
      * Adds conditions to the WHERE part of the query
      *
@@ -627,24 +599,18 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addWhere($where, $params = array())
+    public function andWhere($where, $params = array(), $override = false)
     {
-        if (is_array($params)) {
-            $this->_params['where'] = array_merge($this->_params['where'], $params);
-        } else {
-            $this->_params['where'][] = $params;
-        }
-
         if (count($this->getDqlQueryPart('where')) > 0) {
             $this->_addDqlQueryPart('where', 'AND', true);
         }
 
-        return $this->_addDqlQueryPart('where', $where, true);
+        return $this->where($where, $params, $override);
     }
 
 
     /**
-     * addWhereAnd
+     * orWhere
      *
      * Adds conditions to the WHERE part of the query
      *
@@ -652,34 +618,13 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addWhereAnd($where, $params = array())
+    public function orWhere($where, $params = array(), $override = false)
     {
-        return $this->addWhere($where, $params);
-    }
-
-
-    /**
-     * addWhereOr
-     *
-     * Adds conditions to the WHERE part of the query
-     *
-     * @param string $where Query WHERE part
-     * @param mixed $params An array of parameters or a simple scalar
-     * @return Doctrine_Query
-     */
-    public function addWhereOr($where, $params = array())
-    {
-        if (is_array($params)) {
-            $this->_params['where'] = array_merge($this->_params['where'], $params);
-        } else {
-            $this->_params['where'][] = $params;
-        }
-
         if (count($this->getDqlQueryPart('where')) > 0) {
             $this->_addDqlQueryPart('where', 'OR', true);
         }
 
-        return $this->_addDqlQueryPart('where', $where, true);
+        return $this->where($where, $params, $override);
     }
 
 
@@ -693,7 +638,7 @@ abstract class Doctrine_Query_Abstract2
      * @param boolean $not Whether or not to use NOT in front of IN
      * @return Doctrine_Query
      */
-    public function whereIn($expr, $params = array(), $not = false)
+    public function whereIn($expr, $params = array(), $override = false, $not = false)
     {
         $params = (array) $params;
 
@@ -706,7 +651,7 @@ abstract class Doctrine_Query_Abstract2
 
         $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
 
-        return $this->_returnWhereIn($where, $params);
+        return $this->_returnWhereIn($where, $params, $override);
     }
 
     /**
@@ -718,14 +663,14 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function whereNotIn($expr, $params = array())
+    public function whereNotIn($expr, $params = array(), $override = false)
     {
-        return $this->whereIn($expr, $params, true);
+        return $this->whereIn($expr, $params, $override, true);
     }
 
 
     /**
-     * addWhereIn
+     * andWhereIn
      *
      * Adds IN condition to the query WHERE part
      *
@@ -734,24 +679,18 @@ abstract class Doctrine_Query_Abstract2
      * @param boolean $not Whether or not to use NOT in front of IN
      * @return Doctrine_Query
      */
-    public function addWhereIn($expr, $params = array(), $not = false)
+    public function andWhereIn($expr, $params = array(), $override = false)
     {
-        $params = (array) $params;
-
-        // Must have at least one param, otherwise we'll get an empty IN () => invalid SQL
-        if ( ! count($params)) {
-            return $this;
+        if (count($this->getDqlQueryPart('where')) > 0) {
+            $this->_addDqlQueryPart('where', 'AND', true);
         }
 
-        list($sqlPart, $params) = $this->_processWhereInParams($params);
-
-        $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
-
-        return $this->_returnWhereIn($where, $params, 'AND');
+        return $this->whereIn($expr, $params, $override);
     }
 
+
     /**
-     * addWhereNotIn
+     * andWhereNotIn
      *
      * Adds NOT IN condition to the query WHERE part
      *
@@ -759,71 +698,37 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addWhereNotIn($expr, $params = array())
+    public function andWhereNotIn($expr, $params = array())
     {
-        return $this->addWhereIn($expr, $params, true);
-    }
-
-
-    /**
-     * addWhereAndIn
-     *
-     * Adds IN condition to the query WHERE part
-     *
-     * @param string $expr The operand of the IN
-     * @param mixed $params An array of parameters or a simple scalar
-     * @param boolean $not Whether or not to use NOT in front of IN
-     * @return Doctrine_Query
-     */
-    public function addWhereAndIn($expr, $params = array())
-    {
-        return $this->addWhereIn($expr, $params);
-    }
-
-
-    /**
-     * addWhereAndNotIn
-     *
-     * Adds NOT IN condition to the query WHERE part
-     *
-     * @param string $expr The operand of the NOT IN
-     * @param mixed $params An array of parameters or a simple scalar
-     * @return Doctrine_Query
-     */
-    public function addWhereAndNotIn($expr, $params = array())
-    {
-        return $this->addWhereIn($expr, $params, true);
-    }
-
-
-    /**
-     * addWhereOrIn
-     *
-     * Adds IN condition to the query WHERE part
-     *
-     * @param string $expr The operand of the IN
-     * @param mixed $params An array of parameters or a simple scalar
-     * @param boolean $not Whether or not to use NOT in front of IN
-     * @return Doctrine_Query
-     */
-    public function addWhereOrIn($expr, $params = array(), $not = false)
-    {
-        $params = (array) $params;
-
-        // Must have at least one param, otherwise we'll get an empty IN () => invalid SQL
-        if ( ! count($params)) {
-            return $this;
+        if (count($this->getDqlQueryPart('where')) > 0) {
+            $this->_addDqlQueryPart('where', 'AND', true);
         }
 
-        list($sqlPart, $params) = $this->_processWhereInParams($params);
+        return $this->whereIn($expr, $params, $override, true);
+    }
 
-        $where = $expr . ($not === true ? ' NOT' : '') . ' IN (' . $sqlPart . ')';
 
-        return $this->_returnWhereIn($where, $params, 'OR');
+    /**
+     * orWhereIn
+     *
+     * Adds IN condition to the query WHERE part
+     *
+     * @param string $expr The operand of the IN
+     * @param mixed $params An array of parameters or a simple scalar
+     * @param boolean $not Whether or not to use NOT in front of IN
+     * @return Doctrine_Query
+     */
+    public function orWhereIn($expr, $params = array(), $override = false)
+    {
+        if (count($this->getDqlQueryPart('where')) > 0) {
+            $this->_addDqlQueryPart('where', 'OR', true);
+        }
+
+        return $this->whereIn($expr, $params, $override);
     }
 
     /**
-     * addWhereOrNotIn
+     * orWhereNotIn
      *
      * Adds NOT IN condition to the query WHERE part
      *
@@ -831,65 +736,57 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addWhereOrNotIn($expr, $params = array())
+    public function orWhereNotIn($expr, $params = array(), $override = false)
     {
-        return $this->addWhereOrIn($expr, $params, true);
+        if (count($this->getDqlQueryPart('where')) > 0) {
+            $this->_addDqlQueryPart('where', 'OR', true);
+        }
+
+        return $this->whereIn($expr, $params, $override, true);
     }
 
 
     /**
      * groupBy
      *
-     * Sets the GROUP BY part of the query
-     *
-     * @param string $groupby Query GROUP BY part
-     * @return Doctrine_Query
-     */
-    public function groupBy($groupby)
-    {
-        return $this->_addDqlQueryPart('groupby', $groupby);
-    }
-
-
-    /**
-     * addGroupBy
-     *
      * Adds fields to the GROUP BY part of the query
      *
      * @param string $groupby Query GROUP BY part
      * @return Doctrine_Query
      */
-    public function addGroupBy($groupby)
+    public function groupBy($groupby, $override = false)
     {
-        return $this->_addDqlQueryPart('groupby', $groupby, true);
+        return $this->_addDqlQueryPart('groupby', $groupby, ! $override);
     }
 
 
     /**
      * having
      *
-     * Sets the HAVING part of the query
+     * Adds conditions to the HAVING part of the query
      *
      * @param string $having Query HAVING part
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function having($having, $params = array())
+    public function having($having, $params = array(), $override = false)
     {
-        $this->_params['having'] = array();
+        if ($override) {
+            $this->_params['having'] = array();
+        }
 
         if (is_array($params)) {
-            $this->_params['having'] = $params;
+            $this->_params['having'] = array_merge($this->_params['having'], $params);
         } else {
             $this->_params['having'][] = $params;
         }
 
-        return $this->_addDqlQueryPart('having', $having);
+        return $this->_addDqlQueryPart('having', $having, true);
     }
 
 
     /**
-     * addHaving
+     * andHaving
      *
      * Adds conditions to the HAVING part of the query
      *
@@ -897,24 +794,18 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addHaving($having, $params = array())
+    public function andHaving($having, $params = array(), $override = false)
     {
-        if (is_array($params)) {
-            $this->_params['having'] = array_merge($this->_params['having'], $params);
-        } else {
-            $this->_params['having'][] = $params;
-        }
-
         if (count($this->getDqlQueryPart('having')) > 0) {
             $this->_addDqlQueryPart('having', 'AND', true);
         }
 
-        return $this->_addDqlQueryPart('having', $having, true);
+        return $this->having($having, $params, $override);
     }
 
 
     /**
-     * addHavingAnd
+     * orHaving
      *
      * Adds conditions to the HAVING part of the query
      *
@@ -922,62 +813,27 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function addHavingAnd($having, $params = array())
+    public function orHaving($having, $params = array(), $override = false)
     {
-        return $this->addHaving($having, $params);
-    }
-
-
-    /**
-     * addHavingOr
-     *
-     * Adds conditions to the HAVING part of the query
-     *
-     * @param string $having Query HAVING part
-     * @param mixed $params An array of parameters or a simple scalar
-     * @return Doctrine_Query
-     */
-    public function addHavingOr($having, $params = array())
-    {
-        if (is_array($params)) {
-            $this->_params['having'] = array_merge($this->_params['having'], $params);
-        } else {
-            $this->_params['having'][] = $params;
-        }
-
         if (count($this->getDqlQueryPart('having')) > 0) {
             $this->_addDqlQueryPart('having', 'OR', true);
         }
 
-        return $this->_addDqlQueryPart('having', $having, true);
+        return $this->having($having, $params, $override);
     }
 
 
     /**
      * orderBy
      *
-     * Sets the ORDER BY part of the query
-     *
-     * @param string $orderby Query ORDER BY part
-     * @return Doctrine_Query
-     */
-    public function orderBy($orderby)
-    {
-        return $this->_addDqlQueryPart('orderby', $orderby);
-    }
-
-
-    /**
-     * addOrderBy
-     *
      * Adds fields to the ORDER BY part of the query
      *
      * @param string $orderby Query ORDER BY part
      * @return Doctrine_Query
      */
-    public function addOrderBy($orderby)
+    public function orderBy($orderby, $override = false)
     {
-        return $this->_addDqlQueryPart('orderby', $orderby, true);
+        return $this->_addDqlQueryPart('orderby', $orderby, ! $override);
     }
 
 
@@ -1199,19 +1055,13 @@ abstract class Doctrine_Query_Abstract2
      *                        (two possible values: AND or OR)
      * @return Doctrine_Query
      */
-    protected function _returnWhereIn($where, $params = array(), $appender = null)
+    protected function _returnWhereIn($where, $params = array(), $override = false)
     {
         // Parameters inclusion
-        $this->_params['where'] = ($appender !== null) ?
-            array_merge($this->_params['where'], $params) : $params;
-
-        // Separator adding
-        if ($appender !== null && count($this->getDqlQueryPart('where')) > 0) {
-            $this->_addDqlQueryPart('where', (strtoupper($appender) === 'OR') ? 'OR' : 'AND', true);
-        }
+        $this->_params['where'] = $override ? $params : array_merge($this->_params['where'], $params);
 
         // WHERE clause definition
-        return $this->_addDqlQueryPart('where', $where, ($appender !== null));
+        return $this->_addDqlQueryPart('where', $where, ! $override);
     }
 
 
