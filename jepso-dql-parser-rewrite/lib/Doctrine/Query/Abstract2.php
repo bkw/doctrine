@@ -716,7 +716,7 @@ abstract class Doctrine_Query_Abstract2
      * @param boolean $not Whether or not to use NOT in front of IN
      * @return Doctrine_Query
      */
-    public function orWhereIn($expr, $params = array(), $override = false)
+    public function orWhereIn($expr, $params = array())
     {
         $criteria = ($expr instanceof Doctrine_Criteria) ?
             $expr : new Doctrine_Criteria_In( $expr, $params );
@@ -733,7 +733,7 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function orWhereNotIn($expr, $params = array(), $override = false)
+    public function orWhereNotIn($expr, $params = array())
     {
         $criteria = ($expr instanceof Doctrine_Criteria) ?
             $expr : new Doctrine_Criteria_NotIn( $expr, $params );
@@ -765,7 +765,7 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function having($having, $params = array(), $override = true)
+    public function having($having, $params = array())
     {
         $criteria = ($where instanceof Doctrine_Criteria) ?
             $where : new Doctrine_Criteria_Expr( $where, $params );
@@ -808,7 +808,7 @@ abstract class Doctrine_Query_Abstract2
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function orHaving($having, $params = array(), $override = false)
+    public function orHaving($having, $params = array())
     {
         $criteria = ($having instanceof Doctrine_Criteria) ?
             $having : new Doctrine_Criteria_Expr( $having, $params );
