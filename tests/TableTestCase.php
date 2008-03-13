@@ -219,6 +219,13 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($users instanceof Doctrine_Collection);
     }
 
+    public function testFindByXXX() 
+    {
+        $users = $this->objTable->findByName('zYne');
+        $this->assertEqual($users->count(), 1);
+        $this->assertTrue($users instanceof Doctrine_Collection);
+    }
+
     public function testGetProxy() 
     {
         $user = $this->objTable->getProxy(4);
