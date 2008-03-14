@@ -26,6 +26,8 @@ $tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626D_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
+// Only uncomment the following ticket if you want to check free() performance!
+//$tickets->addTestCase(new Doctrine_Ticket_710_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_736_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_786_TestCase());
 $test->addTestCase($tickets);
