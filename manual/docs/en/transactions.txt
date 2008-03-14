@@ -1,5 +1,4 @@
 ++ Introduction
-++ Unit of work
 ++ Nesting
 ++ Savepoints
 ++ Locking strategies
