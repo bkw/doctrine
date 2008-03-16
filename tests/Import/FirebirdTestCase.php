@@ -40,7 +40,7 @@ class Doctrine_Import_Firebird_TestCase extends Doctrine_UnitTestCase
     }
     public function testListTableFieldsExecutesSql()
     {
-        $this->import->listTableFields('table');
+        $this->import->listTableColumns('table');
         
         $this->assertEqual($this->adapter->pop(), "SELECT RDB\$FIELD_NAME FROM RDB\$RELATION_FIELDS WHERE UPPER(RDB\$RELATION_NAME) = 'TABLE'");
     }
