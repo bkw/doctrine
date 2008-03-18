@@ -342,10 +342,11 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
      /**
       * @todo [TODO]
       *
-      * Doctrine_Hydrator::setTableAliasMap
+      * Doctrine_Hydrator::setTableAliasMap (refactoring in hydrateResultSet)
+      * Doctrine_Hydrator::setQueryComponents (API changes)
       * _execute2 and adapt it
-      * Check Doctrine_Query_Cache (table alias map and query components)
       * Document Doctrine_Query_Cache
+      * preQuery() call
       *
       */
 

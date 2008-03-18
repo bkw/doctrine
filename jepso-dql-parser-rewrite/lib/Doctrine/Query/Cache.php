@@ -24,15 +24,15 @@
 class Doctrine_Query_Cache
 {
     protected $_result;
-    protected $_tableAliasMap;
     protected $_queryComponents;
+    protected $_tableAliasMap;
 
 
-    public function __construct($result, $tableAliasMap, $queryComponents)
+    public function __construct($result, $queryComponents, $tableAliasMap)
     {
         $this->_result = $result;
-        $this->_tableAliasMap = $tableAliasMap;
         $this->_queryComponents = $queryComponents;
+        $this->_tableAliasMap = $tableAliasMap;
     }
 
 
@@ -89,13 +89,17 @@ class Doctrine_Query_Cache
             }
         }
 
-        return new self($cached[0], $cached[2], $queryComponents);
+        return new self($cached[0], $queryComponents, $cached[2]);
     }
 
 
     public function toCachedForm()
     {
-        return serialize(array($this->getResult(), $this->getTableAliasMap(), $this->getQueryComponents()));
+        return serialize(array(
+            $this->getResult(),
+            $this->getQueryComponents(),
+            $this->getTableAliasMap()
+        ));
     }
 
 
