@@ -1,4 +1,4 @@
-The parser is built to allow dumping and loading from many different formats. Currently xml and yml are the only drivers but later other file formats such as csv may be added. You can specify the data to load/dump in with the $type argument on dump() and load()
+The parser is built to allow dumping and loading from many different formats. Currently xml, yml, json and php serialization are the only formats supported. You can specify the data to load/dump in with the $type argument on dump() and load()
 
 ++ Dumping
 
