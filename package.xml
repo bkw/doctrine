@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-03-01</date>
- <time>02:24:55</time>
+ <date>2008-03-18</date>
+ <time>13:38:19</time>
  <version>
-  <release>0.10.2</release>
-  <api>0.10.2</api>
+  <release>0.10.3</release>
+  <api>0.10.3</api>
  </version>
  <stability>
   <release>beta</release>
@@ -57,6 +57,9 @@ requiring needless code duplication.</description>
      <dir name="AuditLog">
       <file name="Listener.php" role="php" />
      </dir> <!-- /lib/Doctrine/AuditLog -->
+     <dir name="Behavior">
+      <file name="Taggable.php" role="php" />
+     </dir> <!-- /lib/Doctrine/Behavior -->
      <dir name="Cache">
       <file name="Apc.php" role="php" />
       <file name="Array.php" role="php" />
@@ -173,10 +176,6 @@ requiring needless code duplication.</description>
      <dir name="File">
       <file name="Index.php" role="php" />
      </dir> <!-- /lib/Doctrine/File -->
-     <dir name="FileFinder">
-      <file name="GlobToRegex.php" role="php" />
-      <file name="NumberCompare.php" role="php" />
-     </dir> <!-- /lib/Doctrine/FileFinder -->
      <dir name="Hook">
       <dir name="Parser">
        <file name="Complex.php" role="php" />
@@ -497,14 +496,12 @@ requiring needless code duplication.</description>
      <file name="Data.php" role="php" />
      <file name="DataDict.php" role="php" />
      <file name="DataType.php" role="php" />
-     <file name="Db.php" role="php" />
      <file name="Event.php" role="php" />
      <file name="EventListener.php" role="php" />
      <file name="Exception.php" role="php" />
      <file name="Export.php" role="php" />
      <file name="Expression.php" role="php" />
      <file name="File.php" role="php" />
-     <file name="FileFinder.php" role="php" />
      <file name="Formatter.php" role="php" />
      <file name="Hook.php" role="php" />
      <file name="Hydrator.php" role="php" />
@@ -1175,6 +1172,7 @@ requiring needless code duplication.</description>
      <file name="428TestCase.php" role="test" />
      <file name="438TestCase.php" role="test" />
      <file name="480TestCase.php" role="test" />
+     <file name="486TestCase.php" role="test" />
      <file name="576TestCase.php" role="test" />
      <file name="583TestCase.php" role="test" />
      <file name="587TestCase.php" role="test" />
@@ -1185,10 +1183,12 @@ requiring needless code duplication.</description>
      <file name="642TestCase.php" role="test" />
      <file name="673TestCase.php" role="test" />
      <file name="697TestCase.php" role="test" />
+     <file name="710TestCase.php" role="test" />
      <file name="736TestCase.php" role="test" />
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
      <file name="786TestCase.php" role="test" />
+     <file name="876TestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1572,6 +1572,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>0.10.3</release>
+    <api>0.10.3</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2008-03-18</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>0.10.2</release>
