@@ -44,16 +44,6 @@ class Doctrine_Import_Schema
     protected $_relations = array();
 
     /**
-     * _connectionTables
-     *
-     * Array of connections and the tables which exist in each one
-     * Used to ensure duplicate tables names do not exist for a single connection
-     *
-     * @var array
-     */
-    protected $_connectionTables = array();
-
-    /**
      * _options
      *
      * Array of options used to configure the model generation from the parsed schema files
@@ -100,6 +90,7 @@ class Doctrine_Import_Schema
                                                           'autoincrement',
                                                           'type',
                                                           'length',
+                                                          'size',
                                                           'default',
                                                           'scale',
                                                           'values'),
@@ -318,13 +309,7 @@ class Doctrine_Import_Schema
             }
 
             $connection = isset($table['connection']) ? $table['connection']:'current';
-            
-            if ( ! isset($this->_connectionTables[$connection][$tableName])) {
-                $this->_connectionTables[$connection][$tableName] = $tableName;
-            } else {
-                throw new Doctrine_Import_Exception('Table named "' . $tableName . '" exists for the "' . $connection . '" Doctrine connection multiple times');
-            }
-            
+
             $columns = isset($table['columns']) ? $table['columns']:array();
 
             if ( ! empty($columns)) {
@@ -510,7 +495,7 @@ class Doctrine_Import_Schema
                     $relation['local'] = isset($relation['local']) ? $relation['local']:Doctrine::tableize($name) . '_id';
                     $relation['foreign'] = isset($relation['foreign']) ? $relation['foreign']:Doctrine::tableize($class) . '_id';
                 } else {
-                    $relation['local'] = isset($relation['local']) ? $relation['local']:Doctrine::tableize($relation['alias']) . '_id';
+                    $relation['local'] = isset($relation['local']) ? $relation['local']:Doctrine::tableize($relation['class']) . '_id';
                     $relation['foreign'] = isset($relation['foreign']) ? $relation['foreign']:'id';
                 }
                 
@@ -595,7 +580,15 @@ class Doctrine_Import_Schema
             }
         }
     }
-    
+
+    /**
+     * _fixDuplicateRelations
+     *
+     * Ensure the relations for each class are unique and that no duplicated relations exist from the auto generated relations
+     * and the user explicitely defining the opposite end
+     *
+     * @return void
+     */
     protected function _fixDuplicateRelations()
     {
         foreach($this->_relations as $className => $relations) {

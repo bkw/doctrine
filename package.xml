@@ -22,7 +22,7 @@ requiring needless code duplication.</description>
   <active>yes</active>
  </lead>
  <date>2008-03-18</date>
- <time>13:38:19</time>
+ <time>15:31:27</time>
  <version>
   <release>0.10.3</release>
   <api>0.10.3</api>
@@ -57,9 +57,6 @@ requiring needless code duplication.</description>
      <dir name="AuditLog">
       <file name="Listener.php" role="php" />
      </dir> <!-- /lib/Doctrine/AuditLog -->
-     <dir name="Behavior">
-      <file name="Taggable.php" role="php" />
-     </dir> <!-- /lib/Doctrine/Behavior -->
      <dir name="Cache">
       <file name="Apc.php" role="php" />
       <file name="Array.php" role="php" />
@@ -434,7 +431,6 @@ requiring needless code duplication.</description>
       <file name="NestedSet.php" role="php" />
       <file name="Searchable.php" role="php" />
       <file name="Sluggable.php" role="php" />
-      <file name="Taggable.php" role="php" />
       <file name="Timestampable.php" role="php" />
       <file name="Versionable.php" role="php" />
      </dir> <!-- /lib/Doctrine/Template -->
