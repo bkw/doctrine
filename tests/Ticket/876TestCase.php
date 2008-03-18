@@ -63,6 +63,9 @@ class Doctrine_Ticket_876_TestCase extends Doctrine_UnitTestCase
       $profile = $this->newProfile('Work', $person);
 
       $guardUser = $person->get('sfGuardUser');
+      $id = $guardUser->get('id');
+      
+      $guardUser->free();
       
       $query = new Doctrine_Query();
 
@@ -70,11 +73,14 @@ class Doctrine_Ticket_876_TestCase extends Doctrine_UnitTestCase
       $query->from('sfGuardUser s');
       $query->innerJoin('s.Person p');
       $query->leftJoin('p.Profiles ps');
-      $query->where('s.id = ?', $guardUser->get('id'));
+      $query->where('s.id = ?', $id);
 
       $user = $query->fetchOne();
-
-//    This is the bug, I guess: $this->assertTrue($user->toArray(true));
+      $array = $user->toArray(true);
+      
+      $this->assertEqual($array['id'], 1);
+      $this->assertEqual($array['name'], 'Fixe');
+      $this->assertTrue(isset($array['Person']['Profiles'][0]));
     }
 }
 
