@@ -462,6 +462,8 @@ User:
 
 +++ Geographical
 
+The below is only a demo. The geographical behavior can be used with any data record for determining the number of miles or kilometers between 2 records.
+
 PHP Example
 <code type="php">
 <?php
@@ -470,8 +472,6 @@ class Zipcode extends Doctrine_Record
   public function setTableDefinition()
   {
     $this->hasColumn('zipcode', 'string', 255);
-    $this->hasColumn('longitude', 'decimal', null);
-    $this->hasColumn('latitude', 'decimal', null);
     $this->hasColumn('city', 'string', 255);
     $this->hasColumn('state', 'string', 2);
     $this->hasColumn('county', 'string', 255);
@@ -492,13 +492,13 @@ Zipcode:
   actAs: [Geographical]
   columns:
     zipcode: string(255)
-    longitude: decimal
-    latitude: decimal
     city: string(255)
     state: string(2)
     county: string(255)
     zip_class: string(255)
 </code>
+
+The geographical plugin automatically adds the latitude and longitude columns to the records used for calculating distance between 2 records.
 
 Usage
 <code type="php">
@@ -506,7 +506,7 @@ $zipcode1 = Doctrine::getTable('Zipcode')->findOneByZipcode('37209');
 $zipcode2 = Doctrine::getTable('Zipcode')->findOneByZipcode('37388');
 
 // get distance between to zipcodes
-echo $zipcode1->getDistance($zipcode2);
+echo $zipcode1->getDistance($zipcode2, $kilometers = false);
 
 // Get the 50 closest zipcodes that are not in the same city
 $query = $zipcode1->getDistanceQuery();
@@ -517,7 +517,7 @@ $query->limit(50);
 $result = $query->execute();
 
 foreach ($result as $zipcode) {
-  echo $zipcode->city . " - " . $zipcode->miles . "<br/>";
+  echo $zipcode->city . " - " . $zipcode->miles . "<br/>"; // $zipcode->kilometers
 }
 </code>
 
