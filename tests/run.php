@@ -31,6 +31,7 @@ $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
 //$tickets->addTestCase(new Doctrine_Ticket_710_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_736_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_786_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_876_TestCase());
 $test->addTestCase($tickets);
 
 // Connection drivers (not yet fully tested)
