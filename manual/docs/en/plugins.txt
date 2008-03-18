@@ -186,10 +186,12 @@ class SoftDeleteTest extends Doctrine_Record
         $this->hasColumn('name', 'string', null, array('primary' => true));
         $this->hasColumn('deleted', 'boolean', 1);
     }
+    
     public function preDelete($event)
     {
         $event->skipOperation();
     }
+    
     public function postDelete($event)
     {
         $this->deleted = true;
@@ -217,7 +219,11 @@ This subchapter provides you the means for creating your own plugins. Lets say w
 
 We start this task by creating a plugin called EmailPlugin with setTableDefinition() method. Inside the setTableDefinition() method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
 
-buildForeignKeys()
+public function initOptions()
+public function buildLocalRelation()
+public function buildForeignKeys(Doctrine_Table $table)
+public function buildForeignRelation($alias = null)
+public function buildRelation() // calls buildForeignRelation() and buildLocalRelation()
 
 <code type="php">
 class EmailPlugin extends Doctrine_Record_Generator
@@ -225,6 +231,12 @@ class EmailPlugin extends Doctrine_Record_Generator
     public function initOptions()
     {
         $this->setOption('className', '%CLASS%Email');
+    }
+
+    public function buildRelation()
+    {
+    	  $this->buildForeignRelation('Emails');
+        $this->buildLocalRelation();
     }
     
     public function setTableDefinition()
