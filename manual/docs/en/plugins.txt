@@ -215,9 +215,9 @@ var_dump($record->deleted); // true
 
 This subchapter provides you the means for creating your own plugins. Lets say we have various different Record classes that need to have one-to-many emails. We achieve this functionality by creating a generic plugin which creates Email classes on the fly.
 
-We start this task by creating a plugin called EmailPlugin with buildDefinition() method. Inside the buildDefinition() method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
+We start this task by creating a plugin called EmailPlugin with setTableDefinition() method. Inside the setTableDefinition() method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
 
-# buildForeignKeys()
+buildForeignKeys()
 
 <code type="php">
 class EmailPlugin extends Doctrine_Record_Generator
