@@ -24,8 +24,8 @@ requiring needless code duplication.</description>
  <date>2008-03-01</date>
  <time>02:24:55</time>
  <version>
-  <release>0.10.2</release>
-  <api>0.10.2</api>
+  <release>0.10.3</release>
+  <api>0.10.3</api>
  </version>
  <stability>
   <release>beta</release>
@@ -1572,6 +1572,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>0.10.3</release>
+    <api>0.10.3</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2008-03-18</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>0.10.2</release>
