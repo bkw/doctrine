@@ -200,6 +200,157 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
 
 
     /**
+     * fetchArray
+     *
+     * Convenience method to execute using array fetching as hydration mode.
+     *
+     * @param string $params
+     * @return array
+     */
+    public function fetchArray($params = array()) {
+        return $this->execute($params, Doctrine::HYDRATE_ARRAY);
+    }
+
+
+    /**
+     * fetchOne
+     *
+     * Convenience method to execute the query and return the first item
+     * of the collection.
+     *
+     * @param string $params Parameters
+     * @param int $hydrationMode Hydration mode
+     * @return mixed Array or Doctrine_Collection or false if no result.
+     */
+    public function fetchOne($params = array(), $hydrationMode = null)
+    {
+        $collection = $this->execute($params, $hydrationMode);
+
+        if (count($collection) === 0) {
+            return false;
+        }
+
+        if ($collection instanceof Doctrine_Collection) {
+            return $collection->getFirst();
+        } else if (is_array($collection)) {
+            return array_shift($collection);
+        }
+
+        return false;
+    }
+
+
+    /**
+     * query
+     *
+     * Query the database with DQL (Doctrine Query Language).
+     *
+     * @param string $query      DQL query
+     * @param array $params      prepared statement parameters
+     * @param int $hydrationMode Doctrine::FETCH_ARRAY or Doctrine::FETCH_RECORD
+     * @see Doctrine::FETCH_* constants
+     * @return mixed
+     */
+    public function query($query, $params = array(), $hydrationMode = null)
+    {
+        $this->setDql($query);
+        return $this->execute($params, $hydrationMode);
+    }
+
+
+    /**
+     * getSqlQuery
+     *
+     * Builds the sql query from the given parameters and applies things such as
+     * column aggregation inheritance and limit subqueries if needed
+     *
+     * @param array $params An array of prepared statement params (needed only in mysql driver
+     *                      when limit subquery algorithm is used)
+     * @return string The built sql query
+     */
+    public function getSqlQuery($params = array())
+    {
+        if ($this->_state === self::STATE_DIRTY) {
+            $this->_parser->parse($this->getDql(), $params);
+
+            $this->_state = self::STATE_CLEAN;
+            $this->_sql = $this->_parser->getSql();
+        }
+
+        return $this->_sql;
+    }
+
+
+    /**
+     * execute
+     *
+     * Executes the query and populates the data set
+     *
+     * @param string $params
+     * @return Doctrine_Collection            the root collection
+     */
+    public function execute($params = array(), $hydrationMode = null)
+    {
+        $params = $this->getParams($params);
+
+        if ($this->_resultCache) {
+            $cacheDriver = $this->getResultCacheDriver();
+
+            // Calculate hash for dql query.
+            $hash = md5($this->getDql() . var_export($params, true));
+
+            $cached = ($this->_expireResultCache) ? false : $cacheDriver->fetch($hash);
+
+            if ($cached === false) {
+                // Cache does not exist, we have to create it.
+                $result = $this->_execute($params, Doctrine::HYDRATE_ARRAY);
+
+                $cachedItem = Doctrine_Query_Cache::fromResultSet($this, $result);
+                $cacheDriver->save($hash, $cachedItem->toCachedForm(), $this->_resultCacheTTL);
+
+                return $result;
+            } else {
+                // Cache exists, recover it and return the results.
+                $cachedItem = Doctrine_Query_Cache::fromCachedForm($this, $cached);
+
+                $this->_hydrator->setQueryComponents($cachedItem->getQueryComponents());
+                $this->_hydrator->setTableAliasMap($cachedItem->getTableAliasMap());
+
+                return $cachedItem->getResult();
+            }
+        }
+
+        return $this->_execute($params, $hydrationMode);
+    }
+
+
+    protected function _execute($params, $hydrationMode)
+    {
+        $stmt = $this->_execute2($params);
+
+        if (is_integer($stmt)) {
+            return $stmt;
+        }
+
+        $this->_hydrator->setQueryComponents($this->_parser->getQueryComponents());
+        $this->_hydrator->setTableAliasMap($this->_parser->getTableAliasMap());
+
+        return $this->_hydrator->hydrateResultSet($stmt, $hydrationMode);
+    }
+
+
+     /**
+      * @todo [TODO]
+      *
+      * Doctrine_Hydrator::setTableAliasMap
+      * _execute2 and adapt it
+      * Check Doctrine_Query_Cache (table alias map and query components)
+      * Document Doctrine_Query_Cache
+      *
+      */
+
+
+    /**
      * setResultCache
      *
      * Defines a cache driver to be used for caching result sets.
@@ -258,6 +409,13 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
+    /**
+     * getResultCacheLifetime
+     *
+     * Retrieves the lifetime of resultset cache.
+     *
+     * @return int
+     */
     public function getResultCacheLifetime()
     {
         return $this->_resultCacheTTL;
@@ -280,6 +438,13 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
+    /**
+     * getExpireResultCache
+     *
+     * Retrieves if the resultset cache is active or not.
+     *
+     * @return bool
+     */
     public function getExpireResultCache()
     {
         return $this->_expireResultCache;
@@ -345,6 +510,13 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
+    /**
+     * getQueryCacheLifetime
+     *
+     * Retrieves the lifetime of resultset cache.
+     *
+     * @return int
+     */
     public function getQueryCacheLifetime()
     {
         return $this->_queryCacheTTL;
@@ -367,6 +539,13 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
+    /**
+     * getExpireQueryCache
+     *
+     * Retrieves if the query cache is active or not.
+     *
+     * @return bool
+     */
     public function getExpireQueryCache()
     {
         return $this->_expireQueryCache;
@@ -375,6 +554,8 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
 
     /**
      * setHydrationMode
+     *
+     * Defines the processing mode to be used during hydration process.
      *
      * @params $hydrationMode Doctrine processing mode to be used during hydration process.
      * @return Doctrine_Query
@@ -387,9 +568,57 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
-
-    public function getSqlQuery($params = array())
+    /**
+     * preQuery
+     *
+     * Empty template method to provide Query subclasses with the possibility
+     * to hook into the query building procedure, doing any custom / specialized
+     * query building procedures that are neccessary.
+     *
+     * @return void
+     */
+    public function preQuery()
     {
-        return $this->getDql();
+
+    }
+
+    /**
+     * postQuery
+     *
+     * Empty template method to provide Query subclasses with the possibility
+     * to hook into the query building procedure, doing any custom / specialized
+     * post query procedures (for example logging) that are neccessary.
+     *
+     * @return void
+     */
+    public function postQuery()
+    {
+
+    }
+
+
+    /**
+     * serialize
+     *
+     * This method is automatically called when this Doctrine_Hydrate is serialized.
+     *
+     * @return array An array of serialized properties
+     */
+    public function serialize()
+    {
+        $vars = get_object_vars($this);
+    }
+
+    /**
+     * unseralize
+     *
+     * This method is automatically called everytime a Doctrine_Hydrate object is unserialized.
+     *
+     * @param string $serialized Doctrine_Record as serialized string
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+
     }
 }
