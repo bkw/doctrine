@@ -237,3 +237,34 @@ class EmailPlugin extends Doctrine_Record_Generator
 
 ++ Nesting plugins
 
+Below is an example of several behaviors to give a complete wiki database that is versionable, searchable, sluggable, and full I18n.
+
+<code type="php">
+<?php
+class Wiki extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 255);
+        $this->hasColumn('content', 'string');
+    }
+
+    public function setUp()
+    {
+    	  $options = array('fields' => array('title', 'content'));
+        $auditLog = new Doctrine_Template_Versionable($options);
+        $search = new Doctrine_Template_Searchable($options);
+    	  $slug = new Doctrine_Template_Sluggable($options);
+        $i18n = new Doctrine_Template_I18n($options);
+
+
+        $i18n->addChild($auditLog)
+             ->addChild($search)
+             ->addChild($slug);
+
+        $this->actAs($i18n);
+
+        $this->actAs('Timestampable');
+    }
+}
+</code>

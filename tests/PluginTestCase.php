@@ -86,6 +86,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($wiki->Translation['FI']->version, 2);
     }
 }
+
 class Wiki extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -96,10 +97,10 @@ class Wiki extends Doctrine_Record
 
     public function setUp()
     {
-    	$options = array('fields' => array('title', 'content'));
+    	  $options = array('fields' => array('title', 'content'));
         $auditLog = new Doctrine_Template_Versionable($options);
         $search = new Doctrine_Template_Searchable($options);
-    	$slug = new Doctrine_Template_Sluggable($options);
+    	  $slug = new Doctrine_Template_Sluggable($options);
         $i18n = new Doctrine_Template_I18n($options);
 
 
@@ -109,7 +110,6 @@ class Wiki extends Doctrine_Record
 
         $this->actAs($i18n);
 
-        $this->actAs('Timestampable');   
-
+        $this->actAs('Timestampable');
     }
 }
