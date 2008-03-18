@@ -251,12 +251,11 @@ class Wiki extends Doctrine_Record
 
     public function setUp()
     {
-    	  $options = array('fields' => array('title', 'content'));
+        $options = array('fields' => array('title', 'content'));
         $auditLog = new Doctrine_Template_Versionable($options);
         $search = new Doctrine_Template_Searchable($options);
-    	  $slug = new Doctrine_Template_Sluggable($options);
+        $slug = new Doctrine_Template_Sluggable($options);
         $i18n = new Doctrine_Template_I18n($options);
-
 
         $i18n->addChild($auditLog)
              ->addChild($search)
