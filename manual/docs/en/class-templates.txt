@@ -459,3 +459,106 @@ User:
     password:
       type: string(255)
 </code>
+
++++ Geographical
+
+PHP Example
+<code type="php">
+<?php
+class Zipcode extends Doctrine_Record
+{
+  public function setTableDefinition()
+  {
+    $this->hasColumn('zipcode', 'string', 255);
+    $this->hasColumn('longitude', 'decimal', null);
+    $this->hasColumn('latitude', 'decimal', null);
+    $this->hasColumn('city', 'string', 255);
+    $this->hasColumn('state', 'string', 2);
+    $this->hasColumn('county', 'string', 255);
+    $this->hasColumn('zip_class', 'string', 255);
+  }
+
+  public function setUp()
+  {
+    parent::setUp();
+    $this->actAs('Geographical');
+  }
+}
+</code>
+
+YAML Example
+<code type="yaml">
+Zipcode:
+  actAs: [Geographical]
+  columns:
+    zipcode: string(255)
+    longitude: decimal
+    latitude: decimal
+    city: string(255)
+    state: string(2)
+    county: string(255)
+    zip_class: string(255)
+</code>
+
+Usage
+<code type="php">
+$zipcode1 = Doctrine::getTable('Zipcode')->findOneByZipcode('37209');
+$zipcode2 = Doctrine::getTable('Zipcode')->findOneByZipcode('37388');
+
+// get distance between to zipcodes
+echo $zipcode1->getDistance($zipcode2);
+
+// Get the 50 closest zipcodes that are not in the same city
+$query = $zipcode1->getDistanceQuery();
+$query->orderby('miles asc');
+$query->addWhere($query->getRootAlias() . '.city != ?', $zipcode1->city);
+$query->limit(50);
+
+$result = $query->execute();
+
+foreach ($result as $zipcode) {
+  echo $zipcode->city . " - " . $zipcode->miles . "<br/>";
+}
+</code>
+
+Get some sample zip code data to test this
+
+http://www.populardata.com/zip_codes.zip
+
+Download and import the csv file with the following code
+
+<code type="php">
+function parseCsvFile($file, $columnheadings = false, $delimiter = ',', $enclosure = "\"")
+{
+    $row = 1;
+    $rows = array();
+    $handle = fopen($file, 'r');
+   
+    while (($data = fgetcsv($handle, 1000, $delimiter, $enclosure)) !== FALSE) {
+   
+        if (!($columnheadings == false) && ($row == 1)) {
+            $headingTexts = $data;
+        } elseif (!($columnheadings == false)) {
+            foreach ($data as $key => $value) {
+                unset($data[$key]);
+                $data[$headingTexts[$key]] = $value;
+            }
+            $rows[] = $data;
+        } else {
+            $rows[] = $data;
+        }
+        $row++;
+    }
+   
+    fclose($handle);
+    return $rows;
+}
+
+$array = parseCsvFile('zipcodes.csv', false);
+
+foreach ($array as $key => $value) {
+    $zipcode = new Zipcode();
+    $zipcode->fromArray($value);
+    $zipcode->save();
+}
+</code>
