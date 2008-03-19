@@ -190,11 +190,10 @@ abstract class Doctrine_Query_Abstract2
 
     /**
      * getDql
-     * returns the DQL query that is represented by this query object.
      *
-     * the query is built from $_dqlParts
+     * Returns the DQL query that is represented by this query object.
      *
-     * @return string   the DQL query
+     * @return string DQL query
      */
     public function getDql()
     {
@@ -443,6 +442,7 @@ abstract class Doctrine_Query_Abstract2
         return $this;
     }
 
+
     /**
      * update
      *
@@ -456,6 +456,7 @@ abstract class Doctrine_Query_Abstract2
         $this->_type = self::UPDATE;
         return $this->_addDqlQueryPart('from', $update);
     }
+
 
     /**
      * set
@@ -652,6 +653,7 @@ abstract class Doctrine_Query_Abstract2
         return $this->_returnWhereIn($where, $params, $override);
     }
 
+
     /**
      * whereNotIn
      *
@@ -724,6 +726,7 @@ abstract class Doctrine_Query_Abstract2
 
         return $this->whereIn($expr, $params, $override);
     }
+
 
     /**
      * orWhereNotIn
@@ -884,6 +887,7 @@ abstract class Doctrine_Query_Abstract2
         return $this;
     }
 
+
     /**
      * getEnumParams
      *
@@ -934,6 +938,7 @@ abstract class Doctrine_Query_Abstract2
             $params
         );
     }
+
 
     /**
      * setParams
@@ -1065,6 +1070,8 @@ abstract class Doctrine_Query_Abstract2
 
 
     /**
+     * getSqlQuery
+     *
      * Gets the SQL query that corresponds to this query object.
      * The returned SQL syntax depends on the connection driver that is used
      * by this query object at the time of this method call.

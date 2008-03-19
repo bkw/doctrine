@@ -24,6 +24,7 @@ Doctrine::autoload('Doctrine_Query_Abstract2');
 
 /**
  * Doctrine_Query2
+ *
  * A Doctrine_Query object represents a DQL query. It is used to query databases for
  * data in an object-oriented fashion. A DQL query understands relations and inheritance
  * and is dbms independant.
@@ -34,6 +35,7 @@ Doctrine::autoload('Doctrine_Query_Abstract2');
  * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 3938 $
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @todo        Proposal: This class does far too much. It should have only 1 task: Collecting
  *              the DQL query parts and the query parameters (the query state and caching options/methods
@@ -295,7 +297,8 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
      * Executes the query and populates the data set.
      *
      * @param string $params Parameters to be sent to query.
-     * @param int $hydrationMode Method of hydration to be used.
+     * @param integer $hydrationMode Doctrine processing mode to be used during hydration process.
+     *                               One of the Doctrine::HYDRATE_* constants.
      * @return Doctrine_Collection The root collection
      */
     public function execute($params = array(), $hydrationMode = null)
@@ -425,7 +428,7 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
         $this->_hydrator->setQueryComponents($cachedItem->getQueryComponents());
         $this->_hydrator->setTableAliasMap($cachedItem->getTableAliasMap());
 
-        return $cachedItem->getResult();
+        return $cachedItem->getData();
     }
 
 
@@ -636,7 +639,8 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
      *
      * Defines the processing mode to be used during hydration process.
      *
-     * @params $hydrationMode Doctrine processing mode to be used during hydration process.
+     * @param integer $hydrationMode Doctrine processing mode to be used during hydration process.
+     *                               One of the Doctrine::HYDRATE_* constants.
      * @return Doctrine_Query
      */
     public function setHydrationMode($hydrationMode)

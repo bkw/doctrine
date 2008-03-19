@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  $Id: Query.php 3938 2008-03-06 19:36:50Z romanb $
+ *  $Id: Cache.php 3938 2008-03-06 19:36:50Z romanb $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,33 +20,74 @@
  * <http://www.phpdoctrine.org>.
  */
 
-
-    /**
-     * @todo [TODO]
-     *
-     * Doctrine_Hydrator::setTableAliasMap (refactoring in hydrateResultSet)
-     * Doctrine_Hydrator::setQueryComponents (API changes)
-     * Document Doctrine_Query_Cache
-     * Figure out the possibility to remove code in _execute2 (documented as to-do item)
-     *
-     */
-
-
+/**
+ * Doctrine_Query_Cache
+ *
+ * @package     Doctrine
+ * @subpackage  Query
+ * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link        www.phpdoctrine.com
+ * @since       1.0
+ * @version     $Revision: 1393 $
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ *
+ * @todo        [TODO] Turn this class Serializable.
+ */
 class Doctrine_Query_Cache
 {
-    protected $_result;
+    /**
+     * @var mixed $_data The actual data to be stored. Can be an array, a string or an integer.
+     */
+    protected $_data;
+
+    /**
+     * @var array $_queryComponents
+     *
+     * Two dimensional array containing the map for query aliases. Main keys are component aliases.
+     *
+     * table    Table object associated with given alias.
+     * relation Relation object owned by the parent.
+     * parent   Alias of the parent.
+     * agg      Aggregates of this component.
+     * map      Name of the column / aggregate value this component is mapped to a collection.
+     */
     protected $_queryComponents;
+
+    /**
+     * @var array Table alias map. Keys are SQL aliases and values DQL aliases.
+     */
     protected $_tableAliasMap;
 
 
-    public function __construct($result, $queryComponents, $tableAliasMap)
+    /**
+     * constructor
+     *
+     * Cannot be called directly, factory methods handle this job.
+     *
+     * @param mixed $data Data to be stored.
+     * @param array $queryComponents Query components.
+     * @param array $tableAliasMap Table aliases.
+     * @return Doctrine_Query_Cache
+     */
+    protected function __construct($data, $queryComponents, $tableAliasMap)
     {
-        $this->_result = $result;
+        $this->_data = $data;
         $this->_queryComponents = $queryComponents;
         $this->_tableAliasMap = $tableAliasMap;
     }
 
 
+    /**
+     * fromResultSet
+     *
+     * Static factory method. Receives a Doctrine_Query object and generates
+     * the object after processing queryComponents. Table aliases are retrieved
+     * directly from Doctrine_Query_Parser.
+     *
+     * @param Doctrine_Query $query Doctrine_Query_Object related to this cache item.
+     * @param mixed $result Data to be stored.
+     */
     public static function fromResultSet($query, $result = false)
     {
         $parser = $query->getParser();
@@ -71,6 +112,16 @@ class Doctrine_Query_Cache
     }
 
 
+    /**
+     * fromResultSet
+     *
+     * Static factory method. Receives a Doctrine_Query object and a cached data.
+     * It handles the cache and generates the object after processing queryComponents.
+     * Table aliases are retrieved from cache.
+     *
+     * @param Doctrine_Query $query Doctrine_Query_Object related to this cache item.
+     * @param mixed $cached Cached data.
+     */
     public static function fromCachedForm($query, $cached = false)
     {
         $cached = unserialize($cached);
@@ -104,30 +155,59 @@ class Doctrine_Query_Cache
     }
 
 
+    /**
+     * toCachedForm
+     *
+     * Returns this object in serialized format, revertable using fromCachedForm.
+     *
+     * @return string Serialized cache item.
+     */
     public function toCachedForm()
     {
         return serialize(array(
-            $this->getResult(),
+            $this->getData(),
             $this->getQueryComponents(),
             $this->getTableAliasMap()
         ));
     }
 
 
-    public function getResult()
+    /**
+     * getData
+     *
+     * Returns the stored data.
+     *
+     * @return mixed Stored data.
+     */
+    public function getData()
     {
-        return $this->_result;
+        return $this->_data;
     }
 
 
+    /**
+     * getQueryComponents
+     *
+     * Returns the query components.
+     *
+     * @return mixed Query components.
+     */
+    public function getQueryComponents()
+    {
+        return $this->_queryComponents;
+    }
+
+
+    /**
+     * getTableAliasMap
+     *
+     * Returns the table aliases.
+     *
+     * @return array Table aliases.
+     */
     public function getTableAliasMap()
     {
         return $this->_tableAliasMap;
     }
 
-
-    public function getQueryComponents()
-    {
-        return $this->_queryComponents;
-    }
 }
