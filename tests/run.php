@@ -145,7 +145,6 @@ $core->addTestCase(new Doctrine_Collection_TestCase());
 $core->addTestCase(new Doctrine_Collection_Snapshot_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_FetchMode_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
-$core->addTestCase(new Doctrine_Collection_Offset_TestCase());
 $core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());
 $test->addTestCase($core);
@@ -264,8 +263,8 @@ $cache->addTestCase(new Doctrine_Cache_Apc_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Memcache_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Query_Sqlite_TestCase());
-$cache->addTestCase(new Doctrine_Cache_FileTestCase());
-$cache->addTestCase(new Doctrine_Cache_SqliteTestCase());
+//$cache->addTestCase(new Doctrine_Cache_File_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
 //$cache->addTestCase(new Doctrine_Cache_TestCase());
 $test->addTestCase($cache);
 

@@ -1,7 +1,5 @@
 <?php
-require_once("UnitTestCase.php");
-
-class Doctrine_Cache_FileTestCase extends Doctrine_UnitTestCase {
+class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase {
     public function setUp() {
         parent::setUp();
         $this->manager->setAttribute(Doctrine::ATTR_CACHE, Doctrine::CACHE_FILE);
@@ -55,5 +53,4 @@ class Doctrine_Cache_FileTestCase extends Doctrine_UnitTestCase {
     public function testGetFactory() {
         $this->assertTrue($this->cache->getTable() == $this->objTable);
     }
-
 }
