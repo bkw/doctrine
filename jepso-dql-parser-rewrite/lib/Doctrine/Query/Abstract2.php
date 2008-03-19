@@ -127,7 +127,7 @@ abstract class Doctrine_Query_Abstract2
     protected $_dqlParts = array();
 
     /**
-     * @var string $_dql Cached DQL query
+     * @var string $_dql Cached DQL query.
      */
     protected $_dql = null;
 

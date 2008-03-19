@@ -76,6 +76,11 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
      */
     protected $_parser;
 
+    /**
+     * @var string $_sql Cached SQL query.
+     */
+    protected $_sql = null;
+
 
     // Caching Stuff
 
@@ -275,6 +280,9 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
 
             $this->_state = self::STATE_CLEAN;
             $this->_sql = $this->_parser->getSql();
+
+            $this->_hydrator->setQueryComponents($this->_parser->getQueryComponents());
+            $this->_hydrator->setTableAliasMap($this->_parser->getTableAliasMap());
         }
 
         return $this->_sql;
@@ -284,21 +292,22 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     /**
      * execute
      *
-     * Executes the query and populates the data set
+     * Executes the query and populates the data set.
      *
-     * @param string $params
-     * @return Doctrine_Collection            the root collection
+     * @param string $params Parameters to be sent to query.
+     * @param int $hydrationMode Method of hydration to be used.
+     * @return Doctrine_Collection The root collection
      */
     public function execute($params = array(), $hydrationMode = null)
     {
         $params = $this->getParams($params);
 
-        if ($this->_resultCache) {
+        // If there is a CacheDriver associated to cache resultsets...
+        if ($this->_resultCache && $this->_type === self::SELECT) { // Only executes if "SELECT"
             $cacheDriver = $this->getResultCacheDriver();
 
             // Calculate hash for dql query.
             $hash = md5($this->getDql() . var_export($params, true));
-
             $cached = ($this->_expireResultCache) ? false : $cacheDriver->fetch($hash);
 
             if ($cached === false) {
@@ -311,12 +320,7 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
                 return $result;
             } else {
                 // Cache exists, recover it and return the results.
-                $cachedItem = Doctrine_Query_Cache::fromCachedForm($this, $cached);
-
-                $this->_hydrator->setQueryComponents($cachedItem->getQueryComponents());
-                $this->_hydrator->setTableAliasMap($cachedItem->getTableAliasMap());
-
-                return $cachedItem->getResult();
+                return $this->_constructQueryFromCache($cached);
             }
         }
 
@@ -324,31 +328,105 @@ class Doctrine_Query2 extends Doctrine_Query_Abstract2
     }
 
 
+    /**
+     * _execute
+     *
+     * @param string $params Parameters to be sent to query.
+     * @param int $hydrationMode Method of hydration to be used.
+     * @return Doctrine_Collection The root collection
+     */
     protected function _execute($params, $hydrationMode)
     {
+        // preQuery invoking
+        $this->preQuery();
+
+        // Query execution
         $stmt = $this->_execute2($params);
+
+        // postQuery invoking
+        $this->postQuery();
 
         if (is_integer($stmt)) {
             return $stmt;
         }
 
-        $this->_hydrator->setQueryComponents($this->_parser->getQueryComponents());
-        $this->_hydrator->setTableAliasMap($this->_parser->getTableAliasMap());
-
         return $this->_hydrator->hydrateResultSet($stmt, $hydrationMode);
     }
 
 
-     /**
-      * @todo [TODO]
-      *
-      * Doctrine_Hydrator::setTableAliasMap (refactoring in hydrateResultSet)
-      * Doctrine_Hydrator::setQueryComponents (API changes)
-      * _execute2 and adapt it
-      * Document Doctrine_Query_Cache
-      * preQuery() call
-      *
-      */
+    /**
+     * _execute2
+     *
+     * @param array $params
+     * @return PDOStatement  The executed PDOStatement.
+     */
+    protected function _execute2($params)
+    {
+        // Convert boolean params
+        // Must be done BEFORE query processment, since parser does not handle this conversion
+        $params = $this->_connection->convertBooleans($params);
+
+        // If there is a CacheDriver associated to cache queries...
+        if ($this->_queryCache || $this->_connection->getAttribute(Doctrine::ATTR_QUERY_CACHE)) {
+            $queryCacheDriver = $this->getQueryCacheDriver();
+
+            // Calculate hash for dql query.
+            $hash = md5($this->getDql() . 'DOCTRINE_QUERY_CACHE_SALT');
+            $cached = ($this->_expireQueryCache) ? false : $queryCacheDriver->fetch($hash);
+
+            if ($cached === false) {
+                // Cache does not exist, we have to create it.
+                $query = $this->getSqlQuery($params);
+
+                $cachedItem = Doctrine_Query_Cache::fromResultSet($this, $query);
+                $cacheDriver->save($hash, $cachedItem->toCachedForm(), $this->_queryCacheTTL);
+            } else {
+                // Cache exists, recover it and return the results.
+                $query = $this->_constructQueryFromCache($cached);
+            }
+        } else {
+            $query = $this->getSqlQuery($params);
+        }
+
+        // Converting enum params
+        // Must be done AFTER query processment, since it fetches for table fields
+        $params = $this->_parser->convertEnums($params);
+
+        // [TODO] Move this to parser???
+        if ($this->_parser->isLimitSubqueryUsed() &&
+            $this->_connection->getAttribute(Doctrine::ATTR_DRIVER_NAME) !== 'mysql') {
+            $params = array_merge($params, $params);
+        }
+        // [TODO] End
+
+        // Executing the query and assigning PDOStatement
+        if ($this->_type !== self::SELECT) {
+            return $this->_connection->exec($query, $params);
+        }
+
+        return $this->_connection->execute($query, $params);
+    }
+
+
+    /**
+     * _constructQueryFromCache
+     *
+     * Constructs the query from the cached form.
+     *
+     * @param string  The cached query, in a serialized form.
+     * @return array  The custom component that was cached together with the essential
+     *                query data. This can be either a result set (result caching)
+     *                or an SQL query string (query caching).
+     */
+    protected function _constructQueryFromCache($cached)
+    {
+        $cachedItem = Doctrine_Query_Cache::fromCachedForm($this, $cached);
+
+        $this->_hydrator->setQueryComponents($cachedItem->getQueryComponents());
+        $this->_hydrator->setTableAliasMap($cachedItem->getTableAliasMap());
+
+        return $cachedItem->getResult();
+    }
 
 
     /**

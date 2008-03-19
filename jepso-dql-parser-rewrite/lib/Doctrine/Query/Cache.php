@@ -21,6 +21,17 @@
  */
 
 
+    /**
+     * @todo [TODO]
+     *
+     * Doctrine_Hydrator::setTableAliasMap (refactoring in hydrateResultSet)
+     * Doctrine_Hydrator::setQueryComponents (API changes)
+     * Document Doctrine_Query_Cache
+     * Figure out the possibility to remove code in _execute2 (documented as to-do item)
+     *
+     */
+
+
 class Doctrine_Query_Cache
 {
     protected $_result;
