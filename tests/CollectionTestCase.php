@@ -264,8 +264,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $user->name = "name";
         $coll->add($user);
 
-        $this->assertEqual($coll["name"], $user);
-
+        $this->assertTrue($coll["name"] === $user);
 
         $this->connection->getTable("email")->setAttribute(Doctrine::ATTR_COLL_KEY,"address");
         $emails = $this->connection->getTable("email")->findAll();
