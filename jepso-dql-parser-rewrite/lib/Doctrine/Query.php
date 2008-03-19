@@ -20,10 +20,10 @@
  * <http://www.phpdoctrine.org>.
  */
 
-Doctrine::autoload('Doctrine_Query_Abstract2');
+Doctrine::autoload('Doctrine_Query_Abstract');
 
 /**
- * Doctrine_Query2
+ * Doctrine_Query
  *
  * A Doctrine_Query object represents a DQL query. It is used to query databases for
  * data in an object-oriented fashion. A DQL query understands relations and inheritance
@@ -61,7 +61,7 @@ Doctrine::autoload('Doctrine_Query_Abstract2');
  *              stored in {@link $_sqlParts} and the final resulting SQL query is stored in
  *              {@link $_sql}.
  */
-class Doctrine_Query2 extends Doctrine_Query_Abstract2
+class Doctrine_Query extends Doctrine_Query_Abstract
 {
     /**
      * @var Doctrine_Connection The connection used by this query object.

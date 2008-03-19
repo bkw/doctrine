@@ -21,7 +21,7 @@
  */
 
 /**
- * Doctrine_Query_Abstract2
+ * Doctrine_Query_Abstract
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -33,7 +33,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @todo        See {@link Doctrine_Query}
  */
-abstract class Doctrine_Query_Abstract2
+abstract class Doctrine_Query_Abstract
 {
     /**
      * QUERY TYPE CONSTANTS
