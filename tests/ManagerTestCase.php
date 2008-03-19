@@ -59,14 +59,9 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
     public function testDsnParser()
     {
         $mysql = 'mysql://user:pass@localhost/dbname';
-        
-        // This is what is specified in the manul
-        // I think it should be this for parse_url() to work
-        // sqlite://full/unix/path/to/file.db
-        // It expects only // since it thinks it is parsing a url
-        // The problem after that is that the dns is not valid when being passed to PDO
         $sqlite = 'sqlite:////full/unix/path/to/file.db';
         $sqlitewin = 'sqlite:///c:/full/windows/path/to/file.db';
+        $sqlitewin2 = 'sqlite:///D:\full\windows\path\to\file.db';
         
         $manager = Doctrine_Manager::getInstance();
         
@@ -120,6 +115,24 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "fragment" => NULL,
                 "database" => "c:/full/windows/path/to/file.db");
             $res = $manager->parseDsn($sqlitewin);
+            $this->assertEqual($expectedDsn, $res);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        try {
+             $expectedDsn = array(
+                "scheme" => "sqlite",
+                "host" => null,
+                "path" => 'D:\full\windows\path\to\file.db',
+                "dsn" => 'sqlite:D:\full\windows\path\to\file.db',
+                "port" => NULL,
+                "user" => null,
+                "pass" => null,
+                "query" => NULL, 
+                "fragment" => NULL,
+                "database" => 'D:\full\windows\path\to\file.db');
+            $res = $manager->parseDsn($sqlitewin2);
             $this->assertEqual($expectedDsn, $res);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
