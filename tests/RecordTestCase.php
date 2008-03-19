@@ -40,6 +40,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'GzipTest';
         $this->tables[] = 'Book';
         $this->tables[] = 'EntityAddress';
+        $this->tables[] = 'UnderscoreColumn';
         parent::prepareTables();
     }
 
@@ -903,4 +904,22 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
     }
+    
+    /*
+    public function testFirstCharUnderscoreColumn()
+    {
+        $record = new UnderscoreColumn();
+        $record->_underscore_ = 'test';
+        $record->save();
+        
+        $this->assertEqual($record->_underscore_, 'test');
+        $this->assertTrue($record->id);
+        
+        $query = new Doctrine_Query();
+        $query->from('UnderscoreColumn');
+        
+        $result = $query->execute()->getFirst();
+        $this->assertEqual($result->_underscore_, 'test');
+    }
+    */
 }
