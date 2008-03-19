@@ -47,6 +47,12 @@ class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
         $entry1->topic  = 'I love donuts!';
         $entry1->save();
     }
+    
+    public function prepareTables()
+    {
+        $this->tables = array('Forum_Entry', 'Entity', 'Phonenumber', 'Email', 'Groupuser');
+        parent::prepareTables();
+    }
 
     /**
      * Tests the basic locking mechanism

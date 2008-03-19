@@ -30,12 +30,15 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_CascadingDelete_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Record_CascadingDelete_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareData()
     { }
     public function prepareTables()
-    { }
+    {
+      $this->tables = array('ForeignKeyTest');
+      parent::prepareTables();
+    }
     public function testCascadingDeleteEmulation()
     {
         $r = new ForeignKeyTest;

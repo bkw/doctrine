@@ -70,7 +70,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
     }
 
     public function prepareTables() {
-        $this->tables += array("MyUser",
+        $this->tables = array("Data_File", "File_Owner","MyUser",
             "MyOneThing",
             "MyUserOneThing",
             "MyOtherThing",
@@ -160,11 +160,11 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             $check2[$one->one_thing_id][$one->id] = $one;
         }
 
-        $query = "FROM MyUser,
-            MyUser.MyOneThing,
-            MyUser.MyOneThing.MyUserOneThing,
-            MyUser.MyOtherThing,
-            MyUser.MyOtherThing.MyUserOtherThing";
+        $query = "FROM MyUser a1,
+            a1.MyOneThing a2,
+            a2.MyUserOneThing a3,
+            a1.MyOtherThing a4,
+            a4.MyUserOtherThing a5";
         $users = $this->connection->query($query);
         foreach($users as $u) {
             $this->assertEqual($u->MyOtherThing->count(), 6, "incorrect count of MyOtherThing");
@@ -186,11 +186,11 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             }
         }
 
-        $query = "FROM MyUser,
-            MyUser.MyOtherThing,
-            MyUser.MyOtherThing.MyUserOtherThing,
-            MyUser.MyOneThing,
-            MyUser.MyOneThing.MyUserOneThing";
+        $query = "FROM MyUser a1,
+            a1.MyOtherThing a2,
+            a2.MyUserOtherThing a3,
+            a1.MyOneThing a4,
+            a4.MyUserOneThing a5";
         $users = $this->connection->query($query);
         foreach($users as $u) {
             $this->assertEqual($u->MyOneThing->count(), 6, "incorrect count of MyOneThing");

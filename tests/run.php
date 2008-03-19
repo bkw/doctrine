@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
 ini_set('max_execution_time', 900);
-ini_set("date.timezone", "GMT+0");
+ini_set('date.timezone', 'GMT+0');
 
 require_once(dirname(__FILE__) . '/DoctrineTest.php');
 require_once dirname(__FILE__) . '/../lib/Doctrine.php';
@@ -9,33 +9,43 @@ spl_autoload_register(array('Doctrine', 'autoload'));
 spl_autoload_register(array('DoctrineTest','autoload'));
 
 $test = new DoctrineTest();
-//TICKET test cases
-$tickets = new GroupTest('Tickets tests', 'tickets');
+
+// Ticket Tests
+// If you write a ticket testcase add it to the bottom of the list, with the ticket number in it
+$tickets = new GroupTest('Tickets Tests', 'tickets');
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_381_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_424B_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_424C_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_428_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_438_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_480_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_486_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_587_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_565_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_576_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_583_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_587_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626B_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626C_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_642_TestCase());
-//If you write a ticket testcase add it here like shown above!
-$tickets->addTestCase(new Doctrine_Ticket_438_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626D_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_642_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_438_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
+
 // Only uncomment the following ticket if you want to check free() performance!
 //$tickets->addTestCase(new Doctrine_Ticket_710_TestCase());
+
 $tickets->addTestCase(new Doctrine_Ticket_736_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_741_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_749_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_786_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_876_TestCase());
 $test->addTestCase($tickets);
 
-// Connection drivers (not yet fully tested)
-$driver = new GroupTest("Driver tests", 'driver');
+// Connection Tests (not yet fully tested)
+$driver = new GroupTest('Driver Tests', 'driver');
 $driver->addTestCase(new Doctrine_Connection_Pgsql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
@@ -45,8 +55,8 @@ $driver->addTestCase(new Doctrine_Connection_Firebird_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Informix_TestCase());
 $test->addTestCase($driver);
 
-// Transaction module (FULLY TESTED)
-$transaction = new GroupTest("Transaction tests", 'transaction');
+// Transaction Tests (FULLY TESTED)
+$transaction = new GroupTest('Transaction Tests', 'transaction');
 $transaction->addTestCase(new Doctrine_Transaction_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Firebird_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Informix_TestCase());
@@ -57,8 +67,8 @@ $transaction->addTestCase(new Doctrine_Transaction_Oracle_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Sqlite_TestCase());
 $test->addTestCase($transaction);
 
-// DataDict module (FULLY TESTED)
-$data_dict = new GroupTest('DataDict tests', 'data_dict');
+// DataDict Tests (FULLY TESTED)
+$data_dict = new GroupTest('DataDict Tests', 'data_dict');
 $data_dict->addTestCase(new Doctrine_DataDict_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Firebird_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Informix_TestCase());
@@ -69,8 +79,8 @@ $data_dict->addTestCase(new Doctrine_DataDict_Oracle_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Sqlite_TestCase());
 $test->addTestCase($data_dict);
 
-// Sequence module (not yet fully tested)
-$sequence = new GroupTest('Sequence tests','sequence');
+// Sequence Tests (not yet fully tested)
+$sequence = new GroupTest('Sequence Tests', 'sequence');
 $sequence->addTestCase(new Doctrine_Sequence_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Firebird_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Informix_TestCase());
@@ -81,9 +91,8 @@ $sequence->addTestCase(new Doctrine_Sequence_Oracle_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Sqlite_TestCase());
 $test->addTestCase($sequence);
 
-// Export module (not yet fully tested)
-$export = new GroupTest('Export tests','export');
-//$export->addTestCase(new Doctrine_Export_Reporter_TestCase());
+// Export Tests (not yet fully tested)
+$export = new GroupTest('Export Tests', 'export');
 $export->addTestCase(new Doctrine_Export_Firebird_TestCase());
 $export->addTestCase(new Doctrine_Export_Informix_TestCase());
 $export->addTestCase(new Doctrine_Export_TestCase());
@@ -96,11 +105,9 @@ $export->addTestCase(new Doctrine_Export_Sqlite_TestCase());
 $export->addTestCase(new Doctrine_Export_Schema_TestCase());
 $test->addTestCase($export);
 
-//$test->addTestCase(new Doctrine_CascadingDelete_TestCase());
-
-// Import module (not yet fully tested)
-$import = new GroupTest('Import tests','import');
-//$import->addTestCase(new Doctrine_Import_TestCase());
+// Import Tests (not yet fully tested)
+$import = new GroupTest('Import Tests', 'import');
+$import->addTestCase(new Doctrine_Import_TestCase());
 $import->addTestCase(new Doctrine_Import_Firebird_TestCase());
 $import->addTestCase(new Doctrine_Import_Informix_TestCase());
 $import->addTestCase(new Doctrine_Import_Mysql_TestCase());
@@ -112,8 +119,8 @@ $import->addTestCase(new Doctrine_Import_Builder_TestCase());
 $import->addTestCase(new Doctrine_Import_Schema_TestCase());
 $test->addTestCase($import);
 
-// Expression module (not yet fully tested)
-$expression = new GroupTest('Expression tests','expression');
+// Expression Tests (not yet fully tested)
+$expression = new GroupTest('Expression Tests', 'expression');
 $expression->addTestCase(new Doctrine_Expression_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Driver_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Firebird_TestCase());
@@ -125,30 +132,30 @@ $expression->addTestCase(new Doctrine_Expression_Oracle_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Sqlite_TestCase());
 $test->addTestCase($expression);
 
-// Core
-$core = new GroupTest('Core tests: Access, Configurable, Manager, Connection, Table, UnitOfWork, Collection, Hydrate, Tokenizer','core');
+// Core Tests
+$core = new GroupTest('Core Test', 'core');
 $core->addTestCase(new Doctrine_Base_TestCase());
 $core->addTestCase(new Doctrine_Access_TestCase());
-//$core->addTestCase(new Doctrine_Configurable_TestCase());
+$core->addTestCase(new Doctrine_Configurable_TestCase());
 $core->addTestCase(new Doctrine_Manager_TestCase());
 $core->addTestCase(new Doctrine_Connection_TestCase());
 $core->addTestCase(new Doctrine_Table_TestCase());
 $core->addTestCase(new Doctrine_UnitOfWork_TestCase());
-//$core->addTestCase(new Doctrine_Collection_TestCase());
+$core->addTestCase(new Doctrine_Collection_TestCase());
 $core->addTestCase(new Doctrine_Collection_Snapshot_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_FetchMode_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
-//$core->addTestCase(new Doctrine_Collection_Offset_TestCase());
-//$core->addTestCase(new Doctrine_BatchIterator_TestCase());
+$core->addTestCase(new Doctrine_Collection_Offset_TestCase());
+$core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());
 $test->addTestCase($core);
 
-// Relation handling
-$relation = new GroupTest('Relation tests: includes TreeStructure','relation');
+// Relation Tests
+$relation = new GroupTest('Relation Tests', 'relation');
 $relation->addTestCase(new Doctrine_TreeStructure_TestCase());
 $relation->addTestCase(new Doctrine_Relation_TestCase());
-//$relation->addTestCase(new Doctrine_Relation_Access_TestCase());
-//$relation->addTestCase(new Doctrine_Relation_ManyToMany_TestCase());
+$relation->addTestCase(new Doctrine_Relation_Access_TestCase());
+$relation->addTestCase(new Doctrine_Relation_ManyToMany_TestCase());
 $relation->addTestCase(new Doctrine_Relation_ManyToMany2_TestCase());
 $relation->addTestCase(new Doctrine_Relation_OneToMany_TestCase());
 $relation->addTestCase(new Doctrine_Relation_Nest_TestCase());
@@ -156,39 +163,38 @@ $relation->addTestCase(new Doctrine_Relation_OneToOne_TestCase());
 $relation->addTestCase(new Doctrine_Relation_Parser_TestCase());
 $test->addTestCase($relation);
 
-// Datatypes
-$data_types = new GroupTest('DataTypes tests: Enum and Boolean','data_types');
+// Data Types Tests
+$data_types = new GroupTest('Data Types Tests', 'data_types');
 $data_types->addTestCase(new Doctrine_DataType_Enum_TestCase());
 $data_types->addTestCase(new Doctrine_DataType_Boolean_TestCase());
 $test->addTestCase($data_types);
 
-// Utility components
-$plugins = new GroupTest('Plugin tests: View, Validator, Hook','plugins');
-//$utility->addTestCase(new Doctrine_PessimisticLocking_TestCase());
-//$plugins->addTestCase(new Doctrine_Plugin_TestCase());
-$plugins->addTestCase(new Doctrine_View_TestCase());
-$plugins->addTestCase(new Doctrine_AuditLog_TestCase());
-$plugins->addTestCase(new Doctrine_Validator_TestCase());
-$plugins->addTestCase(new Doctrine_Validator_Future_TestCase());
-$plugins->addTestCase(new Doctrine_Validator_Past_TestCase());
-$plugins->addTestCase(new Doctrine_Hook_TestCase());
-$plugins->addTestCase(new Doctrine_I18n_TestCase());
-$test->addTestCase($plugins);
+// Behaviors Testing
+$behaviors = new GroupTest('Behaviors Tests', 'behaviors');
+//$behaviors->addTestCase(new Doctrine_Plugin_TestCase());
+$behaviors->addTestCase(new Doctrine_View_TestCase());
+$behaviors->addTestCase(new Doctrine_AuditLog_TestCase());
+$behaviors->addTestCase(new Doctrine_Validator_TestCase());
+$behaviors->addTestCase(new Doctrine_Validator_Future_TestCase());
+$behaviors->addTestCase(new Doctrine_Validator_Past_TestCase());
+$behaviors->addTestCase(new Doctrine_Hook_TestCase());
+$behaviors->addTestCase(new Doctrine_I18n_TestCase());
+$test->addTestCase($behaviors);
 
-// Db component
-$db = new GroupTest('Db tests: Db and Profiler','db');
+// Db Tests
+$db = new GroupTest('Db Tests', 'db');
 $db->addTestCase(new Doctrine_Db_TestCase());
 $db->addTestCase(new Doctrine_Connection_Profiler_TestCase());
 $test->addTestCase($db);
 
-// Eventlisteners
-$event_listener = new GroupTest('EventListener tests','event_listener');
+// Event Listener Tests
+$event_listener = new GroupTest('EventListener Tests','event_listener');
 $event_listener->addTestCase(new Doctrine_EventListener_TestCase());
 $event_listener->addTestCase(new Doctrine_EventListener_Chain_TestCase());
 $test->addTestCase($event_listener);
 
-// Query tests
-$query_tests = new GroupTest('Query tests','query_test');
+// Query Tests
+$query_tests = new GroupTest('Query Tests','query');
 $query_tests->addTestCase(new Doctrine_Query_Condition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin2_TestCase());
@@ -199,7 +205,7 @@ $query_tests->addTestCase(new Doctrine_Query_Expression_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_OneToOneFetching_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Check_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Limit_TestCase());
-//$query_tests->addTestCase(new Doctrine_Query_IdentifierQuoting_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_IdentifierQuoting_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Update_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Delete_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Join_TestCase());
@@ -207,7 +213,6 @@ $query_tests->addTestCase(new Doctrine_Query_Having_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Orderby_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Subquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Driver_TestCase());
-$query_tests->addTestCase(new Doctrine_Record_Hook_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_AggregateValue_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Where_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_From_TestCase());
@@ -222,77 +227,76 @@ $query_tests->addTestCase(new Doctrine_Query_SelectExpression_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Registry_TestCase());
 $test->addTestCase($query_tests);
 
-// Record
-$record = new GroupTest('Record tests','record');
+// Record Tests
+$record = new GroupTest('Record Tests', 'record');
+$record->addTestCase(new Doctrine_Record_Hook_TestCase());
+$record->addTestCase(new Doctrine_Record_CascadingDelete_TestCase());
 $record->addTestCase(new Doctrine_Record_Filter_TestCase());
 $record->addTestCase(new Doctrine_Record_TestCase());
 $record->addTestCase(new Doctrine_Record_State_TestCase());
 $record->addTestCase(new Doctrine_Record_SerializeUnserialize_TestCase());
-// This test used to segfault php because of infinite recursion in Connection/UnitOfWork
 $record->addTestCase(new Doctrine_Record_Lock_TestCase());
 $record->addTestCase(new Doctrine_Record_ZeroValues_TestCase());
-//$record->addTestCase(new Doctrine_Record_SaveBlankRecord_TestCase());
+$record->addTestCase(new Doctrine_Record_SaveBlankRecord_TestCase());
 $record->addTestCase(new Doctrine_Record_Inheritance_TestCase());
 $record->addTestCase(new Doctrine_Record_Synchronize_TestCase());
 $test->addTestCase($record);
 
-$test->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
-$test->addTestCase(new Doctrine_CustomResultSetOrder_TestCase());
+// Inheritance Tests
+$inheritance = new GroupTest('Inheritance Tests', 'inheritance');
+$inheritance->addTestCase(new Doctrine_CtiColumnAggregation_TestCase());
+$inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
+$inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
+$inheritance->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
+$test->addTestCase($inheritance);
 
-$test->addTestCase(new Doctrine_CtiColumnAggregation_TestCase());
-$test->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
-$test->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
-$test->addTestCase(new Doctrine_ColumnAlias_TestCase());
-
-
-$test->addTestCase(new Doctrine_RawSql_TestCase());
-
-$test->addTestCase(new Doctrine_NewCore_TestCase());
-
-$test->addTestCase(new Doctrine_Template_TestCase());
-$test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
-
-// Search tests
-$search = new GroupTest('Search tests','search');
+// Search Tests
+$search = new GroupTest('Search Tests', 'search');
 $search->addTestCase(new Doctrine_Search_TestCase());
 $search->addTestCase(new Doctrine_Search_Query_TestCase());
 $search->addTestCase(new Doctrine_Search_File_TestCase());
-
 $test->addTestCase($search);
 
-// Cache tests
-$cache = new GroupTest('Cache tests','cache');
+// Cache Tests
+$cache = new GroupTest('Cache Tests', 'cache');
 $cache->addTestCase(new Doctrine_Query_Cache_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Apc_TestCase());
-//$cache->addTestCase(new Doctrine_Cache_Memcache_TestCase());
-//$cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
-//$cache->addTestCase(new Doctrine_Cache_Query_SqliteTestCase());
-//$cache->addTestCase(new Doctrine_Cache_FileTestCase());
-//$cache->addTestCase(new Doctrine_Cache_SqliteTestCase());
+$cache->addTestCase(new Doctrine_Cache_Memcache_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Query_Sqlite_TestCase());
+$cache->addTestCase(new Doctrine_Cache_FileTestCase());
+$cache->addTestCase(new Doctrine_Cache_SqliteTestCase());
 //$cache->addTestCase(new Doctrine_Cache_TestCase());
 $test->addTestCase($cache);
 
 // Migration Tests
-$migration = new GroupTest('Migration tests','migration');
+$migration = new GroupTest('Migration Tests', 'migration');
 $migration->addTestCase(new Doctrine_Migration_TestCase());
-//$migration->addTestCase(new Doctrine_Migration_Mysql_TestCase());
 $test->addTestCase($migration);
 
-$test->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
-
-$parser = new GroupTest('Parser tests', 'parser');
+// File Parser Tests
+$parser = new GroupTest('Parser Tests', 'parser');
 $parser->addTestCase(new Doctrine_Parser_TestCase());
 $test->addTestCase($parser);
 
+// Data Fixtures Tests
 $data = new GroupTest('Data exporting/importing fixtures', 'data_fixtures');
 $data->addTestCase(new Doctrine_Data_Import_TestCase());
 $data->addTestCase(new Doctrine_Data_Export_TestCase());
 $test->addTestCase($data);
 
-$jwage = new GroupTest('Jwage', 'jwage');
-$jwage->addTestCase(new Doctrine_Jwage_TestCase());
-$test->addTestCase($jwage);
+// Unsorted Tests. These need to be sorted and placed in the appropriate group
+$unsorted = new GroupTest('Unsorted Tests', 'unsorted');
+$unsorted->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
+$unsorted->addTestCase(new Doctrine_CustomResultSetOrder_TestCase());
+$unsorted->addTestCase(new Doctrine_ColumnAlias_TestCase());
+//$unsorted->addTestCase(new Doctrine_RawSql_TestCase());
+$unsorted->addTestCase(new Doctrine_NewCore_TestCase());
+$unsorted->addTestCase(new Doctrine_Template_TestCase());
+$unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
+$unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
+$test->addTestCase($unsorted);
 
 $test->run();
 
-echo memory_get_peak_usage() / 1024 . "\n";
+echo "\nMemory Usage: " . memory_get_peak_usage() / 1024 . "\n";

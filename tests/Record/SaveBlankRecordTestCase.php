@@ -44,19 +44,19 @@ class Doctrine_Record_SaveBlankRecord_TestCase extends Doctrine_UnitTestCase
 
     public function testSaveBlankRecord()
     {
-        $user = new User();
+        $user = new MyUser();
         $user->state('TDIRTY');
         $user->save();
         
-        $this->assertTrue(isset($user['id']));
+        $this->assertTrue(isset($user['id']) && $user['id']);
     }
     
     public function testSaveBlankRecord2()
     {
-        $myUserGroup = new MyUserGroup();
-        $myUserGroup->state('TDIRTY');
-        $myUserGroup->save();
+        $group = new MyUserGroup();
+        $group->state('TDIRTY');
+        $group->save();
         
-        $this->assertTrue(isset($user['id']));
+        $this->assertTrue(isset($group['id']) && $group['id']);
     }
 }

@@ -27,8 +27,6 @@ class Doctrine_Ticket_741_TestCase extends Doctrine_UnitTestCase
 
 }
 
-
-
 class Parent741 extends Doctrine_Record
 {
   public function setTableDefinition()

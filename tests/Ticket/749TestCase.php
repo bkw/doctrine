@@ -45,18 +45,14 @@ class Doctrine_Ticket_749_TestCase extends Doctrine_UnitTestCase
 
     public function testSelectDataFromSubclassAsCollection()
     {
-        $records = Doctrine_Query::create()->query('
-            FROM Record749 r ORDER BY r.title                                           
-        ', array());
+        $records = Doctrine_Query::create()->query('FROM Record749 r ORDER BY r.title', array());
         
         $this->verifyRecords($records);
     }
     
     public function testSelectDataFromParentClassAsCollection()
     {
-        $records = Doctrine_Query::create()->query('
-            FROM Parent749 p ORDER BY p.title                                           
-        ', array());
+        $records = Doctrine_Query::create()->query('FROM Parent749 p ORDER BY p.title', array());
         
         $this->verifyRecords($records);
     }
@@ -78,7 +74,7 @@ class Doctrine_Ticket_749_TestCase extends Doctrine_UnitTestCase
             try {
                 $this->assertEqual($record['Related']['content'], $expected['content']);
             } catch (Exception $e) {
-                $this->fail('Caught exception when trying to get related content.');
+                $this->fail('Caught exception when trying to get related content: ' . $e->getMessage());
             }
         }        
     }
@@ -98,7 +94,7 @@ class Parent749 extends Doctrine_Record
     $this->hasColumn('title', 'string', 255, array ());
     $this->hasColumn('type', 'integer', 11, array ());
 
-    $this->option('subclasses', array('Record749'));
+    $this->setSubclasses(array('Record749' => array('type' => 1)));
   }
 
   public function setUp()
@@ -119,8 +115,6 @@ class Record749 extends Parent749
     parent::setUp();
     $this->hasOne('RelatedRecord749 as Related', array('local' => 'id',
                                                     'foreign' => 'record_id'));
-
-    $this->setInheritanceMap(array('type' => '1'));
   }
 }
 

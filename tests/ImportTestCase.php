@@ -45,8 +45,9 @@ class Doctrine_Import_TestCase extends Doctrine_UnitTestCase
 
         $this->conn = Doctrine_Manager::connection($this->dbh);
 
-        $this->conn->import->import('Import/_files');
+        $this->conn->import->importSchema('Import/_files');
         
         $this->assertTrue(file_exists('Import/_files/ImportTestUser.php'));
+        $this->assertTrue(file_exists('Import/_files/generated/BaseImportTestUser.php'));
     }
 }

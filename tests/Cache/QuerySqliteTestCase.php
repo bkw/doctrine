@@ -1,6 +1,4 @@
 <?php
-require_once("UnitTestCase.php");
-
 class Doctrine_Cache_Query_SqliteTestCase extends Doctrine_UnitTestCase {
     public function setUp() {
         parent::setUp();
