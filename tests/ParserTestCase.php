@@ -49,6 +49,7 @@ class Doctrine_Parser_TestCase extends Doctrine_UnitTestCase
         $array = Doctrine_Parser::load('test.yml', 'yml');
         
         $this->assertEqual($array, array('test' => 'good job', 'test2' => true, array('testing' => false)));
+        unlink('test.yml');
     }
     
     public function testParserSupportsEmbeddingPhpSyntax()
@@ -73,6 +74,7 @@ w00t: not now
         $parser->doDump('test', 'test.yml');
         
         $this->assertEqual('test', file_get_contents('test.yml'));
+        unlink('test.yml');
     }
     
     public function testParserReturningLoadedData()
