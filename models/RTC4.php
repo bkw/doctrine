@@ -5,6 +5,6 @@ class RTC4 extends Doctrine_Record {
         $this->hasColumn('name', 'string', 20);
     }
     public function setUp() {
-        $this->hasMany('M2MTest2', 'JC3.c2_id');
+        $this->hasMany('M2MTest2', array('local' => 'c1_id', 'foreign' => 'c2_id', 'refClass' => 'JC3'));
     }
 }

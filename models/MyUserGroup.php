@@ -12,7 +12,7 @@ class MyUserGroup extends Doctrine_Record
   
     public function setUp()
     {
-        $this->hasOne('MyGroup as MyGroup', 'MyUserGroup.group_id');
-        $this->hasOne('MyUser as MyUser', 'MyUserGroup.user_id');
+        $this->hasOne('MyGroup as MyGroup', array('local' => 'group_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
+        $this->hasOne('MyUser as MyUser', array('local' => 'user_id', 'foreign' => 'id', 'onDelete' => 'CASCADE'));
     }
 }
