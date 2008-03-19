@@ -49,5 +49,6 @@ class Doctrine_Import_TestCase extends Doctrine_UnitTestCase
         
         $this->assertTrue(file_exists('Import/_files/ImportTestUser.php'));
         $this->assertTrue(file_exists('Import/_files/generated/BaseImportTestUser.php'));
+        Doctrine::removeDirectories('Import/_files');
     }
 }
