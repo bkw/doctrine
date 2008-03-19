@@ -112,6 +112,19 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(Doctrine_Validator::isValidType($var, 'object'));
     }
 
+    /*public function testDecimalType()
+    {
+        $validDecimals = array('99.22', 99999.3);
+        foreach ($validDecimals as $value) {
+            $this->assertTrue(Doctrine_Validator::isValidType($value, 'decimal'));
+        }
+        
+        $invalidDecimals = array('decimal', '99999999', '99999999.3', '0.0002', 0.001);
+        foreach ($invalidDecimals as $value) {
+            $this->assertFalse(Doctrine_Validator::isValidType($value, 'decimal'));
+        }
+        
+    }*/
 
     public function testValidate2() 
     {
@@ -139,6 +152,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
 
     public function testValidate() 
     {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
         $user = $this->connection->getTable('User')->find(4);
 
         $set = array('password' => 'this is an example of too long password',
@@ -171,6 +185,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $stack = $email->errorStack();
 
         $this->assertTrue(in_array('unique', $stack['address']));
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 
     /**
@@ -382,6 +397,10 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $dve) {
             $s = $dve->getInvalidRecords();
             $this->assertEqual(1, count($dve->getInvalidRecords()));
+            $invalids = $dve->getInvalidRecords();
+            //var_dump($invalids[0]->getErrorStack());
+            //echo "<br/><br/>";
+            //var_dump($invalids[1]->getErrorStack());
             $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();
 
             $this->assertTrue(in_array('notnull', $stack['address1']));
