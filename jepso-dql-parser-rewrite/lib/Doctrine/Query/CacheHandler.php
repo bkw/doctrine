@@ -21,7 +21,7 @@
  */
 
 /**
- * Doctrine_Query_Cache
+ * Doctrine_Query_CacheHandler
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -34,7 +34,7 @@
  *
  * @todo        [TODO] Turn this class Serializable.
  */
-class Doctrine_Query_Cache
+class Doctrine_Query_CacheHandler
 {
     /**
      * @var mixed $_data The actual data to be stored. Can be an array, a string or an integer.
@@ -68,7 +68,7 @@ class Doctrine_Query_Cache
      * @param mixed $data Data to be stored.
      * @param array $queryComponents Query components.
      * @param array $tableAliasMap Table aliases.
-     * @return Doctrine_Query_Cache
+     * @return Doctrine_Query_CacheHandler
      */
     protected function __construct($data, $queryComponents, $tableAliasMap)
     {
@@ -90,10 +90,10 @@ class Doctrine_Query_Cache
      */
     public static function fromResultSet($query, $result = false)
     {
-        $parser = $query->getParser();
+        $parserResult = $query->getParserResult();
         $componentInfo = array();
 
-        foreach ($parser->getQueryComponents() as $alias => $components) {
+        foreach ($parserResult->getQueryComponents() as $alias => $components) {
             if ( ! isset($components['parent'])) {
                 $componentInfo[$alias][] = $components['mapper']->getComponentName();
                 //$componentInfo[$alias][] = $components['mapper']->getComponentName();
@@ -108,7 +108,7 @@ class Doctrine_Query_Cache
             }
         }
 
-        return new self($result, $componentInfo, $parser->getTableAliasMap());
+        return new self($result, $componentInfo, $parserResult->getTableAliasMap());
     }
 
 

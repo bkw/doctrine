@@ -89,6 +89,7 @@ abstract class Doctrine_Query_Production
         }
 
         $retval = $this->_parser->getProduction($method)->execute($params);
+
         $this->_parser->getPrinter()->endProduction();
 
         return $retval;
