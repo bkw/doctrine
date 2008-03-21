@@ -178,6 +178,7 @@ $behaviors->addTestCase(new Doctrine_Validator_Future_TestCase());
 $behaviors->addTestCase(new Doctrine_Validator_Past_TestCase());
 $behaviors->addTestCase(new Doctrine_Hook_TestCase());
 $behaviors->addTestCase(new Doctrine_I18n_TestCase());
+$behaviors->addTestCase(new Doctrine_Sluggable_TestCase());
 $test->addTestCase($behaviors);
 
 // Db Tests
