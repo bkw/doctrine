@@ -160,6 +160,17 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($result2, 'Successfully dropped database for connection "doctrine2" at path "/tmp/doctrine2.db"');
     }
     
+    public function testConnectionInformationDecoded()
+    {
+      $dsn = 'mysql://' . urlencode('test/t') . ':' . urlencode('p@ssword') . '@localhost/' . urlencode('db/name');
+
+      $conn = Doctrine_Manager::connection($dsn);
+      $options = $conn->getOptions();
+
+      $this->assertEqual($options['username'], 'test/t');
+      $this->assertEqual($options['password'], 'p@ssword');
+      $this->assertEqual($options['dsn'], 'mysql:host=localhost;dbname=db/name');
+    }
     public function prepareData() { }
     public function prepareTables() { }
 }
