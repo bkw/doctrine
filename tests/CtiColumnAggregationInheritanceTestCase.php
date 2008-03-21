@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_CtiColumnAggregation_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_CtiColumnAggregationInheritance_TestCase extends Doctrine_UnitTestCase 
 {
 
 }

@@ -243,6 +243,7 @@ $test->addTestCase($record);
 
 // Inheritance Tests
 $inheritance = new GroupTest('Inheritance Tests', 'inheritance');
+$inheritance->addTestCase(new Doctrine_ConcreteInheritance_TestCase());
 $inheritance->addTestCase(new Doctrine_CtiColumnAggregation_TestCase());
 $inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
 $inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
