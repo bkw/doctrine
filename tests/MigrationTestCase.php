@@ -51,4 +51,23 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
         // Make sure the current version is 0
         $this->assertEqual($migration->getCurrentVersion(), 0);
     }
+    
+    public function testMigrationClassNameInflected()
+    {
+        $tests = array('test-class-Name',
+                       'test_class_name',
+                       'TestClassName',
+                       'test:class:name',
+                       'test(class)name',
+                       'test*class*name',
+                       'test class name',
+                       'test&class&name');
+
+        $builder = new Doctrine_Migration_Builder();
+
+        foreach ($tests as $test) {
+            $code = $builder->generateMigrationClass($test);
+            $this->assertTrue(strpos($code, 'TestClassName'));
+        }
+    }
 }

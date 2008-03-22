@@ -173,13 +173,18 @@ $behaviors = new GroupTest('Behaviors Tests', 'behaviors');
 //$behaviors->addTestCase(new Doctrine_Plugin_TestCase());
 $behaviors->addTestCase(new Doctrine_View_TestCase());
 $behaviors->addTestCase(new Doctrine_AuditLog_TestCase());
-$behaviors->addTestCase(new Doctrine_Validator_TestCase());
-$behaviors->addTestCase(new Doctrine_Validator_Future_TestCase());
-$behaviors->addTestCase(new Doctrine_Validator_Past_TestCase());
 $behaviors->addTestCase(new Doctrine_Hook_TestCase());
 $behaviors->addTestCase(new Doctrine_I18n_TestCase());
 $behaviors->addTestCase(new Doctrine_Sluggable_TestCase());
+$behaviors->addTestCase(new Doctrine_Record_Generator_TestCase());
 $test->addTestCase($behaviors);
+
+// Validator Testing
+$validators = new GroupTest('Vavlidators Testing', 'validators');
+$validators->addTestCase(new Doctrine_Validator_TestCase());
+$validators->addTestCase(new Doctrine_Validator_Future_TestCase());
+$validators->addTestCase(new Doctrine_Validator_Past_TestCase());
+$test->addTestCase($validators);
 
 // Db Tests
 $db = new GroupTest('Db Tests', 'db');
