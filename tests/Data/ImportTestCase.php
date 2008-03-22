@@ -32,4 +32,113 @@
  */
 class Doctrine_Data_Import_TestCase extends Doctrine_UnitTestCase 
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'User';
+        $this->tables[] = 'Phonenumber';
+        $this->tables[] = 'Album';
+        parent::prepareTables();
+    }
+    
+    public function testInlineMany()
+    {
+        $yml = <<<END
+---
+User: 
+  User_1: 
+    name: jwage
+    password: changeme
+    Phonenumber: 
+      Phonenumber_1: 
+        phonenumber: 6155139185
+END;
+        file_put_contents('test.yml', $yml);
+        Doctrine::loadData('test.yml');
+
+        $this->conn->clear();
+
+        $query = new Doctrine_Query();
+        $query->from('User u, u.Phonenumber')
+              ->where('u.name = ?', 'jwage');
+
+        $user = $query->execute()->getFirst();
+
+        $this->assertEqual($user->name, 'jwage');
+        $this->assertEqual($user->Phonenumber->count(), 1);
+        $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
+
+        $data = new Doctrine_Data();
+        $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
+
+        $array = Doctrine_Parser::load('test.yml', 'yml');
+        $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['phonenumber']));
+        $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['Entity']));
+        $this->assertTrue(isset($array['User']['User_4']['name']));
+        $this->assertTrue(isset($array['User']['User_4']['Email']));
+
+        unlink('test.yml');
+    }
+
+    public function testInlineOne()
+    {
+        $yml = <<<END
+---
+Album:
+  Album_1:
+    name: zYne- Christmas Album
+    User:
+      name: zYne-
+      password: changeme
+END;
+        file_put_contents('test.yml', $yml);
+        Doctrine::loadData('test.yml');
+
+        $this->conn->clear();
+
+        $query = new Doctrine_Query();
+        $query->from('User u, u.Album a, a.User u2')
+              ->where('u.name = ?', 'zYne-');
+
+        $user = $query->execute()->getFirst();
+
+        $this->assertEqual($user->name, 'zYne-');
+        $this->assertEqual($user->Album->count(), 1);
+        $this->assertEqual($user->Album[0]->name, 'zYne- Christmas Album');
+
+        unlink('test.yml');
+    }
+
+    public function testNormalMany()
+    {
+        $yml = <<<END
+---
+User: 
+  User_1: 
+    name: jwage2
+    password: changeme
+    Phonenumber: [Phonenumber_1, Phonenumber_2]
+Phonenumber:
+  Phonenumber_1:
+    phonenumber: 6155139185
+  Phonenumber_2:
+    phonenumber: 6153137679
+END;
+        file_put_contents('test.yml', $yml);
+        Doctrine::loadData('test.yml');
+
+        $this->conn->clear();
+
+        $query = new Doctrine_Query();
+        $query->from('User u, u.Phonenumber')
+              ->where('u.name = ?', 'jwage2');
+
+        $user = $query->execute()->getFirst();
+
+        $this->assertEqual($user->name, 'jwage2');
+        $this->assertEqual($user->Phonenumber->count(), 2);
+        $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
+        $this->assertEqual($user->Phonenumber[1]->phonenumber, '6153137679');
+
+        unlink('test.yml');
+    }
 }
