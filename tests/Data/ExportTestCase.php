@@ -38,16 +38,17 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
         parent::prepareTables();
     }
 
-    public function testI18nExport()
+    public function prepareData()
     {
         $i = new I18nTest();
-        $i->id = 1;
+        $i->id = 500;
         $i->Translation['en']->title = 'english test';
         $i->Translation['fr']->title = 'french test';
         $i->save();
+    }
 
-        $this->conn->clear();
-
+    public function testI18nExport()
+    {
         $data = new Doctrine_Data();
         $data->exportData('test.yml', 'yml', array('I18nTest'));
 
@@ -55,7 +56,7 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
 
         $this->assertTrue( ! empty($array));
 
-        $this->assertEqual($array['I18nTest']['I18nTest_1']['Translation']['en']['title'], 'english test');
-        $this->assertEqual($array['I18nTest']['I18nTest_1']['Translation']['fr']['title'], 'french test');
+        $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['en']['title']));
+        $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['fr']['title']));
     }
 }
