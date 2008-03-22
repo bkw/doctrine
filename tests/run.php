@@ -287,7 +287,7 @@ $test->addTestCase($parser);
 
 // Data Fixtures Tests
 $data = new GroupTest('Data exporting/importing fixtures', 'data_fixtures');
-//$data->addTestCase(new Doctrine_Data_Import_TestCase());
+$data->addTestCase(new Doctrine_Data_Import_TestCase());
 $data->addTestCase(new Doctrine_Data_Export_TestCase());
 $test->addTestCase($data);
 

@@ -49,7 +49,7 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
         $this->conn->clear();
 
         $data = new Doctrine_Data();
-        $data->exportData('test.yml', 'yml', array('User', 'I18nTest'));
+        $data->exportData('test.yml', 'yml', array('I18nTest'));
 
         $array = Doctrine_Parser::load('test.yml', 'yml');
 

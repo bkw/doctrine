@@ -37,6 +37,7 @@ class Doctrine_Data_Import_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'User';
         $this->tables[] = 'Phonenumber';
         $this->tables[] = 'Album';
+        $this->tables[] = 'I18nTest';
         parent::prepareTables();
     }
     
@@ -140,5 +141,39 @@ END;
         $this->assertEqual($user->Phonenumber[1]->phonenumber, '6153137679');
 
         unlink('test.yml');
+    }
+
+    public function testI18nImport()
+    {
+        $yml = <<<END
+---
+I18nTest:
+  I18nTest_1:
+    id: 1
+    Translation:
+      en:
+        name: english name
+        title: english title
+      fr:
+        name: french name
+        title: french title
+END;
+        file_put_contents('test.yml', $yml);
+        Doctrine::loadData('test.yml');
+
+        $this->conn->clear();
+
+        $query = new Doctrine_Query();
+        $query->from('I18nTest i, i.Translation t')
+              ->where('i.id = ?', 1);
+
+        $i = $query->execute()->getFirst();
+
+        $this->assertEqual($i->id, 1);
+        $this->assertEqual($i->Translation['en']->name, 'english name');
+        $this->assertEqual($i->Translation['fr']->name, 'french name');
+        $this->assertEqual($i->Translation['en']->title, 'english title');
+        $this->assertEqual($i->Translation['fr']->title, 'french title');
+        unlink('test.yml');  
     }
 }
