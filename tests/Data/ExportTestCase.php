@@ -49,14 +49,21 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
 
     public function testI18nExport()
     {
-        $data = new Doctrine_Data();
-        $data->exportData('test.yml', 'yml', array('I18nTest'));
+        try {
+            $data = new Doctrine_Data();
+            $data->exportData('test.yml', 'yml', array('I18nTest'));
 
-        $array = Doctrine_Parser::load('test.yml', 'yml');
+            $array = Doctrine_Parser::load('test.yml', 'yml');
 
-        $this->assertTrue( ! empty($array));
+            $this->assertTrue( ! empty($array));
 
-        $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['en']['title']));
-        $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['fr']['title']));
+            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['en']['title']));
+            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['fr']['title']));
+            
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+        unlink('test.yml');
     }
 }

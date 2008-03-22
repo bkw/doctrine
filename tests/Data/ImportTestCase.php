@@ -53,29 +53,35 @@ User:
       Phonenumber_1: 
         phonenumber: 6155139185
 END;
-        file_put_contents('test.yml', $yml);
-        Doctrine::loadData('test.yml');
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
 
-        $this->conn->clear();
+            $this->conn->clear();
 
-        $query = new Doctrine_Query();
-        $query->from('User u, u.Phonenumber')
-              ->where('u.name = ?', 'jwage');
+            $query = new Doctrine_Query();
+            $query->from('User u, u.Phonenumber')
+                  ->where('u.name = ?', 'jwage');
 
-        $user = $query->execute()->getFirst();
+            $user = $query->execute()->getFirst();
 
-        $this->assertEqual($user->name, 'jwage');
-        $this->assertEqual($user->Phonenumber->count(), 1);
-        $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
+            $this->assertEqual($user->name, 'jwage');
+            $this->assertEqual($user->Phonenumber->count(), 1);
+            $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
 
-        $data = new Doctrine_Data();
-        $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
+            $data = new Doctrine_Data();
+            $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
 
-        $array = Doctrine_Parser::load('test.yml', 'yml');
-        $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['phonenumber']));
-        $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['Entity']));
-        $this->assertTrue(isset($array['User']['User_4']['name']));
-        $this->assertTrue(isset($array['User']['User_4']['Email']));
+            $array = Doctrine_Parser::load('test.yml', 'yml');
+            $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['phonenumber']));
+            $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['Entity']));
+            $this->assertTrue(isset($array['User']['User_4']['name']));
+            $this->assertTrue(isset($array['User']['User_4']['Email']));
+            
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
 
         unlink('test.yml');
     }
@@ -91,21 +97,26 @@ Album:
       name: zYne-
       password: changeme
 END;
-        file_put_contents('test.yml', $yml);
-        Doctrine::loadData('test.yml');
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
 
-        $this->conn->clear();
+            $this->conn->clear();
 
-        $query = new Doctrine_Query();
-        $query->from('User u, u.Album a, a.User u2')
-              ->where('u.name = ?', 'zYne-');
+            $query = new Doctrine_Query();
+            $query->from('User u, u.Album a, a.User u2')
+                  ->where('u.name = ?', 'zYne-');
 
-        $user = $query->execute()->getFirst();
+            $user = $query->execute()->getFirst();
 
-        $this->assertEqual($user->name, 'zYne-');
-        $this->assertEqual($user->Album->count(), 1);
-        $this->assertEqual($user->Album[0]->name, 'zYne- Christmas Album');
+            $this->assertEqual($user->name, 'zYne-');
+            $this->assertEqual($user->Album->count(), 1);
+            $this->assertEqual($user->Album[0]->name, 'zYne- Christmas Album');
 
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
         unlink('test.yml');
     }
 
@@ -124,22 +135,27 @@ Phonenumber:
   Phonenumber_2:
     phonenumber: 6153137679
 END;
-        file_put_contents('test.yml', $yml);
-        Doctrine::loadData('test.yml');
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
 
-        $this->conn->clear();
+            $this->conn->clear();
 
-        $query = new Doctrine_Query();
-        $query->from('User u, u.Phonenumber')
-              ->where('u.name = ?', 'jwage2');
+            $query = new Doctrine_Query();
+            $query->from('User u, u.Phonenumber')
+                  ->where('u.name = ?', 'jwage2');
 
-        $user = $query->execute()->getFirst();
+            $user = $query->execute()->getFirst();
 
-        $this->assertEqual($user->name, 'jwage2');
-        $this->assertEqual($user->Phonenumber->count(), 2);
-        $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
-        $this->assertEqual($user->Phonenumber[1]->phonenumber, '6153137679');
+            $this->assertEqual($user->name, 'jwage2');
+            $this->assertEqual($user->Phonenumber->count(), 2);
+            $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
+            $this->assertEqual($user->Phonenumber[1]->phonenumber, '6153137679');
 
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
         unlink('test.yml');
     }
 
@@ -158,22 +174,28 @@ I18nTest:
         name: french name
         title: french title
 END;
-        file_put_contents('test.yml', $yml);
-        Doctrine::loadData('test.yml');
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
 
-        $this->conn->clear();
+            $this->conn->clear();
 
-        $query = new Doctrine_Query();
-        $query->from('I18nTest i, i.Translation t')
-              ->where('i.id = ?', 1234);
+            $query = new Doctrine_Query();
+            $query->from('I18nTest i, i.Translation t')
+                  ->where('i.id = ?', 1234);
 
-        $i = $query->execute()->getFirst();
+            $i = $query->execute()->getFirst();
 
-        $this->assertEqual($i->id, 1234);
-        $this->assertEqual($i->Translation['en']->name, 'english name');
-        $this->assertEqual($i->Translation['fr']->name, 'french name');
-        $this->assertEqual($i->Translation['en']->title, 'english title');
-        $this->assertEqual($i->Translation['fr']->title, 'french title');
+            $this->assertEqual($i->id, 1234);
+            $this->assertEqual($i->Translation['en']->name, 'english name');
+            $this->assertEqual($i->Translation['fr']->name, 'french name');
+            $this->assertEqual($i->Translation['en']->title, 'english title');
+            $this->assertEqual($i->Translation['fr']->title, 'french title');
+
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
 
         unlink('test.yml');  
     }
