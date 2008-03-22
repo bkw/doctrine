@@ -182,7 +182,7 @@ class SluggableItem extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        $this->actAs('Sluggable', array());
+        $this->actAs('Sluggable', array('unique' => true));
     }
 
     public function __toString()
@@ -204,7 +204,7 @@ class SluggableItem1 extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        $this->actAs('Sluggable', array());
+        $this->actAs('Sluggable', array('unique' => true));
     }
 
     public function __toString()
@@ -232,7 +232,8 @@ class SluggableItem2 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable', array('fields' => array('name')));
+        $this->actAs('Sluggable', array('unique' => true,
+                                        'fields' => array('name')));
     }
 }
 
@@ -249,10 +250,8 @@ class SluggableItem3 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable',   array(  'fields' => array('name'),
-                                            'unique' => false
-                                            
-        ));
+        $this->actAs('Sluggable', array('unique' => false,
+                                        'fields' => array('name')));
     }
 }
 
@@ -270,7 +269,8 @@ class SluggableItem4 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable', array('fields' => array('name', 'ref')));
+        $this->actAs('Sluggable', array('unique' => true,
+                                        'fields' => array('name', 'ref')));
     }
 }
 
@@ -288,8 +288,9 @@ class SluggableItem5 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable',   array(  'fields' => array('name'),
-                                            'uniqueBy' => array('user_id')
+        $this->actAs('Sluggable',   array('fields'      => array('name'),
+                                          'uniqueBy'    => array('user_id'),
+                                          'unique'      => true
         ));
     }
 }
@@ -301,6 +302,8 @@ class SluggableItem6 extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->setTableName('my_item6');
+        // Make sure this works the same with a column that is not named id
+        $this->hasColumn('iid', 'integer', null, array('primary' => true, 'autoincrement' => true));
         $this->hasColumn('name', 'string', 50);
         $this->hasColumn('user_id', 'string', 50);
         $this->hasColumn('account_id', 'string', 50);
@@ -309,8 +312,9 @@ class SluggableItem6 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable',   array(  'fields' => array('name'),
-                                            'uniqueBy' => array('user_id', 'account_id')
+        $this->actAs('Sluggable',   array('fields'      => array('name'),
+                                          'uniqueBy'    => array('user_id', 'account_id'),
+                                          'unique'      => true
         ));
     }
 }
@@ -328,8 +332,8 @@ class SluggableItem7 extends Doctrine_Record
     public function setUp()
     { 
         parent::setUp();
-        $this->actAs('Sluggable', array('fields' => array('name'),
-                                        'uniqueIndex' => false    
-        ));
+        $this->actAs('Sluggable', array('fields'        => array('name'),
+                                        'uniqueIndex'   => false,
+                                        'unique'        => true));
     }
 }
