@@ -86,9 +86,9 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         try {
             $expectedDsn = array(
                 "scheme" => "sqlite",
-                "host" => null,
-                "user" => null,
-                "pass" => null,
+                "host" => NULL,
+                "user" => NULL,
+                "pass" => NULL,
                 "path" => "/full/unix/path/to/file.db",
                 "dsn" => "sqlite:/full/unix/path/to/file.db",
                 "port" => NULL,
@@ -105,12 +105,12 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         try {
              $expectedDsn = array(
                 "scheme" => "sqlite",
-                "host" => null,
+                "host" => NULL,
                 "path" => "c:/full/windows/path/to/file.db",
                 "dsn" => "sqlite:c:/full/windows/path/to/file.db",
                 "port" => NULL,
-                "user" => null,
-                "pass" => null,
+                "user" => NULL,
+                "pass" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
                 "database" => "c:/full/windows/path/to/file.db");
@@ -123,15 +123,15 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         try {
              $expectedDsn = array(
                 "scheme" => "sqlite",
-                "host" => null,
-                "path" => 'D:\full\windows\path\to\file.db',
-                "dsn" => 'sqlite:D:\full\windows\path\to\file.db',
+                "host" => NULL,
+                "path" => 'D:/full/windows/path/to/file.db',
+                "dsn" => 'sqlite:D:/full/windows/path/to/file.db',
                 "port" => NULL,
-                "user" => null,
-                "pass" => null,
+                "user" => NULL,
+                "pass" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
-                "database" => 'D:\full\windows\path\to\file.db');
+                "database" => 'D:/full/windows/path/to/file.db');
             $res = $manager->parseDsn($sqlitewin2);
             $this->assertEqual($expectedDsn, $res);
         } catch (Exception $e) {
