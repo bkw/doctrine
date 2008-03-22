@@ -38,6 +38,7 @@ class Doctrine_Data_Import_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'Phonenumber';
         $this->tables[] = 'Album';
         $this->tables[] = 'I18nTest';
+        $this->tables[] = 'ImportNestedSet';
         parent::prepareTables();
     }
     
@@ -197,6 +198,73 @@ END;
             $this->fail();
         }
 
-        unlink('test.yml');  
+        unlink('test.yml'); 
+    }
+
+    public function testImportNestedSetData()
+    {
+        $yml = <<<END
+---
+ImportNestedSet:
+  ImportNestedSet_1:
+    name: Root
+    children:
+      ImportNestedSet_2:
+        name: Child 1
+      ImportNestedSet_3:
+        name: Child 2
+        children:
+          ImportNestedSet_4:
+            name: Sub-Child 1
+END;
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
+
+            $this->conn->clear();
+
+            $query = new Doctrine_Query();
+            $query->from('ImportNestedSet');
+
+            $i = $query->execute(array(), Doctrine::FETCH_ARRAY);
+
+            $this->assertEqual($i[0]['name'], 'Root');
+            $this->assertEqual($i[0]['lft'], 1);
+            $this->assertEqual($i[0]['rgt'], 8);
+            $this->assertEqual($i[0]['level'], 0);
+
+            $this->assertEqual($i[1]['name'], 'Child 2');
+            $this->assertEqual($i[1]['lft'], 4);
+            $this->assertEqual($i[1]['rgt'], 7);
+            $this->assertEqual($i[1]['level'], 1);
+
+            $this->assertEqual($i[2]['name'], 'Sub-Child 1');
+            $this->assertEqual($i[2]['lft'], 5);
+            $this->assertEqual($i[2]['rgt'], 6);
+            $this->assertEqual($i[2]['level'], 2);
+
+            $this->assertEqual($i[3]['name'], 'Child 1');
+            $this->assertEqual($i[3]['lft'], 2);
+            $this->assertEqual($i[3]['rgt'], 3);
+            $this->assertEqual($i[3]['level'], 1);
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
+        unlink('test.yml'); 
+    }
+}
+
+class ImportNestedSet extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->actAs('NestedSet');
     }
 }
