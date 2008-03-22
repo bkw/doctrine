@@ -32,4 +32,30 @@
  */
 class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase 
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'I18nTest';
+        parent::prepareTables();
+    }
+
+    public function testI18nExport()
+    {
+        $i = new I18nTest();
+        $i->id = 1;
+        $i->Translation['en']->title = 'english test';
+        $i->Translation['fr']->title = 'french test';
+        $i->save();
+
+        $this->conn->clear();
+
+        $data = new Doctrine_Data();
+        $data->exportData('test.yml', 'yml', array('User', 'I18nTest'));
+
+        $array = Doctrine_Parser::load('test.yml', 'yml');
+
+        $this->assertTrue( ! empty($array));
+
+        $this->assertEqual($array['I18nTest']['I18nTest_1']['Translation']['en']['title'], 'english test');
+        $this->assertEqual($array['I18nTest']['I18nTest_1']['Translation']['fr']['title'], 'french test');
+    }
 }
