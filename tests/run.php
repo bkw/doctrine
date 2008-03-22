@@ -303,6 +303,10 @@ $unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
+$s = microtime(true);
 $test->run();
+$e = microtime(true);
 
-echo "\nMemory Usage: " . memory_get_peak_usage() / 1024 . "\n";
+echo 'test run took: ' . ($e - $s) . ' seconds<br />';
+
+echo "\npeak memory usage: " . memory_get_peak_usage() / 1024 . "\n";

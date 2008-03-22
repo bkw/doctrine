@@ -64,11 +64,11 @@ END;
                   ->where('u.name = ?', 'jwage');
 
             $user = $query->execute()->getFirst();
-
+            
             $this->assertEqual($user->name, 'jwage');
             $this->assertEqual($user->Phonenumber->count(), 1);
             $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
-
+            
             $data = new Doctrine_Data();
             $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
 

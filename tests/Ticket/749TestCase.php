@@ -52,8 +52,8 @@ class Doctrine_Ticket_749_TestCase extends Doctrine_UnitTestCase
     
     public function testSelectDataFromParentClassAsCollection()
     {
-        $records = Doctrine_Query::create()->query('FROM Parent749 p ORDER BY p.title', array());
         
+        $records = Doctrine_Query::create()->query('FROM Parent749 p ORDER BY p.title', array());
         $this->verifyRecords($records);
     }
 
