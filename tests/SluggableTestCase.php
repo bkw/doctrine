@@ -61,11 +61,6 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->name = 'My item';
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
-        $itemTable  = Doctrine::getTable('SluggableItem2');
-        $item = $itemTable->findOneBySlug('my-item-1');
-        $item->slug = 'my-item';
-        $item->save();
-        $this->assertEqual($item->slug, 'my-item-1');
     }
     
     public function testSluggableWithMultipleFieldsOption()
