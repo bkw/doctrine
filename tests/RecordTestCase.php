@@ -906,7 +906,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
     }
     
     
-    /*public function testFirstCharUnderscoreInColumnNameAndTableName()
+    public function testFirstCharUnderscoreInColumnNameAndTableName()
     {
         $record = new UnderscoreColumn();
         $record->_underscore_ = 'test';
@@ -920,6 +920,5 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         
         $result = $query->execute()->getFirst();
         $this->assertEqual($result->_underscore_, 'test');
-    }*/
-    
+    }
 }
