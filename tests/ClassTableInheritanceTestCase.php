@@ -48,11 +48,13 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
 
     public function testExportGeneratesAllInheritedTables()
     {
-        $sql = $this->conn->export->exportClassesSql(array('CTITest', 'CTITestOneToManyRelated'));
-    
-        $this->assertEqual($sql[0], 'CREATE TABLE c_t_i_test_parent4 (id INTEGER, age INTEGER, PRIMARY KEY(id))');
-        $this->assertEqual($sql[1], 'CREATE TABLE c_t_i_test_parent3 (id INTEGER, added INTEGER, PRIMARY KEY(id))');
-        $this->assertEqual($sql[2], 'CREATE TABLE c_t_i_test_parent2 (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(200), verified INTEGER)');
+        $sql = $this->conn->export->exportClassesSql(array('CTITest', 'CTITestOneToManyRelated', 'NoIdTestParent', 'NoIdTestChild'));
+
+        $this->assertEqual($sql[0], 'CREATE TABLE no_id_test_parent (myid INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(2147483647))');
+        $this->assertEqual($sql[1], 'CREATE TABLE no_id_test_child (myid INTEGER, child_column VARCHAR(2147483647), PRIMARY KEY(myid))');
+        $this->assertEqual($sql[2], 'CREATE TABLE c_t_i_test_parent4 (id INTEGER, age INTEGER, PRIMARY KEY(id))');
+        $this->assertEqual($sql[3], 'CREATE TABLE c_t_i_test_parent3 (id INTEGER, added INTEGER, PRIMARY KEY(id))');
+        $this->assertEqual($sql[4], 'CREATE TABLE c_t_i_test_parent2 (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(200), verified INTEGER)');
     
         foreach ($sql as $query) {
             $this->conn->exec($query);
@@ -236,6 +238,19 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent2 WHERE id = ?');
         $this->conn->addListener(new Doctrine_EventListener());
     }
+    
+    public function testNoIdCti()
+    {
+        $NoIdTestChild = new NoIdTestChild();
+        $NoIdTestChild->name = 'test';
+        $NoIdTestChild->child_column = 'test';
+        $NoIdTestChild->save();
+        
+        $NoIdTestChild = Doctrine::getTable('NoIdTestChild')->find(1);
+        $this->assertEqual($NoIdTestChild->myid, 1);
+        $this->assertEqual($NoIdTestChild->name, 'test');
+        $this->assertEqual($NoIdTestChild->child_column, 'test');
+    }
 }
 abstract class CTIAbstractBase extends Doctrine_Record
 { }
@@ -285,5 +300,22 @@ class CTITestOneToManyRelated extends Doctrine_Record
     public function setUp()
     {
         $this->hasMany('CTITest', array('local' => 'cti_id', 'foreign' => 'id'));
+    }
+}
+
+class NoIdTestParent extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('myid', 'integer', null, array('autoincrement' => true, 'primary' => true));
+        $this->hasColumn('name', 'string');
+    }
+}
+
+class NoIdTestChild extends NoIdTestParent
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('child_column', 'string');
     }
 }
