@@ -66,7 +66,7 @@ class Child741 extends Doctrine_Record
 
   public function postInsert($e)
   {
-    
+    $this->Moo->state('TDIRTY');
     //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
     $this->Moo->amount = 0;
     //echo "State: ". $this->Moo->state() . " \t Amount: " . $this->Moo->amount . "\n";
@@ -84,5 +84,3 @@ class Child741 extends Doctrine_Record
     */
   }
 }
-
-
