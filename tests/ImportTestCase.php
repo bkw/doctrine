@@ -43,10 +43,10 @@ class Doctrine_Import_TestCase extends Doctrine_UnitTestCase
 
         $this->dbh->exec('CREATE TABLE import_test_user (id INTEGER PRIMARY KEY, name TEXT)');
 
-        $this->conn = Doctrine_Manager::connection($this->dbh);
+        $this->conn = Doctrine_Manager::connection($this->dbh, 'tmp123');
 
-        $this->conn->import->importSchema('Import/_files');
-        
+        $this->conn->import->importSchema('Import/_files', array('tmp123'));
+
         $this->assertTrue(file_exists('Import/_files/ImportTestUser.php'));
         $this->assertTrue(file_exists('Import/_files/generated/BaseImportTestUser.php'));
         Doctrine::removeDirectories('Import/_files');
