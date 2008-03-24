@@ -96,7 +96,7 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p')->limit(5);
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e"."id" = "p"."entity_id" WHERE ("e"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
+        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e2"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e2"."id" = "p2"."entity_id" WHERE ("e2"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
 
         $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
