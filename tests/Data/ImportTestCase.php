@@ -254,6 +254,44 @@ END;
 
         unlink('test.yml'); 
     }
+
+    public function testMany2ManyManualDataFixtures()
+    {
+        self::prepareTables();
+        $yml = <<<END
+---
+User:
+  User_1:
+    name: jwage400
+    pass: changeme
+
+Groupuser:
+  Groupuser_1:
+    User: User_1
+    Group: Group_1
+
+Group:
+  Group_1:
+    name: test
+END;
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
+
+            $this->conn->clear();
+
+            $testRef = Doctrine_Query::create()->from('Groupuser')->execute()->getFirst();
+
+            $this->assertTrue($testRef->group_id > 0);
+            $this->assertTrue($testRef->user_id > 0);
+
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        unlink('test.yml');
+    }
 }
 
 class ImportNestedSet extends Doctrine_Record
