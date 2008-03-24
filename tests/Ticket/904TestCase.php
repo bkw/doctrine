@@ -40,14 +40,19 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
   
   public function testTicket()
   {
-    $s = new T904_Section();
-    $s->Translation['en']->title = 'Test title';
-    $s->Translation['en']->summary = 'Test summary';
-    $s->save();
-    
-    $this->assertTrue($s->id > 0);
-    $this->assertEqual($s->Translation['en']->title, 'Test title');
-    $this->assertEqual($s->Translation['en']->summary, 'Test summary');
+      try {
+          $s = new T904_Section();
+          $s->Translation['en']->title = 'Test title';
+          $s->Translation['en']->summary = 'Test summary';
+          $s->save();
+          
+          $this->assertTrue($s->id > 0);
+          $this->assertEqual($s->Translation['en']->title, 'Test title');
+          $this->assertEqual($s->Translation['en']->summary, 'Test summary');
+          $this->pass();
+      } catch (Exception $e) {
+          $this->fail();
+      }
   }
 }
 
