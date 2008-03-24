@@ -20,6 +20,10 @@
  * <http://www.phpdoctrine.org>.
  */
 
+Doctrine::autoload('Doctrine_Query_AbstractResult');
+Doctrine::autoload('Doctrine_Query_ParserResult');
+Doctrine::autoload('Doctrine_Query_QueryResult');
+
 /**
  * Doctrine_Query_CacheHandler
  *
@@ -32,52 +36,10 @@
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  *
- * @todo        [TODO] Turn this class Serializable.
+ * @todo Re-document this class
  */
-class Doctrine_Query_CacheHandler
+abstract class Doctrine_Query_CacheHandler
 {
-    /**
-     * @var mixed $_data The actual data to be stored. Can be an array, a string or an integer.
-     */
-    protected $_data;
-
-    /**
-     * @var array $_queryComponents
-     *
-     * Two dimensional array containing the map for query aliases. Main keys are component aliases.
-     *
-     * table    Table object associated with given alias.
-     * relation Relation object owned by the parent.
-     * parent   Alias of the parent.
-     * agg      Aggregates of this component.
-     * map      Name of the column / aggregate value this component is mapped to a collection.
-     */
-    protected $_queryComponents;
-
-    /**
-     * @var array Table alias map. Keys are SQL aliases and values DQL aliases.
-     */
-    protected $_tableAliasMap;
-
-
-    /**
-     * constructor
-     *
-     * Cannot be called directly, factory methods handle this job.
-     *
-     * @param mixed $data Data to be stored.
-     * @param array $queryComponents Query components.
-     * @param array $tableAliasMap Table aliases.
-     * @return Doctrine_Query_CacheHandler
-     */
-    protected function __construct($data, $queryComponents, $tableAliasMap)
-    {
-        $this->_data = $data;
-        $this->_queryComponents = $queryComponents;
-        $this->_tableAliasMap = $tableAliasMap;
-    }
-
-
     /**
      * fromResultSet
      *
@@ -85,35 +47,42 @@ class Doctrine_Query_CacheHandler
      * the object after processing queryComponents. Table aliases are retrieved
      * directly from Doctrine_Query_Parser.
      *
-     * @param Doctrine_Query $query Doctrine_Query_Object related to this cache item.
      * @param mixed $result Data to be stored.
+     * @param Doctrine_Query_ParserResult $parserResult Parser results that enables to have important data retrieved.
      */
-    public static function fromResultSet($query, $result = false)
+    public static function fromResultSet($result, $parserResult)
     {
-        $parserResult = $query->getParserResult();
-        $componentInfo = array();
+        $queryComponents = array();
 
         foreach ($parserResult->getQueryComponents() as $alias => $components) {
             if ( ! isset($components['parent'])) {
-                $componentInfo[$alias][] = $components['mapper']->getComponentName();
-                //$componentInfo[$alias][] = $components['mapper']->getComponentName();
+                $queryComponents[$alias][] = $components['mapper']->getComponentName();
+                //$queryComponents[$alias][] = $components['mapper']->getComponentName();
             } else {
-                $componentInfo[$alias][] = $components['parent'] . '.' . $components['relation']->getAlias();
+                $queryComponents[$alias][] = $components['parent'] . '.' . $components['relation']->getAlias();
             }
+
             if (isset($components['agg'])) {
-                $componentInfo[$alias][] = $components['agg'];
+                $queryComponents[$alias][] = $components['agg'];
             }
+
             if (isset($components['map'])) {
-                $componentInfo[$alias][] = $components['map'];
+                $queryComponents[$alias][] = $components['map'];
             }
         }
 
-        return new self($result, $componentInfo, $parserResult->getTableAliasMap());
+        return new Doctrine_Query_QueryResult(
+            $result,
+            $queryComponents,
+            $parserResult->getTableAliasMap(),
+            $parserResult->getEnumParams()
+        );
     }
 
 
+
     /**
-     * fromResultSet
+     * fromCachedResult
      *
      * Static factory method. Receives a Doctrine_Query object and a cached data.
      * It handles the cache and generates the object after processing queryComponents.
@@ -122,14 +91,50 @@ class Doctrine_Query_CacheHandler
      * @param Doctrine_Query $query Doctrine_Query_Object related to this cache item.
      * @param mixed $cached Cached data.
      */
-    public static function fromCachedForm($query, $cached = false)
+    public static function fromCachedResult($query, $cached = false)
     {
         $cached = unserialize($cached);
-        $cachedComponents = $cached[1];
 
+        return new Doctrine_Query_QueryResult(
+            $cached[0],
+            self::_getQueryComponents($cached[1]),
+            $cached[2],
+            $cached[3]
+        );
+    }
+
+
+    /**
+     * fromCachedQuery
+     *
+     * Static factory method. Receives a Doctrine_Query object and a cached data.
+     * It handles the cache and generates the object after processing queryComponents.
+     * Table aliases are retrieved from cache.
+     *
+     * @param Doctrine_Query $query Doctrine_Query_Object related to this cache item.
+     * @param mixed $cached Cached data.
+     */
+    public static function fromCachedQuery($query, $cached = false)
+    {
+        $cached = unserialize($cached);
+
+        return new Doctrine_Query_ParserResult(
+            $cached[0],
+            self::_getQueryComponents($cached[1]),
+            $cached[2],
+            $cached[3]
+        );
+    }
+
+
+    /**
+     * @nodoc
+     */
+    protected static function _getQueryComponents($query, $cachedQueryComponents)
+    {
         $queryComponents = array();
 
-        foreach ($cachedComponents as $alias => $components) {
+        foreach ($cachedQueryComponents as $alias => $components) {
             $e = explode('.', $components[0]);
 
             if (count($e) === 1) {
@@ -151,63 +156,7 @@ class Doctrine_Query_CacheHandler
             }
         }
 
-        return new self($cached[0], $queryComponents, $cached[2]);
-    }
-
-
-    /**
-     * toCachedForm
-     *
-     * Returns this object in serialized format, revertable using fromCachedForm.
-     *
-     * @return string Serialized cache item.
-     */
-    public function toCachedForm()
-    {
-        return serialize(array(
-            $this->getData(),
-            $this->getQueryComponents(),
-            $this->getTableAliasMap()
-        ));
-    }
-
-
-    /**
-     * getData
-     *
-     * Returns the stored data.
-     *
-     * @return mixed Stored data.
-     */
-    public function getData()
-    {
-        return $this->_data;
-    }
-
-
-    /**
-     * getQueryComponents
-     *
-     * Returns the query components.
-     *
-     * @return mixed Query components.
-     */
-    public function getQueryComponents()
-    {
-        return $this->_queryComponents;
-    }
-
-
-    /**
-     * getTableAliasMap
-     *
-     * Returns the table aliases.
-     *
-     * @return array Table aliases.
-     */
-    public function getTableAliasMap()
-    {
-        return $this->_tableAliasMap;
+        return $queryComponents;
     }
 
 }

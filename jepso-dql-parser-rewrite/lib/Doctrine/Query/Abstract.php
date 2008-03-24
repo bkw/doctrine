@@ -867,24 +867,15 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * addEnumParam
+     * _setEnumParams
      *
-     * Sets input parameter as an enumerated parameter
+     * Set enumerated parameters
      *
-     * @param string $key The key of the input parameter
-     * @return Doctrine_Query
+     * @param array $enumParams Enum parameters.
      */
-    public function addEnumParam($key, $table = null, $column = null)
+    protected function _setEnumParams($enumParams = array())
     {
-        $array = (isset($table) || isset($column)) ? array($table, $column) : array();
-
-        if ($key === '?') {
-            $this->_enumParams[] = $array;
-        } else {
-            $this->_enumParams[$key] = $array;
-        }
-
-        return $this;
+        $this->_enumParams = $enumParams;
     }
 
 
@@ -1070,14 +1061,14 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getSqlQuery
+     * getSql
      *
      * Gets the SQL query that corresponds to this query object.
      * The returned SQL syntax depends on the connection driver that is used
      * by this query object at the time of this method call.
      *
-     * @param array $params
+     * @return string SQL query
      */
-    abstract public function getSqlQuery($params = array());
+    abstract public function getSql();
 
 }

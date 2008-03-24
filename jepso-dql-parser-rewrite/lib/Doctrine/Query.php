@@ -193,19 +193,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getParserResult
-     *
-     * Returns the parser result associated with this query object
-     *
-     * @return Doctrine_Query_ParserResult The parser result associated with this query object
-     */
-    public function getParserResult()
-    {
-        return $this->_parserResult;
-    }
-
-
-    /**
      * fetchArray
      *
      * Convenience method to execute using array fetching as hydration mode.
@@ -265,26 +252,21 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getSqlQuery
+     * getSql
      *
      * Builds the sql query from the given parameters and applies things such as
      * column aggregation inheritance and limit subqueries if needed
      *
-     * @param array $params An array of prepared statement params (needed only in mysql driver
-     *                      when limit subquery algorithm is used)
      * @return string The built sql query
      */
-    public function getSqlQuery($params = array())
+    public function getSql()
     {
         if ($this->_state === self::STATE_DIRTY) {
-            $parser = new Doctrine_Query_Parser($this);
+            $parser = new Doctrine_Query_Parser($this->getDql());
             $this->_parserResult = $parser->parse();
 
             $this->_state = self::STATE_CLEAN;
             $this->_sql = $this->_parserResult->getSql();
-
-            $this->_hydrator->setQueryComponents($this->_parserResult->getQueryComponents());
-            $this->_hydrator->setTableAliasMap($this->_parserResult->getTableAliasMap());
         }
 
         return $this->_sql;
@@ -317,13 +299,15 @@ class Doctrine_Query extends Doctrine_Query_Abstract
                 // Cache does not exist, we have to create it.
                 $result = $this->_execute($params, Doctrine::HYDRATE_ARRAY);
 
-                $cachedItem = Doctrine_Query_CacheHandler::fromResultSet($this, $result);
-                $cacheDriver->save($hash, $cachedItem->toCachedForm(), $this->_resultCacheTTL);
+                $queryResult = Doctrine_Query_CacheHandler::fromResultSet($this, $result);
+                $cacheDriver->save($hash, $queryResult->toCachedForm(), $this->_resultCacheTTL);
 
                 return $result;
             } else {
                 // Cache exists, recover it and return the results.
-                return $this->_constructQueryFromCache($cached);
+                $queryResult = Doctrine_Query_CacheHandler::fromCachedResult($this, $cached);
+
+                return $queryResult->getResultSet();
             }
         }
 
@@ -375,26 +359,30 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
             if ($cached === false) {
                 // Cache does not exist, we have to create it.
-                $query = $this->getSqlQuery($params);
+                $query = $this->getSql();
 
-                $cachedItem = Doctrine_Query_CacheHandler::fromResultSet($this, $query);
-                $cacheDriver->save($hash, $cachedItem->toCachedForm(), $this->_queryCacheTTL);
+                // To-be cached item is parserResult
+                $cacheDriver->save($hash, $this->_parserResult->toCachedForm(), $this->_queryCacheTTL);
             } else {
                 // Cache exists, recover it and return the results.
-                $query = $this->_constructQueryFromCache($cached);
+                $this->_parserResult = Doctrine_Query_CacheHandler::fromCachedQuery($this, $cached);
 
-                // [TODO] Doctrine_Query_Parser handles enumParams population,
-                // but what should we do in this situation? Parser is not
-                // executed here. Decide how this will be handled later...
+                $query = $this->_parserResult->getSql();
             }
         } else {
-            $query = $this->getSqlQuery($params);
+            $query = $this->getSql();
         }
+
+        // Assignments for Hydrator and Enums
+        $this->_hydrator->setQueryComponents($this->_parserResult->getQueryComponents());
+        $this->_hydrator->setTableAliasMap($this->_parserResult->getTableAliasMap());
+        $this->_setEnumParams($this->_parserResult->getEnumParams());
 
         // Converting parameters
         $params = $this->_prepareParams($params);
 
         // Double the params if we are using limit-subquery algorithm
+        // We always have an instance of Doctrine_Query_ParserResult on hands...
         if ($this->_parserResult->isLimitSubqueryUsed() &&
             $this->_connection->getAttribute(Doctrine::ATTR_DRIVER_NAME) !== 'mysql') {
             $params = array_merge($params, $params);
@@ -409,37 +397,16 @@ class Doctrine_Query extends Doctrine_Query_Abstract
     }
 
 
+    /**
+     * @nodoc
+     */
     protected function _prepareParams(array $params)
     {
         // Convert boolean params
         $params = $this->_connection->convertBooleans($params);
 
-        // [TODO] enumParams are populated elsewhere (not part of this code).
-        // Call convertEnums without take care if it's populated or not.
-
         // Convert enum params
         return $this->convertEnums($params);
-    }
-
-
-    /**
-     * _constructQueryFromCache
-     *
-     * Constructs the query from the cached form.
-     *
-     * @param string  The cached query, in a serialized form.
-     * @return array  The custom component that was cached together with the essential
-     *                query data. This can be either a result set (result caching)
-     *                or an SQL query string (query caching).
-     */
-    protected function _constructQueryFromCache($cached)
-    {
-        $cachedItem = Doctrine_Query_CacheHandler::fromCachedForm($this, $cached);
-
-        $this->_hydrator->setQueryComponents($cachedItem->getQueryComponents());
-        $this->_hydrator->setTableAliasMap($cachedItem->getTableAliasMap());
-
-        return $cachedItem->getData();
     }
 
 

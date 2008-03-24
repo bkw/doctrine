@@ -23,7 +23,7 @@
 Doctrine::autoload('Doctrine_Query_AbstractResult');
 
 /**
- * Doctrine_Query_ParserResult
+ * Doctrine_Query_QueryResult
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -34,16 +34,16 @@ Doctrine::autoload('Doctrine_Query_AbstractResult');
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
+class Doctrine_Query_QueryResult extends Doctrine_Query_AbstractResult
 {
     /**
-     * getSql
+     * getResultSet
      *
-     * Returns generated SQL.
+     * Returns cached resultset.
      *
-     * @return string SQL generated.
+     * @return array Resultset.
      */
-    public function getSql()
+    public function getResultSet()
     {
         return $this->_data;
     }

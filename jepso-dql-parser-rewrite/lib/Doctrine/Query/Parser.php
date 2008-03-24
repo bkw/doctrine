@@ -53,11 +53,11 @@ class Doctrine_Query_Parser
     protected $_scanner;
 
     /**
-     * The builder object.
+     * The SQL builder object.
      *
-     * @var Doctrine_Query_Builder
+     * @var Doctrine_Query_SqlBuilder
      */
-    protected $_builder;
+    protected $_sqlBuilder;
 
     /**
      * A query printer object used to print a parse tree from the input string
@@ -126,7 +126,7 @@ class Doctrine_Query_Parser
     public function __construct($dql)
     {
         $this->_scanner = new Doctrine_Query_Scanner($dql);
-        $this->_builder = new Doctrine_Query_Builder();
+        $this->_sqlBuilder = new Doctrine_Query_SqlBuilder();
 
         // Used for debug purposes. Remove it later!
         $this->_printer = new Doctrine_Query_Printer(true);
@@ -181,7 +181,7 @@ class Doctrine_Query_Parser
             $this->syntaxError('end of string');
         }
 
-        return $this->_builder->getParserResult();
+        return $this->_sqlBuilder->getParserResult();
     }
 
 
@@ -199,11 +199,11 @@ class Doctrine_Query_Parser
     /**
      * Returns the sql builder object associated with this object.
      *
-     * @return Doctrine_Query_Builder
+     * @return Doctrine_Query_SqlBuilder
      */
-    public function getBuilder()
+    public function getSqlBuilder()
     {
-        return $this->_builder;
+        return $this->_sqlBuilder;
     }
 
 
