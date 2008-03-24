@@ -3,7 +3,7 @@
 class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
     public function prepareData() { }
     public function prepareTables() {
-        $this->tables = array('JC1', 'JC2', 'JC3', 'RTC1', 'RTC2', 'M2MTest', 'M2MTest2');
+        $this->tables = array('Test1', 'Test2', 'TestRef', 'JC1', 'JC2', 'JC3', 'RTC1', 'RTC2', 'M2MTest', 'M2MTest2');
         parent::prepareTables();
     }
 
@@ -196,5 +196,63 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $component->save();
         
         $this->assertEqual($component->name, 'changed name');
+    }
+    
+    public function testManyToManyWithCompositePk()
+    {
+        $test1 = new Test1();
+        $test1->name = 'test';
+
+        $test2 = new Test2();
+        $test2->name = 'test';
+
+        $testRef = new TestRef();
+        $testRef->Test1 = $test1;
+        $testRef->Test2 = $test2;
+        $testRef->save();
+
+        $this->assertEqual($testRef->test1_id, $test1->id);
+        $this->assertEqual($testRef->test2_id, $test2->id);
+    }
+}
+
+class Test1 extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Test2', array('refClass' => 'TestRef', 'local' => 'test1_id', 'foreign' => 'test2_id'));
+    }
+}
+
+class Test2 extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Test1', array('refClass' => 'TestRef', 'local' => 'test2_id', 'foreign' => 'test1_id'));
+    }
+}
+
+class TestRef extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('test1_id', 'integer', 4, array('primary' => true));
+        $this->hasColumn('test2_id', 'integer', 4, array('primary' => true));
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('Test1', array('local' => 'test1_id', 'foreign' => 'id'));
+        $this->hasOne('Test2', array('local' => 'test2_id', 'foreign' => 'id'));
     }
 }
