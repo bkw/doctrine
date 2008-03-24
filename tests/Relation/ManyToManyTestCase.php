@@ -214,6 +214,43 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($testRef->test1_id, $test1->id);
         $this->assertEqual($testRef->test2_id, $test2->id);
     }
+    
+    public function testMany2ManyManualDataFixtures()
+    {
+        self::prepareTables();
+        $yml = <<<END
+---
+Test1:
+  Test1_1:
+    name: test
+
+Test2:
+  Test2_1:
+    name: test
+
+TestRef:
+  TestRef_1:
+    Test1: Test1_1
+    Test2: Test2_1
+END;
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
+
+            $this->conn->clear();
+
+            $testRef = Doctrine_Query::create()->from('TestRef')->execute()->getFirst();
+
+            $this->assertTrue($testRef->test1_id > 0);
+            $this->assertTrue($testRef->test2_id > 0);
+
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        unlink('test.yml');
+    }
 }
 
 class Test1 extends Doctrine_Record
