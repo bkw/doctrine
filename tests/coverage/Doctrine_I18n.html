@@ -70,7 +70,7 @@
 <td class="normal">&nbsp;*/
 </td></tr>
 <tr><td>21</td>
-<td class="normal">
+<td class="covered">Doctrine::autoload('Doctrine_Record_Generator');
 </td></tr>
 <tr><td>22</td>
 <td class="normal">/**
@@ -106,7 +106,7 @@
 <td class="normal">&nbsp;*/
 </td></tr>
 <tr><td>33</td>
-<td class="covered">class&nbsp;Doctrine_I18n&nbsp;extends&nbsp;Doctrine_Plugin
+<td class="covered">class&nbsp;Doctrine_I18n&nbsp;extends&nbsp;Doctrine_Record_Generator
 </td></tr>
 <tr><td>34</td>
 <td class="normal">{
@@ -172,61 +172,61 @@
 <td class="normal">
 </td></tr>
 <tr><td>55</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;buildRelation()
 </td></tr>
 <tr><td>56</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;buildDefinition
-</td></tr>
-<tr><td>57</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
-</td></tr>
-<tr><td>58</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;object&nbsp;$Doctrine_Table&nbsp;
-</td></tr>
-<tr><td>59</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;void
-</td></tr>
-<tr><td>60</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
-</td></tr>
-<tr><td>61</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;buildDefinition()
-</td></tr>
-<tr><td>62</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
+<tr><td>57</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;	&nbsp;&nbsp;$this-&gt;buildForeignRelation('Translation');
+</td></tr>
+<tr><td>58</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;buildLocalRelation();
+</td></tr>
+<tr><td>59</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;}
+</td></tr>
+<tr><td>60</td>
+<td class="normal">
+</td></tr>
+<tr><td>61</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+</td></tr>
+<tr><td>62</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;buildDefinition
+</td></tr>
 <tr><td>63</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	if&nbsp;(empty($this-&gt;_options['fields']))&nbsp;{
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 </td></tr>
 <tr><td>64</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;Doctrine_I18n_Exception('Fields&nbsp;not&nbsp;set.');
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;object&nbsp;$Doctrine_Table
 </td></tr>
 <tr><td>65</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	}
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;void
 </td></tr>
 <tr><td>66</td>
-<td class="normal">
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
 </td></tr>
 <tr><td>67</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name&nbsp;=&nbsp;$this-&gt;_options['table']-&gt;getComponentName();
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;setTableDefinition()
 </td></tr>
 <tr><td>68</td>
-<td class="normal">
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
 <tr><td>69</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$columns&nbsp;=&nbsp;array();
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	if&nbsp;(empty($this-&gt;_options['fields']))&nbsp;{
 </td></tr>
 <tr><td>70</td>
-<td class="normal">
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;Doctrine_I18n_Exception('Fields&nbsp;not&nbsp;set.');
 </td></tr>
 <tr><td>71</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$options&nbsp;=&nbsp;array('className'&nbsp;=&gt;&nbsp;$this-&gt;_options['className']);
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	}
 </td></tr>
 <tr><td>72</td>
 <td class="normal">
 </td></tr>
 <tr><td>73</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fk&nbsp;=&nbsp;$this-&gt;buildForeignKeys($this-&gt;_options['table']);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$options&nbsp;=&nbsp;array('className'&nbsp;=&gt;&nbsp;$this-&gt;_options['className']);
 </td></tr>
 <tr><td>74</td>
 <td class="normal">
@@ -259,90 +259,26 @@
 <td class="normal">
 </td></tr>
 <tr><td>84</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$columns['lang']&nbsp;=&nbsp;array('type'&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'string',
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;hasColumns($columns);
 </td></tr>
 <tr><td>85</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'length'&nbsp;&nbsp;=&gt;&nbsp;2,
+<td class="normal">
 </td></tr>
 <tr><td>86</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'fixed'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;true,
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;hasColumn('lang',&nbsp;'string',&nbsp;2,&nbsp;array('fixed'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;true,
 </td></tr>
 <tr><td>87</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'primary'&nbsp;=&gt;&nbsp;true);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'primary'&nbsp;=&gt;&nbsp;true));
 </td></tr>
 <tr><td>88</td>
-<td class="normal">
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </td></tr>
 <tr><td>89</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$local&nbsp;=&nbsp;(count($fk)&nbsp;&gt;&nbsp;1)&nbsp;?&nbsp;array_keys($fk)&nbsp;:&nbsp;key($fk);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;bindQueryParts(array('indexBy'&nbsp;=&gt;&nbsp;'lang'));
 </td></tr>
 <tr><td>90</td>
-<td class="normal">
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>91</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$relations&nbsp;=&nbsp;array($name&nbsp;=&gt;&nbsp;array('local'&nbsp;=&gt;&nbsp;$local,
-</td></tr>
-<tr><td>92</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'foreign'&nbsp;=&gt;&nbsp;$this-&gt;_options['table']-&gt;getIdentifier(),
-</td></tr>
-<tr><td>93</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'onDelete'&nbsp;=&gt;&nbsp;'CASCADE',
-</td></tr>
-<tr><td>94</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'onUpdate'&nbsp;=&gt;&nbsp;'CASCADE'));
-</td></tr>
-<tr><td>95</td>
-<td class="normal">
-</td></tr>
-<tr><td>96</td>
-<td class="normal">
-</td></tr>
-<tr><td>97</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$columns&nbsp;+=&nbsp;$fk;
-</td></tr>
-<tr><td>98</td>
-<td class="normal">
-</td></tr>
-<tr><td>99</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$options&nbsp;=&nbsp;array('className'&nbsp;=&gt;&nbsp;$this-&gt;_options['className'],
-</td></tr>
-<tr><td>100</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'queryParts'&nbsp;=&gt;&nbsp;array('indexBy'&nbsp;=&gt;&nbsp;'lang'));
-</td></tr>
-<tr><td>101</td>
-<td class="normal">
-</td></tr>
-<tr><td>102</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;generateClass($options,&nbsp;$columns,&nbsp;$relations);
-</td></tr>
-<tr><td>103</td>
-<td class="normal">
-</td></tr>
-<tr><td>104</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_options['pluginTable']&nbsp;=&nbsp;$this-&gt;_options['table']-&gt;getConnection()-&gt;getTable($this-&gt;_options['className']);
-</td></tr>
-<tr><td>105</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</td></tr>
-<tr><td>106</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_options['pluginTable']-&gt;bindQueryPart('indexBy',&nbsp;'lang');
-</td></tr>
-<tr><td>107</td>
-<td class="normal">
-</td></tr>
-<tr><td>108</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;generateChildDefinitions();
-</td></tr>
-<tr><td>109</td>
-<td class="normal">
-</td></tr>
-<tr><td>110</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;true;
-</td></tr>
-<tr><td>111</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
-</td></tr>
-<tr><td>112</td>
-<td class="normal">}
-</td></tr>
+<td class="covered">}</td></tr>
 </table></body></html>

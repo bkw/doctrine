@@ -16,7 +16,7 @@
 <td class="normal">/*
 </td></tr>
 <tr><td>3</td>
-<td class="normal">&nbsp;*&nbsp;&nbsp;$Id:&nbsp;Oracle.php&nbsp;2963&nbsp;2007-10-21&nbsp;06:23:59Z&nbsp;Jonathan.Wage&nbsp;$
+<td class="normal">&nbsp;*&nbsp;&nbsp;$Id:&nbsp;Oracle.php&nbsp;4097&nbsp;2008-03-23&nbsp;01:15:21Z&nbsp;jwage&nbsp;$
 </td></tr>
 <tr><td>4</td>
 <td class="normal">&nbsp;*
@@ -103,7 +103,7 @@
 <td class="normal">&nbsp;*&nbsp;@since&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0
 </td></tr>
 <tr><td>32</td>
-<td class="normal">&nbsp;*&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision:&nbsp;2963&nbsp;$
+<td class="normal">&nbsp;*&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision:&nbsp;4097&nbsp;$
 </td></tr>
 <tr><td>33</td>
 <td class="normal">&nbsp;*/
@@ -376,7 +376,7 @@
 <td class="normal">&nbsp;&nbsp;&nbsp;BEFORE&nbsp;INSERT
 </td></tr>
 <tr><td>123</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;ON&nbsp;'.$table.'
+<td class="covered">&nbsp;&nbsp;&nbsp;ON&nbsp;'&nbsp;.&nbsp;$table&nbsp;.&nbsp;'
 </td></tr>
 <tr><td>124</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;FOR&nbsp;EACH&nbsp;ROW
@@ -394,13 +394,13 @@
 <td class="normal">BEGIN
 </td></tr>
 <tr><td>129</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;SELECT&nbsp;'.$sequenceName.'.NEXTVAL&nbsp;INTO&nbsp;:NEW.'.$name.'&nbsp;FROM&nbsp;DUAL;
+<td class="covered">&nbsp;&nbsp;&nbsp;SELECT&nbsp;'&nbsp;.&nbsp;$sequenceName&nbsp;.&nbsp;'.NEXTVAL&nbsp;INTO&nbsp;:NEW.'&nbsp;.&nbsp;$name&nbsp;.&nbsp;'&nbsp;FROM&nbsp;DUAL;
 </td></tr>
 <tr><td>130</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;IF&nbsp;(:NEW.'.$name.'&nbsp;IS&nbsp;NULL&nbsp;OR&nbsp;:NEW.'.$name.'&nbsp;=&nbsp;0)&nbsp;THEN
+<td class="covered">&nbsp;&nbsp;&nbsp;IF&nbsp;(:NEW.'&nbsp;.&nbsp;$name&nbsp;.&nbsp;'&nbsp;IS&nbsp;NULL&nbsp;OR&nbsp;:NEW.'.$name.'&nbsp;=&nbsp;0)&nbsp;THEN
 </td></tr>
 <tr><td>131</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;'.$sequenceName.'.NEXTVAL&nbsp;INTO&nbsp;:NEW.'.$name.'&nbsp;FROM&nbsp;DUAL;
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;'&nbsp;.&nbsp;$sequenceName&nbsp;.&nbsp;'.NEXTVAL&nbsp;INTO&nbsp;:NEW.'&nbsp;.&nbsp;$name&nbsp;.&nbsp;'&nbsp;FROM&nbsp;DUAL;
 </td></tr>
 <tr><td>132</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;ELSE
@@ -412,10 +412,10 @@
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM&nbsp;User_Sequences
 </td></tr>
 <tr><td>135</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;UPPER(Sequence_Name)&nbsp;=&nbsp;UPPER(\''.$sequenceName.'\');
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;UPPER(Sequence_Name)&nbsp;=&nbsp;UPPER(\''&nbsp;.&nbsp;$sequenceName&nbsp;.&nbsp;'\');
 </td></tr>
 <tr><td>136</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;:NEW.id&nbsp;INTO&nbsp;last_InsertID&nbsp;FROM&nbsp;DUAL;
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;:NEW.'&nbsp;.&nbsp;$name&nbsp;.&nbsp;'&nbsp;INTO&nbsp;last_InsertID&nbsp;FROM&nbsp;DUAL;
 </td></tr>
 <tr><td>137</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHILE&nbsp;(last_InsertID&nbsp;&gt;&nbsp;last_Sequence)&nbsp;LOOP

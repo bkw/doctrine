@@ -394,7 +394,7 @@
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include($path);
 </td></tr>
 <tr><td>129</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$contents&nbsp;=&nbsp;ob_get_clean();
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$contents&nbsp;=&nbsp;iconv(&quot;UTF-8&quot;,&nbsp;&quot;UTF-8&quot;,&nbsp;ob_get_clean());
 </td></tr>
 <tr><td>130</td>
 <td class="normal">

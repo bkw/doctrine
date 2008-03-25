@@ -163,66 +163,41 @@
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
 <tr><td>52</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name&nbsp;=&nbsp;$this-&gt;_table-&gt;getComponentName();
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_plugin-&gt;initialize($this-&gt;_table);&nbsp;
 </td></tr>
 <tr><td>53</td>
-<td class="normal">
-</td></tr>
-<tr><td>54</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_plugin-&gt;buildPluginDefinition($this-&gt;_table);
-</td></tr>
-<tr><td>55</td>
-<td class="normal">
-</td></tr>
-<tr><td>56</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$className&nbsp;=&nbsp;$this-&gt;_plugin-&gt;getOption('className');
-</td></tr>
-<tr><td>57</td>
-<td class="normal">
-</td></tr>
-<tr><td>58</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$id&nbsp;=&nbsp;$this-&gt;_table-&gt;getIdentifier();
-</td></tr>
-<tr><td>59</td>
-<td class="normal">
-</td></tr>
-<tr><td>60</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;hasMany($className&nbsp;.&nbsp;'&nbsp;as&nbsp;Translation',&nbsp;array('local'&nbsp;=&gt;&nbsp;$id,&nbsp;'foreign'&nbsp;=&gt;&nbsp;$id));
-</td></tr>
-<tr><td>61</td>
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
-<tr><td>62</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;
+<tr><td>54</td>
+<td class="normal">
 </td></tr>
-<tr><td>63</td>
+<tr><td>55</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
 </td></tr>
-<tr><td>64</td>
+<tr><td>56</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;getI18n
 </td></tr>
-<tr><td>65</td>
+<tr><td>57</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 </td></tr>
-<tr><td>66</td>
+<tr><td>58</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;void
 </td></tr>
-<tr><td>67</td>
+<tr><td>59</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
 </td></tr>
-<tr><td>68</td>
+<tr><td>60</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getI18n()
 </td></tr>
-<tr><td>69</td>
+<tr><td>61</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
-<tr><td>70</td>
+<tr><td>62</td>
 <td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$this-&gt;_plugin;
 </td></tr>
-<tr><td>71</td>
+<tr><td>63</td>
 <td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
-<tr><td>72</td>
-<td class="normal">}
-</td></tr>
+<tr><td>64</td>
+<td class="covered">}</td></tr>
 </table></body></html>
