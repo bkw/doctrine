@@ -330,7 +330,7 @@ User:
 </code>
 
 +++ Sluggable
-If you do not specify the columns to create the slug from, it will default to just using the toString() method on the model.
+If you do not specify the columns to create the slug from, it will default to just using the __toString() method on the model.
 
 PHP Example
 <code type="php">                                              
@@ -344,7 +344,7 @@ class User extends Doctrine_Record
     
     public function setUp()
     {
-        $this->actAs('Sluggable', array('columns' => array('username')));
+        $this->actAs('Sluggable', array('fields' => array('username')));
     }
 }
 </code>
