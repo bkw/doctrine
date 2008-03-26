@@ -13,7 +13,7 @@ class Entity extends Doctrine_Record
     }
     public function setTableDefinition() 
     {
-        $this->hasColumn('id', 'integer',20, 'autoincrement|primary');
+        $this->hasColumn('id', 'integer',20, array('autoincrement', 'primary'));
         $this->hasColumn('name', 'string',50);
         $this->hasColumn('loginname', 'string',20, array('unique'));
         $this->hasColumn('password', 'string',16);

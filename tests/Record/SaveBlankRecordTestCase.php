@@ -35,6 +35,7 @@ class Doctrine_Record_SaveBlankRecord_TestCase extends Doctrine_UnitTestCase
     public function prepareTables()
     {
         $this->tables[] = 'MyUserGroup';
+        $this->tables[] = 'MyUser';
 
         parent::prepareTables();
     }
