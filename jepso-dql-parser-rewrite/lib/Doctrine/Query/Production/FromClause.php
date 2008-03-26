@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,15 +33,37 @@
  */
 class Doctrine_Query_Production_FromClause extends Doctrine_Query_Production
 {
+    protected $_identificationVariableDeclaration = array();
+
+
     public function execute(array $params = array())
     {
+        // FromClause = "FROM" IdentificationVariableDeclaration {"," IdentificationVariableDeclaration}
         $this->_parser->match(Doctrine_Query_Token::T_FROM);
 
-        $this->IdentificationVariableDeclaration();
+        $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration();
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->IdentificationVariableDeclaration();
+            $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration();
         }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        $str = '';
+
+        for ($i = 0, $l = count($this->_identificationVariableDeclaration); $i < $l; $i++) {
+            if ($i != 0) {
+                $str .= ', ';
+            }
+
+            $str .= $this->_identificationVariableDeclaration[$i]->buildSql();
+        }
+
+        return ' FROM ' . $str;
     }
 }

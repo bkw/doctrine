@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  $Id$
  *
@@ -25,6 +26,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -40,6 +42,7 @@ abstract class Doctrine_Query_Production
      */
     protected $_parser;
 
+
     /**
      * Creates a new production object.
      *
@@ -50,11 +53,13 @@ abstract class Doctrine_Query_Production
         $this->_parser = $parser;
     }
 
+
     protected function _isNextToken($token)
     {
         $la = $this->_parser->lookahead;
         return ($la['type'] === $token || $la['value'] === $token);
     }
+
 
     protected function _isFunction()
     {
@@ -63,12 +68,14 @@ abstract class Doctrine_Query_Production
         return ($la['type'] === Doctrine_Query_Token::T_IDENTIFIER && $next['value'] === '(');
     }
 
+
     protected function _isSubselect()
     {
         $la = $this->_parser->lookahead;
         $next = $this->_parser->getScanner()->peek();
         return ($la['value'] === '(' && $next['type'] === Doctrine_Query_Token::T_SELECT);
     }
+
 
     /**
      * Executes a production with specified name and parameters.
@@ -95,12 +102,21 @@ abstract class Doctrine_Query_Production
         return $retval;
     }
 
+
     /**
      * Executes this production using the specified parameters.
      *
      * @param array $params an associative array containing parameter names and
      * their values
-     * @return mixed
+     * @return Doctrine_Query_SqlBuilder
      */
     abstract public function execute(array $params = array());
+
+
+    /**
+     * Executes this sql builder using the specified parameters.
+     *
+     * @return string Sql piece
+     */
+    abstract public function buildSql();
 }

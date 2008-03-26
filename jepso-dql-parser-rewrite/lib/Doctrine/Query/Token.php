@@ -81,8 +81,71 @@ final class Doctrine_Query_Token
     const T_UPDATE              = 140;
     const T_WHERE               = 141;
     const T_WITH                = 142;
+
     const T_TRUE                = 143;
     const T_FALSE               = 144;
 
-    private function __construct() {}
+
+    protected $_keywordsTable = array();
+
+
+    public function __construct()
+    {
+        $this->addKeyword(self::T_ALL, "ALL");
+        $this->addKeyword(self::T_AND, "AND");
+        $this->addKeyword(self::T_ANY, "ANY");
+        $this->addKeyword(self::T_AS, "AS");
+        $this->addKeyword(self::T_ASC, "ASC");
+        $this->addKeyword(self::T_AVG, "AVG");
+        $this->addKeyword(self::T_BETWEEN, "BETWEEN");
+        $this->addKeyword(self::T_BY, "BY");
+        $this->addKeyword(self::T_COUNT, "COUNT");
+        $this->addKeyword(self::T_DELETE, "DELETE");
+        $this->addKeyword(self::T_DESC, "DESC");
+        $this->addKeyword(self::T_DISTINCT, "DISTINCT");
+        $this->addKeyword(self::T_ESCAPE, "ESPACE");
+        $this->addKeyword(self::T_EXISTS, "EXISTS");
+        $this->addKeyword(self::T_FALSE, "FALSE");
+        $this->addKeyword(self::T_FROM, "FROM");
+        $this->addKeyword(self::T_GROUP, "GROUP");
+        $this->addKeyword(self::T_HAVING, "HAVING");
+        $this->addKeyword(self::T_IN, "IN");
+        $this->addKeyword(self::T_INDEX, "INDEX");
+        $this->addKeyword(self::T_INNER, "INNER");
+        $this->addKeyword(self::T_IS, "IS");
+        $this->addKeyword(self::T_JOIN, "JOIN");
+        $this->addKeyword(self::T_LEFT, "LEFT");
+        $this->addKeyword(self::T_LIKE, "LIKE");
+        $this->addKeyword(self::T_LIMIT, "LIMIT");
+        $this->addKeyword(self::T_MAX, "MAX");
+        $this->addKeyword(self::T_MIN, "MIN");
+        $this->addKeyword(self::T_MOD, "MOD");
+        $this->addKeyword(self::T_NOT, "NOT");
+        $this->addKeyword(self::T_NULL, "NULL");
+        $this->addKeyword(self::T_OFFSET, "OFFSET");
+        $this->addKeyword(self::T_ON, "ON");
+        $this->addKeyword(self::T_OR, "OR");
+        $this->addKeyword(self::T_ORDER, "ORDER");
+        $this->addKeyword(self::T_SELECT, "SELECT");
+        $this->addKeyword(self::T_SET, "SET");
+        $this->addKeyword(self::T_SIZE, "SIZE");
+        $this->addKeyword(self::T_SOME, "SOME");
+        $this->addKeyword(self::T_SUM, "SUM");
+        $this->addKeyword(self::T_TRUE, "TRUE");
+        $this->addKeyword(self::T_UPDATE, "UPDATE");
+        $this->addKeyword(self::T_WHERE, "WHERE");
+        $this->addKeyword(self::T_WITH, "WITH");
+    }
+
+
+    protected function addKeyword($token, $value)
+    {
+        $this->_keywordsTable[$token] = $value;
+    }
+
+
+    public function getLiteral($token)
+    {
+        return isset($this->_keywordsTable[$token]) ? $this->_keywordsTable[$token] : '';
+    }
 }

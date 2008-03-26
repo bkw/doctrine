@@ -64,8 +64,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * constructor
-     *
      * Cannot be called directly, factory methods handle this job.
      *
      * @param mixed $data Data to be stored.
@@ -84,8 +82,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * setQueryComponents
-     *
      * Defines the mapping components.
      *
      * @param array $queryComponents Query components.
@@ -97,8 +93,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * setQueryComponent
-     *
      * Sets the declaration for given component alias.
      *
      * @param string $componentAlias The component alias to set the declaration to.
@@ -111,8 +105,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * getQueryComponents
-     *
      * Gets the mapping components.
      *
      * @return array Query components.
@@ -124,8 +116,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * getQueryComponent
-     *
      * Get the declaration for given component alias.
      *
      * @param string $componentAlias The component alias the retrieve the declaration from.
@@ -142,8 +132,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * hasQueryComponent
-     *
      * Whether or not this object has a declaration for given component alias.
      *
      * @param string $componentAlias Component alias the retrieve the declaration from.
@@ -156,8 +144,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * setTableAliasMap
-     *
      * Defines the table aliases.
      *
      * @param array $tableAliasMap Table aliases.
@@ -169,8 +155,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * setTableAlias
-     *
      * Adds an SQL table alias and associates it a component alias
      *
      * @param string $tableAlias Table alias to be added.
@@ -183,8 +167,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * getTableAliasMap
-     *
      * Returns all table aliases.
      *
      * @return array Table aliases as an array.
@@ -196,8 +178,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * getTableAlias
-     *
      * Get component alias associated with given table alias.
      *
      * @param string $tableAlias SQL table alias that identifies the component alias
@@ -214,8 +194,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * hasTableAlias
-     *
      * Whether or not this object has given tableAlias.
      *
      * @param string $tableAlias Table alias to be checked.
@@ -228,8 +206,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * getEnumParams
-     *
      * Returns the enum parameters.
      *
      * @return mixed Enum parameters.
@@ -241,8 +217,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * addEnumParam
-     *
      * Sets input parameter as an enumerated parameter
      *
      * @param string $key The key of the input parameter
@@ -263,8 +237,6 @@ abstract class Doctrine_Query_AbstractResult
 
 
     /**
-     * toCachedForm
-     *
      * Returns this object in serialized format, revertable using fromCached*.
      *
      * @return string Serialized cached item.

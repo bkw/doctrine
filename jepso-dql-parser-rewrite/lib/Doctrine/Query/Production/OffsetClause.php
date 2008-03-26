@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,9 +33,25 @@
  */
 class Doctrine_Query_Production_OffsetClause extends Doctrine_Query_Production
 {
+    protected $_offset;
+
+
     public function execute(array $params = array())
     {
         $this->_parser->match(Doctrine_Query_Token::T_OFFSET);
+
         $this->_parser->match(Doctrine_Query_Token::T_INTEGER);
+        $this->_offset = $this->_parser->token['value'];
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        // [TODO] How to deal with different DBMS here?
+        // The responsability to apply the limit-subquery is from
+        // SelectStatement, not this object's one.
+        return ' OFFSET ' . $this->_offset;
     }
 }

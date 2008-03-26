@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -34,17 +35,21 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 {
     public function execute(array $params = array())
     {
+        // RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
         $path = '';
-        $queryObject = $this->_parser->getQueryObject();
 
+        $parserResult = $this->_parser->getParserResult();
+        $connection = $this->_parser->getConnection();
+
+        // [TODO] Figure it out WHY this is inside an IF. It should fail if it does not match
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
 
             $component = $this->_parser->token['value'];
             $path = $component;
 
-            if ($queryObject->hasQueryComponent($component)) {
+            if ($parserResult->hasQueryComponent($component)) {
 
-                $queryComponent = $queryObject->getQueryComponent($component);
+                $queryComponent = $parserResult->getQueryComponent($component);
                 $metadata = $queryComponent['metadata'];
 
             } else {
@@ -52,10 +57,10 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                 // get the connection for the component
                 $manager = Doctrine_Manager::getInstance();
                 if ($manager->hasConnectionForComponent($component)) {
-                    $queryObject->setConnection($manager->getConnectionForComponent($component));
+                    $this->_parser->setConnection($manager->getConnectionForComponent($component));
                 }
 
-                $conn = $queryObject->getConnection();
+                $conn = $this->_parser->getConnection();
 
                 try {
                     $metadata = $conn->getMetadata($component);
@@ -77,8 +82,8 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
         while ($this->_isNextToken('.')) {
             $this->_parser->match('.');
 
-            if ( ! $queryObject->hasQueryComponent($path)) {
-                $queryObject->setQueryComponent($path, $queryComponent);
+            if ( ! $parserResult->hasQueryComponent($path)) {
+                $parserResult->setQueryComponent($path, $queryComponent);
             }
 
             if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
@@ -94,7 +99,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 
                 $queryComponent = array(
                         'metadata' => $metadata,
-                        'mapper'   => $this->_conn->getMapper($relation->getForeignComponentName()),
+                        'mapper'   => $this->_parser->getConnection()->getMapper($relation->getForeignComponentName()),
                         'parent'   => $parent,
                         'relation' => $relation,
                         'map'      => null
@@ -117,7 +122,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             $alias = $path;
         }
 
-        $queryObject->setQueryComponent($alias, $queryComponent);
+        $parserResult->setQueryComponent($alias, $queryComponent);
 
         return $alias;
     }

@@ -35,11 +35,23 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 {
     public function execute(array $params = array())
     {
+        // We need to populate the symbol table first (Objects aliases)
+        // Otherwise the SELECT fields will fail gracefully.
+        // We'll move to FROM statement, process it and then go back.
+        // After that, process the DQL again, now do not considering semantical
+        // check in FROM statement (it was already done in the first pass).
+
+        $this->_moveCursorToFromStatement();
+        $this->FromClause();
+        $this->_parser->free(); // Cannot be deep, it would clean already processed errors
+
+        // End of symbol table population
+
         if ($this->_isNextToken(Doctrine_Query_Token::T_SELECT)) {
             $this->SelectClause();
         }
 
-        $this->FromClause();
+        $this->FromClause(array('semanticalCheck' => false));
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
             $this->WhereClause();
@@ -59,6 +71,19 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
             $this->LimitClause();
+        }
+    }
+
+
+    protected function _moveCursorToFromStatement()
+    {
+        while ( ! $this->_isNextToken(Doctrine_Query_Token::T_FROM) || $this->_parser->lookahead !== null) {
+            // Move to the next token
+            $this->_parser->next();
+        }
+
+        if ($this->_parser->lookahead === null) {
+            $this->syntaxError('FROM');
         }
     }
 }

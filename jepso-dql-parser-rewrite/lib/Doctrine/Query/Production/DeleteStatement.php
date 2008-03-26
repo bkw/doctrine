@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,24 +33,50 @@
  */
 class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Production
 {
+    protected $_deleteClause;
+
+    protected $_whereClause;
+
+    protected $_orderByClause;
+
+    protected $_limitClause;
+
+    protected $_offsetClause;
+
+
     public function execute(array $params = array())
     {
-        $this->DeleteClause();
+        // DeleteStatement = DeleteClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
+        $this->_deleteClause = $this->DeleteClause();
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->WhereClause();
+            $this->_whereClause = $this->WhereClause();
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ORDER)) {
-            $this->OrderByClause();
+            $this->_orderByClause = $this->OrderByClause();
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
-            $this->LimitClause();
+            $this->_limitClause = $this->LimitClause();
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_OFFSET)) {
-            $this->OffsetClause();
+            $this->_offsetClause = $this->OffsetClause();
         }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        $str = $this->_deleteClause->buildSql()
+             . (($this->_whereClause !== null) ? $this->_whereClause->buildSql() : '')
+             . (($this->_orderByClause !== null) ? $this->_orderByClause->buildSql() : '')
+             . (($this->_limitClause !== null) ? $this->_limitClause->buildSql() : '')
+             . (($this->_offsetClause !== null) ? $this->_offsetClause->buildSql() : '');
+
+        return $str;
     }
 }

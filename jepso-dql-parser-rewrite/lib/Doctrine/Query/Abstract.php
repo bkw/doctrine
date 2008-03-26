@@ -174,8 +174,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * setDql
-     *
      * Defines a complete DQL
      *
      * @param string $dqlQuery DQL Query
@@ -189,8 +187,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getDql
-     *
      * Returns the DQL query that is represented by this query object.
      *
      * @return string DQL query
@@ -234,8 +230,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _getDqlForDelete
-     *
      * Builds the DQL of DELETE
      */
     protected function _getDqlForDelete()
@@ -261,8 +255,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _getDqlForUpdate
-     *
      * Builds the DQL of UPDATE
      */
     protected function _getDqlForUpdate()
@@ -289,8 +281,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _getDqlForUpdate
-     *
      * Builds the DQL of SELECT
      */
     protected function _getDqlForSelect()
@@ -343,8 +333,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getType
-     *
      * Returns the type of this query object
      * By default the type is Doctrine_Query_Abstract::SELECT but if update() or delete()
      * are being called the type is Doctrine_Query_Abstract::UPDATE and Doctrine_Query_Abstract::DELETE,
@@ -363,8 +351,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getState
-     *
      * Returns the state of this query object
      * By default the type is Doctrine_Query_Abstract::STATE_CLEAN but if it appears any unprocessed DQL
      * part, it is switched to Doctrine_Query_Abstract::STATE_DIRTY.
@@ -381,8 +367,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * select
-     *
      * Adds fields to the SELECT part of the query
      *
      * @param string $select Query SELECT part
@@ -399,8 +383,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * distinct
-     *
      * Makes the query SELECT DISTINCT.
      *
      * @param bool $flag Whether or not the SELECT is DISTINCT (default true).
@@ -414,8 +396,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * forUpdate
-     *
      * Makes the query SELECT FOR UPDATE.
      *
      * @param bool $flag Whether or not the SELECT is FOR UPDATE (default true).
@@ -430,8 +410,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * delete
-     *
      * Sets the query type to DELETE
      *
      * @return Doctrine_Query
@@ -444,8 +422,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * update
-     *
      * Sets the UPDATE part of the query
      *
      * @param string $update Query UPDATE part
@@ -459,8 +435,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * set
-     *
      * Sets the SET part of the query
      *
      * @param mixed $key UPDATE keys. Accepts either a string (requiring then $value or $params to be defined)
@@ -494,8 +468,6 @@ abstract class Doctrine_Query_Abstract
     }
 
     /**
-     * from
-     *
      * Adds fields to the FROM part of the query
      *
      * @param string $from Query FROM part
@@ -508,8 +480,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * innerJoin
-     *
      * Appends an INNER JOIN to the FROM part of the query
      *
      * @param string $join Query INNER JOIN
@@ -529,8 +499,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * join
-     *
      * Appends an INNER JOIN to the FROM part of the query
      *
      * @param string $join Query INNER JOIN
@@ -544,8 +512,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * leftJoin
-     *
      * Appends a LEFT JOIN to the FROM part of the query
      *
      * @param string $join Query LEFT JOIN
@@ -565,8 +531,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * where
-     *
      * Adds conditions to the WHERE part of the query
      *
      * @param string $where Query WHERE part
@@ -590,8 +554,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * andWhere
-     *
      * Adds conditions to the WHERE part of the query
      *
      * @param string $where Query WHERE part
@@ -609,8 +571,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * orWhere
-     *
      * Adds conditions to the WHERE part of the query
      *
      * @param string $where Query WHERE part
@@ -628,8 +588,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * whereIn
-     *
      * Adds IN condition to the query WHERE part
      *
      * @param string $expr The operand of the IN
@@ -655,8 +613,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * whereNotIn
-     *
      * Adds NOT IN condition to the query WHERE part
      *
      * @param string $expr The operand of the NOT IN
@@ -670,8 +626,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * andWhereIn
-     *
      * Adds IN condition to the query WHERE part
      *
      * @param string $expr The operand of the IN
@@ -690,8 +644,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * andWhereNotIn
-     *
      * Adds NOT IN condition to the query WHERE part
      *
      * @param string $expr The operand of the NOT IN
@@ -709,8 +661,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * orWhereIn
-     *
      * Adds IN condition to the query WHERE part
      *
      * @param string $expr The operand of the IN
@@ -729,8 +679,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * orWhereNotIn
-     *
      * Adds NOT IN condition to the query WHERE part
      *
      * @param string $expr The operand of the NOT IN
@@ -748,8 +696,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * groupBy
-     *
      * Adds fields to the GROUP BY part of the query
      *
      * @param string $groupby Query GROUP BY part
@@ -762,8 +708,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * having
-     *
      * Adds conditions to the HAVING part of the query
      *
      * @param string $having Query HAVING part
@@ -787,8 +731,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * andHaving
-     *
      * Adds conditions to the HAVING part of the query
      *
      * @param string $having Query HAVING part
@@ -806,8 +748,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * orHaving
-     *
      * Adds conditions to the HAVING part of the query
      *
      * @param string $having Query HAVING part
@@ -825,8 +765,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * orderBy
-     *
      * Adds fields to the ORDER BY part of the query
      *
      * @param string $orderby Query ORDER BY part
@@ -839,8 +777,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * limit
-     *
      * Sets the Query query limit
      *
      * @param integer $limit Limit to be used for limiting the query results
@@ -853,8 +789,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * offset
-     *
      * Sets the Query query offset
      *
      * @param integer $offset Offset to be used for paginating the query
@@ -867,8 +801,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _setEnumParams
-     *
      * Set enumerated parameters
      *
      * @param array $enumParams Enum parameters.
@@ -880,8 +812,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getEnumParams
-     *
      * Get all enumerated parameters
      *
      * @return array All enumerated parameters
@@ -893,8 +823,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * convertEnums
-     *
      * Convert ENUM parameters to their integer equivalents
      *
      * @param $params Parameters to be converted
@@ -913,8 +841,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getParams
-     *
      * Get all defined parameters
      *
      * @return array Defined parameters
@@ -942,8 +868,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * contains
-     *
      * Method to check if a arbitrary piece of DQL exists
      *
      * @param string $dql Arbitrary piece of DQL to check for
@@ -956,8 +880,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getDqlQueryPart
-     *
      * Retrieve a DQL part for internal purposes
      *
      * @param string $queryPartName  The name of the query part.
@@ -974,8 +896,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _addDqlQueryPart
-     *
      * Adds a DQL part to the internal parts collection.
      *
      * @param string $queryPartName  The name of the query part.
@@ -999,8 +919,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _processWhereInParams
-     *
      * Processes the WHERE IN () parameters and return an indexed array containing
      * the sqlPart to be placed in SQL statement and the new parameters (that will be
      * bound in SQL execution)
@@ -1040,8 +958,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * _returnWhereIn
-     *
      * Processes a WHERE IN () and build defined stuff to add in DQL
      *
      * @param string $where The WHERE clause to be added
@@ -1061,8 +977,6 @@ abstract class Doctrine_Query_Abstract
 
 
     /**
-     * getSql
-     *
      * Gets the SQL query that corresponds to this query object.
      * The returned SQL syntax depends on the connection driver that is used
      * by this query object at the time of this method call.

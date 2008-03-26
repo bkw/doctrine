@@ -41,8 +41,6 @@ Doctrine::autoload('Doctrine_Query_QueryResult');
 abstract class Doctrine_Query_CacheHandler
 {
     /**
-     * fromResultSet
-     *
      * Static factory method. Receives a Doctrine_Query object and generates
      * the object after processing queryComponents. Table aliases are retrieved
      * directly from Doctrine_Query_Parser.
@@ -82,8 +80,6 @@ abstract class Doctrine_Query_CacheHandler
 
 
     /**
-     * fromCachedResult
-     *
      * Static factory method. Receives a Doctrine_Query object and a cached data.
      * It handles the cache and generates the object after processing queryComponents.
      * Table aliases are retrieved from cache.
@@ -105,8 +101,6 @@ abstract class Doctrine_Query_CacheHandler
 
 
     /**
-     * fromCachedQuery
-     *
      * Static factory method. Receives a Doctrine_Query object and a cached data.
      * It handles the cache and generates the object after processing queryComponents.
      * Table aliases are retrieved from cache.

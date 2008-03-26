@@ -23,8 +23,6 @@
 Doctrine::autoload('Doctrine_Query_Abstract');
 
 /**
- * Doctrine_Query
- *
  * A Doctrine_Query object represents a DQL query. It is used to query databases for
  * data in an object-oriented fashion. A DQL query understands relations and inheritance
  * and is dbms independant.
@@ -37,29 +35,6 @@ Doctrine::autoload('Doctrine_Query_Abstract');
  * @version     $Revision: 3938 $
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
- * @todo        Proposal: This class does far too much. It should have only 1 task: Collecting
- *              the DQL query parts and the query parameters (the query state and caching options/methods
- *              can remain here, too).
- *              The actual SQL construction could be done by a separate object (Doctrine_Query_SqlBuilder?)
- *              whose task it is to convert DQL into SQL.
- *              Furthermore the SqlBuilder? can then use other objects (Doctrine_Query_Tokenizer?),
- *              (Doctrine_Query_Parser(s)?) to accomplish his work. Doctrine_Query does not need
- *              to know the tokenizer/parsers. There could be extending
- *              implementations of SqlBuilder? that cover the specific SQL dialects.
- *              This would release Doctrine_Connection and the Doctrine_Connection_xxx classes
- *              from this tedious task.
- *              This would also largely reduce the currently huge interface of Doctrine_Query(_Abstract)
- *              and better hide all these transformation internals from the public Query API.
- *
- * @internal    The lifecycle of a Query object is the following:
- *              After construction the query object is empty. Through using the fluent
- *              query interface the user fills the query object with DQL parts and query parameters.
- *              These get collected in {@link $_dqlParts} and {@link $_params}, respectively.
- *              When the query is executed the first time, or when {@link getSqlQuery()}
- *              is called the first time, the collected DQL parts get parsed and the resulting
- *              connection-driver specific SQL is generated. The generated SQL parts are
- *              stored in {@link $_sqlParts} and the final resulting SQL query is stored in
- *              {@link $_sql}.
  */
 class Doctrine_Query extends Doctrine_Query_Abstract
 {
@@ -135,8 +110,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * create
-     *
      * Returns a new Doctrine_Query object
      *
      * @param Doctrine_Connection $conn     optional connection parameter
@@ -149,8 +122,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getConnection
-     *
      * Retrieves the assocated Doctrine_Connection to this Doctrine_Query
      *
      * @return Doctrine_Connection
@@ -162,8 +133,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setConnection
-     *
      * Defines an assocated Doctrine_Connection to this Doctrine_Query
      *
      * @param Doctrine_Connection $conn A valid Doctrine_Connection
@@ -180,8 +149,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getHydrator
-     *
      * Returns the hydrator associated with this query object
      *
      * @return Doctrine_Hydrator The hydrator associated with this query object
@@ -193,8 +160,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * fetchArray
-     *
      * Convenience method to execute using array fetching as hydration mode.
      *
      * @param string $params
@@ -206,8 +171,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * fetchOne
-     *
      * Convenience method to execute the query and return the first item
      * of the collection.
      *
@@ -234,8 +197,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * query
-     *
      * Query the database with DQL (Doctrine Query Language).
      *
      * @param string $query      DQL query
@@ -252,8 +213,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getSql
-     *
      * Builds the sql query from the given parameters and applies things such as
      * column aggregation inheritance and limit subqueries if needed
      *
@@ -274,8 +233,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * execute
-     *
      * Executes the query and populates the data set.
      *
      * @param string $params Parameters to be sent to query.
@@ -411,8 +368,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setResultCache
-     *
      * Defines a cache driver to be used for caching result sets.
      *
      * @param Doctrine_Cache_Interface|null $driver Cache driver
@@ -433,8 +388,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getResultCache
-     *
      * Returns the cache driver used for caching result sets.
      *
      * @return Doctrine_Cache_Interface Cache driver
@@ -450,8 +403,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setResultCacheLifetime
-     *
      * Defines how long the result cache will be active before expire.
      *
      * @param integer $timeToLive How long the cache entry is valid
@@ -470,8 +421,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getResultCacheLifetime
-     *
      * Retrieves the lifetime of resultset cache.
      *
      * @return int
@@ -483,8 +432,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setExpireResultCache
-     *
      * Defines if the resultset cache is active or not.
      *
      * @param boolean $expire Whether or not to force resultset cache expiration.
@@ -499,8 +446,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getExpireResultCache
-     *
      * Retrieves if the resultset cache is active or not.
      *
      * @return bool
@@ -512,8 +457,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setQueryCache
-     *
      * Defines a cache driver to be used for caching queries.
      *
      * @param Doctrine_Cache_Interface|null $driver Cache driver
@@ -534,8 +477,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getQueryCache
-     *
      * Returns the cache driver used for caching queries.
      *
      * @return Doctrine_Cache_Interface Cache driver
@@ -551,8 +492,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setQueryCacheLifetime
-     *
      * Defines how long the query cache will be active before expire.
      *
      * @param integer $timeToLive How long the cache entry is valid
@@ -571,8 +510,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getQueryCacheLifetime
-     *
      * Retrieves the lifetime of resultset cache.
      *
      * @return int
@@ -584,8 +521,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setExpireQueryCache
-     *
      * Defines if the query cache is active or not.
      *
      * @param boolean $expire Whether or not to force query cache expiration.
@@ -600,8 +535,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * getExpireQueryCache
-     *
      * Retrieves if the query cache is active or not.
      *
      * @return bool
@@ -613,8 +546,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * setHydrationMode
-     *
      * Defines the processing mode to be used during hydration process.
      *
      * @param integer $hydrationMode Doctrine processing mode to be used during hydration process.
@@ -630,8 +561,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * preQuery
-     *
      * Empty template method to provide Query subclasses with the possibility
      * to hook into the query building procedure, doing any custom / specialized
      * query building procedures that are neccessary.
@@ -644,8 +573,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
     }
 
     /**
-     * postQuery
-     *
      * Empty template method to provide Query subclasses with the possibility
      * to hook into the query building procedure, doing any custom / specialized
      * post query procedures (for example logging) that are neccessary.
@@ -659,8 +586,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
 
     /**
-     * serialize
-     *
      * This method is automatically called when this Doctrine_Hydrate is serialized.
      *
      * @return array An array of serialized properties
@@ -671,8 +596,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
     }
 
     /**
-     * unseralize
-     *
      * This method is automatically called everytime a Doctrine_Hydrate object is unserialized.
      *
      * @param string $serialized Doctrine_Record as serialized string

@@ -37,8 +37,6 @@ Doctrine::autoload('Doctrine_Query_AbstractResult');
 class Doctrine_Query_QueryResult extends Doctrine_Query_AbstractResult
 {
     /**
-     * getResultSet
-     *
      * Returns cached resultset.
      *
      * @return array Resultset.

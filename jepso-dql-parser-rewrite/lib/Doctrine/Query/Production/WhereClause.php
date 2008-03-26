@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,10 +33,22 @@
  */
 class Doctrine_Query_Production_WhereClause extends Doctrine_Query_Production
 {
+    protected $_conditionalExpression;
+
+
     public function execute(array $params = array())
     {
+        // WhereClause = "WHERE" ConditionalExpression
         $this->_parser->match(Doctrine_Query_Token::T_WHERE);
 
-        $this->ConditionalExpression();
+        $this->_conditionalExpression = $this->ConditionalExpression();
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        return " WHERE " . $this->_conditionalExpression->buildSql();
     }
 }

@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,16 +33,37 @@
  */
 class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
 {
+    protected $_orderByItem = array();
+
+
     public function execute(array $params = array())
     {
         $this->_parser->match(Doctrine_Query_Token::T_ORDER);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->OrderByItem();
+        $this->_orderByItem[] = $this->OrderByItem();
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->OrderByItem();
+            $this->_orderByItem[] = $this->OrderByItem();
         }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        $str = '';
+
+        for ($i = 0, $l = count($this->_orderByItem); $i < $l; $i++) {
+            if ($i != 0) {
+                $str .= ', ';
+            }
+
+            $str .= $this->_orderByItem[$i]->buildSql();
+        }
+
+        return ' ORDER BY ' . $str;
     }
 }

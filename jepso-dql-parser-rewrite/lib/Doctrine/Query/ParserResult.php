@@ -37,8 +37,6 @@ Doctrine::autoload('Doctrine_Query_AbstractResult');
 class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
 {
     /**
-     * getSql
-     *
      * Returns generated SQL.
      *
      * @return string SQL generated.

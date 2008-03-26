@@ -46,6 +46,13 @@ class Doctrine_Query_Parser
 
 
     /**
+     * The Connection object.
+     *
+     * @var Doctrine_Connection
+     */
+    protected $_connection;
+
+    /**
      * A scanner object.
      *
      * @var Doctrine_Query_Scanner
@@ -53,11 +60,18 @@ class Doctrine_Query_Parser
     protected $_scanner;
 
     /**
-     * The SQL builder object.
+     * The Parser Result object.
      *
-     * @var Doctrine_Query_SqlBuilder
+     * @var Doctrine_Query_ParserResult
      */
-    protected $_sqlBuilder;
+    protected $_parserResult;
+
+    /**
+     * Keyword symbol table
+     *
+     * @var Doctrine_Query_Token
+     */
+    protected $_keywordTable;
 
     /**
      * A query printer object used to print a parse tree from the input string
@@ -69,11 +83,6 @@ class Doctrine_Query_Parser
 
 
     // Scanner Stuff
-
-    /**
-     * @var array An array of production objects with their names as keys.
-     */
-    protected $_productions = array();
 
     /**
      * @var array The next token in the query string.
@@ -91,42 +100,33 @@ class Doctrine_Query_Parser
     // Error management stuff
 
     /**
-     * Array containing syntax and semantical errors detected in the query
-     * string during parsing process.
+     * Array containing errors detected in the query string during parsing process.
      *
      * @var array
      */
-    protected $_errors = array();
-
-    /**
-     * @var int Number of semantical errors
-     */
-    protected $_semanticalErrorCount = 0;
-
-    /**
-     * @var int Number of syntatical errors
-     */
-    protected $_syntaxErrorCount = 0;
+    protected $_errors;
 
     /**
      * @var int The number of tokens read since last error in the input string.
      */
-    protected $_errorDistance = self::MIN_ERROR_DISTANCE;
+    protected $_errorDistance;
 
     // End of Error management stuff
 
 
     /**
-     * constructor
-     *
      * Creates a new query parser object.
      *
      * @param string $dql DQL to be parsed.
      */
-    public function __construct($dql)
+    public function __construct($dql, $connection = null)
     {
         $this->_scanner = new Doctrine_Query_Scanner($dql);
-        $this->_sqlBuilder = new Doctrine_Query_SqlBuilder();
+        $this->_parserResult = new Doctrine_Query_ParserResult();
+        $this->_keywordTable = new Doctrine_Query_Token();
+
+        $this->setConnection($connection);
+        $this->free(true);
 
         // Used for debug purposes. Remove it later!
         $this->_printer = new Doctrine_Query_Printer(true);
@@ -134,8 +134,6 @@ class Doctrine_Query_Parser
 
 
     /**
-     * match
-     *
      * Attempts to match the given token with the current lookahead token.
      *
      * If they match, updates the lookahead token; otherwise raises a syntax
@@ -155,11 +153,10 @@ class Doctrine_Query_Parser
         if ($isMatch) {
             $this->_printer->println($this->lookahead['value']);
 
-            $this->token = $this->lookahead;
-            $this->lookahead = $this->_scanner->next();
-            $this->_errorDistance++;
+            $this->next();
         } else {
-            $this->syntaxError();
+            // No definition for value checking.
+            $this->syntaxError($this->_keywordTable->getLiteral($token));
         }
 
         return $isMatch;
@@ -167,21 +164,85 @@ class Doctrine_Query_Parser
 
 
     /**
-     * parse
-     *
+     * @todo [TODO] Document these!
+     */
+    public function next()
+    {
+        $this->token = $this->lookahead;
+        $this->lookahead = $this->_scanner->next();
+        $this->_errorDistance++;
+    }
+
+
+    public function free($deep = false)
+    {
+        // WARNING! Use this method with care. It resets the scanner!
+        $this->_scanner->resetPosition();
+
+        // Deep = true cleans peek and also any previously defined errors
+        if ($deep) {
+            $this->_scanner->resetPeek();
+            $this->_errors = array();
+        }
+
+        $this->token = null;
+        $this->lookahead = null;
+
+        $this->_errorDistance = self::MIN_ERROR_DISTANCE;
+    }
+
+
+    /**
      * Parses a query string.
      */
     public function parse()
     {
         $this->lookahead = $this->_scanner->next();
 
-        $this->getProduction('QueryLanguage')->execute();
+        // Building the Abstract Syntax Tree
+        $AST = $this->getProduction('QueryLanguage')->execute();
 
+        // Check for end of string
         if ($this->lookahead !== null) {
             $this->syntaxError('end of string');
         }
 
-        return $this->_sqlBuilder->getParserResult();
+        // Check for semantical errors
+        if (count($this->_errors) > 0) {
+            throw new Doctrine_Query_Parser_Exception(implode("\r\n", $this->_errors));
+        }
+
+        // Assign the SQL in parser result
+        $this->_parserResult->setSql($AST->buildSql());
+
+        return $this->_parserResult;
+    }
+
+
+    /**
+     * Retrieves the assocated Doctrine_Connection to this object.
+     *
+     * @return Doctrine_Connection
+     */
+    public function getConnection()
+    {
+        return $this->_connection;
+    }
+
+
+    /**
+     * Defines an assocated Doctrine_Connection to this object.
+     *
+     * @param Doctrine_Connection $conn A valid Doctrine_Connection
+     * @return void
+     */
+    public function setConnection(Doctrine_Connection $conn = null)
+    {
+        if ($conn === null) {
+            $conn = Doctrine_Manager::getInstance()->getCurrentConnection();
+        }
+
+        $this->_connection = $conn;
     }
 
 
@@ -197,13 +258,13 @@ class Doctrine_Query_Parser
 
 
     /**
-     * Returns the sql builder object associated with this object.
+     * Returns the parser result associated with this object.
      *
-     * @return Doctrine_Query_SqlBuilder
+     * @return Doctrine_Query_ParserResult
      */
-    public function getSqlBuilder()
+    public function getParserResult()
     {
-        return $this->_sqlBuilder;
+        return $this->_parserResult;
     }
 
 
@@ -219,8 +280,6 @@ class Doctrine_Query_Parser
 
 
     /**
-     * getProduction
-     *
      * Returns a production object with the given name.
      *
      * @param string $name production name
@@ -228,19 +287,14 @@ class Doctrine_Query_Parser
      */
     public function getProduction($name)
     {
-        if ( ! isset($this->_productions[$name])) {
-            $class = 'Doctrine_Query_Production_' . $name;
-            $this->_productions[$name] = new $class($this);
-        }
+        $class = 'Doctrine_Query_Production_' . $name;
 
-        return $this->_productions[$name];
+        return new $class($this);
     }
 
 
     /**
-     * syntaxError
-     *
-     * Generates a new syntatical error.
+     * Generates a new syntax error.
      *
      * @param string $expected Optional expected string.
      * @param array $token Optional token.
@@ -251,10 +305,13 @@ class Doctrine_Query_Parser
             $token = $this->lookahead;
         }
 
+        // Formatting message
+        $message = 'line 0, col ' . $token['position'] . ': Error: ';
+
         if ($expected !== '') {
-            $message = "Expected '$expected', got ";
+            $message .= "Expected '$expected', got ";
         } else {
-            $message = 'Unexpected ';
+            $message .= 'Unexpected ';
         }
 
         if ($this->lookahead === null) {
@@ -263,15 +320,11 @@ class Doctrine_Query_Parser
             $message .= "'{$this->lookahead['value']}'";
         }
 
-        $this->_syntaxErrorCount++;
-
-        $this->_logError('Error: ' . $message, $token);
+        throw new Doctrine_Query_Parser_Exception($message);
     }
 
 
     /**
-     * semanticalError
-     *
      * Generates a new semantical error.
      *
      * @param string $message Optional message.
@@ -290,8 +343,6 @@ class Doctrine_Query_Parser
 
 
     /**
-     * _logError
-     *
      * Logs new error entry.
      *
      * @param string $message Message to log.
@@ -305,71 +356,6 @@ class Doctrine_Query_Parser
         }
 
         $this->_errorDistance = 0;
-    }
-
-
-    /**
-     * hasErrors
-     *
-     * Checks if the current processment has errors or not.
-     *
-     * @return bool If there're errors or not.
-     */
-    public function hasErrors()
-    {
-        return $this->getErrorCount() > 0;
-    }
-
-
-    /**
-     * getErrorCount
-     *
-     * Return the number of errors occured.
-     *
-     * @return int Number of errors occurred.
-     */
-    public function getErrorCount()
-    {
-        return count($this->_errors);
-    }
-
-
-    /**
-     * getSyntaxErrorCount
-     *
-     * Return the number of syntax errors occured.
-     *
-     * @return int Number of errors occurred.
-     */
-    public function getSyntaxErrorCount()
-    {
-        return $this->_syntaxErrorCount;
-    }
-
-
-    /**
-     * getSemanticalErrorCount
-     *
-     * Return the number of semantical errors occured.
-     *
-     * @return int Number of errors occurred.
-     */
-    public function getSemanticalErrorCount()
-    {
-        return $this->_semanticalErrorCount;
-    }
-
-
-    /**
-     * getErrors
-     *
-     * Return the errors occured.
-     *
-     * @return array Errors occured.
-     */
-    public function getErrors()
-    {
-        return $this->_errors;
     }
 
 }

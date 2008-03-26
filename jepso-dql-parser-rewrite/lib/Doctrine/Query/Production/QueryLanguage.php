@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,21 +33,33 @@
  */
 class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
 {
+    protected $_queryStatement;
+
+
     public function execute(array $params = array())
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
             case Doctrine_Query_Token::T_FROM:
-                $this->SelectStatement();
-            break;
+                $this->_queryStatement = $this->SelectStatement();
+
             case Doctrine_Query_Token::T_UPDATE:
-                $this->UpdateStatement();
-            break;
+                $this->_queryStatement = $this->UpdateStatement();
+
             case Doctrine_Query_Token::T_DELETE:
-                $this->DeleteStatement();
-            break;
+                $this->_queryStatement = $this->DeleteStatement();
+
             default:
                 $this->_parser->syntaxError();
+                $this->_queryStatement = null;
         }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_queryStatement->buildSql();
     }
 }
