@@ -27,7 +27,7 @@
  * @package     Doctrine
  * @subpackage  Manager
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -64,6 +64,9 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      */
     protected $_queryRegistry;
 
+    /**
+     *
+     */
     protected static $driverMap = array('oci' => 'oracle');
 
     /**
@@ -74,7 +77,6 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     private function __construct()
     {
         $this->_root = dirname(__FILE__);
-        Doctrine_Locator_Injectable::initNullObject(new Doctrine_Null);
     }
 
     /**
@@ -107,8 +109,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
                         Doctrine::ATTR_PORTABILITY              => Doctrine::PORTABILITY_ALL,
                         Doctrine::ATTR_EXPORT                   => Doctrine::EXPORT_ALL,
                         Doctrine::ATTR_DECIMAL_PLACES           => 2,
-                        Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE  => 'doctrine',
-                        Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES   => true,
+                        Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE  => 'doctrine'
                         );
             foreach ($attributes as $attribute => $value) {
                 $old = $this->getAttribute($attribute);
@@ -120,11 +121,57 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
         }
         return false;
     }
+    
+    public function hasAttribute($key)
+    {
+        switch ($key) {
+            case Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE:
+            case Doctrine::ATTR_COLL_KEY:
+            case Doctrine::ATTR_SEQCOL_NAME:
+            case Doctrine::ATTR_LISTENER:
+            case Doctrine::ATTR_RECORD_LISTENER:
+            case Doctrine::ATTR_QUOTE_IDENTIFIER:
+            case Doctrine::ATTR_FIELD_CASE:
+            case Doctrine::ATTR_IDXNAME_FORMAT:
+            case Doctrine::ATTR_SEQNAME_FORMAT:
+            case Doctrine::ATTR_DBNAME_FORMAT:
+            case Doctrine::ATTR_TBLCLASS_FORMAT:
+            case Doctrine::ATTR_TBLNAME_FORMAT:
+            case Doctrine::ATTR_EXPORT:
+            case Doctrine::ATTR_DECIMAL_PLACES:
+            case Doctrine::ATTR_PORTABILITY:
+            case Doctrine::ATTR_VALIDATE:
+            case Doctrine::ATTR_QUERY_LIMIT:
+            case Doctrine::ATTR_DEFAULT_TABLE_TYPE:
+            case Doctrine::ATTR_DEF_TEXT_LENGTH:
+            case Doctrine::ATTR_DEF_VARCHAR_LENGTH:
+            case Doctrine::ATTR_DEF_TABLESPACE:
+            case Doctrine::ATTR_EMULATE_DATABASE:
+            case Doctrine::ATTR_USE_NATIVE_ENUM:
+            case Doctrine::ATTR_CREATE_TABLES:
+            case Doctrine::ATTR_COLL_LIMIT:
+            case Doctrine::ATTR_CACHE: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE:
+            case Doctrine::ATTR_CACHE_LIFESPAN: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE_LIFESPAN:
+            case Doctrine::ATTR_LOAD_REFERENCES:
+            case Doctrine::ATTR_THROW_EXCEPTIONS:
+            case Doctrine::ATTR_QUERY_CACHE:
+            case Doctrine::ATTR_QUERY_CACHE_LIFESPAN:
+            case Doctrine::ATTR_MODEL_LOADING:
+            case Doctrine::ATTR_METADATA_CACHE:
+            case Doctrine::ATTR_METADATA_CACHE_LIFESPAN:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * returns the root directory of Doctrine
      *
      * @return string
+     * @todo Better name.
      */
     final public function getRoot()
     {
@@ -327,6 +374,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      *
      * @param array $dsn An array of dsn information
      * @return array The array parsed
+     * @todo package:dbal
      */
     public function parsePdoDsn($dsn)
     {
@@ -364,6 +412,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      *
      * @param string $dsn
      * @return array Parsed contents of DSN
+     * @todo package:dbal
      */
     public function parseDsn($dsn)
     {
@@ -476,6 +525,47 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
 
         return $this->_connections[$name];
     }
+    
+    /**
+     * Creates a new Doctrine_Query object that uses the currently active connection.
+     * 
+     * @return Doctrine_Query 
+     */
+    public function createQuery($dql = "")
+    {
+        $query = new Doctrine_Query($this->getCurrentConnection());
+        if ( ! empty($dql)) {
+            $query->parseQuery($dql);
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Creates a new native (SQL) query.
+     *
+     * @return Doctrine_RawSql
+     */
+    public function createNativeQuery($sql = "")
+    {
+        $nativeQuery = new Doctrine_RawSql($this->getCurrentConnection());
+        if ( ! empty($sql)) {
+            $nativeQuery->parseQuery($sql);
+        }
+        
+        return $nativeQuery;
+    }
+    
+    /**
+     * Creates a query object out of a registered, named query.
+     *
+     * @param string $name     The name of the query.
+     * @return Doctrine_Query  The query object.
+     */
+    public function createNamedQuery($name)
+    {
+        return $this->_queryRegistry->get($name);
+    }
 
     /**
      * getComponentAlias
@@ -570,6 +660,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      * @see Doctrine_Connection::getTable()
      * @param string $componentName
      * @return Doctrine_Table
+     * @deprecated
      */
     public function getTable($componentName)
     {
@@ -669,6 +760,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      * returns the number of opened connections
      *
      * @return integer
+     * @todo This is unintuitive.
      */
     public function count()
     {
@@ -709,6 +801,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      *
      * @param string $specifiedConnections Array of connections you wish to create the database for
      * @return void
+     * @todo package:dbal
      */
     public function createDatabases($specifiedConnections = array())
     {
@@ -736,6 +829,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      *
      * @param string $specifiedConnections Array of connections you wish to drop the database for
      * @return void
+     * @todo package:dbal
      */
     public function dropDatabases($specifiedConnections = array())
     {

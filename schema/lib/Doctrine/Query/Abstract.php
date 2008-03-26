@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Query
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 1393 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -528,15 +528,15 @@ abstract class Doctrine_Query_Abstract
      */
     protected function _createCustomJoinSql($componentName, $componentAlias)
     {
-        $table = $this->_conn->getTable($componentName);
+        $table = $this->_conn->getMetadata($componentName);
         $tableAlias = $this->getSqlTableAlias($componentAlias, $table->getTableName());
         $customJoins = $this->_conn->getMapper($componentName)->getCustomJoins();
         $sql = '';
-        foreach ($customJoins as $componentName) {
-            $joinedTable = $this->_conn->getTable($componentName);
+        foreach ($customJoins as $componentName => $joinType) {
+            $joinedTable = $this->_conn->getMetadata($componentName);
             $joinedAlias = $componentAlias . '.' . $componentName;
             $joinedTableAlias = $this->getSqlTableAlias($joinedAlias, $joinedTable->getTableName());
-            $sql .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($joinedTable->getTableName())
+            $sql .= " $joinType JOIN " . $this->_conn->quoteIdentifier($joinedTable->getTableName())
                     . ' ' . $this->_conn->quoteIdentifier($joinedTableAlias) . ' ON ';
             
             foreach ($table->getIdentifierColumnNames() as $column) {
@@ -553,26 +553,38 @@ abstract class Doctrine_Query_Abstract
     /**
      * Creates the SQL snippet for the WHERE part that contains the discriminator
      * column conditions.
+     * Used solely for Single Table Inheritance.
      *
      * @return string  The created SQL snippet.
      */
-    protected function _createDiscriminatorSql()
-    {
+    protected function _createDiscriminatorConditionSql()
+    {        
         $array = array();
         foreach ($this->_queryComponents as $componentAlias => $data) {
-            $tableAlias = $this->getSqlTableAlias($componentAlias);
-            //echo $data['table']->getComponentName() . " -- ";
-            /*if (!isset($data['mapper'])) {
-                //echo $data['table']->getComponentName();
-                echo $this->getDql();
-            }*/
-            /*if ($data['mapper']->getComponentName() != $data['table']->getComponentName()) {
-                //echo $this->getDql() . "<br />";
-            }*/
-            //echo $data['mapper']->getComponentName() . "_<br />";
-            //var_dump($data['mapper']->getDiscriminatorColumn($data['mapper']->getComponentName()));
-            
-            $array[$tableAlias][] = $data['mapper']->getDiscriminatorColumn($data['mapper']->getComponentName());
+            $sqlTableAlias = $this->getSqlTableAlias($componentAlias);
+            if ($data['table']->getInheritanceType() != Doctrine::INHERITANCE_TYPE_SINGLE_TABLE) {
+                $array[$sqlTableAlias][] = array();
+            } else {
+                $discCol = $data['table']->getInheritanceOption('discriminatorColumn');
+                $discMap = $data['table']->getInheritanceOption('discriminatorMap');
+                $discValue = array_search($data['table']->getClassName(), $discMap);
+                if ($discValue === false) {
+                    continue;
+                }
+                $discriminator = array();
+                $discriminator[] = array($discCol => $discValue);
+                
+                $subclasses = $data['table']->getSubclasses();
+                foreach ((array)$subclasses as $subclass) {
+                    $subClassMetadata = $this->_conn->getClassMetadata($subclass);
+                    $discCol = $subClassMetadata->getInheritanceOption('discriminatorColumn');
+                    $discMap = $subClassMetadata->getInheritanceOption('discriminatorMap');
+                    $discValue = array_search($subclass, $discMap);
+                    $discriminator[] = array($discCol => $discValue);
+                }
+                
+                $array[$sqlTableAlias][] = $discriminator;
+            }
         }
         //var_dump($array);
         // apply inheritance maps
@@ -591,10 +603,11 @@ abstract class Doctrine_Query_Abstract
             }
 
             foreach ($maps as $map) {
+                //echo "start";
                 $b = array();
-                foreach ($map as $field => $value) {
-                    $identifier = $this->_conn->quoteIdentifier($tableAlias . $field);
-
+                foreach ($map as $discriminator) {
+                    list($column, $value) = each($discriminator);
+                    $identifier = $this->_conn->quoteIdentifier($tableAlias . $column);
                     if ($index > 0) {
                         $b[] = '(' . $identifier . ' = ' . $this->_conn->quote($value)
                              . ' OR ' . $identifier . ' IS NULL)';
@@ -604,10 +617,14 @@ abstract class Doctrine_Query_Abstract
                 }
 
                 if ( ! empty($b)) {
-                    $a[] = implode(' AND ', $b);
+                    if (count($b) > 1) {
+                        $a[] = '(' . implode(' OR ', $b) . ')';
+                    } else {
+                        $a[] = implode(' OR ', $b);
+                    }                    
                 }
             }
-
+            //echo "end<br />";
             if ( ! empty($a)) {
                 $c[] = implode(' AND ', $a);
             }
@@ -1020,10 +1037,10 @@ abstract class Doctrine_Query_Abstract
                 $queryComponents[$alias]['mapper'] = $this->_conn->getMapper($queryComponents[$alias]['relation']->getForeignComponentName());
                 $queryComponents[$alias]['table'] = $queryComponents[$alias]['mapper']->getTable();
             }
-            if (isset($v[1])) {
+            if (isset($components[1])) {
                 $queryComponents[$alias]['agg'] = $components[1];
             }
-            if (isset($v[2])) {
+            if (isset($components[2])) {
                 $queryComponents[$alias]['map'] = $components[2];
             }
         }
@@ -1143,13 +1160,18 @@ abstract class Doctrine_Query_Abstract
     public function whereIn($expr, $params = array(), $not = false)
     {
         $params = (array) $params;
+
+        // if there's no params, return (else we'll get a WHERE IN (), invalid SQL)
+        if (!count($params))
+          return $this;
+
         $a = array();
         foreach ($params as $k => $value) {
             if ($value instanceof Doctrine_Expression) {
                 $value = $value->getSql();
                 unset($params[$k]);
             } else {
-                $value = '?';          
+                $value = '?';
             }
             $a[] = $value;
         }

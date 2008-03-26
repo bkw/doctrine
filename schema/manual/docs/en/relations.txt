@@ -200,6 +200,9 @@ class Group extends Doctrine_Record
                                      'foreign' => 'user_id', // <- in the association table
             // the following line is needed in many-to-many relations!
                                      'refClass' => 'GroupUser'));
+
+        //group is reserved keyword so either do this or enable ATTR_QUOTE_IDENTIFIERS
+        $this->setTableName('my_group'); 
     }
     public function setTableDefinition() {
         $this->hasColumn('name', 'string', 30);
@@ -321,7 +324,7 @@ $brandy->name = 'John Brandy';
 $koskenkorva = new User();
 $koskenkorva->name = 'Mikko Koskenkorva';
 
-$beer = new Stefan();
+$beer = new User();
 $beer->name = 'Stefan Beer';
 
 $daniels->Friend[0] = $brandy;
@@ -665,7 +668,7 @@ class User extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->index('id', array('fields' => 'id'));
+        $this->index('id_idx', array('fields' => 'id'));
 
         $this->hasMany('Phonenumber', array('local' => 'id', 
                                             'foreign' => 'user_id'));
@@ -680,7 +683,7 @@ class Phonenumber extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->index('product_id', array('fields' => 'user_id'));
+        $this->index('user_id_idx', array('fields' => 'user_id'));
 
         $this->hasOne('User', array('local' => 'user_id',
                                     'foreign' => 'id',

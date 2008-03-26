@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Query
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 1080 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -53,7 +53,7 @@ class Doctrine_Query_Check
         if ( ! ($table instanceof Doctrine_Table)) {
             $table = Doctrine_Manager::getInstance()
                         ->getCurrentConnection()
-                        ->getTable($table);
+                        ->getClassMetadata($table);
         }
         $this->table = $table;
         $this->_tokenizer = new Doctrine_Query_Tokenizer();

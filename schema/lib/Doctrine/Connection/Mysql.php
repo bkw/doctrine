@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Connection_Common');
 /**
@@ -28,7 +28,7 @@ Doctrine::autoload('Doctrine_Connection_Common');
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
  * @version     $Revision$
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  */
 class Doctrine_Connection_Mysql extends Doctrine_Connection_Common
@@ -88,16 +88,6 @@ class Doctrine_Connection_Mysql extends Doctrine_Connection_Common
         $this->properties['varchar_max_length'] = 255;
 
         parent::__construct($manager, $adapter);
-    }
-
-    /**
-     * returns the name of the connected database
-     *
-     * @return string
-     */
-    public function getDatabaseName()
-    {
-        return $this->fetchOne('SELECT DATABASE()');
     }
 
     /**
@@ -176,43 +166,43 @@ class Doctrine_Connection_Mysql extends Doctrine_Connection_Common
      *
      * @return integer      the number of affected rows
      */
-    public function replace(Doctrine_Table $table, array $fields, array $keys)
+    public function replace($tableName, array $data, array $keys)
     {
-        $count = count($fields);
+        $count = count($data);
         $query = $values = '';
         $keys = $colnum = 0;
 
-        for (reset($fields); $colnum < $count; next($fields), $colnum++) {
-            $name = key($fields);
+        for (reset($data); $colnum < $count; next($data), $colnum++) {
+            $name = key($data);
 
             if ($colnum > 0) {
                 $query .= ',';
                 $values.= ',';
             }
 
-            $query .= $table->getColumnName($name);
+            $query .= $name;
 
-            if (isset($fields[$name]['null']) && $fields[$name]['null']) {
+            if (isset($data[$name]['null']) && $data[$name]['null']) {
                 $value = 'NULL';
             } else {
-                $type = isset($fields[$name]['type']) ? $fields[$name]['type'] : null;
-                $value = $this->quote($fields[$name]['value'], $type);
+                $type = isset($data[$name]['type']) ? $data[$name]['type'] : null;
+                $value = $this->quote($data[$name]['value'], $type);
             }
 
             $values .= $value;
 
-            if (isset($fields[$name]['key']) && $fields[$name]['key']) {
+            if (isset($data[$name]['key']) && $data[$name]['key']) {
                 if ($value === 'NULL') {
-                    throw new Doctrine_Connection_Mysql_Exception('key value '.$name.' may not be NULL');
+                    throw new Doctrine_Connection_Mysql_Exception('key value '.$name.' may not be NULL.');
                 }
                 $keys++;
             }
         }
 
         if ($keys == 0) {
-            throw new Doctrine_Connection_Mysql_Exception('not specified which fields are keys');
+            throw new Doctrine_Connection_Mysql_Exception('Not specified which fields are keys.');
         }
-        $query = 'REPLACE INTO ' . $table->getTableName() . ' (' . $query . ') VALUES (' . $values . ')';
+        $query = 'REPLACE INTO ' . $tableName . ' (' . $query . ') VALUES (' . $values . ')';
 
         return $this->exec($query);
     }

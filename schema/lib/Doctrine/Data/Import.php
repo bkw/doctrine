@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @package     Data
  * @author      Jonathan H. Wage <jwage@mac.com>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 2552 $
  */
@@ -130,6 +130,9 @@ class Doctrine_Data_Import extends Doctrine_Data
         foreach ($row as $key => $value) {
             if ($obj->getTable()->hasField($key)) {
                 $obj->set($key, $value);
+            } else if (method_exists($obj, 'set' . Doctrine::classify($key))) {
+                $func = 'set' . Doctrine::classify($key);
+                $obj->$func($value);
             } else if ($obj->getTable()->hasRelation($key)) {
                 if (is_array($value)) {
                     if (isset($value[0])) {
@@ -149,9 +152,6 @@ class Doctrine_Data_Import extends Doctrine_Data
                 } else {
                     $obj->set($key, $this->_getImportedObject($value));
                 }
-            } else if (method_exists($obj, 'set' . Doctrine::classify($key))) {
-                $func = 'set' . Doctrine::classify($key);
-                $obj->$func($value);
             }
         }
     }
@@ -178,7 +178,7 @@ class Doctrine_Data_Import extends Doctrine_Data
             // This is simple here to get the templates present for this model
             // better way?
             $obj = new $className(null, true);
-            $templates = array_keys($obj->getTable()->getTemplates());
+            $templates = array_keys($obj->getTable()->getBehaviors());
             
             if (in_array('Doctrine_Template_NestedSet', $templates)) {
                 $nestedSets[$className][] = $data;
@@ -300,11 +300,7 @@ class Doctrine_Data_Import extends Doctrine_Data
                                with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
         
         $columns = array_keys($record->toArray());
-        $pks = $record->getTable()->getIdentifier();
-        
-        if ( ! is_array($pks)) {
-          $pks = array($pks);
-        }
+        $pks = (array)$record->getTable()->getIdentifier();
         
         foreach ($columns as $column) {
             

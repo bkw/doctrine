@@ -194,7 +194,7 @@ class Doctrine_Pager_Layout
      /**
      * getTemplate
      *
-     * Returns the Template to be applied for inactive pages 
+     * Returns the Template to be applied for inactive pages
      *
      * @return string        Template to be applied for inactive pages
      */
@@ -409,12 +409,30 @@ class Doctrine_Pager_Layout
     /**
      * _parseTemplate
      *
-     * Process the template of a given page and return the processed template
+     * Parse the template of a given page and return the processed template
      *
      * @param array    Optional parameters to be applied in template and url mask
      * @return string  
      */
     protected function _parseTemplate($options = array())
+    {
+        $str = $this->_parseUrlTemplate($options);
+        $replacements = $this->_parseReplacementsTemplate($options);
+
+        return strtr($str, $replacements);
+    }
+
+
+    /**
+     * _parseUrlTemplate
+     *
+     * Parse the url mask to return the correct template depending of the options sent.
+     * Already process the mask replacements assigned.
+     *
+     * @param $options    Optional parameters to be applied in template and url mask
+     * @return string
+     */
+    protected function _parseUrlTemplate($options = array())
     {
         $str = '';
 
@@ -428,6 +446,20 @@ class Doctrine_Pager_Layout
             $str = $this->_parseMaskReplacements($this->getTemplate());
         }
 
+        return $str;
+    }
+
+
+    /**
+     * _parseUrl
+     *
+     * Parse the mask replacements of a given page
+     *
+     * @param $options    Optional parameters to be applied in template and url mask
+     * @return string
+     */
+    protected function _parseReplacementsTemplate($options = array())
+    {
         // Defining "url" options index to allow {%url} mask
         $options['url'] = $this->_parseUrl($options);
 
@@ -437,14 +469,14 @@ class Doctrine_Pager_Layout
             $replacements['{%'.$k.'}'] = $v;
         }
 
-        return strtr($str, $replacements);
+        return $replacements;
     }
 
 
     /**
      * _parseUrl
      *
-     * Process the url mask of a given page and return the processed url
+     * Parse the url mask of a given page and return the processed url
      *
      * @param $options    Optional parameters to be applied in template and url mask
      * @return string
@@ -461,12 +493,12 @@ class Doctrine_Pager_Layout
 
         return strtr($str, $replacements);
     }
-    
-    
+
+
     /**
      * _parseMaskReplacements
      *
-     * Process the mask replacements, changing from to-be replaced mask with new masks/values
+     * Parse the mask replacements, changing from to-be replaced mask with new masks/values
      *
      * @param $str    String to have masks replaced
      * @return string  

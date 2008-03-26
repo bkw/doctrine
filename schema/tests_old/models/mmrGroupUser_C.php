@@ -1,0 +1,10 @@
+<?php
+
+class mmrGroupUser_C extends Doctrine_Record 
+{
+    public static function initMetadata($class) 
+    {
+        $class->setColumn('user_id', 'string', 30, array('primary' => true));
+        $class->setColumn('group_id', 'string', 30, array('primary' => true));
+    }
+}

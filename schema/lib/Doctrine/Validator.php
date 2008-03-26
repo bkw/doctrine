@@ -21,22 +21,23 @@
 
 /**
  * Doctrine_Validator
- * Doctrine_Validator performs validations in record properties
+ * Doctrine_Validator performs validations on record properties
  *
  * @package     Doctrine
  * @subpackage  Validator
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
+ * @author      Roman Borschel <roman@code-factory.org>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-class Doctrine_Validator extends Doctrine_Locator_Injectable
+class Doctrine_Validator
 {
     /**
      * @var array $validators           an array of validator objects
      */
-    private static $validators  = array();
+    private static $validators = array();
 
     /**
      * returns a validator object
@@ -50,6 +51,8 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
             $class = 'Doctrine_Validator_' . ucwords(strtolower($name));
             if (class_exists($class)) {
                 self::$validators[$name] = new $class;
+            } else if (class_exists($name)) {
+                self::$validators[$name] = new $name;
             } else {
                 throw new Doctrine_Exception("Validator named '$name' not available.");
             }
@@ -67,6 +70,7 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
      */
     public function validateRecord(Doctrine_Record $record)
     {
+        $classMetadata = $record->getTable();
         $columns   = $record->getTable()->getColumns();
         $component = $record->getTable()->getComponentName();
 
@@ -74,89 +78,49 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
 
         // if record is transient all fields will be validated
         // if record is persistent only the modified fields will be validated
-        $data = ($record->exists()) ? $record->getModified() : $record->getData();
-
-        $err      = array();
-        foreach ($data as $key => $value) {
-            if ($value === self::$_null) {
+        $fields = ($record->exists()) ? $record->getModified() : $record->getData();
+        $err = array();
+        foreach ($fields as $fieldName => $value) {
+            if ($value === Doctrine_Null::$INSTANCE) {
                 $value = null;
             } else if ($value instanceof Doctrine_Record) {
                 $value = $value->getIncremented();
             }
+            
+            $dataType = $classMetadata->getTypeOf($fieldName);
 
-            $column = $columns[$record->getTable()->getColumnName($key)];
-
-            if ($column['type'] == 'enum') {
-                $value = $record->getTable()->enumIndex($key, $value);
-
-                if ($value === false) {
-                    $errorStack->add($key, 'enum');
-                    continue;
+            // Validate field type, if type validation is enabled
+            if ($classMetadata->getAttribute(Doctrine::ATTR_VALIDATE) & Doctrine::VALIDATE_TYPES) {
+                if ( ! self::isValidType($value, $dataType)) {
+                    $errorStack->add($fieldName, 'type');
+                }
+                if ($dataType == 'enum') {
+                    $enumIndex = $classMetadata->enumIndex($fieldName, $value);
+                    if ($enumIndex === false) {
+                        $errorStack->add($fieldName, 'enum');
+                    }
                 }
             }
-
+            
+            // Validate field length, if length validation is enabled
             if ($record->getTable()->getAttribute(Doctrine::ATTR_VALIDATE) & Doctrine::VALIDATE_LENGTHS) {
-                if ( ! $this->validateLength($column, $key, $value)) {
-                    $errorStack->add($key, 'length');
-
-                    continue;
+                if ( ! $this->validateLength($value, $dataType, $classMetadata->getFieldLength($fieldName))) {
+                    $errorStack->add($fieldName, 'length');
                 }
             }
 
-            foreach ($column as $name => $args) {
-                if (empty($name)
-                    || $name == 'primary'
-                    || $name == 'protected'
-                    || $name == 'autoincrement'
-                    || $name == 'default'
-                    || $name == 'values'
-                    || $name == 'sequence'
-                    || $name == 'zerofill'
-                    || $name == 'scale') {
-                    continue;
+            // Run all custom validators
+            foreach ($classMetadata->getFieldValidators($fieldName) as $validatorName => $args) {
+                if ( ! is_string($validatorName)) {
+                    $validatorName = $args;
+                    $args = array();
                 }
-
-                if (strtolower($name) === 'notnull' && isset($column['autoincrement'])) {
-                    continue;
-                }
-
-                if (strtolower($name) == 'length') {
-                    if ( ! ($record->getTable()->getAttribute(Doctrine::ATTR_VALIDATE) & Doctrine::VALIDATE_LENGTHS)) {
-                        if ( ! $this->validateLength($column, $key, $value)) {
-                            $errorStack->add($key, 'length');
-                        }
-                    }
-                    continue;
-                }
-
-                if (strtolower($name) == 'type') {
-                    if ( ! ($record->getTable()->getAttribute(Doctrine::ATTR_VALIDATE) & Doctrine::VALIDATE_TYPES)) {
-                        if ( ! self::isValidType($value, $column['type'])) {
-                            $errorStack->add($key, 'type');
-                        }
-                    }
-                    continue;
-                }
-
-                $validator = self::getValidator($name);
+                $validator = self::getValidator($validatorName);
                 $validator->invoker = $record;
-                $validator->field   = $key;
-                $validator->args    = $args;
-
+                $validator->field = $fieldName;
+                $validator->args = $args;
                 if ( ! $validator->validate($value)) {
-                    $errorStack->add($key, $name);
-
-                    //$err[$key] = 'not valid';
-
-                    // errors found quit validation looping for this column
-                    //break;
-                }
-            }
-
-            if ($record->getTable()->getAttribute(Doctrine::ATTR_VALIDATE) & Doctrine::VALIDATE_TYPES) {
-                if ( ! self::isValidType($value, $column['type'])) {
-                    $errorStack->add($key, 'type');
-                    continue;
+                    $errorStack->add($fieldName, $validatorName);
                 }
             }
         }
@@ -165,18 +129,16 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
     /**
      * Validates the length of a field.
      */
-    private function validateLength($column, $key, $value)
+    private function validateLength($value, $type, $maximumLength)
     {
-        if ($column['type'] == 'timestamp' || $column['type'] == 'integer' || 
-                $column['type'] == 'enum') {
+        if ($type == 'timestamp' || $type == 'integer' || $type == 'enum') {
             return true;
-        } else if ($column['type'] == 'array' || $column['type'] == 'object') {
+        } else if ($type == 'array' || $type == 'object') {
             $length = strlen(serialize($value));
         } else {
             $length = strlen($value);
         }
-
-        if ($length > $column['length']) {
+        if ($length > $maximumLength) {
             return false;
         }
         return true;
@@ -190,68 +152,7 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
     public function hasErrors()
     {
         return (count($this->stack) > 0);
-    }
-
-    /**
-     * phpType
-     * converts a doctrine type to native php type
-     *
-     * @param $portableType     portable doctrine type
-     * @return string
-     *//*
-    public static function phpType($portableType)
-    {
-        switch ($portableType) {
-            case 'enum':
-                return 'integer';
-            case 'blob':
-            case 'clob':
-            case 'mbstring':
-            case 'timestamp':
-            case 'date':
-            case 'gzip':
-                return 'string';
-                break;
-            default:
-                return $portableType;
-        }
-    }*/
-    /**
-     * returns whether or not the given variable is
-     * valid type
-     *
-     * @param mixed $var
-     * @param string $type
-     * @return boolean
-     */
-     /*
-    public static function isValidType($var, $type)
-    {
-        if ($type == 'boolean') {
-            return true;
-        }
-
-        $looseType = self::gettype($var);
-        $type      = self::phpType($type);
-
-        switch ($looseType) {
-            case 'float':
-            case 'double':
-            case 'integer':
-                if ($type == 'string' || $type == 'float') {
-                    return true;
-                }
-            case 'string':
-            case 'array':
-            case 'object':
-                return ($type === $looseType);
-                break;
-            case 'NULL':
-                return true;
-                break;
-        }
-    }*/
-    
+    }    
     
     /**
      * returns whether or not the given variable is
@@ -272,6 +173,7 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
          switch ($type) {
              case 'float':
              case 'double':
+             case 'decimal':
                  return (string)$var == strval(floatval($var));
              case 'integer':
                  return (string)$var == strval(intval($var));
@@ -288,8 +190,11 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
              case 'boolean':
                  return is_bool($var);
              case 'timestamp':
-                 // todo: validate the timestamp is in YYYY-MM-DD HH:MM:SS format
-                 return true;
+                 $validator = self::getValidator('timestamp');
+                 return $validator->validate($var);
+             case 'time':
+                 $validator = self::getValidator('time');
+                 return $validator->validate($var);
              case 'date':
                  $validator = self::getValidator('date');
                  return $validator->validate($var);
@@ -299,29 +204,4 @@ class Doctrine_Validator extends Doctrine_Locator_Injectable
                  return false;
          }
      }
-    
-    
-    /**
-     * returns the type of loosely typed variable
-     *
-     * @param mixed $var
-     * @return string
-     *//*
-    public static function gettype($var)
-    {
-        $type = gettype($var);
-        switch ($type) {
-            case 'string':
-                if (preg_match("/^[0-9]+$/",$var)) {
-                    return 'integer';
-                } elseif (is_numeric($var)) {
-                    return 'float';
-                } else {
-                    return $type;
-                }
-                break;
-            default:
-                return $type;
-        }
-    }*/
 }

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -27,11 +27,11 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine
+final class Doctrine
 {
     /**
      * DEPRECATED ATTRIBUTE CONSTANT NAMES AND VALUES
@@ -55,7 +55,7 @@ class Doctrine
     /**
      * VERSION
      */
-    const VERSION                   = '1.0.0';
+    const VERSION                   = '2.0.0';
 
     /**
      * ERROR CONSTANTS
@@ -171,47 +171,47 @@ class Doctrine
      * Doctrine constants
      */
     const ATTR_LISTENER                 = 100;
-    const ATTR_QUOTE_IDENTIFIER         = 101;
-    const ATTR_FIELD_CASE               = 102;
-    const ATTR_IDXNAME_FORMAT           = 103;
-    const ATTR_SEQNAME_FORMAT           = 104;
-    const ATTR_SEQCOL_NAME              = 105;
-    const ATTR_CMPNAME_FORMAT           = 118;
-    const ATTR_DBNAME_FORMAT            = 117;
-    const ATTR_TBLCLASS_FORMAT          = 119;
-    const ATTR_TBLNAME_FORMAT           = 120;
-    const ATTR_EXPORT                   = 140;
-    const ATTR_DECIMAL_PLACES           = 141;
-    const ATTR_PORTABILITY              = 106;
-    const ATTR_VALIDATE                 = 107;
-    const ATTR_COLL_KEY                 = 108;
-    const ATTR_QUERY_LIMIT              = 109;
-    const ATTR_DEFAULT_TABLE_TYPE       = 112;
-    const ATTR_DEF_TEXT_LENGTH          = 113;
-    const ATTR_DEF_VARCHAR_LENGTH       = 114;
-    const ATTR_DEF_TABLESPACE           = 115;
-    const ATTR_EMULATE_DATABASE         = 116;
-    const ATTR_USE_NATIVE_ENUM          = 117;
-    const ATTR_DEFAULT_SEQUENCE         = 133;
-    const ATTR_FETCHMODE                = 118;
-    const ATTR_NAME_PREFIX              = 121;
-    const ATTR_CREATE_TABLES            = 122;
-    const ATTR_COLL_LIMIT               = 123;
-    const ATTR_CACHE                    = 150;
-    const ATTR_RESULT_CACHE             = 150;
-    const ATTR_CACHE_LIFESPAN           = 151;
-    const ATTR_RESULT_CACHE_LIFESPAN    = 151;
-    const ATTR_LOAD_REFERENCES          = 153;
+    const ATTR_QUOTE_IDENTIFIER         = 101; // manager/session attribute
+    const ATTR_FIELD_CASE               = 102; // manager/session attribute
+    const ATTR_IDXNAME_FORMAT           = 103; // manager/session attribute
+    const ATTR_SEQNAME_FORMAT           = 104; // manager/session attribute
+    const ATTR_SEQCOL_NAME              = 105; // class attribute
+    const ATTR_CMPNAME_FORMAT           = 118; // ??
+    const ATTR_DBNAME_FORMAT            = 117; // manager/session attribute
+    const ATTR_TBLCLASS_FORMAT          = 119; // manager/session attribute
+    const ATTR_TBLNAME_FORMAT           = 120; // manager/session attribute
+    const ATTR_EXPORT                   = 140; // manager/session attribute
+    const ATTR_DECIMAL_PLACES           = 141; // manager/session attribute
+    const ATTR_PORTABILITY              = 106; // manager/session attribute
+    const ATTR_VALIDATE                 = 107; // manager/session attribute
+    const ATTR_COLL_KEY                 = 108; // class attribute
+    const ATTR_QUERY_LIMIT              = 109; // manager/session attribute
+    const ATTR_DEFAULT_TABLE_TYPE       = 112; // manager/session attribute
+    const ATTR_DEF_TEXT_LENGTH          = 113; // manager/session attribute
+    const ATTR_DEF_VARCHAR_LENGTH       = 114; // manager/session attribute
+    const ATTR_DEF_TABLESPACE           = 115; // manager/session attribute
+    const ATTR_EMULATE_DATABASE         = 116; // manager/session attribute
+    const ATTR_USE_NATIVE_ENUM          = 117; // manager/session attribute
+    const ATTR_DEFAULT_SEQUENCE         = 133; // ??
+    const ATTR_FETCHMODE                = 118; // deprecated? might use them again for associations
+    const ATTR_NAME_PREFIX              = 121; // ??
+    const ATTR_CREATE_TABLES            = 122; // manager/session attribute
+    const ATTR_COLL_LIMIT               = 123; // manager/session attribute
+    const ATTR_CACHE                    = 150; // deprecated
+    const ATTR_RESULT_CACHE             = 150; // manager/session attribute
+    const ATTR_CACHE_LIFESPAN           = 151; // deprecated
+    const ATTR_RESULT_CACHE_LIFESPAN    = 151; // manager/session attribute
+    const ATTR_LOAD_REFERENCES          = 153; // class attribute
     const ATTR_RECORD_LISTENER          = 154;
-    const ATTR_THROW_EXCEPTIONS         = 155;
-    const ATTR_DEFAULT_PARAM_NAMESPACE  = 156;
-    const ATTR_QUERY_CACHE              = 157;
-    const ATTR_QUERY_CACHE_LIFESPAN     = 158;
-    const ATTR_AUTOLOAD_TABLE_CLASSES   = 160;
-    const ATTR_MODEL_LOADING            = 161;
-    const ATTR_LOCK                     = 162;
-    const ATTR_HYDRATE                  = 163;
-    const ATTR_IDENTIFIER               = 164;
+    const ATTR_THROW_EXCEPTIONS         = 155; // manager/session attribute
+    const ATTR_DEFAULT_PARAM_NAMESPACE  = 156; // ??
+    const ATTR_QUERY_CACHE              = 157; // manager/session attribute
+    const ATTR_QUERY_CACHE_LIFESPAN     = 158; // manager/session attribute
+    const ATTR_MODEL_LOADING            = 161; // manager/session attribute
+    const ATTR_HYDRATE                  = 163; // ??
+    const ATTR_IDENTIFIER               = 164; // ??
+    const ATTR_METADATA_CACHE           = 165; // manager/session attribute
+    const ATTR_METADATA_CACHE_LIFESPAN  = 166; // manager/session attribute
 
     /**
      * QUERY_LIMIT CONSTANTS
@@ -240,6 +240,7 @@ class Doctrine
      * IMMEDIATE FETCHING
      * mode for immediate fetching
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_IMMEDIATE       = 0;
 
@@ -249,6 +250,7 @@ class Doctrine
      * mode for batch fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_BATCH           = 1;
 
@@ -258,6 +260,7 @@ class Doctrine
      * mode for offset fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_OFFSET          = 3;
 
@@ -267,6 +270,7 @@ class Doctrine
      * mode for lazy offset fetching
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_LAZY_OFFSET     = 4;
 
@@ -278,6 +282,7 @@ class Doctrine
      * FETCHMODE_VHOLDER
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_VHOLDER         = 1;
 
@@ -290,6 +295,7 @@ class Doctrine
      * This is the default fetchmode.
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_RECORD          = 2;
 
@@ -297,6 +303,7 @@ class Doctrine
      * FETCHMODE_ARRAY
      *
      * @see self::ATTR_FETCHMODE
+     * @deprecated???
      */
     const FETCHMODE_ARRAY           = 3;
 
@@ -387,6 +394,7 @@ class Doctrine
      *
      * mode for optimistic locking
      * @see self::ATTR_LOCK
+     * @deprecated???
      */
     const LOCK_OPTIMISTIC       = 0;
 
@@ -396,6 +404,7 @@ class Doctrine
      * mode for pessimistic locking
      *
      * @see self::ATTR_LOCK
+     * @deprecated???
      */
     const LOCK_PESSIMISTIC      = 1;
 
@@ -488,6 +497,7 @@ class Doctrine
      * VALIDATE_CONSTRAINTS
      *
      * @see self::ATTR_VALIDATE
+     * Not used? Purpose?
      */
     const VALIDATE_CONSTRAINTS      = 4;
 
@@ -552,33 +562,34 @@ class Doctrine
      *
      * @see self::ATTR_MODEL_LOADING
      */
-    const MODEL_LOADING_CONSERVATIVE= 2;
+    const MODEL_LOADING_CONSERVATIVE = 2;
     
     /**
      * INHERITANCE TYPE CONSTANTS.
      */
-          
+    const INHERITANCE_TYPE_NONE = 0;
+    
     /**
      * Constant for Single Table Inheritance.
      *
      * @see http://martinfowler.com/eaaCatalog/singleTableInheritance.html
     */
-    const INHERITANCETYPE_SINGLE_TABLE = 1;
+    const INHERITANCE_TYPE_SINGLE_TABLE = 1;
          
     /**
      * Constant for Class Table Inheritance.
      *
      * @see http://martinfowler.com/eaaCatalog/classTableInheritance.html
      */
-    const INHERITANCETYPE_JOINED = 2;
+    const INHERITANCE_TYPE_JOINED = 2;
      
     /**
      * Constant for Concrete Table Inheritance.
      *
      * @see http://martinfowler.com/eaaCatalog/concreteTableInheritance.html
      */
-    const INHERITANCETYPE_TABLE_PER_CLASS = 3;
-    
+    const INHERITANCE_TYPE_TABLE_PER_CLASS = 3;
+
 
     /**
      * Path
@@ -596,6 +607,8 @@ class Doctrine
      */
     private static $_loadedModelFiles = array();
 
+    private static $_pathModels = array();
+
     /**
      * __construct
      *
@@ -606,7 +619,17 @@ class Doctrine
     {
         throw new Doctrine_Exception('Doctrine is static class. No instances can be created.');
     }
+
+    public static function getLoadedModelFiles()
+    {
+        return self::$_loadedModelFiles;
+    }
     
+    public static function getPathModels()
+    {
+        return self::$_pathModels;
+    }
+
     /**
      * getPath
      * returns the doctrine root
@@ -646,6 +669,8 @@ class Doctrine
                         
                         if ($manager->getAttribute(Doctrine::ATTR_MODEL_LOADING) === Doctrine::MODEL_LOADING_CONSERVATIVE) {
                             self::$_loadedModelFiles[$e[0]] = $file->getPathName();
+                            self::$_pathModels[$file->getPathName()][$e[0]] = $e[0];
+
                             $loadedModels[] = $e[0];
                         } else {
                             $declaredBefore = get_declared_classes();
@@ -658,6 +683,8 @@ class Doctrine
                                 foreach ($foundClasses as $className) {
                                     if (self::isValidModelClass($className) && !in_array($className, $loadedModels)) {
                                         $loadedModels[] = $className;
+
+                                        self::$_pathModels[$file->getPathName()][$className] = $className;
                                     }
                                 }
                             }
@@ -667,7 +694,14 @@ class Doctrine
             }
         }
 
-        return self::filterInvalidModels($loadedModels);
+        // We do not want to filter invalid models when using conservative model loading
+        // The filtering requires that the class be loaded and inflected in order to determine if it is 
+        // a valid class.
+        if ($manager->getAttribute(Doctrine::ATTR_MODEL_LOADING) == Doctrine::MODEL_LOADING_CONSERVATIVE) {
+            return $loadedModels;
+        } else {
+            return self::filterInvalidModels($loadedModels);
+        }
     }
 
     /**
@@ -692,6 +726,7 @@ class Doctrine
      * filterInvalidModels
      *
      * Filter through an array of classes and return all the classes that are valid models
+     * This will inflect the class, causing it to be loaded in to memory.
      *
      * @param classes  Array of classes to filter through, otherwise uses get_declared_classes()
      * @return array   $loadedModels
@@ -713,6 +748,7 @@ class Doctrine
      * isValidModelClass
      *
      * Checks if what is passed is a valid Doctrine_Record
+     * Will load class in to memory in order to inflect it and find out information about the class
      *
      * @param   mixed   $class Can be a string named after the class, an instance of the class, or an instance of the class reflected
      * @return  boolean
@@ -733,8 +769,7 @@ class Doctrine
             // - not a subclass of Doctrine_Record
             // - don't have a setTableDefinition method
             if (!$class->isAbstract() &&
-                $class->isSubClassOf('Doctrine_Record') &&
-                $class->hasMethod('setTableDefinition')) {
+                $class->isSubClassOf('Doctrine_Record')) {
 
                 return true;
             }
@@ -894,47 +929,7 @@ class Doctrine
      */
     public static function createDatabases($specifiedConnections = array())
     {
-        if ( ! is_array($specifiedConnections)) {
-            $specifiedConnections = (array) $specifiedConnections;
-        }
-
-        $manager = Doctrine_Manager::getInstance();
-        $connections = $manager->getConnections();
-
-        $results = array();
-
-        foreach ($connections as $name => $connection) {
-            if ( ! empty($specifiedConnections) && !in_array($name, $specifiedConnections)) {
-                continue;
-            }
-
-            $info = $manager->parsePdoDsn($connection->getOption('dsn'));
-            $username = $connection->getOption('username');
-            $password = $connection->getOption('password');
-
-            // Make connection without database specified so we can create it
-            $connect = $manager->openConnection(new PDO($info['scheme'] . ':host=' . $info['host'], $username, $password), 'tmp_connection', false);
-
-            try {
-                // Create database
-                $connect->export->createDatabase($name);
-
-                // Close the tmp connection with no database
-                $manager->closeConnection($connect);
-
-                // Close original connection
-                $manager->closeConnection($connection);
-
-                // Reopen original connection with newly created database
-                $manager->openConnection(new PDO($info['dsn'], $username, $password), $name, true);
-
-                $results[$name] = true;
-            } catch (Exception $e) {
-                $results[$name] = false;
-            }
-        }
-
-        return $results;
+        return Doctrine_Manager::getInstance()->createDatabases($specifiedConnections);
     }
 
     /**
@@ -947,31 +942,7 @@ class Doctrine
      */
     public static function dropDatabases($specifiedConnections = array())
     {
-        if ( ! is_array($specifiedConnections)) {
-            $specifiedConnections = (array) $specifiedConnections;
-        }
-
-        $manager = Doctrine_Manager::getInstance();
-
-        $connections = $manager->getConnections();
-
-        $results = array();
-
-        foreach ($connections as $name => $connection) {
-            if ( ! empty($specifiedConnections) && !in_array($name, $specifiedConnections)) {
-                continue;
-            }
-
-            try {
-                $connection->export->dropDatabase($connection->getDatabaseName());
-
-                $results[$name] = true;
-            } catch (Exception $e) {
-                $results[$name] = false;
-            }
-        }
-
-        return $results;
+        return Doctrine_Manager::getInstance()->dropDatabases($specifiedConnections);
     }
 
     /**
@@ -1038,7 +1009,7 @@ class Doctrine
      */
     public static function generateMigrationClass($className, $migrationsPath)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationClass($className);
     }
@@ -1052,7 +1023,7 @@ class Doctrine
      */
     public static function generateMigrationsFromDb($migrationsPath)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationsFromDb();
     }
@@ -1066,7 +1037,7 @@ class Doctrine
      */
     public static function generateMigrationsFromModels($migrationsPath, $modelsPath = null)
     {
-        $builder = new Doctrine_Migration_Builder($migrationsPath);
+        $builder = new Doctrine_Builder_Migration($migrationsPath);
 
         return $builder->generateMigrationsFromModels($modelsPath);
     }

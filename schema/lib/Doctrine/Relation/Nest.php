@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Relation_Association');
 /**
@@ -25,7 +25,7 @@ Doctrine::autoload('Doctrine_Relation_Association');
  * @package     Doctrine
  * @subpackage  Relation
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 1434 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -105,7 +105,7 @@ class Doctrine_Relation_Nest extends Doctrine_Relation_Association
         $id = $record->getIncremented();
 
 
-        if (empty($id) || ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+        if (empty($id) || ! $this->_foreignMapper->getClassMetadata()->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
             return new Doctrine_Collection($this->getForeignComponentName());
         } else {
             

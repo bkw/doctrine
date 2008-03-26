@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Relation');
 /**
@@ -27,7 +27,7 @@ Doctrine::autoload('Doctrine_Relation');
  * @subpackage  Relation
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -46,7 +46,7 @@ class Doctrine_Relation_LocalKey extends Doctrine_Relation
         $localFieldName = $record->getTable()->getFieldName($this->definition['local']);
         $id = $record->get($localFieldName);
 
-        if (empty($id) || ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+        if (empty($id) || ! $this->_foreignMapper->getClassMetadata()->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
             $related = $this->_foreignMapper->create();
         } else {
             $dql  = 'FROM ' . $this->getTable()->getComponentName()

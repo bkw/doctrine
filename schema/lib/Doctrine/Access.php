@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -28,12 +28,12 @@
  * @package     Doctrine
  * @subpackage  Access
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-abstract class Doctrine_Access extends Doctrine_Locator_Injectable implements ArrayAccess
+abstract class Doctrine_Access implements ArrayAccess
 {
     /**
      * setArray
@@ -135,10 +135,9 @@ abstract class Doctrine_Access extends Doctrine_Locator_Injectable implements Ar
     public function offsetSet($offset, $value)
     {
         if ( ! isset($offset)) {
-            $this->add($value);
-        } else {
-            $this->set($offset, $value);
+            return $this->add($value);
         }
+        return $this->set($offset, $value);
     }
 
     /**
@@ -149,5 +148,63 @@ abstract class Doctrine_Access extends Doctrine_Locator_Injectable implements Ar
     public function offsetUnset($offset)
     {
         return $this->remove($offset);
+    }
+
+    /**
+     * Remove the element with the specified offset
+     *
+     * @param mixed $offset The offset to remove
+     * @return boolean True if removed otherwise false
+     */
+    public function remove($offset)
+    {
+        throw new Doctrine_Exception('Remove is not supported for ' . get_class($this));
+    }
+
+    /**
+     * Return the element with the specified offset
+     *
+     * @param mixed $offset The offset to return
+     * @return mixed The value of the return object 
+     */
+    public function get($offset)
+    {
+        throw new Doctrine_Exception('Get is not supported for ' . get_class($this));
+    }
+
+    /**
+     * Set the offset to the value
+     *
+     * @param mixed $offset The offset to set
+     * @param mixed $value The value to set the offset to
+     *
+     */
+    public function set($offset, $value)
+    {
+        throw new Doctrine_Exception('Set is not supported for ' . get_class($this));
+    }
+
+
+    /**
+     * Check if the specified offset exists 
+     * 
+     * @param mixed $offset The offset to check
+     * @return boolean True if exists otherwise false
+     */
+    public function contains($offset)
+    {
+        throw new Doctrine_Exception('Contains is not supported for ' . get_class($this));
+    }
+
+
+    /**
+     * Add the value  
+     * 
+     * @param mixed $value The value to add 
+     * @return void
+     */
+    public function add($value)
+    {
+        throw new Doctrine_Exception('Add is not supported for ' . get_class($this));
     }
 }

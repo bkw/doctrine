@@ -47,32 +47,38 @@ Doctrine::autoload('Doctrine_Configurable');
  * @package     Doctrine
  * @subpackage  Connection
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (MDB2 library)
+ * @author      Roman Borschel <roman@code-factory.org>
+ * @todo Split up into Doctrine::DBAL::Connection & Doctrine::ORM::EntityManager.
+ *       Doctrine::DBAL::Connection must have no dependencies on ORM components since
+ *       it sits one layer below.
  */
 abstract class Doctrine_Connection extends Doctrine_Configurable implements Countable, IteratorAggregate
 {
     /**
-     * @var $dbh                                the database handler
+     * The PDO database handle. 
+     *
+     * @var PDO                 
      */
     protected $dbh;
 
     /**
+     * The metadata factory is used to retrieve the metadata of entity classes.
      *
+     * @var Doctrine_ClassMetadata_Factory
+     * @todo package:orm
      */
-    protected $_tableFactory;
+    protected $_metadataFactory;
 
     /**
-     * @var array $tables                       an array containing all the initialized Doctrine_Table objects
-     *                                          keys representing component names and values as Doctrine_Table objects
-     */
-    protected $tables = array();
-
-    /**
-     * @var array  An array of mapper objects currently maintained by this connection.
+     * An array of mapper objects currently maintained by this connection.
+     *
+     * @var array
+     * @todo package:orm 
      */
     protected $_mappers = array();
 
@@ -86,19 +92,24 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     protected $_name;
 
     /**
-     * @var string $driverName                  the name of this connection driver
+     * The name of this connection driver.
+     *
+     * @var string $driverName                  
      */
     protected $driverName;
 
     /**
-     * @var boolean $isConnected                whether or not a connection has been established
+     * Whether or not a connection has been established.
+     *
+     * @var boolean $isConnected                
      */
-    protected $isConnected      = false;
+    protected $isConnected = false;
 
     /**
-     * @var array $supported                    an array containing all features this driver supports,
-     *                                          keys representing feature names and values as
-     *                                          one of the following (true, false, 'emulated')
+     * An array containing all features this driver supports, keys representing feature
+     * names and values as one of the following (true, false, 'emulated').
+     *
+     * @var array $supported                    
      */
     protected $supported        = array();
 
@@ -167,12 +178,15 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      */
     protected $serverInfo = array();
 
+    /**
+     *
+     */
     protected $options    = array();
 
     /**
      * @var array $availableDrivers         an array containing all available drivers
      */
-    private static $availableDrivers    = array(
+    private static $availableDrivers = array(
                                         'Mysql',
                                         'Pgsql',
                                         'Oracle',
@@ -194,6 +208,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * @param Doctrine_Manager $manager                 the manager object
      * @param PDO|Doctrine_Adapter_Interface $adapter   database driver
+     * @todo Remove the dependency on the Manager for DBAL/ORM separation.
      */
     public function __construct(Doctrine_Manager $manager, $adapter, $user = null, $pass = null)
     {
@@ -217,7 +232,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         }
 
-        $this->setParent($manager);
+        $this->setConfigurableParent($manager);
 
         $this->setAttribute(Doctrine::ATTR_CASE, Doctrine::CASE_NATURAL);
         $this->setAttribute(Doctrine::ATTR_ERRMODE, Doctrine::ERRMODE_EXCEPTION);
@@ -241,6 +256,19 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
+     * setOption
+     * 
+     * Set option value
+     *
+     * @param string $option 
+     * @return void
+     */
+    public function setOption($option, $value)
+    {
+      return $this->options[$option] = $value;
+    }
+
+    /**
      * getAttribute
      * retrieves a database connection attribute
      *
@@ -250,10 +278,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function getAttribute($attribute)
     {
         if ($attribute >= 100) {
-            if ( ! isset($this->attributes[$attribute])) {
+            if ( ! isset($this->_attributes[$attribute])) {
                 return parent::getAttribute($attribute);
             }
-            return $this->attributes[$attribute];
+            return $this->_attributes[$attribute];
         }
 
         if ($this->isConnected) {
@@ -316,11 +344,26 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         return $this->_name;
     }
 
+    /**
+     * setName
+     *
+     * Sets the name of the connection
+     *
+     * @param string $name 
+     * @return void
+     */
     public function setName($name)
     {
         $this->_name = $name;
     }
 
+    /**
+     * getDriverName
+     *
+     * Gets the name of the instance driver
+     *
+     * @return void
+     */
     public function getDriverName()
     {
         return $this->driverName;
@@ -383,12 +426,12 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function getDbh()
     {
         $this->connect();
+        
         return $this->dbh;
     }
 
     /**
-     * connect
-     * connects into database
+     * Establishes the connection with the database.
      *
      * @return boolean
      */
@@ -401,7 +444,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $event = new Doctrine_Event($this, Doctrine_Event::CONN_CONNECT);
         $this->getListener()->preConnect($event);
 
-        $e     = explode(':', $this->options['dsn']);
+        $e = explode(':', $this->options['dsn']);
         $found = false;
 
         if (extension_loaded('pdo')) {
@@ -438,8 +481,11 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $this->getListener()->postConnect($event);
         return true;
     }
-
-    public function incrementQueryCount()
+    
+    /**
+     * @todo Remove. Breaks encapsulation.
+     */
+    public function incrementQueryCount() 
     {
         $this->_count++;
     }
@@ -450,8 +496,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param
      */
     public function driverName($name)
-    {
-    }
+    {}
 
     /**
      * supports
@@ -498,28 +543,28 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @throws Doctrine_Connection_Exception        if some of the key values was null
      * @throws Doctrine_Connection_Exception        if there were no key fields
      * @throws PDOException                         if something fails at PDO level
-     * @ return integer                              number of rows affected
+     * @return integer                              number of rows affected
      */
-    public function replace(Doctrine_Table $table, array $fields, array $keys)
+    public function replace($tableName, array $data, array $keys)
     {
         if (empty($keys)) {
             throw new Doctrine_Connection_Exception('Not specified which fields are keys');
         }
         $condition = $values = array();
 
-        foreach ($fields as $fieldName => $value) {
-            $values[$fieldName] = $value;
+        foreach ($data as $columnName => $value) {
+            $values[$columnName] = $value;
 
-            if (in_array($fieldName, $keys)) {
+            if (in_array($columnName, $keys)) {
                 if ($value === null)
-                    throw new Doctrine_Connection_Exception('key value '.$fieldName.' may not be null');
+                    throw new Doctrine_Connection_Exception('key value '.$columnName.' may not be null');
 
-                $condition[] = $table->getColumnName($fieldName) . ' = ?';
+                $condition[] = $columnName . ' = ?';
                 $conditionValues[] = $value;
             }
         }
 
-        $query = 'DELETE FROM ' . $this->quoteIdentifier($table->getTableName())
+        $query = 'DELETE FROM ' . $this->quoteIdentifier($tableName)
                 . ' WHERE ' . implode(' AND ', $condition);
         $affectedRows = $this->exec($query, $conditionValues);
 
@@ -531,22 +576,22 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * deletes table row(s) matching the specified identifier
+     * Deletes table row(s) matching the specified identifier.
      *
      * @throws Doctrine_Connection_Exception    if something went wrong at the database level
      * @param string $table         The table to delete data from
      * @param array $identifier     An associateve array containing identifier fieldname-value pairs.
      * @return integer              The number of affected rows
      */
-    public function delete(Doctrine_Table $table, array $identifier)
+    public function delete($tableName, array $identifier)
     {
         $criteria = array();
         foreach (array_keys($identifier) as $id) {
-            $criteria[] = $table->getColumnName($id) . ' = ?';
+            $criteria[] = $this->quoteIdentifier($id) . ' = ?';
         }
 
         $query = 'DELETE FROM '
-               . $this->quoteIdentifier($table->getTableName())
+               . $this->quoteIdentifier($tableName)
                . ' WHERE ' . implode(' AND ', $criteria);
 
         return $this->exec($query, array_values($identifier));
@@ -561,27 +606,27 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @return mixed            boolean false if empty value array was given,
      *                          otherwise returns the number of affected rows
      */
-    public function update(Doctrine_Table $table, array $fields, array $identifier)
+    public function update($tableName, array $data, array $identifier)
     {
-        if (empty($fields)) {
+        if (empty($data)) {
             return false;
         }
 
         $set = array();
-        foreach ($fields as $fieldName => $value) {
+        foreach ($data as $columnName => $value) {
             if ($value instanceof Doctrine_Expression) {
-                $set[] = $table->getColumnName($fieldName) . ' = ' . $value->getSql();
-                unset($fields[$fieldName]);
+                $set[] = $this->quoteIdentifier($columnName) . ' = ' . $value->getSql();
+                unset($data[$columnName]);
             } else {
-                $set[] = $table->getColumnName($fieldName) . ' = ?';
+                $set[] = $this->quoteIdentifier($columnName) . ' = ?';
             }
         }
 
-        $params = array_merge(array_values($fields), array_values($identifier));
+        $params = array_merge(array_values($data), array_values($identifier));
 
-        $sql  = 'UPDATE ' . $this->quoteIdentifier($table->getTableName())
+        $sql  = 'UPDATE ' . $this->quoteIdentifier($tableName)
               . ' SET ' . implode(', ', $set)
-              . ' WHERE ' . implode(' = ? AND ', $table->getIdentifierColumnNames())
+              . ' WHERE ' . implode(' = ? AND ', array_keys($identifier))
               . ' = ?';
 
         return $this->exec($sql, $params);
@@ -595,23 +640,21 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @return mixed            boolean false if empty value array was given,
      *                          otherwise returns the number of affected rows
      */
-    public function insert(Doctrine_Table $table, array $fields)
+    public function insert($tableName, array $data)
     {
-        if (empty($fields)) {
+        if (empty($data)) {
             return false;
         }
-
-        $tableName = $table->getTableName();
 
         // column names are specified as array keys
         $cols = array();
         // the query VALUES will contain either expresions (eg 'NOW()') or ?
         $a = array();
-        foreach ($fields as $fieldName => $value) {
-            $cols[] = $this->quoteIdentifier($table->getColumnName($fieldName));
+        foreach ($data as $columnName => $value) {
+            $cols[] = $this->quoteIdentifier($columnName);
             if ($value instanceof Doctrine_Expression) {
                 $a[] = $value->getSql();
-                unset($fields[$fieldName]);
+                unset($data[$columnName]);
             } else {
                 $a[] = '?';
             }
@@ -625,7 +668,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $query .= implode(', ', $a) . ')';
         // prepare and execute the statement
 
-        return $this->exec($query, array_values($fields));
+        return $this->exec($query, array_values($data));
     }
 
     /**
@@ -823,6 +866,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param int $hydrationMode        Doctrine::FETCH_ARRAY or Doctrine::FETCH_RECORD
      * @see Doctrine_Query
      * @return Doctrine_Collection      Collection of Doctrine_Record objects
+     * @todo package:orm
      */
     public function query($query, array $params = array(), $hydrationMode = null)
     {
@@ -842,17 +886,17 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         try {
             $event = new Doctrine_Event($this, Doctrine_Event::CONN_PREPARE, $statement);
-
+    
             $this->getAttribute(Doctrine::ATTR_LISTENER)->prePrepare($event);
 
             $stmt = false;
-
+    
             if ( ! $event->skipOperation) {
                 $stmt = $this->dbh->prepare($statement);
             }
-
+    
             $this->getAttribute(Doctrine::ATTR_LISTENER)->postPrepare($event);
-
+            
             return new Doctrine_Connection_Statement($this, $stmt);
         } catch(Doctrine_Adapter_Exception $e) {
         } catch(PDOException $e) { }
@@ -933,6 +977,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         try {
             if ( ! empty($params)) {
+                //echo $query . "<br />";
                 $stmt = $this->prepare($query);
                 $stmt->execute($params);
                 return $stmt;
@@ -976,7 +1021,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             if ( ! empty($params)) {
                 $stmt = $this->prepare($query);
                 $stmt->execute($params);
-                //echo "<br /><br />" . $query . "<br /><br />";
                 return $stmt->rowCount();
             } else {
                 $event = new Doctrine_Event($this, Doctrine_Event::CONN_EXEC, $query, $params);
@@ -985,7 +1029,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
                 if ( ! $event->skipOperation) {
                     $count = $this->dbh->exec($query);
-                    //echo "<br /><br />" . $query . "<br /><br />";
                     $this->_count++;
                 }
                 $this->getAttribute(Doctrine::ATTR_LISTENER)->postExec($event);
@@ -1008,6 +1051,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         $event = new Doctrine_Event($this, Doctrine_Event::CONN_ERROR);
         $this->getListener()->preError($event);
 
+        if (strstr($e->getMessage(), 'may not be NULL')) {
+            echo $e->getMessage() . "<br />" . $e->getTraceAsString() . "<br />";
+        }
+        
         $name = 'Doctrine_Connection_' . $this->driverName . '_Exception';
 
         $exc = new $name($e->getMessage(), (int) $e->getCode());
@@ -1029,6 +1076,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * @param mixed $name
      * @return boolean
+     * @deprecated
+     * @todo package:orm
      */
     public function hasTable($name)
     {
@@ -1036,81 +1085,120 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * Gets the table object that represents the database table that is used to
-     * persist the specified domain class.
+     * Returns the metadata for a class.
      *
-     * @param string $name              component name
-     * @return Doctrine_Table
+     * @return Doctrine_Metadata
+     * @deprecated Use getClassMetadata()
+     * @todo package:orm
      */
-    public function getTable($className)
+    public function getMetadata($className)
     {
-        if (isset($this->tables[$className])) {
-            return $this->tables[$className];
-        }
-
-        if (!($this->_tableFactory instanceOf Doctrine_Table_Factory)) {
-            $this->_tableFactory = new Doctrine_Table_Factory($this);
-        }
-
-        $this->_tableFactory->loadTables($className, $this->tables);
-        return $this->tables[$className];
+        return $this->getClassMetadata($className);
     }
 
+    /**
+     * Returns the metadata for a class.
+     *
+     * @return Doctrine_Metadata
+     * @todo package:orm
+     */
+    public function getClassMetadata($className)
+    {
+        if ( ! $this->_metadataFactory) {
+            $this->_metadataFactory = new Doctrine_ClassMetadata_Factory($this,
+                    new Doctrine_ClassMetadata_CodeDriver());
+        }
+        
+        return $this->_metadataFactory->getMetadataFor($className);
+    }
+
+    /**
+     * Sets the driver that is used to obtain metadata informations about entity
+     * classes.
+     *
+     * @param $driver  The driver to use.
+     * @todo package:orm
+     */
+    public function setClassMetadataDriver($driver)
+    {
+        $this->_metadataFactory->setDriver($driver);
+    }
+    
     /**
      * Gets a mapper for the specified domain class that is used to map instances of
      * the class between the relational database and their object representation.
      *
-     * @return Doctrine_Mapper_Abstract  The mapper object.
+     * @param string $entityClassName  The name of the entity class.
+     * @return Doctrine_Mapper  The mapper object.
+     * @todo package:orm  
      */
-    public function getMapper($className)
+    /*public function getMapper($entityName)
     {
-        if (isset($this->_mappers[$className])) {
-            return $this->_mappers[$className];
+        if (isset($this->_mappers[$entityName])) {
+            return $this->_mappers[$entityName];
         }
 
-        $customMapperClass = $className . 'Mapper';
-        if (class_exists($customMapperClass, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
-                in_array('Doctrine_Mapper_Abstract', class_parents($customMapperClass))) {
-            $table = $this->getTable($className);
-            $mapper = new $customMapperClass($className, $table);
+        $metadata = $this->getClassMetadata($entityName);
+        $customMapperClassName = $metadata->getCustomMapperClass();
+        if ($customMapperClassName !== null) {
+            $mapper = new $customMapperClassName($entityName, $metadata);
         } else {
             // instantiate correct mapper type
-            $table = $this->getTable($className);
-            $inheritanceType = $table->getInheritanceType();
-            if ($inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
-                $mapper = new Doctrine_Mapper_Joined($className, $table);
-            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
-                $mapper = new Doctrine_Mapper_SingleTable($className, $table);
-            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
-                $mapper = new Doctrine_Mapper_TablePerClass($className, $table);
+            $inheritanceType = $metadata->getInheritanceType();
+            if ($inheritanceType == Doctrine::INHERITANCE_TYPE_JOINED) {
+                $mapper = new Doctrine_Mapper_Joined($entityName, $metadata);
+            } else if ($inheritanceType == Doctrine::INHERITANCE_TYPE_SINGLE_TABLE) {
+                $mapper = new Doctrine_Mapper_SingleTable($entityName, $metadata);
+            } else if ($inheritanceType == Doctrine::INHERITANCE_TYPE_TABLE_PER_CLASS) {
+                $mapper = new Doctrine_Mapper_TablePerClass($entityName, $metadata);
             } else {
                 throw new Doctrine_Connection_Exception("Unknown inheritance type '$inheritanceType'. Can't create mapper.");
             }
         }
 
-        $this->_mappers[$className] = $mapper;
+        $this->_mappers[$entityName] = $mapper;
+
+        return $mapper;
+    }*/
+    
+    /**
+     * Gets a mapper for the specified domain class that is used to map instances of
+     * the class between the relational database and their object representation.
+     *
+     * @param string $entityClassName  The name of the entity class.
+     * @return Doctrine_Mapper  The mapper object.
+     * @todo package:orm  
+     */
+    public function getMapper($entityName)
+    {
+        if (isset($this->_mappers[$entityName])) {
+            return $this->_mappers[$entityName];
+        }
+
+        $metadata = $this->getClassMetadata($entityName);
+        $customMapperClassName = $metadata->getCustomMapperClass();
+        if ($customMapperClassName !== null) {
+            $mapper = new $customMapperClassName($entityName, $metadata);
+        } else {
+            $mapper = new Doctrine_Mapper($entityName, $metadata);
+        }
+        $this->_mappers[$entityName] = $mapper;
 
         return $mapper;
     }
 
     /**
-     * returns an array of all initialized tables
+     * Gets all mappers that are currently maintained by the connection.
      *
-     * @return array
+     * @todo package:orm
      */
-    public function getTables()
-    {
-        return $this->tables;
-    }
-
     public function getMappers()
     {
-        //var_dump($this->_mappers);
         return $this->_mappers;
     }
 
     /**
-     * returns an iterator that iterators through all
+     * returns an iterator that iterates through all
      * initialized table objects
      *
      * <code>
@@ -1127,31 +1215,14 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * returns the count of initialized table objects
+     * Returns the number of queries executed by the connection.
      *
      * @return integer
+     * @todo Better name: getQueryCount()
      */
     public function count()
     {
         return $this->_count;
-    }
-
-    /**
-     * addTable
-     * adds a Doctrine_Table object into connection registry
-     *
-     * @param $table                a Doctrine_Table object to be added into registry
-     * @return boolean
-     */
-    public function addTable(Doctrine_Table $table)
-    {
-        $name = $table->getComponentName();
-
-        if (isset($this->tables[$name])) {
-            return false;
-        }
-        $this->tables[$name] = $table;
-        return true;
     }
 
     /**
@@ -1161,6 +1232,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * create                       creates a record
      * @param string $name          component name
      * @return Doctrine_Record      Doctrine_Record object
+     * @todo Any strong reasons why this should not be removed?
+     * @todo package:orm
      */
     public function create($name)
     {
@@ -1169,12 +1242,18 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
     /**
      * Creates a new Doctrine_Query object that operates on this connection.
-     *
+     * 
      * @return Doctrine_Query
+     * @todo package:orm
      */
-    public function createQuery()
+    public function createQuery($dql = "")
     {
-        return new Doctrine_Query($this);
+        $query = new Doctrine_Query($this);
+        if ( ! empty($dql)) {
+            $query->parseQuery($dql);
+        }
+        
+        return $query;
     }
 
     /**
@@ -1184,11 +1263,12 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * @throws PDOException         if something went wrong at database level
      * @return void
+     * @todo package:orm
      */
     public function flush()
     {
         $this->beginInternalTransaction();
-        $this->unitOfWork->saveAll();
+        $this->unitOfWork->flush();
         $this->commit();
     }
 
@@ -1197,12 +1277,13 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * clears all repositories
      *
      * @return void
+     * @todo package:orm
      */
     public function clear()
     {
+        $this->unitOfWork->detachAll();
         foreach ($this->_mappers as $mapper) {
-            $mapper->getRepository()->evictAll();
-            $mapper->clear();
+            $mapper->clear(); // clear identity map of each mapper
         }
     }
 
@@ -1211,17 +1292,19 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * evicts all tables
      *
      * @return void
+     * @todo package:orm
+     * @deprecated
      */
     public function evictTables()
     {
+        $this->clear();
         $this->tables = array();
         $this->_mappers = array();
         $this->exported = array();
     }
 
     /**
-     * close
-     * closes the connection
+     * Closes the connection.
      *
      * @return void
      */
@@ -1239,9 +1322,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * get the current transaction nesting level
+     * Returns the current total transaction nesting level.
      *
-     * @return integer
+     * @return integer  The nesting level. A value of 0 means theres no active transaction.
      */
     public function getTransactionLevel()
     {
@@ -1249,9 +1332,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     }
 
     /**
-     * get the current internal transaction nesting level
+     * Returns the current internal transaction nesting level.
      *
-     * @return integer
+     * @return integer  The nesting level. A value of 0 means theres no active transaction.
+     * @todo package:orm???
      */
     public function getInternalTransactionLevel()
     {
@@ -1267,6 +1351,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function errorCode()
     {
         $this->connect();
+        
         return $this->dbh->errorCode();
     }
 
@@ -1279,6 +1364,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function errorInfo()
     {
         $this->connect();
+        
         return $this->dbh->errorInfo();
     }
 
@@ -1297,12 +1383,14 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * getResultCacheDriver
      *
      * @return Doctrine_Cache_Interface
+     * @todo package:orm
      */
     public function getResultCacheDriver()
     {
         if ( ! $this->getAttribute(Doctrine::ATTR_RESULT_CACHE)) {
             throw new Doctrine_Exception('Result Cache driver not initialized.');
         }
+        
         return $this->getAttribute(Doctrine::ATTR_RESULT_CACHE);
     }
 
@@ -1310,12 +1398,14 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * getQueryCacheDriver
      *
      * @return Doctrine_Cache_Interface
+     * @todo package:orm
      */
     public function getQueryCacheDriver()
     {
         if ( ! $this->getAttribute(Doctrine::ATTR_QUERY_CACHE)) {
             throw new Doctrine_Exception('Query Cache driver not initialized.');
         }
+        
         return $this->getAttribute(Doctrine::ATTR_QUERY_CACHE);
     }
 
@@ -1328,8 +1418,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * Note: This method may not return a meaningful or consistent result across different drivers,
      * because the underlying database may not even support the notion of auto-increment fields or sequences.
      *
-     * @param string $table     name of the table into which a new row was inserted
-     * @param string $field     name of the field into which a new row was inserted
+     * @param string $table     Name of the table into which a new row was inserted.
+     * @param string $field     Name of the field into which a new row was inserted.
      */
     public function lastInsertId($table = null, $field = null)
     {
@@ -1359,6 +1449,8 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      *
      * This method must only be used by Doctrine itself to initiate transactions.
      * Userland-code must use {@link beginTransaction()}.
+     *
+     * @todo package:orm???
      */
     public function beginInternalTransaction($savepoint = null)
     {
@@ -1474,5 +1566,49 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function __toString()
     {
         return Doctrine_Lib::getConnectionAsString($this);
+    }
+    
+    public function hasAttribute($key)
+    {
+        switch ($key) {
+            case Doctrine::ATTR_COLL_KEY:
+            case Doctrine::ATTR_LISTENER:
+            case Doctrine::ATTR_RECORD_LISTENER:
+            case Doctrine::ATTR_QUOTE_IDENTIFIER:
+            case Doctrine::ATTR_SEQCOL_NAME:
+            case Doctrine::ATTR_FIELD_CASE:
+            case Doctrine::ATTR_IDXNAME_FORMAT:
+            case Doctrine::ATTR_SEQNAME_FORMAT:
+            case Doctrine::ATTR_DBNAME_FORMAT:
+            case Doctrine::ATTR_TBLCLASS_FORMAT:
+            case Doctrine::ATTR_TBLNAME_FORMAT:
+            case Doctrine::ATTR_EXPORT:
+            case Doctrine::ATTR_DECIMAL_PLACES:
+            case Doctrine::ATTR_PORTABILITY:
+            case Doctrine::ATTR_VALIDATE:
+            case Doctrine::ATTR_QUERY_LIMIT:
+            case Doctrine::ATTR_DEFAULT_TABLE_TYPE:
+            case Doctrine::ATTR_DEF_TEXT_LENGTH:
+            case Doctrine::ATTR_DEF_VARCHAR_LENGTH:
+            case Doctrine::ATTR_DEF_TABLESPACE:
+            case Doctrine::ATTR_EMULATE_DATABASE:
+            case Doctrine::ATTR_USE_NATIVE_ENUM:
+            case Doctrine::ATTR_CREATE_TABLES:
+            case Doctrine::ATTR_COLL_LIMIT:
+            case Doctrine::ATTR_CACHE: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE:
+            case Doctrine::ATTR_CACHE_LIFESPAN: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE_LIFESPAN:
+            case Doctrine::ATTR_LOAD_REFERENCES:
+            case Doctrine::ATTR_THROW_EXCEPTIONS:
+            case Doctrine::ATTR_QUERY_CACHE:
+            case Doctrine::ATTR_QUERY_CACHE_LIFESPAN:
+            case Doctrine::ATTR_MODEL_LOADING:
+            case Doctrine::ATTR_METADATA_CACHE:
+            case Doctrine::ATTR_METADATA_CACHE_LIFESPAN:
+                return true;
+            default:
+                return false;
+        }
     }
 }

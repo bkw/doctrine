@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -28,13 +28,23 @@
  * @package     Doctrine
  * @subpackage  Null
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
+// static initializer
+Doctrine_Null::$INSTANCE = new Doctrine_Null();
 final class Doctrine_Null
-{ 
+{
+    public static $INSTANCE;
+    public function __construct() {}
+    
+    public static function getInstance()
+    {
+        return self::$INSTANCE;
+    }
+    
     public function exists()
     {
         return false;    

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @subpackage  Data
  * @author      Jonathan H. Wage <jwage@mac.com>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 2552 $
  */
@@ -145,11 +145,7 @@ class Doctrine_Data_Export extends Doctrine_Data
                     }
                     
                     // skip single primary keys, we need to maintain composite primary keys
-                    $keys = $record->getTable()->getIdentifier();
-                    
-                    if ( ! is_array($keys)) {
-                      $keys = array($keys);
-                    }
+                    $keys = (array)$record->getTable()->getIdentifier();
                     
                     if (count($keys) <= 1 && in_array($key, $keys)) {
                         continue;

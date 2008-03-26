@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Cache
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -33,7 +33,7 @@
 interface Doctrine_Cache_Interface 
 {
     /**
-     * Test if a cache is available for the given id and (if yes) return it (false else)
+     * Test if a cache entry is available for the given id and (if yes) return it (false else).
      * 
      * Note : return value is always "string" (unserialization is done by the core not by the backend)
      * 

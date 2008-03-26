@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Hydrate.php 3192 2007-11-19 17:55:23Z romanb $
+ *  $Id$
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,17 +20,17 @@
  */
 
 /**
- * Doctrine_Hydrate is a base class for Doctrine_RawSql and Doctrine_Query.
- * Its purpose is to populate object graphs.
- *
+ * The hydrator has the tedious task to construct object or array graphs out of
+ * a database result set.
  *
  * @package     Doctrine
- * @subpackage  Hydrate
+ * @subpackage  Hydrator
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 3192 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  */
 class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
 {    
@@ -56,22 +56,21 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
      *                              'map' => Custom index to use as the key in the result (if any)
      *                              )
      *                         )
-     * @return array
+     * @return mixed  The created object/array graph.
      */
     public function hydrateResultSet($stmt, $tableAliases, $hydrationMode = null)
     {
-        //$s = microtime(true);
-        $this->_tableAliases = $tableAliases;
+        if ($hydrationMode === null) {
+            $hydrationMode = $this->_hydrationMode;
+        }
         
         if ($hydrationMode == Doctrine::HYDRATE_NONE) {
             return $stmt->fetchAll(PDO::FETCH_NUM);
         }
         
-        if ($hydrationMode === null) {
-            $hydrationMode = $this->_hydrationMode;
-        }
+        $this->_tableAliases = $tableAliases;
 
-        if ($hydrationMode === Doctrine::HYDRATE_ARRAY) {
+        if ($hydrationMode == Doctrine::HYDRATE_ARRAY) {
             $driver = new Doctrine_Hydrator_ArrayDriver();
         } else {
             $driver = new Doctrine_Hydrator_RecordDriver();
@@ -105,10 +104,11 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         }
 
         // Initialize
-        foreach ($this->_queryComponents as $dqlAlias => $data) {
-            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
-            $componentName = $data['mapper']->getComponentName();
-            $listeners[$componentName] = $data['table']->getRecordListener();
+        foreach ($this->_queryComponents as $dqlAlias => $component) {
+            // disable lazy-loading of related elements during hydration
+            $component['table']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+            $componentName = $component['mapper']->getComponentName();
+            $listeners[$componentName] = $component['table']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
             $prev[$dqlAlias] = array();
             $id[$dqlAlias] = '';
@@ -121,7 +121,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             $rowData = $this->_gatherRowData($data, $cache, $id, $nonemptyComponents);
 
             //
-            // hydrate the data of the root component from the current row
+            // hydrate the data of the root entity from the current row
             //
             $table = $this->_queryComponents[$rootAlias]['table'];
             $mapper = $this->_queryComponents[$rootAlias]['mapper'];
@@ -162,7 +162,6 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             // $prev[$rootAlias] now points to the last element in $result.
             // now hydrate the rest of the data found in the current row, that belongs to other
             // (related) components.
-            $oneToOne = false;
             foreach ($rowData as $dqlAlias => $data) {
                 $index = false;
                 $map   = $this->_queryComponents[$dqlAlias];
@@ -181,11 +180,12 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                 $path = $parent . '.' . $dqlAlias;
 
                 if ( ! isset($prev[$parent])) {
-                    break;
+                    continue;
                 }
                 
                 // check the type of the relation
                 if ( ! $relation->isOneToOne() && $driver->initRelated($prev[$parent], $relationAlias)) {
+                    $oneToOne = false;
                     // append element
                     if (isset($nonemptyComponents[$dqlAlias])) {
                         if ($isSimpleQuery || ! isset($identifierMap[$path][$id[$parent]][$id[$dqlAlias]])) {
@@ -225,14 +225,14 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             }
             $id[$rootAlias] = '';
         }
-        
+
         $stmt->closeCursor();
         
         $driver->flush();
         
         // re-enable lazy loading
         foreach ($this->_queryComponents as $dqlAlias => $data) {
-            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
+            $data['table']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
         }
         
         //$e = microtime(true);
@@ -253,7 +253,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
      */
     protected function _setLastElement(&$prev, &$coll, $index, $dqlAlias, $oneToOne)
     {
-        if ($coll === self::$_null) {
+        if ($coll === $this->_nullObject) {
             return false;
         }
         
@@ -271,6 +271,8 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                 end($coll);
                 $prev[$dqlAlias] =& $coll[key($coll)];
             }
+        } else if ($coll instanceof Doctrine_Record) {
+            $prev[$dqlAlias] = $coll;
         } else if (count($coll) > 0) {
             $prev[$dqlAlias] = $coll->getLast();
         } else if (isset($prev[$dqlAlias])) {
@@ -293,22 +295,28 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         foreach ($data as $key => $value) {
             // Parse each column name only once. Cache the results.
             if ( ! isset($cache[$key])) {
+                // cache general information like the column name <-> field name mapping
                 $e = explode('__', $key);
-                $last = strtolower(array_pop($e));
+                $columnName = strtolower(array_pop($e));
                 $cache[$key]['dqlAlias'] = $this->_tableAliases[strtolower(implode('__', $e))];
                 $mapper = $this->_queryComponents[$cache[$key]['dqlAlias']]['mapper'];
-                $table = $mapper->getTable();
-                $fieldName = $mapper->getFieldName($last);
+                $classMetadata = $mapper->getClassMetadata();
+                $fieldName = $mapper->getFieldName($columnName);
                 $cache[$key]['fieldName'] = $fieldName;
-                if ($table->isIdentifier($fieldName)) {
+                
+                // cache identifier information
+                if ($classMetadata->isIdentifier($fieldName)) {
                     $cache[$key]['isIdentifier'] = true;
                 } else {
                     $cache[$key]['isIdentifier'] = false;
                 }
-                $type = $table->getTypeOfColumn($last);
+                
+                // cache type information
+                $type = $classMetadata->getTypeOfColumn($columnName);
                 if ($type == 'integer' || $type == 'string') {
                     $cache[$key]['isSimpleType'] = true;
                 } else {
+                    $cache[$key]['type'] = $type;
                     $cache[$key]['isSimpleType'] = false;
                 }
             }
@@ -328,7 +336,8 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             if ($cache[$key]['isSimpleType']) {
                 $rowData[$dqlAlias][$fieldName] = $value;
             } else {
-                $rowData[$dqlAlias][$fieldName] = $mapper->prepareValue($fieldName, $value);
+                $rowData[$dqlAlias][$fieldName] = $mapper->prepareValue(
+                        $fieldName, $value, $cache[$key]['type']);
             }
 
             if ( ! isset($nonemptyComponents[$dqlAlias]) && $value !== null) {

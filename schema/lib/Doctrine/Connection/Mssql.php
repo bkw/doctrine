@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Connection');
 /**
@@ -28,7 +28,7 @@ Doctrine::autoload('Doctrine_Connection');
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
  * @version     $Revision$
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  */
 class Doctrine_Connection_Mssql extends Doctrine_Connection
@@ -84,6 +84,17 @@ class Doctrine_Connection_Mssql extends Doctrine_Connection
         if ($checkOption && ! $this->getAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER)) {
             return $identifier;
         }
+        
+        if (strpos($identifier, '.') !== false) { 
+            $parts = explode('.', $identifier); 
+            $quotedParts = array(); 
+            foreach ($parts as $p) { 
+                $quotedParts[] = $this->quoteIdentifier($p); 
+            }
+            
+            return implode('.', $quotedParts); 
+        }
+        
         return '[' . str_replace(']', ']]', $identifier) . ']';
     }
 

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Node
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Joe Simms <joe.simms@websites4.com>
@@ -75,7 +75,7 @@ class Doctrine_Node implements IteratorAggregate
         $class = $record->getTable()->getComponentName();
         $table = $record->getTable();
         if ($table->getOption('inheritanceMap')) {
-            $subclasses = $table->getOption('subclasses');
+            $subclasses = $table->getSubclasses();
             while (in_array($class, $subclasses)) {
                 $class = get_parent_class($class);
             }

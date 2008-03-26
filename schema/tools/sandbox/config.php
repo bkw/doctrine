@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -27,7 +27,7 @@
  * @package     Doctrine
  * @subpackage  Config
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 2753 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -50,4 +50,6 @@ spl_autoload_register(array('Doctrine', 'autoload'));
 
 Doctrine_Manager::connection(DSN, 'sandbox');
 
-Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+
+Doctrine::loadModels('models');

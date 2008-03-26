@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */                   
 /**
  * Doctrine_Tree
@@ -24,7 +24,7 @@
  * @package     Doctrine
  * @subpackage  Tree
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Joe Simms <joe.simms@websites4.com>
@@ -49,14 +49,14 @@ class Doctrine_Tree
      * @param object $table                     instance of Doctrine_Table
      * @param array $options                    options
      */
-    public function __construct(Doctrine_Table $table, $options)
+    public function __construct($table, $options)
     {
         $this->table = $table;
         $this->options = $options;
         $this->_baseComponent = $table->getComponentName();
         $class = $this->_baseComponent;
         if ($table->getOption('inheritanceMap')) {
-            $subclasses = $table->getOption('subclasses');
+            $subclasses = $table->getSubclasses();
             while (in_array($class, $subclasses)) {
                 $class = get_parent_class($class);
             }
@@ -92,7 +92,7 @@ class Doctrine_Tree
      * @return object $options                  instance of Doctrine_Node
      * @throws Doctrine_Exception               if class does not extend Doctrine_Tree
      */
-    public static function factory(Doctrine_Table $table, $implName, $options = array())
+    public static function factory($table, $implName, $options = array())
     {
         $class = 'Doctrine_Tree_' . $implName;
         if ( ! class_exists($class)) {

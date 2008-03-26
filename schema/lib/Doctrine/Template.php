@@ -18,19 +18,19 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-Doctrine::autoload('Doctrine_Record_Abstract');
+
 /**
  * Doctrine_Template
  *
  * @package     Doctrine
  * @subpackage  Template
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-class Doctrine_Template extends Doctrine_Record_Abstract
+class Doctrine_Template
 {
     /**
      * @param Doctrine_Record $_invoker     the record that invoked the last delegated call
@@ -45,7 +45,7 @@ class Doctrine_Template extends Doctrine_Record_Abstract
      *
      * @param Doctrine_Table $_table        the table object this Template belongs to
      */
-    public function setTable(Doctrine_Table $table)
+    public function setTable($table)
     {
         $this->_table = $table;
     }
@@ -110,29 +110,7 @@ class Doctrine_Template extends Doctrine_Record_Abstract
     {
         return $this->_plugin;
     }
-
-    /**
-     * get 
-     * 
-     * @param mixed $name 
-     * @return void
-     */
-    public function get($name) 
-    {
-        throw new Doctrine_Exception("Templates doesn't support accessors.");
-    }
-
-    /**
-     * set 
-     * 
-     * @param mixed $name 
-     * @param mixed $value 
-     * @return void
-     */
-    public function set($name, $value)
-    {
-        throw new Doctrine_Exception("Templates doesn't support accessors.");
-    }
+ 
     /**
      * setUp 
      * 

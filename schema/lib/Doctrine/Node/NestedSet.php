@@ -25,7 +25,7 @@
  * @package    Doctrine
  * @subpackage Node
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link       www.phpdoctrine.com
+ * @link       www.phpdoctrine.org
  * @since      1.0
  * @version    $Revision$
  * @author     Joe Simms <joe.simms@websites4.com>
@@ -60,7 +60,7 @@ class Doctrine_Node_NestedSet extends Doctrine_Node implements Doctrine_Node_Int
      */
     public function hasChildren()
     {
-        return (($this->getRightValue() - $this->getLeftValue() ) >1 );        
+        return (($this->getRightValue() - $this->getLeftValue()) > 1);        
     }
 
     /**
@@ -302,8 +302,10 @@ class Doctrine_Node_NestedSet extends Doctrine_Node implements Doctrine_Node_Int
     {
         $path = array();
         $ancestors = $this->getAncestors();
-        foreach ($ancestors as $ancestor) {
-            $path[] = $ancestor->__toString();
+        if ($ancestors) {
+            foreach ($ancestors as $ancestor) {
+                $path[] = $ancestor->__toString();
+            }
         }
         if ($includeRecord) {
             $path[] = $this->getRecord()->__toString();

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,7 +25,7 @@
  * @package     Doctrine
  * @subpackage  Cache
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -46,9 +46,7 @@ class Doctrine_Cache_Apc extends Doctrine_Cache_Driver
     }
 
     /**
-     * Test if a cache is available for the given id and (if yes) return it (false else)
-     * 
-     * Note : return value is always "string" (unserialization is done by the core not by the backend)
+     * Test if a cache is available for the given id and (if yes) return it (false else).
      * 
      * @param string $id cache id
      * @param boolean $testCacheValidity        if set to false, the cache validity won't be tested
@@ -56,11 +54,7 @@ class Doctrine_Cache_Apc extends Doctrine_Cache_Driver
      */
     public function fetch($id, $testCacheValidity = true) 
     {
-        $tmp = apc_fetch($id);
-        if (is_array($tmp)) {
-            return $tmp[0];
-        }
-        return false;
+        return apc_fetch($id);
     }
 
     /**
@@ -71,11 +65,7 @@ class Doctrine_Cache_Apc extends Doctrine_Cache_Driver
      */
     public function contains($id) 
     {
-        $tmp = apc_fetch($id);
-        if (is_array($tmp)) {
-            return $tmp[1];
-        }
-        return false;
+        return apc_fetch($id) === false ? false : true;
     }
 
     /**

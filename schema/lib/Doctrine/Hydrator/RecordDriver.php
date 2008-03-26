@@ -16,28 +16,32 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
- * Doctrine_Hydrate_Record 
- * defines a record fetching strategy for Doctrine_Hydrate
+ * Doctrine_Hydrate_RecordDriver
+ * Hydration strategy used for creating collections of entity objects.
  *
  * @package     Doctrine
  * @subpackage  Hydrate
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  */
-class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
+class Doctrine_Hydrator_RecordDriver
 {
     protected $_collections = array();
+    protected $_mappers = array();
+    private $_nullObject;
     
-    protected $_records = array();
-    
-    protected $_tables = array();
+    public function __construct()
+    {
+        $this->_nullObject = Doctrine_Null::$INSTANCE;
+    }
 
     public function getElementCollection($component)
     {
@@ -80,7 +84,7 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
      * @param Doctrine_Table $table
      * @return boolean
      */
-    public function isIdentifiable(array $row, Doctrine_Table $table)
+    /*public function isIdentifiable(array $row, Doctrine_Table $table)
     {
         $primaryKeys = $table->getIdentifierColumnNames();
 
@@ -96,27 +100,21 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
             }
         }
         return true;
-    }
+    }*/
     
     public function getNullPointer() 
     {
-        return self::$_null;
+        return $this->_nullObject;
     }
     
-    public function getElement(array $data, $component)
+    public function getElement(array $data, $className)
     {
-        if ( ! isset($this->_tables[$component])) {
-            $this->_tables[$component] = Doctrine_Manager::getInstance()->getMapper($component);
-            $this->_tables[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+        $className = $this->_getClassnameToReturn($data, $className);
+        if ( ! isset($this->_mappers[$className])) {
+            $this->_mappers[$className] = Doctrine_Manager::getInstance()->getMapper($className);
         }
-        
-        $this->_tables[$component]->setData($data);
-        $record = $this->_tables[$component]->getRecord();
 
-        if ( ! isset($this->_records[$record->getOid()]) ) {
-            $record->clearRelated();
-            $this->_records[$record->getOid()] = $record;
-        }
+        $record = $this->_mappers[$className]->getRecord($data);
 
         return $record;
     }
@@ -127,8 +125,35 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
         foreach ($this->_collections as $key => $coll) {
             $coll->takeSnapshot();
         }
-        foreach ($this->_tables as $table) {
-            $table->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
+        $this->_collections = array();
+        $this->_mappers = array();
+    }
+    
+    /**
+     * Check the dataset for a discriminator column to determine the correct
+     * class to instantiate. If no discriminator column is found, the given
+     * classname will be returned.
+     *
+     * @return string The name of the class to instantiate.
+     * @todo Can be optimized performance-wise.
+     */
+    protected function _getClassnameToReturn(array $data, $className)
+    {
+        if ( ! isset($this->_mappers[$className])) {
+            $this->_mappers[$className] = Doctrine_Manager::getInstance()->getMapper($className);
+        }
+        
+        $discCol = $this->_mappers[$className]->getClassMetadata()->getInheritanceOption('discriminatorColumn');
+        if ( ! $discCol) {
+            return $className;
+        }
+        
+        $discMap = $this->_mappers[$className]->getClassMetadata()->getInheritanceOption('discriminatorMap');
+        
+        if (isset($data[$discCol], $discMap[$data[$discCol]])) {
+            return $discMap[$data[$discCol]];
+        } else {
+            return $className;
         }
     }
 }

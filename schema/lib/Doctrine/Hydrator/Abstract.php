@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -25,12 +25,12 @@
  * @package     Doctrine
  * @subpackage  Hydrate
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision: 3192 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
+abstract class Doctrine_Hydrator_Abstract
 {
     /**
      * @var array $_aliasMap                    two dimensional array containing the map for query aliases
@@ -53,13 +53,18 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
      * The current hydration mode.
      */
     protected $_hydrationMode = Doctrine::HYDRATE_RECORD;
+    
+    protected $_nullObject;
 
     /**
      * constructor
      *
      * @param Doctrine_Connection|null $connection
      */
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->_nullObject = Doctrine_Null::$INSTANCE;
+    }
 
     /**
      * Sets the fetchmode.
@@ -92,6 +97,47 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
     public function getQueryComponents()
     {
         return $this->_queryComponents;
+    }
+    
+    /**
+     * hasAliasDeclaration
+     * whether or not this object has a declaration for given component alias
+     *
+     * @param string $componentAlias    the component alias the retrieve the declaration from
+     * @return boolean
+     */
+    public function hasAliasDeclaration($componentAlias)
+    {
+        return isset($this->_queryComponents[$componentAlias]);
+    }
+    
+    /**
+     * getAliasDeclaration
+     * get the declaration for given component alias
+     *
+     * @param string $componentAlias    the component alias the retrieve the declaration from
+     * @return array                    the alias declaration
+     * @deprecated
+     */
+    public function getAliasDeclaration($componentAlias)
+    {
+        return $this->getQueryComponent($componentAlias);
+    }
+
+    /**
+     * getQueryComponent
+     * get the declaration for given component alias
+     *
+     * @param string $componentAlias    the component alias the retrieve the declaration from
+     * @return array                    the alias declaration
+     */
+    public function getQueryComponent($componentAlias)
+    {
+        if ( ! isset($this->_queryComponents[$componentAlias])) {
+            throw new Doctrine_Query_Exception('Unknown component alias ' . $componentAlias);
+        }
+
+        return $this->_queryComponents[$componentAlias];
     }
 
     /**

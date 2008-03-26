@@ -16,58 +16,86 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
- * Doctrine_Hydrate_Array
- * defines an array fetching strategy for Doctrine_Hydrate
+ * Doctrine_Hydrator_ArrayDriver
+ * Defines an array fetching strategy.
  *
  * @package     Doctrine
  * @subpackage  Hydrate
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
 class Doctrine_Hydrator_ArrayDriver
 {
+    /**
+     *
+     */
     public function getElementCollection($component)
     {
         return array();
     }
+    
+    /**
+     *
+     */
     public function getElement(array $data, $component)
     {
         return $data;
     }
-    public function isIdentifiable(array $data, Doctrine_Table $table)
+    
+    /** 
+     *
+     */
+    /*public function isIdentifiable(array $data, Doctrine_Table $table)
     {
         return ( ! empty($data));
-    }
+    }*/
+    
+    /**
+     *
+     */
     public function registerCollection($coll)
-    {
-
-    }
+    { /* Nothing to do */ }
+    
+    /**
+     *
+     */
     public function initRelated(array &$data, $name)
     {
         if ( ! isset($data[$name])) {
             $data[$name] = array();
         }
+        
         return true;
     }
+    
+    /**
+     *
+     */
     public function getNullPointer() 
     {
         return null;    
     }
+    
+    /**
+     *
+     */
     public function getLastKey(&$data)
     {
         end($data);
+        
         return key($data);
     }
-
+    
+    /**
+     *
+     */
     public function flush()
-    {
-        
-    }
+    { /* Nothing to do */ }
 }

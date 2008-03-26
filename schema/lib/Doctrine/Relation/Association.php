@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Relation');
 /**
@@ -27,7 +27,7 @@ Doctrine::autoload('Doctrine_Relation');
  * @package     Doctrine
  * @subpackage  Relation
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -61,19 +61,7 @@ class Doctrine_Relation_Association extends Doctrine_Relation
     public function getRelationDql($count, $context = 'record')
     {
         //$table = $this->definition['refTable'];
-        $assocRelationName = isset($this->definition['refReverseRelationName']) ?
-                $this->definition['refReverseRelationName'] : $this->definition['refClass'];
-
-        /*if ($this->definition['localTable'] === $this->definition['table']) {
-            echo $this->definition['class'];
-            $rel = $this->definition['table']->getRelation('User');
-            $relationName = $rel->getRelationName();
-        }*/   
-               
-        //var_dump($this->definition['foreign']) . "<br />";
-        //echo $component;
-        //$rel = $this->definition['refTable']->getRelation($this->_foreignMapper->getComponentName());
-        //echo "LOCAL:" . $rel->getLocal() . "<br />";
+        $assocRelationName = $this->definition['refClass'];
         
         $relatedClassName = $this->_foreignMapper->getComponentName();
         
@@ -107,7 +95,10 @@ class Doctrine_Relation_Association extends Doctrine_Relation
     public function fetchRelatedFor(Doctrine_Record $record)
     {
         $id = $record->getIncremented();
-        if (empty($id) || ! $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+        //var_dump($id);
+        //echo "<br /><br />";
+        if (empty($id) || ! $this->_foreignMapper->getClassMetadata()->getAttribute(Doctrine::ATTR_LOAD_REFERENCES)) {
+            //echo "here" . $this->_foreignMapper->getAttribute(Doctrine::ATTR_LOAD_REFERENCES);
             $coll = new Doctrine_Collection($this->getForeignComponentName());
         } else {
             $query = Doctrine_Query::create()->parseQuery($this->getRelationDql(1));

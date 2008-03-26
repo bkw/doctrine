@@ -29,7 +29,7 @@ Doctrine::autoload('Doctrine_Access');
  * @package     Doctrine
  * @subpackage  EventListener
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -84,8 +84,13 @@ class Doctrine_EventListener_Chain extends Doctrine_Access implements Doctrine_E
      * @param Doctrine_EventListener $listener
      * @return void
      */
-    public function set($key, Doctrine_EventListener $listener)
+    public function set($key, $listener)
     {
+        if( ! $listener instanceOf Doctrine_EventListener) {
+            throw new Doctrine_Exception('Value variable in set is not an instance of Doctrine_EventListener');
+        }
+
+
         $this->_listeners[$key] = $listener;
     }
 

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_DataDict');
 /**
@@ -27,7 +27,7 @@ Doctrine::autoload('Doctrine_DataDict');
  * @author      Paul Cooper <pgc@ucecom.com>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
  * @version     $Revision$
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  */
 class Doctrine_DataDict_Pgsql extends Doctrine_DataDict
@@ -521,6 +521,7 @@ class Doctrine_DataDict_Pgsql extends Doctrine_DataDict
                 break;
             case 'float':
             case 'float4':
+            case 'float8':
             case 'double':
             case 'double precision':
             case 'real':

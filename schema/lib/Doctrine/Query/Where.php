@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 Doctrine::autoload('Doctrine_Query_Condition');
 /**
@@ -25,7 +25,7 @@ Doctrine::autoload('Doctrine_Query_Condition');
  * @package     Doctrine
  * @subpackage  Query
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -86,8 +86,10 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
         }
     }
 
-    public function parseValue($value, Doctrine_Table $table = null, $field = null)
+    public function parseValue($value, $table = null, $field = null)
     {
+        $conn = $this->query->getConnection();
+
         if (substr($value, 0, 1) == '(') {
             // trim brackets
             $trimmed = $this->_tokenizer->bracketTrim($value);
@@ -102,7 +104,7 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
             } elseif (substr($trimmed, 0, 4) == 'SQL:') {
                 $value = '(' . substr($trimmed, 4) . ')';
             } else {
-                // simple in expression found
+                // simple IN expression found
                 $e = $this->_tokenizer->sqlExplode($trimmed, ',');
 
                 $value = array();
@@ -112,6 +114,10 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
                 foreach ($e as $part) {
                     if (isset($table) && isset($field)) {
                         $index = $table->enumIndex($field, trim($part, "'"));
+
+                        if (false !== $index && $conn->getAttribute(Doctrine::ATTR_USE_NATIVE_ENUM)) {
+                            $index = $conn->quote($index, 'text');
+                        }
                     }
 
                     if ($index !== false) {
@@ -135,6 +141,10 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
             if (isset($table) && isset($field)) {
                 // check if value is enumerated value
                 $enumIndex = $table->enumIndex($field, trim($value, "'"));
+
+                if (false !== $enumIndex && $conn->getAttribute(Doctrine::ATTR_USE_NATIVE_ENUM)) {
+                    $enumIndex = $conn->quote($enumIndex, 'text');
+                }
             }
 
             if ($enumIndex !== false) {
