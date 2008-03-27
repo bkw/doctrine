@@ -42,6 +42,7 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
   {
       try {
           $s = new T904_Section();
+          $s->state('TDIRTY');
           $s->Translation['en']->title = 'Test title';
           $s->Translation['en']->summary = 'Test summary';
           $s->save();
@@ -51,7 +52,7 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
           $this->assertEqual($s->Translation['en']->summary, 'Test summary');
           $this->pass();
       } catch (Exception $e) {
-          $this->fail();
+          $this->fail($e->getMessage());
       }
   }
 }
