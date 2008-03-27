@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Ticket_904_TestCase
+ * Doctrine_Ticket_867_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,26 +30,30 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Ticket_867_TestCase extends Doctrine_UnitTestCase 
 {
   public function prepareTables()
   {
-    $this->tables[] = 'T904_Section';
+    $this->tables[] = 'T867_Section';
     parent::prepareTables();
   }
   
   public function testTicket()
   {
       try {
-          $s = new T904_Section();
-          $s->state('TDIRTY');
+          $s = new T867_Section();
+          $s->name = 'Test name';
           $s->Translation['en']->title = 'Test title';
           $s->Translation['en']->summary = 'Test summary';
           $s->save();
           
           $this->assertTrue($s->id > 0);
+          $this->assertEqual($s->name, 'Test name');
           $this->assertEqual($s->Translation['en']->title, 'Test title');
           $this->assertEqual($s->Translation['en']->summary, 'Test summary');
+          $this->assertEqual($s->Translation->getTable()->getOption('type'), $s->getTable()->getOption('type'));
+          $this->assertEqual($s->Translation->getTable()->getOption('collate'), $s->getTable()->getOption('collate'));
+          $this->assertEqual($s->Translation->getTable()->getOption('charset'), $s->getTable()->getOption('charset'));
           $this->pass();
       } catch (Exception $e) {
           $this->fail($e->getMessage());
@@ -57,14 +61,20 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
   }
 }
 
-class T904_Section extends Doctrine_Record
+
+class T867_Section extends Doctrine_Record
 {
   public function setTableDefinition()
   {
     $this->setTableName('section');
     $this->hasColumn('id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+    $this->hasColumn('name', 'string', 60, array('notnull' => true));
     $this->hasColumn('title', 'string', 60, array('notnull' => true));
     $this->hasColumn('summary', 'string', 255);
+    
+    $this->option('type', 'INNODB');
+    $this->option('collate', 'utf8_unicode_ci');
+    $this->option('charset', 'utf8');
   }
   
   public function setUp()
