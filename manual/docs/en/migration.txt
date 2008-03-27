@@ -122,4 +122,4 @@ echo $migration->getCurrentVersion(); // 0
 </code>
 
 
-This functionality is allow allowed from the Doctrine command line interface.
+This functionality is can also be accessed from the Doctrine command line interface.
