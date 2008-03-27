@@ -42,6 +42,7 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
   {
       try {
           $s = new T904_Section();
+          $s->state('TDIRTY');
           $s->Translation['en']->title = 'Test title';
           $s->Translation['en']->summary = 'Test summary';
           $s->save();
@@ -50,12 +51,14 @@ class Doctrine_Ticket_904_TestCase extends Doctrine_UnitTestCase
           $this->assertEqual($s->Translation['en']->title, 'Test title');
           $this->assertEqual($s->Translation['en']->summary, 'Test summary');
           $this->pass();
+          
+          $results = Doctrine_Query::create()->from('T904_Section')->execute();
+          $this->assertTrue($results->count() > 0);
       } catch (Exception $e) {
-          $this->fail();
+          $this->fail($e->getMessage());
       }
   }
 }
-
 
 class T904_Section extends Doctrine_Record
 {
