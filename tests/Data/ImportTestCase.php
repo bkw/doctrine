@@ -263,7 +263,7 @@ END;
 User:
   User_1:
     name: jwage400
-    pass: changeme
+    password: changeme
 
 Groupuser:
   Groupuser_1:
