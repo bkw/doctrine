@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-03-01</date>
- <time>02:24:55</time>
+ <date>2008-03-28</date>
+ <time>13:03:26</time>
  <version>
-  <release>0.10.3</release>
-  <api>0.10.3</api>
+  <release>0.10.4</release>
+  <api>0.10.4</api>
  </version>
  <stability>
   <release>beta</release>
@@ -38,9 +38,6 @@ requiring needless code duplication.</description>
    <dir name="lib">
     <dir name="Doctrine">
      <dir name="Adapter">
-      <dir name="Db2">
-       <file name="Exception.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Adapter/Db2 -->
       <dir name="Statement">
        <file name="Interface.php" role="php" />
        <file name="Mock.php" role="php" />
@@ -51,7 +48,6 @@ requiring needless code duplication.</description>
       <file name="Mock.php" role="php" />
       <file name="Mysqli.php" role="php" />
       <file name="Oracle.php" role="php" />
-      <file name="Resource.php" role="php" />
       <file name="Statement.php" role="php" />
      </dir> <!-- /lib/Doctrine/Adapter -->
      <dir name="AuditLog">
@@ -150,6 +146,7 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
       <file name="Firebird.php" role="php" />
       <file name="Frontbase.php" role="php" />
+      <file name="Informix.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
@@ -173,10 +170,6 @@ requiring needless code duplication.</description>
      <dir name="File">
       <file name="Index.php" role="php" />
      </dir> <!-- /lib/Doctrine/File -->
-     <dir name="FileFinder">
-      <file name="GlobToRegex.php" role="php" />
-      <file name="NumberCompare.php" role="php" />
-     </dir> <!-- /lib/Doctrine/FileFinder -->
      <dir name="Hook">
       <dir name="Parser">
        <file name="Complex.php" role="php" />
@@ -200,11 +193,6 @@ requiring needless code duplication.</description>
        <file name="BaseClass.php" role="php" />
        <file name="Exception.php" role="php" />
       </dir> <!-- /lib/Doctrine/Import/Builder -->
-      <dir name="Reader">
-       <file name="Db.php" role="php" />
-       <file name="Exception.php" role="php" />
-       <file name="Propel.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Import/Reader -->
       <file name="Builder.php" role="php" />
       <file name="Exception.php" role="php" />
       <file name="Firebird.php" role="php" />
@@ -213,7 +201,6 @@ requiring needless code duplication.</description>
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
       <file name="Pgsql.php" role="php" />
-      <file name="Reader.php" role="php" />
       <file name="Schema.php" role="php" />
       <file name="Sqlite.php" role="php" />
      </dir> <!-- /lib/Doctrine/Import -->
@@ -289,10 +276,13 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
+      <dir name="Spyc">
+       <file name="YamlNode.php" role="php" />
+      </dir> <!-- /lib/Doctrine/Parser/Spyc -->
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
-      <file name="spyc.php" role="php" />
+      <file name="Spyc.php" role="php" />
       <file name="Xml.php" role="php" />
       <file name="Yml.php" role="php" />
      </dir> <!-- /lib/Doctrine/Parser -->
@@ -435,7 +425,6 @@ requiring needless code duplication.</description>
       <file name="NestedSet.php" role="php" />
       <file name="Searchable.php" role="php" />
       <file name="Sluggable.php" role="php" />
-      <file name="Taggable.php" role="php" />
       <file name="Timestampable.php" role="php" />
       <file name="Versionable.php" role="php" />
      </dir> <!-- /lib/Doctrine/Template -->
@@ -477,6 +466,8 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
       <file name="Readonly.php" role="php" />
       <file name="Regexp.php" role="php" />
+      <file name="Time.php" role="php" />
+      <file name="Timestamp.php" role="php" />
       <file name="Unique.php" role="php" />
       <file name="Unsigned.php" role="php" />
       <file name="Usstate.php" role="php" />
@@ -497,14 +488,12 @@ requiring needless code duplication.</description>
      <file name="Data.php" role="php" />
      <file name="DataDict.php" role="php" />
      <file name="DataType.php" role="php" />
-     <file name="Db.php" role="php" />
      <file name="Event.php" role="php" />
      <file name="EventListener.php" role="php" />
      <file name="Exception.php" role="php" />
      <file name="Export.php" role="php" />
      <file name="Expression.php" role="php" />
      <file name="File.php" role="php" />
-     <file name="FileFinder.php" role="php" />
      <file name="Formatter.php" role="php" />
      <file name="Hook.php" role="php" />
      <file name="Hydrator.php" role="php" />
@@ -797,8 +786,13 @@ requiring needless code duplication.</description>
    </dir> <!-- /manual -->
    <dir name="tests">
     <dir name="Cache">
+     <dir name="Query">
+      <file name="SqliteTestCase.php" role="test" />
+     </dir> <!-- /tests/Cache/Query -->
      <file name="ApcTestCase.php" role="test" />
+     <file name="FileTestCase.php" role="test" />
      <file name="MemcacheTestCase.php" role="test" />
+     <file name="QuerySqliteTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Cache -->
     <dir name="Collection">
@@ -824,6 +818,8 @@ requiring needless code duplication.</description>
      <file name="Doctrine_AuditLog.html" role="test" />
      <file name="Doctrine_AuditLog_Listener.html" role="test" />
      <file name="Doctrine_Cache_Array.html" role="test" />
+     <file name="Doctrine_Cache_Driver.html" role="test" />
+     <file name="Doctrine_Cache_Memcache.html" role="test" />
      <file name="Doctrine_Collection.html" role="test" />
      <file name="Doctrine_Configurable.html" role="test" />
      <file name="Doctrine_Connection.html" role="test" />
@@ -845,6 +841,7 @@ requiring needless code duplication.</description>
      <file name="Doctrine_Connection_Sqlite_Exception.html" role="test" />
      <file name="Doctrine_Connection_Statement.html" role="test" />
      <file name="Doctrine_Connection_UnitOfWork.html" role="test" />
+     <file name="Doctrine_Data.html" role="test" />
      <file name="Doctrine_DataDict.html" role="test" />
      <file name="Doctrine_DataDict_Exception.html" role="test" />
      <file name="Doctrine_DataDict_Firebird.html" role="test" />
@@ -853,9 +850,12 @@ requiring needless code duplication.</description>
      <file name="Doctrine_DataDict_Oracle.html" role="test" />
      <file name="Doctrine_DataDict_Pgsql.html" role="test" />
      <file name="Doctrine_DataDict_Sqlite.html" role="test" />
+     <file name="Doctrine_Data_Export.html" role="test" />
+     <file name="Doctrine_Data_Import.html" role="test" />
      <file name="Doctrine_Event.html" role="test" />
      <file name="Doctrine_EventListener.html" role="test" />
      <file name="Doctrine_EventListener_Chain.html" role="test" />
+     <file name="Doctrine_EventListener_Exception.html" role="test" />
      <file name="Doctrine_Exception.html" role="test" />
      <file name="Doctrine_Export.html" role="test" />
      <file name="Doctrine_Export_Exception.html" role="test" />
@@ -895,16 +895,20 @@ requiring needless code duplication.</description>
      <file name="Doctrine_Import_Pgsql.html" role="test" />
      <file name="Doctrine_Import_Schema.html" role="test" />
      <file name="Doctrine_Import_Sqlite.html" role="test" />
+     <file name="Doctrine_Inflector.html" role="test" />
      <file name="Doctrine_Lib.html" role="test" />
      <file name="Doctrine_Locator_Injectable.html" role="test" />
+     <file name="Doctrine_Locking_Manager_Pessimistic.html" role="test" />
      <file name="Doctrine_Manager.html" role="test" />
      <file name="Doctrine_Manager_Exception.html" role="test" />
      <file name="Doctrine_Migration.html" role="test" />
+     <file name="Doctrine_Migration_Builder.html" role="test" />
      <file name="Doctrine_Migration_Process.html" role="test" />
      <file name="Doctrine_Node.html" role="test" />
      <file name="Doctrine_Node_NestedSet.html" role="test" />
      <file name="Doctrine_Null.html" role="test" />
      <file name="Doctrine_Parser.html" role="test" />
+     <file name="Doctrine_Parser_Spyc.html" role="test" />
      <file name="Doctrine_Parser_Yml.html" role="test" />
      <file name="Doctrine_Plugin.html" role="test" />
      <file name="Doctrine_Query.html" role="test" />
@@ -933,6 +937,7 @@ requiring needless code duplication.</description>
      <file name="Doctrine_Record_Filter.html" role="test" />
      <file name="Doctrine_Record_Filter_Compound.html" role="test" />
      <file name="Doctrine_Record_Filter_Standard.html" role="test" />
+     <file name="Doctrine_Record_Generator.html" role="test" />
      <file name="Doctrine_Record_Iterator.html" role="test" />
      <file name="Doctrine_Record_Listener.html" role="test" />
      <file name="Doctrine_Record_Listener_Chain.html" role="test" />
@@ -962,6 +967,7 @@ requiring needless code duplication.</description>
      <file name="Doctrine_Table_Repository.html" role="test" />
      <file name="Doctrine_Template.html" role="test" />
      <file name="Doctrine_Template_I18n.html" role="test" />
+     <file name="Doctrine_Template_Listener_Sluggable.html" role="test" />
      <file name="Doctrine_Template_Listener_Timestampable.html" role="test" />
      <file name="Doctrine_Template_NestedSet.html" role="test" />
      <file name="Doctrine_Template_Searchable.html" role="test" />
@@ -1041,7 +1047,6 @@ requiring needless code duplication.</description>
      <file name="OracleTestCase.php" role="test" />
      <file name="PgsqlTestCase.php" role="test" />
      <file name="RecordTestCase.php" role="test" />
-     <file name="ReporterTestCase.php" role="test" />
      <file name="SchemaTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Export -->
@@ -1069,9 +1074,6 @@ requiring needless code duplication.</description>
      <file name="SchemaTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Import -->
-    <dir name="Migration">
-     <file name="MysqlTestCase.php" role="test" />
-    </dir> <!-- /tests/Migration -->
     <dir name="migration_classes">
      <file name="001_add_table.php" role="test" />
     </dir> <!-- /tests/migration_classes -->
@@ -1087,6 +1089,191 @@ requiring needless code duplication.</description>
       <file name="ConservativeModelLoadingUser.php" role="test" />
      </dir> <!-- /tests/ModelLoadingTest/Conservative -->
     </dir> <!-- /tests/ModelLoadingTest -->
+    <dir name="models">
+     <dir name="export">
+      <file name="Cms_Category.php" role="test" />
+      <file name="Cms_CategoryLanguages.php" role="test" />
+     </dir> <!-- /tests/models/export -->
+     <file name="Account.php" role="test" />
+     <file name="Address.php" role="test" />
+     <file name="Album.php" role="test" />
+     <file name="App.php" role="test" />
+     <file name="App_Category.php" role="test" />
+     <file name="App_User.php" role="test" />
+     <file name="Assignment.php" role="test" />
+     <file name="Auth.php" role="test" />
+     <file name="Author.php" role="test" />
+     <file name="BadlyNamed__Class.php" role="test" />
+     <file name="BarRecord.php" role="test" />
+     <file name="BaseSymfonyRecord.php" role="test" />
+     <file name="Blog.php" role="test" />
+     <file name="BlogTag.php" role="test" />
+     <file name="BoardWithPosition.php" role="test" />
+     <file name="Book.php" role="test" />
+     <file name="Bookmark.php" role="test" />
+     <file name="BookmarkUser.php" role="test" />
+     <file name="BooleanTest.php" role="test" />
+     <file name="CascadeDeleteRelatedTest.php" role="test" />
+     <file name="CascadeDeleteRelatedTest2.php" role="test" />
+     <file name="CascadeDeleteTest.php" role="test" />
+     <file name="CategoryWithPosition.php" role="test" />
+     <file name="CheckConstraintTest.php" role="test" />
+     <file name="ClientModel.php" role="test" />
+     <file name="ColumnAliasTest.php" role="test" />
+     <file name="ConcreteEmail.php" role="test" />
+     <file name="ConcreteGroup.php" role="test" />
+     <file name="ConcreteGroupUser.php" role="test" />
+     <file name="ConcreteInheritanceTestParent.php" role="test" />
+     <file name="ConcreteUser.php" role="test" />
+     <file name="CoverageCodeN.php" role="test" />
+     <file name="CPK_Association.php" role="test" />
+     <file name="CPK_Test.php" role="test" />
+     <file name="CPK_Test2.php" role="test" />
+     <file name="CustomPK.php" role="test" />
+     <file name="CustomSequenceRecord.php" role="test" />
+     <file name="Data_File.php" role="test" />
+     <file name="DateTest.php" role="test" />
+     <file name="Description.php" role="test" />
+     <file name="Element.php" role="test" />
+     <file name="Email.php" role="test" />
+     <file name="Entity.php" role="test" />
+     <file name="EntityAddress.php" role="test" />
+     <file name="EntityReference.php" role="test" />
+     <file name="EnumTest.php" role="test" />
+     <file name="EnumTest2.php" role="test" />
+     <file name="EnumTest3.php" role="test" />
+     <file name="Error.php" role="test" />
+     <file name="EventListenerChainTest.php" role="test" />
+     <file name="EventListenerTest.php" role="test" />
+     <file name="FieldNameTest.php" role="test" />
+     <file name="File_Owner.php" role="test" />
+     <file name="FilterTest.php" role="test" />
+     <file name="FilterTest2.php" role="test" />
+     <file name="FooBarRecord.php" role="test" />
+     <file name="FooForeignlyOwned.php" role="test" />
+     <file name="FooForeignlyOwnedWithPK.php" role="test" />
+     <file name="FooLocallyOwned.php" role="test" />
+     <file name="FooRecord.php" role="test" />
+     <file name="FooReferenceRecord.php" role="test" />
+     <file name="ForeignKeyTest.php" role="test" />
+     <file name="ForeignKeyTest2.php" role="test" />
+     <file name="Forum_Board.php" role="test" />
+     <file name="Forum_Category.php" role="test" />
+     <file name="Forum_Entry.php" role="test" />
+     <file name="Forum_Thread.php" role="test" />
+     <file name="gnatEmail.php" role="test" />
+     <file name="gnatUser.php" role="test" />
+     <file name="Group.php" role="test" />
+     <file name="GroupUser.php" role="test" />
+     <file name="GzipTest.php" role="test" />
+     <file name="I18nTest.php" role="test" />
+     <file name="InheritanceDeal.php" role="test" />
+     <file name="InheritanceDealUser.php" role="test" />
+     <file name="InheritanceUser.php" role="test" />
+     <file name="JC1.php" role="test" />
+     <file name="JC2.php" role="test" />
+     <file name="JC3.php" role="test" />
+     <file name="LiabilityCodeN.php" role="test" />
+     <file name="Location.php" role="test" />
+     <file name="LocationI18n.php" role="test" />
+     <file name="Log_Entry.php" role="test" />
+     <file name="Log_Status.php" role="test" />
+     <file name="M2MTest.php" role="test" />
+     <file name="M2MTest2.php" role="test" />
+     <file name="MigrationTest.php" role="test" />
+     <file name="mmrGroupUser_B.php" role="test" />
+     <file name="mmrGroupUser_C.php" role="test" />
+     <file name="mmrGroup_B.php" role="test" />
+     <file name="mmrGroup_C.php" role="test" />
+     <file name="mmrUser_B.php" role="test" />
+     <file name="mmrUser_C.php" role="test" />
+     <file name="MyGroup.php" role="test" />
+     <file name="MyOneThing.php" role="test" />
+     <file name="MyOtherThing.php" role="test" />
+     <file name="MysqlGroup.php" role="test" />
+     <file name="MysqlGroupMember.php" role="test" />
+     <file name="MysqlIndexTestRecord.php" role="test" />
+     <file name="MysqlTestRecord.php" role="test" />
+     <file name="MysqlUser.php" role="test" />
+     <file name="MyUser.php" role="test" />
+     <file name="MyUser2.php" role="test" />
+     <file name="MyUserGroup.php" role="test" />
+     <file name="MyUserOneThing.php" role="test" />
+     <file name="MyUserOtherThing.php" role="test" />
+     <file name="NestedSetTest_SingleRootNode.php" role="test" />
+     <file name="NestReference.php" role="test" />
+     <file name="NestTest.php" role="test" />
+     <file name="NotNullTest.php" role="test" />
+     <file name="ORM_AccessControl.php" role="test" />
+     <file name="ORM_AccessControlsGroups.php" role="test" />
+     <file name="ORM_AccessGroup.php" role="test" />
+     <file name="ORM_TestEntry.php" role="test" />
+     <file name="ORM_TestItem.php" role="test" />
+     <file name="Package.php" role="test" />
+     <file name="PackageVersion.php" role="test" />
+     <file name="PackageVersionNotes.php" role="test" />
+     <file name="Page.php" role="test" />
+     <file name="Phonenumber.php" role="test" />
+     <file name="Photo.php" role="test" />
+     <file name="Phototag.php" role="test" />
+     <file name="PluginSymfonyRecord.php" role="test" />
+     <file name="PluginSymfonyRecordTable.php" role="test" />
+     <file name="Policy.php" role="test" />
+     <file name="PolicyAsset.php" role="test" />
+     <file name="PolicyCodeN.php" role="test" />
+     <file name="PolicyN.php" role="test" />
+     <file name="QueryTest_Board.php" role="test" />
+     <file name="QueryTest_Category.php" role="test" />
+     <file name="QueryTest_Entry.php" role="test" />
+     <file name="QueryTest_Item.php" role="test" />
+     <file name="QueryTest_Rank.php" role="test" />
+     <file name="QueryTest_User.php" role="test" />
+     <file name="QueryTest_UserRank.php" role="test" />
+     <file name="RateN.php" role="test" />
+     <file name="Rec1.php" role="test" />
+     <file name="Rec2.php" role="test" />
+     <file name="RecordFilterTest.php" role="test" />
+     <file name="RecordHookTest.php" role="test" />
+     <file name="Record_City.php" role="test" />
+     <file name="Record_Country.php" role="test" />
+     <file name="Record_District.php" role="test" />
+     <file name="RelationTest.php" role="test" />
+     <file name="Resource.php" role="test" />
+     <file name="ResourceReference.php" role="test" />
+     <file name="ResourceType.php" role="test" />
+     <file name="Role.php" role="test" />
+     <file name="RTC1.php" role="test" />
+     <file name="RTC2.php" role="test" />
+     <file name="RTC3.php" role="test" />
+     <file name="RTC4.php" role="test" />
+     <file name="SearchTest.php" role="test" />
+     <file name="SelfRefTest.php" role="test" />
+     <file name="SequenceRecord.php" role="test" />
+     <file name="SerializeTest.php" role="test" />
+     <file name="SoftDeleteTest.php" role="test" />
+     <file name="Song.php" role="test" />
+     <file name="SymfonyRecord.php" role="test" />
+     <file name="SymfonyRecordTable.php" role="test" />
+     <file name="Tag.php" role="test" />
+     <file name="Task.php" role="test" />
+     <file name="TestMovie.php" role="test" />
+     <file name="TestMovieUserBookmark.php" role="test" />
+     <file name="TestMovieUserVote.php" role="test" />
+     <file name="TestRecord.php" role="test" />
+     <file name="TestUser.php" role="test" />
+     <file name="TreeLeaf.php" role="test" />
+     <file name="UnderscoreColumn.php" role="test" />
+     <file name="User.php" role="test" />
+     <file name="ValidatorTest.php" role="test" />
+     <file name="ValidatorTest_AddressModel.php" role="test" />
+     <file name="ValidatorTest_ClientModel.php" role="test" />
+     <file name="ValidatorTest_ClientToAddressModel.php" role="test" />
+     <file name="ValidatorTest_DateModel.php" role="test" />
+     <file name="ValidatorTest_FootballPlayer.php" role="test" />
+     <file name="ValidatorTest_Person.php" role="test" />
+     <file name="VersioningTest.php" role="test" />
+     <file name="ZeroValueTest.php" role="test" />
+    </dir> <!-- /tests/models -->
     <dir name="mysql_migration_classes">
      <file name="001_mysql_add_table.php" role="test" />
      <file name="002_mysql_change_column.php" role="test" />
@@ -1129,7 +1316,9 @@ requiring needless code duplication.</description>
      <file name="WhereTestCase.php" role="test" />
     </dir> <!-- /tests/Query -->
     <dir name="Record">
+     <file name="CascadingDeleteTestCase.php" role="test" />
      <file name="FilterTestCase.php" role="test" />
+     <file name="GeneratorTestCase.php" role="test" />
      <file name="HookTestCase.php" role="test" />
      <file name="InheritanceTestCase.php" role="test" />
      <file name="LockTestCase.php" role="test" />
@@ -1175,6 +1364,8 @@ requiring needless code duplication.</description>
      <file name="428TestCase.php" role="test" />
      <file name="438TestCase.php" role="test" />
      <file name="480TestCase.php" role="test" />
+     <file name="486TestCase.php" role="test" />
+     <file name="565TestCase.php" role="test" />
      <file name="576TestCase.php" role="test" />
      <file name="583TestCase.php" role="test" />
      <file name="587TestCase.php" role="test" />
@@ -1185,10 +1376,18 @@ requiring needless code duplication.</description>
      <file name="642TestCase.php" role="test" />
      <file name="673TestCase.php" role="test" />
      <file name="697TestCase.php" role="test" />
+     <file name="710TestCase.php" role="test" />
      <file name="736TestCase.php" role="test" />
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
      <file name="786TestCase.php" role="test" />
+     <file name="838TestCase.php" role="test" />
+     <file name="867TestCase.php" role="test" />
+     <file name="876TestCase.php" role="test" />
+     <file name="904TestCase.php" role="test" />
+     <file name="912TestCase.php" role="test" />
+     <file name="915TestCase.php" role="test" />
+     <file name="923TestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1208,21 +1407,19 @@ requiring needless code duplication.</description>
     <file name="AuditLogTestCase.php" role="test" />
     <file name="BaseTestCase.php" role="test" />
     <file name="BatchIteratorTestCase.php" role="test" />
-    <file name="CacheFileTestCase.php" role="test" />
-    <file name="CacheQuerySqliteTestCase.php" role="test" />
     <file name="CacheSqliteTestCase.php" role="test" />
     <file name="CacheTestCase.php" role="test" />
-    <file name="CascadingDeleteTestCase.php" role="test" />
     <file name="ClassTableInheritanceTestCase.php" role="test" />
     <file name="CollectionOffsetTestCase.php" role="test" />
     <file name="CollectionTestCase.php" role="test" />
     <file name="ColumnAggregationInheritanceTestCase.php" role="test" />
     <file name="ColumnAliasTestCase.php" role="test" />
     <file name="CompositePrimaryKeyTestCase.php" role="test" />
+    <file name="ConcreteInheritanceTestCase.php" role="test" />
     <file name="ConfigurableTestCase.php" role="test" />
     <file name="ConnectionTestCase.php" role="test" />
     <file name="ConnectionTransactionTestCase.php" role="test" />
-    <file name="CtiColumnAggregationTestCase.php" role="test" />
+    <file name="CtiColumnAggregationInheritanceTestCase.php" role="test" />
     <file name="CustomPrimaryKeyTestCase.php" role="test" />
     <file name="CustomResultSetOrderTestCase.php" role="test" />
     <file name="CustomResultSetOrderTestCaseTestCase.php" role="test" />
@@ -1242,7 +1439,6 @@ requiring needless code duplication.</description>
     <file name="ImportTestCase.php" role="test" />
     <file name="index.php" role="test" />
     <file name="IntegrityActionTestCase.php" role="test" />
-    <file name="JwageTestCase.php" role="test" />
     <file name="ManagerTestCase.php" role="test" />
     <file name="MigrationTestCase.php" role="test" />
     <file name="NewCoreTestCase.php" role="test" />
@@ -1261,6 +1457,7 @@ requiring needless code duplication.</description>
     <file name="schema.yml" role="test" />
     <file name="SearchTestCase.php" role="test" />
     <file name="SequenceTestCase.php" role="test" />
+    <file name="SluggableTestCase.php" role="test" />
     <file name="TableTestCase.php" role="test" />
     <file name="template.tpl" role="test" />
     <file name="TemplateTestCase.php" role="test" />
@@ -1572,6 +1769,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>0.10.4</release>
+    <api>0.10.4</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2008-03-28</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>0.10.3</release>
