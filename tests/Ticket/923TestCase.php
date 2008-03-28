@@ -32,7 +32,7 @@
  */
 class Doctrine_Ticket_923_TestCase extends Doctrine_UnitTestCase {
 
-    public function prepareData() 
+    public function prepareData()
     {
         $d = new T923_Diagnostic();
         $d->id_type = 101;
@@ -41,15 +41,15 @@ class Doctrine_Ticket_923_TestCase extends Doctrine_UnitTestCase {
         $d->diag_timestamp = '2008-03-27 12:00:00';
         $d->operator_id = 1001;
         $d->save();
-      
+
         $d = new T923_Diagnostic();
         $d->id_type = 101;
-        $d->id = 26;
+        $d->id = 27;
         $d->diagnostic_id = 75445;
         $d->diag_timestamp = '2008-03-27 13:00:00';
         $d->operator_id = 1001;
         $d->save();
-      
+
         $d = new T923_Diagnostic();
         $d->id_type = 101;
         $d->id = 28;
@@ -58,12 +58,12 @@ class Doctrine_Ticket_923_TestCase extends Doctrine_UnitTestCase {
         $d->operator_id = 1001;
         $d->save();
     }
-    
+
     public function prepareTables() {
         $this->tables[] = 'T923_Diagnostic';
         parent::prepareTables();
     }
-    
+
     public function testTicket()
     {
         try {
