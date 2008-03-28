@@ -292,6 +292,36 @@ END;
 
         unlink('test.yml');
     }
+    
+    public function testInvalidElementThrowsException()
+    {
+        self::prepareTables();
+        $yml = <<<END
+---
+User:
+  User_1:
+    name: jwage400
+    pass: changeme
+
+Groupuser:
+  Groupuser_1:
+    User: User_1
+    Group: Group_1
+
+Group:
+  Group_1:
+    name: test
+END;
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
+            $this->fail();
+        } catch (Exception $e) {
+            $this->pass();
+        }
+        
+        unlink('test.yml');
+    }
 }
 
 class ImportNestedSet extends Doctrine_Record
