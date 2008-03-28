@@ -118,5 +118,12 @@ abstract class Doctrine_Query_Production
      *
      * @return string Sql piece
      */
-    abstract public function buildSql();
+    public function buildSql()
+    {
+        $className = get_class($this);
+        $methodName = substr($className, strrpos($className, '_'));
+        $methodName[0] = strtolower($methodName[0]);
+
+        $this->_sqlBuilder->$methodName($this);
+    }
 }

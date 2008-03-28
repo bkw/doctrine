@@ -35,17 +35,6 @@
  */
 class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Query_Production
 {
-    protected function _getExpressionType() {
-        if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
-            $token = $this->_parser->getScanner()->peek();
-            $this->_parser->getScanner()->resetPeek();
-        } else {
-            $token = $this->_parser->lookahead;
-        }
-
-        return $token['type'];
-    }
-
     public function execute(array $params = array())
     {
         if ($this->_getExpressionType() === Doctrine_Query_Token::T_EXISTS) {
@@ -73,6 +62,17 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
                     $this->_parser->logError();
             }
         }
+    }
 
+
+    protected function _getExpressionType() {
+        if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
+            $token = $this->_parser->getScanner()->peek();
+            $this->_parser->getScanner()->resetPeek();
+        } else {
+            $token = $this->_parser->lookahead;
+        }
+
+        return $token['type'];
     }
 }

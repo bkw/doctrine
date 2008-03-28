@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  $Id$
  *
@@ -20,48 +21,18 @@
  */
 
 /**
- * ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
+ * Base class of each Sql Builder object
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_ConditionalExpression extends Doctrine_Query_Production
+class Doctrine_Query_SqlBuilder_Mysql extends Doctrine_Query_SqlBuilder
 {
-    protected $_conditionalTerms = array();
 
-
-    public function execute(array $params = array())
-    {
-        $this->_conditionalTerms[] = $this->ConditionalTerm();
-
-        while ($this->_isNextToken(Doctrine_Query_Token::T_OR)) {
-            $this->_parser->match(Doctrine_Query_Token::T_OR);
-            $this->_conditionalTerms[] = $this->ConditionalTerm();
-        }
-
-        return $this;
-    }
-
-
-    public function buildSql()
-    {
-        return implode(' OR ', $this->_mapConditionalTerms());
-    }
-
-
-    protected function _mapConditionalTerms()
-    {
-        return array_map(array(&$this, '_mapConditionalTerm'), $this->_conditionalTerms);
-    }
-
-
-    protected function _mapConditionalTerm($value)
-    {
-        return $value->buildSql();
-    }
 }

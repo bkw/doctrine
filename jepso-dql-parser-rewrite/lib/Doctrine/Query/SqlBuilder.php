@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  $Id$
  *
@@ -20,48 +21,58 @@
  */
 
 /**
- * ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
+ * Base class of each Sql Builder object
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_ConditionalExpression extends Doctrine_Query_Production
+abstract class Doctrine_Query_SqlBuilder
 {
-    protected $_conditionalTerms = array();
+    /**
+     * The Connection object.
+     *
+     * @var Doctrine_Connection
+     */
+    protected $_connection;
 
 
-    public function execute(array $params = array())
+    public static function fromConnection(Doctrine_Connection $connection = null)
     {
-        $this->_conditionalTerms[] = $this->ConditionalTerm();
-
-        while ($this->_isNextToken(Doctrine_Query_Token::T_OR)) {
-            $this->_parser->match(Doctrine_Query_Token::T_OR);
-            $this->_conditionalTerms[] = $this->ConditionalTerm();
+        if ($connection === null) {
+            $connection = Doctrine_Manager::getInstance()->getCurrentConnection();
         }
 
-        return $this;
+        $className = "Doctrine_Query_SqlBuilder_" . $connection->getDriverName();
+        $sqlBuilder = new $className();
+        $sqlBuilder->_connection = $connection;
+
+        return $sqlBuilder;
     }
 
 
-    public function buildSql()
+    /**
+     * Retrieves the assocated Doctrine_Connection to this object.
+     *
+     * @return Doctrine_Connection
+     */
+    public function getConnection()
     {
-        return implode(' OR ', $this->_mapConditionalTerms());
+        return $this->_connection;
     }
 
 
-    protected function _mapConditionalTerms()
-    {
-        return array_map(array(&$this, '_mapConditionalTerm'), $this->_conditionalTerms);
-    }
 
+    // Start Common SQL generations
+    // Here we follow the SQL-99 specifications available at:
+    // http://savage.net.au/SQL/sql-99.bnf
 
-    protected function _mapConditionalTerm($value)
-    {
-        return $value->buildSql();
-    }
+    
+
+    // End of Common SQL generations
 }

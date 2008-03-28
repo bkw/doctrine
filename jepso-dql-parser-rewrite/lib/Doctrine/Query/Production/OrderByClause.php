@@ -33,7 +33,7 @@
  */
 class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
 {
-    protected $_orderByItem = array();
+    protected $_orderByItems = array();
 
 
     public function execute(array $params = array())
@@ -41,11 +41,11 @@ class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
         $this->_parser->match(Doctrine_Query_Token::T_ORDER);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->_orderByItem[] = $this->OrderByItem();
+        $this->_orderByItems[] = $this->OrderByItem();
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_orderByItem[] = $this->OrderByItem();
+            $this->_orderByItems[] = $this->OrderByItem();
         }
 
         return $this;
@@ -54,16 +54,16 @@ class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
 
     public function buildSql()
     {
-        $str = '';
+        $str = ' ORDER BY ';
 
-        for ($i = 0, $l = count($this->_orderByItem); $i < $l; $i++) {
+        for ($i = 0, $l = count($this->_orderByItems); $i < $l; $i++) {
             if ($i != 0) {
                 $str .= ', ';
             }
 
-            $str .= $this->_orderByItem[$i]->buildSql();
+            $str .= $this->orderByItems[$i]->buildSql();
         }
 
-        return ' ORDER BY ' . $str;
+        return $str;
     }
 }

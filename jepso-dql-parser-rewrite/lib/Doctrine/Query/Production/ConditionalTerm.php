@@ -32,13 +32,36 @@
  */
 class Doctrine_Query_Production_ConditionalTerm extends Doctrine_Query_Production
 {
+    protected $_conditionalFactors = array();
+
+
     public function execute(array $params = array())
     {
-        $this->ConditionalFactor();
+        $this->_conditionalFactors[] = $this->ConditionalFactor();
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_AND)) {
             $this->_parser->match(Doctrine_Query_Token::T_AND);
-            $this->ConditionalFactor();
+            $this->_conditionalFactors[] = $this->ConditionalFactor();
         }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        return implode(' AND ', $this->_mapConditionalFactors());
+    }
+
+
+    protected function _mapConditionalFactors()
+    {
+        return array_map(array(&$this, '_mapConditionalFactor'), $this->_conditionalFactors);
+    }
+
+
+    protected function _mapConditionalFactor($value)
+    {
+        return $value->buildSql();
     }
 }

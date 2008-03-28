@@ -44,5 +44,7 @@ class Doctrine_Query_Production_Expression extends Doctrine_Query_Production
             }
             $this->Term();
         }
+
+        return $this;
     }
 }

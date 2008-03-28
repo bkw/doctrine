@@ -32,12 +32,28 @@
  */
 class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Production
 {
+    protected $_notFactor = false;
+
+    protected $_conditionalPrimary;
+
+
     public function execute(array $params = array())
     {
+        $this->_notFactor = false;
+
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $this->_parser->match(Doctrine_Query_Token::T_NOT);
+            $this->_notFactor = true;
         }
 
-        $this->ConditionalPrimary();
+        $this->_conditionalPrimary = $this->ConditionalPrimary();
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        return (($this->_notFactor) ? 'NOT ' : '') . $this->_conditionalPrimary->buildSql();
     }
 }

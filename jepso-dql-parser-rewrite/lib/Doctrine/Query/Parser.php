@@ -46,11 +46,11 @@ class Doctrine_Query_Parser
 
 
     /**
-     * The Connection object.
+     * The Sql Builder object.
      *
-     * @var Doctrine_Connection
+     * @var Doctrine_Query_SqlBuilder
      */
-    protected $_connection;
+    protected $_sqlbuilder;
 
     /**
      * A scanner object.
@@ -123,9 +123,9 @@ class Doctrine_Query_Parser
     {
         $this->_scanner = new Doctrine_Query_Scanner($dql);
         $this->_parserResult = new Doctrine_Query_ParserResult();
+        $this->_sqlBuilder = Doctrine_Query_SqlBuilder::fromConnection($connection);
         $this->_keywordTable = new Doctrine_Query_Token();
 
-        $this->setConnection($connection);
         $this->free(true);
 
         // Used for debug purposes. Remove it later!
@@ -220,29 +220,13 @@ class Doctrine_Query_Parser
 
 
     /**
-     * Retrieves the assocated Doctrine_Connection to this object.
+     * Retrieves the assocated Doctrine_Query_SqlBuilder to this object.
      *
-     * @return Doctrine_Connection
+     * @return Doctrine_Query_SqlBuilder
      */
-    public function getConnection()
+    public function getSqlBuilder()
     {
-        return $this->_connection;
-    }
-
-
-    /**
-     * Defines an assocated Doctrine_Connection to this object.
-     *
-     * @param Doctrine_Connection $conn A valid Doctrine_Connection
-     * @return void
-     */
-    public function setConnection(Doctrine_Connection $conn = null)
-    {
-        if ($conn === null) {
-            $conn = Doctrine_Manager::getInstance()->getCurrentConnection();
-        }
-
-        $this->_connection = $conn;
+        return $this->_sqlBuilder;
     }
 
 

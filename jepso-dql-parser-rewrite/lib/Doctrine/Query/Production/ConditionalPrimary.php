@@ -32,7 +32,36 @@
  */
 class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Production
 {
-    private function _isConditionalExpression()
+    protected $_conditionalExpression;
+
+
+    public function execute(array $params = array())
+    {
+        if ($this->_isConditionalExpression()) {
+            $this->_parser->match('(');
+            $this->_conditionalExpression = $this->ConditionalExpression();
+            $this->_parser->match(')');
+        } else {
+            $this->_conditionalExpression = $this->SimpleConditionalExpression();
+        }
+
+        return $this;
+    }
+
+
+    public function buildSql()
+    {
+        $isConditionExpression = (
+            $this->_conditionalExpression instanceof Doctrine_Query_Production_ConditionalExpression
+        );
+
+        return ($isConditionExpression)
+             ? '(' . $this->_conditionalExpression->buildSql() . ')'
+             : $this->_conditionalExpression->buildSql();
+    }
+
+
+    protected function _isConditionalExpression()
     {
         $token = $this->_parser->lookahead;
         $parenthesis = 0;
@@ -73,16 +102,5 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
         }
 
         return false;
-    }
-
-    public function execute(array $params = array())
-    {
-        if ($this->_isConditionalExpression()) {
-            $this->_parser->match('(');
-            $this->ConditionalExpression();
-            $this->_parser->match(')');
-        } else {
-            $this->SimpleConditionalExpression();
-        }
     }
 }

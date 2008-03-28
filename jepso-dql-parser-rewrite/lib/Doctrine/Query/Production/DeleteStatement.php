@@ -20,7 +20,7 @@
  */
 
 /**
- * DeleteStatement = DeleteClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
+ * DeleteStatement = DeleteClause [WhereClause]
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -37,32 +37,14 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
 
     protected $_whereClause;
 
-    protected $_orderByClause;
-
-    protected $_limitClause;
-
-    protected $_offsetClause;
-
 
     public function execute(array $params = array())
     {
-        // DeleteStatement = DeleteClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
+        // DeleteStatement = DeleteClause [WhereClause]
         $this->_deleteClause = $this->DeleteClause();
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
             $this->_whereClause = $this->WhereClause();
-        }
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_ORDER)) {
-            $this->_orderByClause = $this->OrderByClause();
-        }
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
-            $this->_limitClause = $this->LimitClause();
-        }
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_OFFSET)) {
-            $this->_offsetClause = $this->OffsetClause();
         }
 
         return $this;
@@ -71,12 +53,7 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
 
     public function buildSql()
     {
-        $str = $this->_deleteClause->buildSql()
-             . (($this->_whereClause !== null) ? $this->_whereClause->buildSql() : '')
-             . (($this->_orderByClause !== null) ? $this->_orderByClause->buildSql() : '')
-             . (($this->_limitClause !== null) ? $this->_limitClause->buildSql() : '')
-             . (($this->_offsetClause !== null) ? $this->_offsetClause->buildSql() : '');
-
-        return $str;
+        return $this->_deleteClause->buildSql() . (($this->_whereClause !== null)
+             ? $this->_whereClause->buildSql() : ' WHERE 1=1');
     }
 }

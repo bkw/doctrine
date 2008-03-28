@@ -45,10 +45,4 @@ class Doctrine_Query_Production_LimitClause extends Doctrine_Query_Production
 
         return $this;
     }
-
-
-    public function buildSql()
-    {
-        return ' LIMIT ' . $this->_limit;
-    }
 }

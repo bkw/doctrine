@@ -9,13 +9,15 @@
  *  - curly brackets {...} are used for repetion, eg. zero or more times
  *  - double quotation marks "..." define a terminal string
  *  - a vertical bar represents an alternative
+ *
+ * At a first glance we'll support SQL-99 based queries
  */
 
 QueryLanguage   = SelectStatement | UpdateStatement | DeleteStatement
 
 SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause] [LimitClause] [OffsetClause]
 UpdateStatement = UpdateClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
-DeleteStatement = DeleteClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
+DeleteStatement = DeleteClause [WhereClause] [OrderByClause] [LimitClause]
 
 Subselect       = SimpleSelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause] [LimitClause] [OffsetClause]
 SelectClause    = "SELECT" ["ALL" | "DISTINCT"] SelectExpression {"," SelectExpression}
