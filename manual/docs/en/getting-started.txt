@@ -8,3 +8,4 @@ Doctrine uses PDO which is bundled with php by default.
 ++ Generating models
 ++ Auto loading models
 ++ Command line interface
+++ My first project tutorial
