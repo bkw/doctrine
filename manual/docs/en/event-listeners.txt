@@ -1,10 +1,13 @@
 ++ Introduction
 
-Doctrine provides flexible event listener architecture that not only allows listening for different events but also for altering the execution of the listened methods.
+Doctrine provides flexible event listener architecture that not only allows listening for different events but also for 
+altering the execution of the listened methods.
 
-There are several different listeners and hooks for various Doctrine components. Listeners are separate classes whereas hooks are empty template methods within the listened class.
+There are several different listeners and hooks for various Doctrine components. Listeners are separate classes whereas 
+hooks are empty template methods within the listened class.
 
-Hooks are simpler than eventlisteners but they lack the separation of different aspects. An example of using Doctrine_Record hooks:
+Hooks are simpler than eventlisteners but they lack the separation of different aspects. An example of using 
+Doctrine_Record hooks:
 
 <code type="php">
 class Blog extends Doctrine_Record 
@@ -31,16 +34,22 @@ $blog->save();
 $blog->created; // 2007-06-20 (format: YYYY-MM-DD)
 </code>
 
-Each listener and hook method takes one parameter Doctrine_Event object. Doctrine_Event object holds information about the event in question and can alter the execution of the listened method.
+Each listener and hook method takes one parameter Doctrine_Event object. Doctrine_Event object holds information about 
+the event in question and can alter the execution of the listened method.
 
-For the purposes of this documentation many method tables are provided with column named 'params' indicating names of the parameters that an event object holds on given event. For example the preCreateSavepoint event has one parameter the name of the created savepoint, which is quite intuitively named as savepoint.
+For the purposes of this documentation many method tables are provided with column named 'params' indicating names of 
+the parameters that an event object holds on given event. For example the preCreateSavepoint event has one parameter 
+the name of the created savepoint, which is quite intuitively named as savepoint.
 
 ++ Connection listeners    
 
-Connection listeners are used for listening the methods of Doctrine_Connection and its modules (such as Doctrine_Transaction). All listener methods take one argument Doctrine_Event which holds information about the listened event.
+Connection listeners are used for listening the methods of Doctrine_Connection and its modules 
+(such as Doctrine_Transaction). All listener methods take one argument Doctrine_Event which holds information about 
+the listened event.
 
 +++ Creating a new listener
-There are three different ways of defining a listener. First you can create a listener by making a class that inherits Doctrine_EventListener:
+There are three different ways of defining a listener. First you can create a listener by making a class that inherits 
+Doctrine_EventListener:
 
 <code type="php">
 class MyListener extends Doctrine_EventListener
@@ -52,9 +61,12 @@ class MyListener extends Doctrine_EventListener
 }
 </code>
 
-Note that by declaring a class that extends Doctrine_EventListener you don't have to define all the methods within the Doctrine_EventListener_Interface. This is due to a fact that Doctrine_EventListener already has empty skeletons for all these methods.
+Note that by declaring a class that extends Doctrine_EventListener you don't have to define all the methods within the 
+Doctrine_EventListener_Interface. This is due to a fact that Doctrine_EventListener already has empty skeletons for all 
+these methods.
 
-Sometimes it may not be possible to define a listener that extends Doctrine_EventListener (you might have a listener that inherits some other base class). In this case you can make it implement Doctrine_EventListener_Interface.
+Sometimes it may not be possible to define a listener that extends Doctrine_EventListener (you might have a listener that 
+inherits some other base class). In this case you can make it implement Doctrine_EventListener_Interface.
 
 <code type="php">
 class MyListener implements Doctrine_EventListener_Interface 
@@ -71,7 +83,8 @@ class MyListener implements Doctrine_EventListener_Interface
 }
 </code>
 
-The third way of creating a listener is a very elegant one. You can make a class that implements Doctrine_Overloadable. This interface has only one method: __call(), which can be used for catching *all* the events.
+The third way of creating a listener is a very elegant one. You can make a class that implements Doctrine_Overloadable. 
+This interface has only one method: __call(), which can be used for catching *all* the events.
 
 <code type="php">
 class MyDebugger implements Doctrine_Overloadable
@@ -147,17 +160,23 @@ class MyTransactionListener extends Doctrine_EventListener
 || preFetchAll(Doctrine_Event $event) || Doctrine_Connection::fetchAll() || query, data ||
 || postFetchAll(Doctrine_Event $event) || Doctrine_Connection::fetchAll() || query, data ||
 
-* preExecute() and postExecute() only get invoked when Doctrine_Connection::execute() is being called without prepared statement parameters. Otherwise Doctrine_Connection::execute() invokes prePrepare, postPrepare, preStmtExecute and postStmtExecute.
+* preExecute() and postExecute() only get invoked when Doctrine_Connection::execute() is being called without prepared 
+statement parameters. Otherwise Doctrine_Connection::execute() invokes prePrepare, postPrepare, preStmtExecute and 
+postStmtExecute.
 
 
 
 ++ Query listeners
 
-The query listeners can be used for listening the DQL query building and resultset hydration procedures. Couple of methods exist for listening the hydration procedure: preHydrate and postHydrate.
+The query listeners can be used for listening the DQL query building and resultset hydration procedures. Couple of 
+methods exist for listening the hydration procedure: preHydrate and postHydrate.
 
-If you set the hydration listener on connection level the code within the preHydrate and postHydrate blocks will be invoked by all components within a multi-component resultset. However if you add a similar listener on table level it only gets invoked when the data of that table is being hydrated.
+If you set the hydration listener on connection level the code within the preHydrate and postHydrate blocks will be 
+invoked by all components within a multi-component resultset. However if you add a similar listener on table level it 
+only gets invoked when the data of that table is being hydrated.
 
-Consider we have a class called User with the following fields: firstname, lastname and age. In the following example we create a listener that always builds a generated field called fullname based on firstname and lastname fields.
+Consider we have a class called User with the following fields: firstname, lastname and age. In the following example 
+we create a listener that always builds a generated field called fullname based on firstname and lastname fields.
 
 <code type="php">
 class HydrationListener extends Doctrine_Record_Listener
@@ -178,7 +197,9 @@ Now all we need to do is attach this listener to the User record and fetch some 
 $user = new User();
 $user->addListener(new HydrationListener());
 
-$users = Doctrine_Query::create()->from('User');
+$users = Doctrine_Query::create()
+          ->from('User')
+          ->execute();
 
 foreach ($users as $user) {
     print $user->fullname;
@@ -187,7 +208,8 @@ foreach ($users as $user) {
 
 ++ Record listeners
 
-Doctrine_Record provides listeners very similar to Doctrine_Connection. You can set the listeners at global, connection and record(=table) level.
+Doctrine_Record provides listeners very similar to Doctrine_Connection. You can set the listeners at global, connection 
+and record(=table) level.
 
 Here is a list of all available listener methods:
 
@@ -203,7 +225,9 @@ Here is a list of all available listener methods:
 || preValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 || postValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 
-Just like with connection listeners there are three ways of defining a record listener: by extending Doctrine_Record_Listener, by implement Doctrine_Record_Listener_Interface or by implementing Doctrine_Overloadable. In the following we'll create a global level listener by implementing Doctrine_Overloadable:
+Just like with connection listeners there are three ways of defining a record listener: by extending 
+Doctrine_Record_Listener, by implement Doctrine_Record_Listener_Interface or by implementing Doctrine_Overloadable. 
+In the following we'll create a global level listener by implementing Doctrine_Overloadable:
 <code type="php">
 class Logger extends Doctrine_Overloadable
 {
@@ -222,7 +246,8 @@ Attaching the listener to manager is easy:
 $manager->addRecordListener(new Logger());
 </code>
 
-Note that by adding a manager level listener it affects on all connections and all tables / records within these connections. In the following we create a connection level listener:
+Note that by adding a manager level listener it affects on all connections and all tables / records within these 
+connections. In the following we create a connection level listener:
 
 <code type="php">
 class Debugger extends Doctrine_Record_Listener
@@ -244,7 +269,8 @@ Attaching the listener to a connection is as easy as:
 $conn->addRecordListener(new Debugger());
 </code>
 
-Many times you want the listeners to be table specific so that they only apply on the actions on that given table. Here is an example:
+Many times you want the listeners to be table specific so that they only apply on the actions on that given table. 
+Here is an example:
 
 <code type="php">
 class Debugger extends Doctrine_Record_Listener
@@ -312,7 +338,8 @@ class Blog extends Doctrine_Record
 
 ++ Chaining listeners
 
-Doctrine allows chaining of different eventlisteners. This means that more than one listener can be attached for listening the same events. The following example attaches two listeners for given connection:
+Doctrine allows chaining of different eventlisteners. This means that more than one listener can be attached for 
+listening the same events. The following example attaches two listeners for given connection:
 
 <code type="php">
 // here Debugger and Logger both inherit Doctrine_EventListener
@@ -379,7 +406,8 @@ class MyRecord extends Doctrine_Record
 </code>
 +++ getInvoker()
 
-The method getInvoker() returns the object that invoked the given event. For example for event Doctrine_Event::CONN_QUERY the invoker is a Doctrine_Connection object. Example:
+The method getInvoker() returns the object that invoked the given event. For example for event Doctrine_Event::CONN_QUERY 
+the invoker is a Doctrine_Connection object. Example:
 
 <code type="php">
 class MyRecord extends Doctrine_Record
@@ -392,9 +420,11 @@ class MyRecord extends Doctrine_Record
 </code>
 
 +++ skipOperation()
-Doctrine_Event provides many methods for altering the execution of the listened method as well as for altering the behaviour of the listener chain.
+Doctrine_Event provides many methods for altering the execution of the listened method as well as for altering the 
+behaviour of the listener chain.
 
-For some reason you may want to skip the execution of the listened method. It can be done as follows (note that preExec could be any listener method):
+For some reason you may want to skip the execution of the listened method. It can be done as follows 
+(note that preExec could be any listener method):
 
 <code type="php">
 class MyListener extends Doctrine_EventListener
@@ -424,4 +454,3 @@ class MyListener extends Doctrine_EventListener
     }
 }
 </code>
-

@@ -1,14 +1,21 @@
 ++ Introduction
 
-Many times you may find classes having similar things within your models. These things may contain anything related to the schema of the component itself (relations, column definitions, index definitions etc.). One obvious way of refactoring the code is having a base class with some classes extending it.
+Many times you may find classes having similar things within your models. These things may contain anything related to the 
+schema of the component itself (relations, column definitions, index definitions etc.). One obvious way of refactoring the 
+code is having a base class with some classes extending it.
 
-However inheritance solves only a fraction of things. The following subchapters show how many times using Doctrine_Template is much more powerful and flexible than using inheritance.
+However inheritance solves only a fraction of things. The following subchapters show how many times using 
+Doctrine_Template is much more powerful and flexible than using inheritance.
 
-Doctrine_Template is a class templating system. Templates are basically ready-to-use little components that your Record classes can load. When a template is being loaded its setTableDefinition() and setUp() methods are being invoked and the method calls inside them are being directed into the class in question.
+Doctrine_Template is a class templating system. Templates are basically ready-to-use little components that your Record 
+classes can load. When a template is being loaded its setTableDefinition() and setUp() methods are being invoked and the 
+method calls inside them are being directed into the class in question.
 
 ++ Simple templates
 
-In the following example we define a template called TimestampTemplate. Basically the purpose of this template is to add date columns 'created' and 'updated' to the record class that loads this template. Additionally this template uses a listener called Timestamp listener which updates these fields based on record actions.
+In the following example we define a template called TimestampTemplate. Basically the purpose of this template is to add 
+date columns 'created' and 'updated' to the record class that loads this template. Additionally this template uses a 
+listener called Timestamp listener which updates these fields based on record actions.
 
 <code type="php">
 class TimestampListener extends Doctrine_Record_Listener
@@ -36,7 +43,8 @@ class TimestampTemplate extends Doctrine_Template
 }
 </code>
 
-Lets say we have a class called Blog that needs the timestamp functionality. All we need to do is to add loadTemplate() call in the class definition.
+Lets say we have a class called Blog that needs the timestamp functionality. All we need to do is to add loadTemplate() 
+call in the class definition.
 
 <code type="php">
 class Blog extends Doctrine_Record
@@ -56,7 +64,8 @@ class Blog extends Doctrine_Record
 
 ++ Templates with relations
 
-Many times the situations tend to be much more complex than the situation in the previous chapter. You may have model classes with relations to other model classes and you may want to replace given class with some extended class.
+Many times the situations tend to be much more complex than the situation in the previous chapter. You may have model 
+classes with relations to other model classes and you may want to replace given class with some extended class.
 
 Consider we have two classes, User and Email, with the following definitions:
 
@@ -86,9 +95,13 @@ class Email extends Doctrine_Record
 }
 </code>
 
-Now if we extend the User and Email classes and create, for example, classes ExtendedUser and ExtendedEmail, the ExtendedUser will still have a relation to the Email class - not the ExtendedEmail class. We could of course override the setUp() method of the User class and define relation to the ExtendedEmail class, but then we lose the whole point of inheritance. Doctrine_Template can solve this problem elegantly with its dependency injection solution.
+Now if we extend the User and Email classes and create, for example, classes ExtendedUser and ExtendedEmail, the 
+ExtendedUser will still have a relation to the Email class - not the ExtendedEmail class. We could of course override 
+the setUp() method of the User class and define relation to the ExtendedEmail class, but then we lose the whole point 
+of inheritance. Doctrine_Template can solve this problem elegantly with its dependency injection solution.
 
-In the following example we'll define two templates, UserTemplate and EmailTemplate, with almost identical definitions as the User and Email class had.
+In the following example we'll define two templates, UserTemplate and EmailTemplate, with almost identical definitions 
+as the User and Email class had.
 
 <code type="php">
 class UserTemplate extends Doctrine_Template
@@ -116,7 +129,10 @@ class EmailTemplate extends Doctrine_Template
 }
 </code>
 
-Notice how we set the relations. We are not pointing to concrete Record classes, rather we are setting the relations to templates. This tells Doctrine that it should try to find concrete Record classes for those templates. If Doctrine can't find these concrete implementations the relation parser will throw an exception, but before we go ahead of things, here are the actual record classes:
+Notice how we set the relations. We are not pointing to concrete Record classes, rather we are setting the relations to 
+templates. This tells Doctrine that it should try to find concrete Record classes for those templates. If Doctrine can't 
+find these concrete implementations the relation parser will throw an exception, but before we go ahead of things, here 
+are the actual record classes:
 
 <code type="php">
 class User extends Doctrine_Record
@@ -135,14 +151,16 @@ class Email extends Doctrine_Record
 }
 </code>
 
-Now consider the following code snippet. This does NOT work since we haven't yet set any concrete implementations for the templates.
+Now consider the following code snippet. This does NOT work since we haven't yet set any concrete implementations for the 
+templates.
 
 <code type="php">
 $user = new User();
 $user->Email; // throws an exception
 </code>
 
-The following version works. Notice how we set the concrete implementations for the templates globally using Doctrine_Manager.
+The following version works. Notice how we set the concrete implementations for the templates globally using 
+Doctrine_Manager.
 
 <code type="php">
 $manager = Doctrine_Manager::getInstance();
@@ -157,7 +175,9 @@ The implementations for the templates can be set at manager, connection and even
 
 ++ Delegate methods
 
-Besides from acting as a full table definition delegate system, Doctrine_Template allows the delegation of method calls. This means that every method within the loaded templates is available in the record that loaded the templates. Internally the implementation uses magic method called __call() to achieve this functionality.
+Besides from acting as a full table definition delegate system, Doctrine_Template allows the delegation of method calls. 
+This means that every method within the loaded templates is available in the record that loaded the templates. Internally 
+the implementation uses magic method called __call() to achieve this functionality.
 
 Lets take an example: we have a User class that loads authentication functionality through a template.
 
@@ -195,7 +215,8 @@ $user = new User();
 $user->login($username, $password);
 </code>
 
-You can get the record that invoked the delegate method by using the getInvoker() method of Doctrine_Template. Consider the AuthTemplate example. If we want to have access to the User object we just need to do the following:
+You can get the record that invoked the delegate method by using the getInvoker() method of Doctrine_Template. 
+Consider the AuthTemplate example. If we want to have access to the User object we just need to do the following:
 
 <code type="php">
 class AuthTemplate extends Doctrine_Template
@@ -215,14 +236,16 @@ class AuthTemplate extends Doctrine_Template
 
 ++ Working with multiple templates
 
-Each class can consists of multiple templates. If the templates contain similar definitions the most recently loaded template always overrides the former.
+Each class can consists of multiple templates. If the templates contain similar definitions the most recently loaded 
+template always overrides the former.
 
 ++ Core Templates
 
-Doctrine comes bundled with some templates that offer out of the box functionality for your models. You can enable these templates in your models very easily. You can do it directly in your Doctrine_Records or you can specify them in your yaml schema if you are managing your models with a yaml schema file.
+Doctrine comes bundled with some templates that offer out of the box functionality for your models. You can enable these 
+templates in your models very easily. You can do it directly in your Doctrine_Records or you can specify them in your 
+yaml schema if you are managing your models with a yaml schema file.
 
 +++ Versionable
-PHP Example
 <code type="php">
 class User extends Doctrine_Record
 {
@@ -239,7 +262,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -258,7 +280,6 @@ User:
 
 The 2nd argument array is not required. It defaults to all the values that are present in the example below.
 
-PHP Example
 <code type="php">                                              
 class User extends Doctrine_Record
 {
@@ -284,7 +305,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -294,12 +314,10 @@ User:
         name: created_at
         type: timestamp
         format:Y-m-d H:i:s
-        options: []
       updated:
         name: updated_at
         type: timestamp
         format: Y-m-d H:i:s
-        options: []
   columns:
     username:
       type: string(125)
@@ -307,9 +325,9 @@ User:
       type: string(255)
 </code>
 
-If you are only interested in using only one of the columns, such as a created_at timestamp, but not a an updated_at field, set the flag disabled=>true for either of the fields as in the example below. 
+If you are only interested in using only one of the columns, such as a created_at timestamp, but not a an updated_at 
+field, set the flag disabled=>true for either of the fields as in the example below. 
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -319,7 +337,6 @@ User:
         name: created_at
         type: timestamp
         format:Y-m-d H:i:s
-        options: []
       updated:
         disabled: true
   columns:
@@ -330,9 +347,9 @@ User:
 </code>
 
 +++ Sluggable
-If you do not specify the columns to create the slug from, it will default to just using the __toString() method on the model.
+If you do not specify the columns to create the slug from, it will default to just using the __toString() method on the 
+model.
 
-PHP Example
 <code type="php">                                              
 class User extends Doctrine_Record
 {
@@ -349,7 +366,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -364,7 +380,6 @@ User:
 </code>
 
 +++ I18n
-PHP Example
 <code type="php">
 class User extends Doctrine_Record
 {
@@ -381,7 +396,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -396,7 +410,6 @@ User:
 </code>
 
 +++ NestedSet
-PHP Example
 <code type="php">
 class User extends Doctrine_Record
 {
@@ -413,7 +426,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -429,7 +441,6 @@ User:
 </code>
 
 +++ Searchable
-PHP Example
 <code type="php">
 class User extends Doctrine_Record
 {
@@ -446,7 +457,6 @@ class User extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 ---
 User:
@@ -462,9 +472,9 @@ User:
 
 +++ Geographical
 
-The below is only a demo. The geographical behavior can be used with any data record for determining the number of miles or kilometers between 2 records.
+The below is only a demo. The geographical behavior can be used with any data record for determining the number of miles 
+or kilometers between 2 records.
 
-PHP Example
 <code type="php">
 <?php
 class Zipcode extends Doctrine_Record
@@ -486,7 +496,6 @@ class Zipcode extends Doctrine_Record
 }
 </code>
 
-YAML Example
 <code type="yaml">
 Zipcode:
   actAs: [Geographical]
@@ -498,7 +507,8 @@ Zipcode:
     zip_class: string(255)
 </code>
 
-The geographical plugin automatically adds the latitude and longitude columns to the records used for calculating distance between 2 records.
+The geographical plugin automatically adds the latitude and longitude columns to the records used for calculating distance 
+between 2 records.
 
 Usage
 <code type="php">

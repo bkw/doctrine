@@ -2,7 +2,8 @@
 
 **Strings**
 
-A string literal is enclosed in single quotes; for example: 'literal'. A string literal that includes a single quote is represented by two single quotes; for example: 'literal''s'.
+A string literal is enclosed in single quotes; for example: 'literal'. A string literal that includes a single quote 
+is represented by two single quotes; for example: 'literal''s'.
 
 <code type="sql">
 FROM User WHERE User.name = 'Vincent'
@@ -50,16 +51,27 @@ Predefined reserved literals are case insensitive, although its a good standard 
 <code type="php">
 
 // POSITIONAL PARAMETERS:
-$users = $conn->query("FROM User WHERE User.name = ?", array('Arnold'));
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.name = ?', array('Arnold'))
+          ->execute();
 
-$users = $conn->query("FROM User WHERE User.id > ? AND User.name LIKE ?", array(50, 'A%'));
-
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.id > ? AND u.name LIKE ?", array(50, 'A%'))
+          ->execute();
 
 // NAMED PARAMETERS:
 
-$users = $conn->query("FROM User WHERE User.name = :name", array(':name' => 'Arnold'));
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.name = :name', array(':name' => 'Arnold'))
+          ->execute();
 
-$users = $conn->query("FROM User WHERE User.id > :id AND User.name LIKE :name", array(':id' => 50, ':name' => 'A%'));
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.id > :id AND u.name LIKE :name", array(':id' => 50, ':name' => 'A%'))
+          ->execute();
 </code>
 
 
@@ -92,7 +104,9 @@ Syntax:
 <operand> IN (<subquery>|<value list>)
 </code>
 
-An IN conditional expression returns true if the //operand// is found from result of the //subquery// or if its in the specificied comma separated //value list//, hence the IN expression is always false if the result of the subquery is empty.
+An IN conditional expression returns true if the //operand// is found from result of the //subquery// or if its in the 
+specificied comma separated //value list//, hence the IN expression is always false if the result of the subquery is 
+empty.
 
 When //value list// is being used there must be at least one element in that list.
 
@@ -118,7 +132,11 @@ Syntax:
 string_expression [NOT] LIKE pattern_value [ESCAPE escape_character]
 </code>
 
-The string_expression must have a string value. The pattern_value is a string literal or a string-valued input parameter in which an underscore (_) stands for any single character, a percent (%) character stands for any sequence of characters (including the empty sequence), and all other characters stand for themselves. The optional escape_character is a single-character string literal or a character-valued input parameter (i.e., char or Character) and is used to escape the special meaning of the underscore and percent characters in pattern_value.
+The string_expression must have a string value. The pattern_value is a string literal or a string-valued input 
+parameter in which an underscore (_) stands for any single character, a percent (%) character stands for any sequence 
+of characters (including the empty sequence), and all other characters stand for themselves. The optional escape_character 
+is a single-character string literal or a character-valued input parameter (i.e., char or Character) and is used to escape 
+the special meaning of the underscore and percent characters in pattern_value.
 
 Examples:
 
@@ -127,17 +145,24 @@ Examples:
 * aword.underscored LIKE '\_%' ESCAPE '\' is true for '_foo' and false for 'bar'
 * address.phone NOT LIKE '12%3' is false for '123' and '12993' and true for '1234'
 
-If the value of the string_expression or pattern_value is NULL or unknown, the value of the LIKE expression is unknown. If the escape_characteris specified and is NULL, the value of the LIKE expression is unknown.
+If the value of the string_expression or pattern_value is NULL or unknown, the value of the LIKE expression is unknown. 
+If the escape_characteris specified and is NULL, the value of the LIKE expression is unknown.
 
 <code type="php">
 
 // finding all users whose email ends with '@gmail.com'
-$users = $conn->query("FROM User u, u.Email e WHERE e.address LIKE '%@gmail.com'");
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->leftJoin('u.Email e')
+          ->where('e.address LIKE ?', '%@gmail.com')
+          ->execute();
 
 // finding all users whose name starts with letter 'A'
-$users = $conn->query("FROM User u WHERE u.name LIKE 'A%'");
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.name LIKE ?', 'A%')
+          ->execute();
 </code>
-
 
 +++ Null Comparison Expressions
 +++ Empty Collection Comparison Expressions
@@ -182,13 +207,17 @@ operand comparison_operator SOME (subquery)
 operand comparison_operator ALL (subquery)
 </code>
 
-An ALL conditional expression returns true if the comparison operation is true for all values in the result of the subquery or the result of the subquery is empty. An ALL conditional expression is false if the result of the comparison is false for at least one row, and is unknown if neither true nor false.
+An ALL conditional expression returns true if the comparison operation is true for all values in the result of the 
+subquery or the result of the subquery is empty. An ALL conditional expression is false if the result of the comparison 
+is false for at least one row, and is unknown if neither true nor false.
 
 <code type="sql">
 FROM C WHERE C.col1 < ALL (FROM C2(col1))
 </code>
 
-An ANY conditional expression returns true if the comparison operation is true for some value in the result of the subquery. An ANY conditional expression is false if the result of the subquery is empty or if the comparison operation is false for every value in the result of the subquery, and is unknown if neither true nor false. 
+An ANY conditional expression returns true if the comparison operation is true for some value in the result of the 
+subquery. An ANY conditional expression is false if the result of the subquery is empty or if the comparison operation 
+is false for every value in the result of the subquery, and is unknown if neither true nor false. 
 
 <code type="sql">
 FROM C WHERE C.col1 > ANY (FROM C2(col1))
@@ -200,7 +229,8 @@ The keyword SOME is an alias for ANY.
 FROM C WHERE C.col1 > SOME (FROM C2(col1))
 </code>
 
-The comparison operators that can be used with ALL or ANY conditional expressions are =, <, <=, >, >=, <>. The result of the subquery must be same type with the conditional expression.
+The comparison operators that can be used with ALL or ANY conditional expressions are =, <, <=, >, >=, <>. The result of 
+the subquery must be same type with the conditional expression.
 
 NOT IN is an alias for <> ALL. Thus, these two statements are equal:
 
@@ -218,24 +248,23 @@ Some advantages of the subqueries:
 
 * They allow queries that are structured so that it is possible to isolate each part of a statement.
 * They provide alternative ways to perform operations that would otherwise require complex joins and unions.
-* They are, in many people's opinion, readable. Indeed, it was the innovation of subqueries that gave people the original idea of calling the early SQL "Structured Query Language."
+* They are, in many people's opinion, readable. Indeed, it was the innovation of subqueries that gave people the original 
+idea of calling the early SQL "Structured Query Language."
 
 <code type="php">
 // finding all users which don't belong to any group 1
-$query = "FROM User WHERE User.id NOT IN 
-                        (SELECT u.id FROM User u 
-                         INNER JOIN u.Group g WHERE g.id = ?)";
-                         
-$users = $conn->query($query, array(1));
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)')
+          ->execute();
 
 // finding all users which don't belong to any groups
 // Notice: 
 // the usage of INNER JOIN
 // the usage of empty brackets preceding the Group component
 
-$query = "FROM User WHERE User.id NOT IN 
-                        (SELECT u.id FROM User u 
-                         INNER JOIN u.Group g)";
-
-$users = $conn->query($query);
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g)')
+          ->execute();
 </code>

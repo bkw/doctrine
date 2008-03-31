@@ -12,7 +12,16 @@ class MyInnoDbRecord extends Doctrine_Record
         $this->option('type', 'INNODB');
     }
 }
-</code> 
+</code>
+
+<code type="yaml">
+---
+MyInnoDbRecord:
+  columns:
+    name: string
+  options:
+    type: INNODB
+</code>
 
 In the following example we set the collate and character set options:
 
@@ -29,6 +38,16 @@ class MyCustomOptionRecord extends Doctrine_Record
 }
 </code>
 
+<code type="yaml">
+---
+MyCustomOptionRecord:
+  columns:
+    name: string
+  options:
+    collate: utf8_unicode_ci
+    charset: utf8
+</code>
+
 Doctrine offers the ability to turn off foreign key constraints for specific Models.
 
 <code type="php">
@@ -41,4 +60,13 @@ class MyCustomOptionRecord extends Doctrine_Record
         $this->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL ^ Doctrine::EXPORT_CONSTRAINTS);
     }
 }
+</code>
+
+<code type="yaml">
+---
+MyCustomOptionRecord:
+  columns:
+    name: string
+  attributes:
+    export: all ^ constraints
 </code>

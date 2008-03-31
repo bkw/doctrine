@@ -1,4 +1,6 @@
-The parser is built to allow dumping and loading from many different formats. Currently xml, yml, json and php serialization are the only formats supported. You can specify the data to load/dump in with the $type argument on dump() and load()
+The parser is built to allow dumping and loading from many different formats. Currently xml, yml, json and php 
+serialization are the only formats supported. You can specify the data to load/dump in with the $type argument on 
+dump() and load()
 
 ++ Dumping
 
@@ -7,7 +9,8 @@ Dumping array to yml variable
 <code type="php">
 $array = array('test' => array('key' => 'value'), 'test2' => 'test');
 
-// Dump the array to yml and return, set to $yml(does not write to file). Replace null with a path to a yml file if you wish to write to disk
+// Dump the array to yml and return, set to $yml(does not write to file). Replace null with a path to a yml file if 
+you wish to write to disk
 $yml = Doctrine_Parser::dump($array, 'yml');
 </code>
 

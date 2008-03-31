@@ -441,12 +441,17 @@ This is the PHP line of code that is auto-generated inside setTableDefinition() 
 model class.
 
 <code type="php">
-$this->index('name_index', array('fields' => array('first_name' => array( 'sorting' => 'ASC', 'length' => '10', 'primary' => true ), 'last_name' => array( ) ), 'type' => 'unique'));
+$this->index('name_index', array('fields' => array('first_name' => array('sorting'  => 'ASC',
+                                                                         'length'   => '10',
+                                                                         'primary'  => true ),
+                                                   'last_name' => array()),
+                                 'type' => 'unique'));
 </code>
 
 +++ Inheritance
 
-Simple inheritance. Read about more about [doc relations:inheritance:simple-inheritance :index :name]. Any columns or relations added to the children classes will be moved to the parent.
+Simple inheritance. Read about more about [doc relations:inheritance:simple-inheritance :index :name]. Any columns or 
+relations added to the children classes will be moved to the parent.
 
 <code type="yaml">
 ---
@@ -501,7 +506,9 @@ Comment:
     content: string(300)
 </code>
 
-Column aggregation inheritance. Read about more about [doc relations:inheritance:column-aggregation-inheritance :index :name]. Like simple inheritance, any columns or relationships added to the children will be automatically removed and moved to the parent.
+Column aggregation inheritance. Read about more about [doc relations:inheritance:column-aggregation-inheritance :index :name]. 
+Like simple inheritance, any columns or relationships added to the children will be automatically removed and moved to 
+the parent.
 
 <code type="yaml">
 ---

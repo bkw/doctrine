@@ -1,11 +1,13 @@
-There are some cases where simple paginations are not enough. One example situation is when you want to write page links listings.
+There are some cases where simple paginations are not enough. One example situation is when you want to write page links 
+listings.
 To enable a more powerful control over pager, there is a small subset of pager package that allows you to create ranges.
 
 Currently, Doctrine implements two types (or styles) of ranges: Sliding ({{Doctrine_Pager_Range_Sliding}}) and Jumping ({{Doctrine_Pager_Range_Jumping}}).
 
 ++++ Sliding
 
-Sliding page range style, the page range moves smoothly with the current page. The current page is always in the middle, except in the first and last pages of the range.
+Sliding page range style, the page range moves smoothly with the current page. The current page is always in the middle, 
+except in the first and last pages of the range.
 Check out how does it work with a chunk length of 5 items:
 
 <code>
@@ -48,7 +50,8 @@ $pager_range = new Doctrine_Pager_Range_Sliding(
 );
 </code>
 
-What is the advantage to use this object, instead of the {{Doctrine_Pager}}? Just one; it allows you to retrieve ranges around the current page.
+What is the advantage to use this object, instead of the {{Doctrine_Pager}}? Just one; it allows you to retrieve ranges 
+around the current page.
 Look at the example:
 
 <code type="php">
@@ -60,7 +63,8 @@ $pages = $pager_range->rangeAroundPage();
 echo '['. implode('][', $pages) .']';
 </code>
 
-If you build your {{Doctrine_Pager}} inside the range object, the API gives you enough power to retrieve information related to {{Doctrine_Pager_Range}} subclass instance:
+If you build your {{Doctrine_Pager}} inside the range object, the API gives you enough power to retrieve information 
+related to {{Doctrine_Pager_Range}} subclass instance:
 
 <code type="php">
 // Return the Pager associated to this Pager_Range

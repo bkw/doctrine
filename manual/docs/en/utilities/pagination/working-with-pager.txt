@@ -1,4 +1,5 @@
-Paginating queries is as simple as effectively do the queries itself. {{Doctrine_Pager}} is the responsible to process queries and paginate them. Check out this small piece of code:
+Paginating queries is as simple as effectively do the queries itself. {{Doctrine_Pager}} is the responsible to process 
+queries and paginate them. Check out this small piece of code:
 
 <code type="php">
 // Defining initial variables
@@ -16,16 +17,22 @@ $pager = new Doctrine_Pager(
 );
 </code>
 
-Until this place, the source you have is the same as the old {{Doctrine_Query}} object. The only difference is that now you have 2 new arguments. Your old query object plus these 2 arguments are now encapsulated by the {{Doctrine_Pager}} object.
-At this stage, {{Doctrine_Pager}} defines the basic data needed to control pagination. If you want to know that actual status of the pager, all you have to do is to check if it's already executed:
+Until this place, the source you have is the same as the old {{Doctrine_Query}} object. The only difference is that now 
+you have 2 new arguments. Your old query object plus these 2 arguments are now encapsulated by the {{Doctrine_Pager}} 
+object.
+At this stage, {{Doctrine_Pager}} defines the basic data needed to control pagination. If you want to know that actual 
+status of the pager, all you have to do is to check if it's already executed:
 
 <code type="php">
 $pager->getExecuted();
 </code>
 
-If you try to access any of the methods provided by Doctrine_Pager now, you'll experience {{Doctrine_Pager_Exception}} thrown, reporting you that Pager was not yet executed. When executed, {{Doctrine_Pager}} offer you powerful methods to retrieve information. The API usage is listed at the end of this topic.
+If you try to access any of the methods provided by Doctrine_Pager now, you'll experience {{Doctrine_Pager_Exception}} 
+thrown, reporting you that Pager was not yet executed. When executed, {{Doctrine_Pager}} offer you powerful methods to 
+retrieve information. The API usage is listed at the end of this topic.
 
-To run the query, the process is similar to the current existent {{Doctrine_Query}} execute call. It even allow arguments the way you usually do it. Here is the PHP complete syntax, including the syntax of optional parameters:
+To run the query, the process is similar to the current existent {{Doctrine_Query}} execute call. It even allow arguments 
+the way you usually do it. Here is the PHP complete syntax, including the syntax of optional parameters:
 
 <code type="php">
 $items = $pager->execute([$args = array() [, $fetchType = Doctrine::FETCH_RECORD]]);
@@ -35,7 +42,9 @@ foreach ($items as $item) {
 }
 </code>
 
-There are some special cases where the return records query differ of the counter query. To allow this situation, {{Doctrine_Pager}} has some methods that enable you to count and then to execute. The first thing you have to do is to define the count query:
+There are some special cases where the return records query differ of the counter query. To allow this situation, 
+{{Doctrine_Pager}} has some methods that enable you to count and then to execute. The first thing you have to do is 
+to define the count query:
 
 <code type="php">
 $pager->setCountQuery($query [, $params = null]);
@@ -45,16 +54,22 @@ $pager->setCountQuery($query [, $params = null]);
 $rs = $pager->execute();
 </code>
 
-The first param of {{setCountQuery}} can be either a valid {{Doctrine_Query}} object or a DQL string. The second argument you can define the optional parameters that may be sent in the counter query. If you do not define the params now, you're still able to define it later by calling the {{setCountQueryParams}}:
+The first param of {{setCountQuery}} can be either a valid {{Doctrine_Query}} object or a DQL string. The second argument 
+you can define the optional parameters that may be sent in the counter query. If you do not define the params now, you're 
+still able to define it later by calling the {{setCountQueryParams}}:
 
 <code type="php">
 $pager->setCountQueryParams([$params = array() [, $append = false]]);
 </code>
 
-This method accepts 2 parameters. The first one is the params to be sent in count query and the second parameter is if the {{$params}} should be appended to the list or if it should override the list of count query parameters. The default behavior is to override the list.
-One last thing to mention about count query is, if you do not define any parameter for count query, it will still send the parameters you define in {{$pager->execute()}} call.
+This method accepts 2 parameters. The first one is the params to be sent in count query and the second parameter is if the 
+{{$params}} should be appended to the list or if it should override the list of count query parameters. The default 
+behavior is to override the list.
+One last thing to mention about count query is, if you do not define any parameter for count query, it will still send 
+the parameters you define in {{$pager->execute()}} call.
 
-Count query is always enabled to be accessed. If you do not define it and call {{$pager->getCountQuery()}}, it will return the "fetcher" query to you.
+Count query is always enabled to be accessed. If you do not define it and call {{$pager->getCountQuery()}}, it will 
+return the "fetcher" query to you.
 
 If you need access the other functionalities that {{Doctrine_Pager}} provides, you can access them through the API:
 

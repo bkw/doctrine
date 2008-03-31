@@ -1,8 +1,11 @@
-{{Doctrine_Pager_Layout}} does a really good job, but sometimes it is not enough. Let's suppose a situation where you have to create a layout of pagination like this one:
+{{Doctrine_Pager_Layout}} does a really good job, but sometimes it is not enough. Let's suppose a situation where you 
+have to create a layout of pagination like this one:
 
 <<  <  1 2 3 4 5  >  >>
 
-Currently, it is impossible with raw {{Doctrine_Pager_Layout}}. But if you extend it and use the available methods, you can achieve it. The base Layout class provides you some methods that can be used to create your own implementation. They are:
+Currently, it is impossible with raw {{Doctrine_Pager_Layout}}. But if you extend it and use the available methods, you 
+can achieve it. The base Layout class provides you some methods that can be used to create your own implementation. They 
+are:
 
 <code type="php">
 // $this refers to an instance of Doctrine_Pager_Layout
@@ -39,7 +42,8 @@ $this->_parseUrl($options = array());
 $this->_parseMaskReplacements($str);
 </code>
 
-Now that you have a small tip of useful methods to be used when extending {{Doctrine_Pager_Layout}}, it's time to see our implemented class:
+Now that you have a small tip of useful methods to be used when extending {{Doctrine_Pager_Layout}}, it's time to see our 
+implemented class:
 
 <code type="php">
 class PagerLayoutWithArrows extends Doctrine_Pager_Layout
@@ -84,9 +88,15 @@ class PagerLayoutWithArrows extends Doctrine_Pager_Layout
 </code>
 
 
-As you may see, I have to manual process the items <<, <, > and >>. I override the **{%page}** mask by setting a raw value to it (raw value is achieved by setting the third parameter as true). Then I define the only MUST HAVE information to process the page and call it. The return is the template processed as a string. I do it to any of my custom buttons.
+As you may see, I have to manual process the items <<, <, > and >>. I override the **{%page}** mask by setting a raw 
+value to it (raw value is achieved by setting the third parameter as true). Then I define the only MUST HAVE information 
+to process the page and call it. The return is the template processed as a string. I do it to any of my custom buttons.
 
-Now supposing a totally different situation. Doctrine is framework agnostic, but many of our users use it together with Symfony. {{Doctrine_Pager}} and subclasses are 100% compatible with Symfony, but {{Doctrine_Pager_Layout}} needs some tweaks to get it working with Symfony's {{link_to}} helper function. To allow this usage with {{Doctrine_Pager_Layout}}, you have to extend it and add your custom processor over it. For example purpose (it works in Symfony), I used **{link_to}...{/link_to}** as a template processor to do this job. Here is the extended class and usage in Symfony:
+Now supposing a totally different situation. Doctrine is framework agnostic, but many of our users use it together with 
+Symfony. {{Doctrine_Pager}} and subclasses are 100% compatible with Symfony, but {{Doctrine_Pager_Layout}} needs some 
+tweaks to get it working with Symfony's {{link_to}} helper function. To allow this usage with {{Doctrine_Pager_Layout}}, 
+you have to extend it and add your custom processor over it. For example purpose (it works in Symfony), I used 
+**{link_to}...{/link_to}** as a template processor to do this job. Here is the extended class and usage in Symfony:
 
 <code type="php">
 // CLASS:

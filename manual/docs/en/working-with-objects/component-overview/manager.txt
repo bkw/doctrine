@@ -1,11 +1,13 @@
 ++++ Introduction
 
-{{Doctrine_Manager}} is the heart of every Doctrine based application. {{Doctrine_Manager}} handles all connections (database connections).
+{{Doctrine_Manager}} is the heart of every Doctrine based application. {{Doctrine_Manager}} handles all connections 
+(database connections).
 
 
 ++++ Opening a new connection
 
-In order to get your first application started you first need to get an instance of Doctrine_Manager which handles all the connections (database connections). The second thing to do is to open a new connection. 
+In order to get your first application started you first need to get an instance of Doctrine_Manager which handles all 
+the connections (database connections). The second thing to do is to open a new connection. 
 
 <code type="php">
 // Doctrine_Manager controls all the connections 
@@ -29,7 +31,9 @@ $conn = $manager->openConnection();
 
 ++++ Managing connections
 
-Switching between connections in Doctrine is very easy, you just call {{Doctrine_Manager::setCurrentConnection()}} method. You can access the connection by calling {{Doctrine_Manager::getConnection()}} or {{Doctrine_Manager::getCurrentConnection()}} if you only want to get the current connection.
+Switching between connections in Doctrine is very easy, you just call {{Doctrine_Manager::setCurrentConnection()}} 
+method. You can access the connection by calling {{Doctrine_Manager::getConnection()}} or 
+{{Doctrine_Manager::getCurrentConnection()}} if you only want to get the current connection.
 
 <code type="php">
 // Doctrine_Manager controls all the connections 
@@ -56,4 +60,3 @@ foreach($manager as $conn) {
     
 }
 </code>
-

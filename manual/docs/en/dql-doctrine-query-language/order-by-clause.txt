@@ -19,7 +19,8 @@ FROM User u, u.Email e
   ORDER BY e.address, u.id
 </code>
 
-In order to sort in reverse order you can add the DESC (descending) keyword to the name of the column in the ORDER BY clause that you are sorting by. The default is ascending order; this can be specified explicitly using the ASC keyword. 
+In order to sort in reverse order you can add the DESC (descending) keyword to the name of the column in the ORDER BY 
+clause that you are sorting by. The default is ascending order; this can be specified explicitly using the ASC keyword. 
 
 <code type="sql">
 FROM User u LEFT JOIN u.Email e
@@ -32,7 +33,7 @@ FROM User u LEFT JOIN u.Email e
 In the following example we fetch all users and sort those users by the number of phonenumbers they have.
 
 <code type="php">
-$q = new Doctrine_Query();
+$q = Doctrine_Query::create();
 
 $users = $q->select('u.*, COUNT(p.id) count')
            ->from('User u')
@@ -45,7 +46,7 @@ $users = $q->select('u.*, COUNT(p.id) count')
 In the following example we use random in the ORDER BY clause in order to fetch random post.
 
 <code type="php">
-$q = new Doctrine_Query();
+$q = Doctrine_Query::create();
 
 $posts = $q->select('p.*, RANDOM() rand')
            ->from('Post p')

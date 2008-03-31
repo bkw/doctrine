@@ -1,6 +1,8 @@
 In order to connect to a database through Doctrine, you have to create a valid DSN - data source name. 
 
-Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style data source names. The following section deals with PEAR like data source names. If you need more info about the PDO-style data source names see [[php PDO->__construct()]].
+Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style data source names. The following 
+section deals with PEAR like data source names. If you need more info about the PDO-style data source names see 
+[[php PDO->__construct()]].
 
 The DSN consists in the following parts:
 
@@ -13,16 +15,19 @@ The DSN consists in the following parts:
 ||  username   ||  User name for login ||
 ||  password   ||  Password for login ||
 ||  proto_opts ||  Maybe used with protocol ||
-||  option     ||  Additional connection options in URI query string format. Options are separated by ampersand (&). The Following table shows a non complete list of options: ||
+||  option     ||  Additional connection options in URI query string format. Options are separated by ampersand 
+(&). The Following table shows a non complete list of options: ||
 
 
 **List of options**
 
 ||~ Name     ||~ Description ||
 ||  charset  ||  Some backends support setting the client charset.||
-||  new_link ||  Some RDBMS do not create new connections when connecting to the same host multiple times. This option will attempt to force a new connection. ||
+||  new_link ||  Some RDBMS do not create new connections when connecting to the same host multiple times. This option 
+will attempt to force a new connection. ||
 
-The DSN can either be provided as an associative array or as a string. The string format of the supplied DSN is in its fullest form:
+The DSN can either be provided as an associative array or as a string. The string format of the supplied DSN is in its 
+fullest form:
 
 <code>phptype(dbsyntax)://username:password@protocol+hostspec/database?option=value</code>
 
@@ -60,7 +65,8 @@ A second DSN format supported is
 phptype(syntax)://user:pass@protocol(proto_opts)/database
 </code>
 
-If your database, option values, username or password contain characters used to delineate DSN parts, you can escape them via URI hex encodings:  
+If your database, option values, username or password contain characters used to delineate DSN parts, you can escape 
+them via URI hex encodings:  
 
 ||~ Character ||~ Hex Code ||
 || :          ||  %3a      ||
@@ -108,4 +114,3 @@ sqlite:///c:/full/windows/path/to/file.db?mode=0666
 <code>
 mysqli://user:pass@localhost/pear?key=client-key.pem&cert=client-cert.pem
 </code>
-

@@ -1,8 +1,10 @@
 ++ Record
-{{Doctrine_Record}} is one of the most essential components of Doctrine ORM. The class is a wrapper for database row but along with that it speficies what relations it has
+{{Doctrine_Record}} is one of the most essential components of Doctrine ORM. The class is a wrapper for database row but 
+along with that it speficies what relations it has
 on other components and what columns it has. It may access the related components, hence its refered as an ActiveRecord.
 
-The classes that inherit {{Doctrine_Record}} are called components. There should be atleast one component for each database table.
+The classes that inherit {{Doctrine_Record}} are called components. There should be atleast one component for each 
+database table.
 
 You can instantiate and use your models like the following below.
 
@@ -16,12 +18,16 @@ $user['name'] = 'John Locke';
 $user->save();
 </code>
 
-Every record has an object identifier, which is an internal unique identifier. You can get the object identifier with the oid() method. Basically two objects are considered the same if they share the same object identifier.
+Every record has an object identifier, which is an internal unique identifier. You can get the object identifier with 
+the oid() method. Basically two objects are considered the same if they share the same object identifier.
 
 
 +++ Properties
 
-Each assigned column property of {{Doctrine_Record}} represents a database table column. As you've learned in the previous chapters the column definitions can be achieved with the hasColumn() method. Now accessing the columns is easy. You can use any of the means described above. The recommended way is using the ArrayAccess as it makes it easy to switch between record and array fetching when needed.
+Each assigned column property of {{Doctrine_Record}} represents a database table column. As you've learned in the 
+previous chapters the column definitions can be achieved with the hasColumn() method. Now accessing the columns is 
+easy. You can use any of the means described above. The recommended way is using the ArrayAccess as it makes it easy 
+to switch between record and array fetching when needed.
 
 <code type="php">
 $table = Doctrine::getTable('User');
@@ -41,7 +47,8 @@ $name = $user->get("name");
 $name = $user['name'];
 </code>
 
-Iterating trhough the properties of a record can be done in similar way as iterating through an array - by using the foreach construct. This is possible since {{Doctrine_Record}} implements a magic IteratorAggregate interface.
+Iterating trhough the properties of a record can be done in similar way as iterating through an array - by using the 
+foreach construct. This is possible since {{Doctrine_Record}} implements a magic IteratorAggregate interface.
 
 <code type="php">
 foreach ($user as $field => $value) {
@@ -49,7 +56,8 @@ foreach ($user as $field => $value) {
 }
 </code>
 
-As with arrays you can use the isset() for checking if given property exists and unset() for setting given property to null.
+As with arrays you can use the isset() for checking if given property exists and unset() for setting given property to 
+null.
 
 <code type="php">
 // checking if property called 'name' exists
@@ -61,7 +69,8 @@ if (isset($user['name'])) {
 unset($user['name']);
 </code>
 
-When you have set values for record properties you can get the names of modified properties with modifiedFields() method. This method returns an array of modified field names.
+When you have set values for record properties you can get the names of modified properties with modifiedFields() method. 
+This method returns an array of modified field names.
 
 <code type="php">
 $user['name'] = 'Jack Daniels';
@@ -73,7 +82,9 @@ print_r($user->modifiedFields()); // array('name', 'age');
 $user->isModified(); // true
 </code>
 
-Sometimes you may want to retrieve the column count of given record. In order to do this you can simply pass the record as an argument for the count() function. This is possible since {{Doctrine_Record}} implements a magic Countable interface. The other way would be calling the count() method.
+Sometimes you may want to retrieve the column count of given record. In order to do this you can simply pass the record 
+as an argument for the count() function. This is possible since {{Doctrine_Record}} implements a magic Countable 
+interface. The other way would be calling the count() method.
 
 <code type="php">
 // get the number of columns
@@ -84,7 +95,8 @@ $colCount = count($record);
 </code>
 
 
-{{Doctrine_Record}} offers a special method for accessing the identifier of given record. This method is called identifier() and it returns an array with identifier field names as keys and values as the associated property values.
+{{Doctrine_Record}} offers a special method for accessing the identifier of given record. This method is called 
+identifier() and it returns an array with identifier field names as keys and values as the associated property values.
 <code type="php">
 $user['name'] = 'Jack Daniels';
 
@@ -93,9 +105,12 @@ $user->save();
 $user->identifier(); // array('id' => 1)
 </code>
 
-A common case is that you have an array of values which you need to assign to a given record. It may feel awkward and clumsy to set these values separately. No need to worry though, {{Doctrine_Record}} offers a way for merging given array to property values.
+A common case is that you have an array of values which you need to assign to a given record. It may feel awkward and 
+clumsy to set these values separately. No need to worry though, {{Doctrine_Record}} offers a way for merging given 
+array to property values.
 
-The merge() method iterates through the properties of given record and assigns the values of given array to the associated properties.
+The merge() method iterates through the properties of given record and assigns the values of given array to the 
+associated properties.
 
 <code type="php">
 $values = array('name' => 'someone',
@@ -115,10 +130,11 @@ print $user->unknownproperty; // throws exception
 
 +++ Retrieving existing records
 
-Doctrine provides many ways for record retrieval. The fastest ways for retrieving existing records are the finder methods provided by {{Doctrine_Table}}. If you need to use more complex queries take a look at the DQL API.
+Doctrine provides many ways for record retrieval. The fastest ways for retrieving existing records are the finder 
+methods provided by {{Doctrine_Table}}. If you need to use more complex queries take a look at the DQL API.
 
 <code type="php">
-$table = $conn->getTable("User");
+$table = Doctrine::getTable("User");
 
 // find by primary key
 
@@ -136,20 +152,23 @@ foreach($table->findByDql("name LIKE '%John%'") as $user) {
     print $user->created;
 }
 
+// finding with magic accessors
+$user = $table->findOneByName('jon'); // find user named jon
+$users = $table->findByAge(10); // find users with age of 10
+
 // finding objects with DQL
 
-$users = $conn->query("FROM User u WHERE u.name LIKE '%John%'");
+$users = Doctrine_Query::execute()->from('User u')->where("u.name LIKE '%John%'");
 </code>
-
-
-
 
 +++ Updating records
 
-Updating objects is very easy, you just call the {{Doctrine_Record::save()}} method. The other way is to call {{Doctrine_Connection::flush()}} which saves all objects. It should be noted though that flushing is a much heavier operation than just calling save method.
+Updating objects is very easy, you just call the {{Doctrine_Record::save()}} method. The other way is to call 
+{{Doctrine_Connection::flush()}} which saves all objects. It should be noted though that flushing is a much 
+heavier operation than just calling save method.
 
 <code type="php">
-$table = $conn->getTable('User');
+$table = Doctrine::getTable('User');
 
 $user = $table->find(2);
 
@@ -160,14 +179,16 @@ if($user !== false) {
 }
 </code>
 
-Sometimes you may want to do a direct update. In direct update the objects aren't loaded from database, rather the state of the database is directly updated. In the following example we use DQL UPDATE statement to update all users.
+Sometimes you may want to do a direct update. In direct update the objects aren't loaded from database, rather the 
+state of the database is directly updated. In the following example we use DQL UPDATE statement to update all users.
 
 
 <code type="php">
 // make all usernames lowercased
-Doctrine_Query::create()->update('User u')
-                        ->set('u.name', 'LOWER(u.name)')
-                        ->execute();
+Doctrine_Query::create()
+  ->update('User u')
+  ->set('u.name', 'LOWER(u.name)')
+  ->execute();
 </code>
 
 +++ Refreshing records
@@ -175,7 +196,7 @@ Doctrine_Query::create()->update('User u')
 Sometimes you may want to refresh your record with data from the database, use {{Doctrine_Record::refresh()}}.
 
 <code type="php">
-$user = $conn->getTable('User')->find(2);
+$user = Doctrine::getTable('User')->find(2);
 $user->name = 'New name';
 // oups, I want to refresh the name
 $user->refresh();
@@ -211,10 +232,11 @@ $group->refresh(true);
 
 +++ Deleting records
 
-Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, {{Doctrine_Collection::delete()}} and {{Doctrine_Connection::delete()}} methods.
+Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, {{Doctrine_Collection::delete()}} and 
+{{Doctrine_Connection::delete()}} methods.
 
 <code type="php">
-$table = $conn->getTable("User");
+$table = Doctrine::getTable("User");
 
 $user = $table->find(2);
 
@@ -232,9 +254,11 @@ $users->delete();
 
 +++ Using expression values
 
-There might be situations where you need to use SQL expressions as values of columns. This can be achieved by using Doctrine_Expression which converts portable DQL expressions to your native SQL expressions.
+There might be situations where you need to use SQL expressions as values of columns. This can be achieved by using 
+Doctrine_Expression which converts portable DQL expressions to your native SQL expressions.
 
-Lets say we have a class called event with columns timepoint(datetime) and name(string). Saving the record with the current timepoint can be achieved as follows:
+Lets say we have a class called event with columns timepoint(datetime) and name(string). Saving the record with the 
+current timepoint can be achieved as follows:
 <code type="php">
 $event = new Event();
 $event->name = 'Rock festival';
@@ -250,11 +274,15 @@ INSERT INTO event (name, timepoint) VALUES ('Rock festival', 'NOW()')
 
 +++ Getting record state
 
-{{Every Doctrine_Record}} has a state. First of all records can be transient or persistent. Every record that is retrieved from database is persistent and every newly created record is considered transient. If a {{Doctrine_Record}} is retrieved from database but the only loaded property is its primary key, then this record has a state called proxy.
+{{Every Doctrine_Record}} has a state. First of all records can be transient or persistent. Every record that is 
+retrieved from database is persistent and every newly created record is considered transient. If a {{Doctrine_Record}} 
+is retrieved from database but the only loaded property is its primary key, then this record has a state called proxy.
 
-Every transient and persistent {{Doctrine_Record}} is either clean or dirty. {{Doctrine_Record}} is clean when none of its properties are changed and dirty when atleast one of its properties has changed. 
+Every transient and persistent {{Doctrine_Record}} is either clean or dirty. {{Doctrine_Record}} is clean when none of 
+its properties are changed and dirty when atleast one of its properties has changed. 
 
-A record can also have a state called locked. In order to avoid infinite recursion in some rare circular reference cases Doctrine uses this state internally to indicate that a record is currently under a manipulation operation.
+A record can also have a state called locked. In order to avoid infinite recursion in some rare circular reference cases 
+Doctrine uses this state internally to indicate that a record is currently under a manipulation operation.
 
 <code type="php">
 $state = $record->state();
@@ -294,13 +322,15 @@ endswitch;
 
 +++ Getting object copy
 
-Sometimes you may want to get a copy of your object (a new object with all properties copied). Doctrine provides a simple method for this: {{Doctrine_Record::copy()}}.
+Sometimes you may want to get a copy of your object (a new object with all properties copied). Doctrine provides a simple 
+method for this: {{Doctrine_Record::copy()}}.
 
 <code type="php">
 $copy = $user->copy();
 </code>
 
-Notice that copying the record with copy() returns a new record (state TDIRTY) with the values of the old record, and it copies the relations of that record. If you do not want to copy the relations too, you need to use copy(false).
+Notice that copying the record with copy() returns a new record (state TDIRTY) with the values of the old record, and it 
+copies the relations of that record. If you do not want to copy the relations too, you need to use copy(false).
 
 <code type="php">
 // get a copy of user without the relations
@@ -309,7 +339,9 @@ $copy = $user->copy(false);
 
 +++ Saving a blank record
 
-By default Doctrine doesn't execute when save() is being called on an unmodified record. There might be situations where you want to force-insert the record even if it has not been modified. This can be achieved by assigning the state of the record to Doctrine_Record::STATE_TDIRTY.
+By default Doctrine doesn't execute when save() is being called on an unmodified record. There might be situations where 
+you want to force-insert the record even if it has not been modified. This can be achieved by assigning the state of the 
+record to Doctrine_Record::STATE_TDIRTY.
 
 <code type="php">
 $user = new User();
@@ -321,7 +353,9 @@ $user->id; // 1
 
 +++ Mapping custom values
 
-There might be situations where you want to map custom values to records. For example values that depend on some outer sources and you only want these values to be availible at runtime not persisting those values into database. This can be achieved as follows:
+There might be situations where you want to map custom values to records. For example values that depend on some outer 
+sources and you only want these values to be availible at runtime not persisting those values into database. This can be 
+achieved as follows:
 
 <code type="php">
 $user->mapValue('isRegistered', true);
@@ -332,7 +366,9 @@ $user->isRegistered; // true
 
 +++ Serializing
 
-Sometimes you may want to serialize your record objects (possibly for caching purposes). Records can be serialized, but remember: Doctrine cleans all relations, before doing this. So remember to persist your objects into database before serializing them.
+Sometimes you may want to serialize your record objects (possibly for caching purposes). Records can be serialized, but 
+remember: Doctrine cleans all relations, before doing this. So remember to persist your objects into database before 
+serializing them.
 
 <code type="php">
 $string = serialize($user);
@@ -343,7 +379,8 @@ $user = unserialize($string);
 
 +++ Checking existence
 
-Very commonly you'll need to know if given record exists in the database. You can use the exists() method for checking if given record has a database row equivalent.
+Very commonly you'll need to know if given record exists in the database. You can use the exists() method for checking if 
+given record has a database row equivalent.
 
 <code type="php">
 $record = new User();
@@ -358,7 +395,8 @@ $record->exists(); // true
 
 +++ Function callbacks for columns
 
-{{Doctrine_Record}} offers a way for attaching callback calls for column values. For example if you want to trim certain column, you can simply type:
+{{Doctrine_Record}} offers a way for attaching callback calls for column values. For example if you want to trim certain 
+column, you can simply type:
 
 <code type="php">
 $record->call('trim', 'column1');
@@ -366,9 +404,11 @@ $record->call('trim', 'column1');
 
 ++ Collection
 
-{{Doctrine_Collection}} is a collection of records (see {{Doctrine_Record}}). As with records the collections can be deleted and saved using {{Doctrine_Collection::delete()}} and {{Doctrine_Collection::save()}} accordingly.
+{{Doctrine_Collection}} is a collection of records (see {{Doctrine_Record}}). As with records the collections can be 
+deleted and saved using {{Doctrine_Collection::delete()}} and {{Doctrine_Collection::save()}} accordingly.
 
-When fetching data from database with either DQL API (see {{Doctrine_Query}}) or rawSql API (see {{Doctrine_RawSql}}) the methods return an instance of {{Doctrine_Collection}} by default.
+When fetching data from database with either DQL API (see {{Doctrine_Query}}) or rawSql API (see {{Doctrine_RawSql}}) 
+the methods return an instance of {{Doctrine_Collection}} by default.
 
 The following example shows how to initialize a new collection:
 
@@ -377,7 +417,7 @@ $conn = Doctrine_Manager::getInstance()
         ->openConnection(new PDO("dsn", "username", "pw"));
 
 // initalizing a new collection
-$users = new Doctrine_Collection($conn->getTable('User'));
+$users = new Doctrine_Collection(Doctrine::getTable('User'));
 
 // alternative (propably easier)
 $users = new Doctrine_Collection('User');
@@ -394,10 +434,11 @@ $users->save();
 
 +++ Accessing elements
 
-You can access the elements of {{Doctrine_Collection}} with {{set()}} and {{get()}} methods or with {{ArrayAccess}} interface.
+You can access the elements of {{Doctrine_Collection}} with {{set()}} and {{get()}} methods or with {{ArrayAccess}} 
+interface.
 
 <code type="php">
-$table = $conn->getTable("User");
+$table = Doctrine::getTable("User");
 
 $users = $table->findAll();
 
@@ -441,7 +482,8 @@ $users = $table->findAll();
 print $users->count();
 </code>
 
-Since {{Doctrine_Collection}} implements Countable interface a valid alternative for the previous example is to simply pass the collection as an argument for the count() function.
+Since {{Doctrine_Collection}} implements Countable interface a valid alternative for the previous example is to simply 
+pass the collection as an argument for the count() function.
 
 <code>
 print count($users); // Doctrine_Collection implements Countable interface
@@ -450,7 +492,8 @@ print count($users); // Doctrine_Collection implements Countable interface
 
 +++ Saving the collection
 
-Similar to {{Doctrine_Record}} the collection can be saved by calling the {{save()}} method. When save() gets called Doctrine issues save() operations an all records and wraps the whole procedure in a transaction.
+Similar to {{Doctrine_Record}} the collection can be saved by calling the {{save()}} method. When save() gets called 
+Doctrine issues save() operations an all records and wraps the whole procedure in a transaction.
 
 <code type="php">
 $users = $table->findAll();
@@ -465,7 +508,9 @@ $users->save();
 
 +++ Deleting collection
 
-Doctrine Collections can be deleted in very same way is Doctrine Records you just call {{delete()}} method. As for all collections Doctrine knows how to perform single-shot-delete meaning it only performs one database query for the each collection. 
+Doctrine Collections can be deleted in very same way is Doctrine Records you just call {{delete()}} method. As for all 
+collections Doctrine knows how to perform single-shot-delete meaning it only performs one database query for the each 
+collection. 
 
 For example if we have collection of users. When deleting the collection
 of users doctrine only performs one query for this whole transaction. The query would look something like:
@@ -476,7 +521,8 @@ DELETE FROM user WHERE id IN (1,2,3, ... ,N)
 
 +++ Key mapping
 
-Sometimes you may not want to use normal indexing for collection elements. For example in some cases mapping primary keys as collection keys might be useful. The following example demonstrates how this can be achieved.
+Sometimes you may not want to use normal indexing for collection elements. For example in some cases mapping primary keys 
+as collection keys might be useful. The following example demonstrates how this can be achieved.
 
 <code type="php">
 // mapping id column
@@ -488,7 +534,7 @@ $user->setAttribute(Doctrine::ATTR_COLL_KEY, 'id');
 // now user collections will use the values of
 // id column as element indexes
 
-$users = $user->getTable()->findAll();
+$users = Doctrine::getTable('User')->findAll();
 
 foreach($users as $id => $user) {
     print $id . $user->name;
@@ -503,7 +549,7 @@ $user->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
 // now user collections will use the values of
 // name column as element indexes
 
-$users = $user->getTable()->findAll();
+$users = Doctrine::getTable('User')->findAll();
 
 foreach($users as $name => $user) {
     print $name . $user->type;
@@ -513,14 +559,19 @@ foreach($users as $name => $user) {
 
 +++ Loading related records
 
-Doctrine provides means for efficiently retrieving all related records for all record elements. That means when you have for example a collection of users you can load all phonenumbers for all users by simple calling the {{loadRelated()}} method.
+Doctrine provides means for efficiently retrieving all related records for all record elements. That means when you have 
+for example a collection of users you can load all phonenumbers for all users by simple calling the {{loadRelated()}} 
+method.
 
-However, in most cases you don't need to load related elements explicitly, rather what you should do is try to load everything at once by using the DQL API and JOINS.
+However, in most cases you don't need to load related elements explicitly, rather what you should do is try to load 
+everything at once by using the DQL API and JOINS.
 
 The following example uses three queries for retrieving users, their phonenumbers and the groups they belong to.
 
 <code type="php">
-$users = $conn->query('FROM User');
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->execute();
 
 // now lets load phonenumbers for all users
 
@@ -544,7 +595,11 @@ The example below shows how to do this more efficiently by using the DQL API.
 
 <code type="php">
 // load everything here
-$users = $conn->query('FROM User u LEFT JOIN u.Phonenumber p LEFT JOIN u.Group g');
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->leftJoin('u.Phonenumber p')
+          ->leftJoin('u.Group g')
+          ->execute();
 
 foreach($users as $user) {
     // no additional db queries needed here
@@ -584,7 +639,8 @@ Doctrine has drivers for every PDO-supported database. The supported databases a
 
 +++ Getting a table object
 
-In order to get table object for specified record just call {{Doctrine_Record::getTable()}} or {{Doctrine_Connection::getTable()}}.
+In order to get table object for specified record just call {{Doctrine_Record::getTable()}} or 
+{{Doctrine_Connection::getTable()}}.
 
 <code type="php">
 $manager = Doctrine_Manager::getInstance();
@@ -595,13 +651,14 @@ $conn = $manager->openConnection(new PDO('dsn','username','password'));
 
 // getting a table object
 
-$table = $conn->getTable('User');
+$table = Doctrine::getTable('User');
 </code>
 
 
 +++ Flushing the connection
 
-Creating new record (database row) is very easy. You can either use the {{Doctrine_Connection::create()}} or {{Doctrine_Table::create()}} method to do this or just simply use the new operator.
+Creating new record (database row) is very easy. You can either use the {{Doctrine_Connection::create()}} or 
+{{Doctrine_Table::create()}} method to do this or just simply use the new operator.
 
 <code type="php">
 $user = new User();
@@ -618,42 +675,55 @@ $conn->flush();
 
 +++ Querying the database
 
-{{Doctrine_Connection::query()}} is a simple method for efficient object retrieval. It takes one parameter (DQL query) and optionally prepared statement params.
+{{Doctrine_Connection::query()}} is a simple method for efficient object retrieval. It takes one parameter (DQL query) 
+and optionally prepared statement params.
 
 <code type="php">
 
 // select all users
 
-$users = $conn->query('FROM User');
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->execute();
 
 // select all users where user email is jackdaniels@drinkmore.info
 
-$users = $conn->query("FROM User WHERE User.Email.address = 'jackdaniels@drinkmore.info'");
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->leftJoin('u.Email e')
+          ->where('e.address = ?', 'jackdaniels@drinkmore.info')
+          ->execute();
 
 // using prepared statements
 
-$users = $conn->query('FROM User WHERE User.name = ?', array('Jack'));
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.name = ?', array('Jack'))
+          ->execute();
 </code>
 
-
-
 ++ Table
-{{Doctrine_Table}} holds the schema information specified by the given component (record). For example if you have a User class that extends Doctrine_Record, each schema definition call gets delegated to a unique table object that holds the information for later use.
+{{Doctrine_Table}} holds the schema information specified by the given component (record). For example if you have a 
+User class that extends Doctrine_Record, each schema definition call gets delegated to a unique table object that holds 
+the information for later use.
 
-Each {{Doctrine_Table}} is registered by {{Doctrine_Connection}}, which means you can retrieve the tables from the connection by calling the getTable() method with the appropriate component name.
+Each {{Doctrine_Table}} is registered by {{Doctrine_Connection}}, which means you can retrieve the tables from the 
+connection by calling the getTable() method with the appropriate component name.
 
-For example, lets say we want to retrieve the table object for the User class. We can do this by simply giving the 'User' as the first argument for the getTable() method.
+For example, lets say we want to retrieve the table object for the User class. We can do this by simply giving the 'User' 
+as the first argument for the getTable() method.
 
 <code>
 // get the current connection
 $conn = Doctrine_Manager::connection();
 
-$table = $conn->getTable('User');
+$table = Doctrine::getTable('User');
 </code>
 
 +++ Getting column information
 
-You can retrieve the column definitions set in {{Doctrine_Record}} by using the appropriate {{Doctrine_Table}} methods. If you need all information of all columns you can simply use:
+You can retrieve the column definitions set in {{Doctrine_Record}} by using the appropriate {{Doctrine_Table}} methods. 
+If you need all information of all columns you can simply use:
 
 <code type="php">
 // getting all information of all columns
@@ -672,10 +742,12 @@ $names = $table->getColumnNames();
 
 +++ Finder methods
 
-{{Doctrine_Table}} provides basic finder methods. These finder methods are very fast and should be used if you only need to fetch data from one database table. If you need queries that use several components (database tables) use {{Doctrine_Connection::query()}}.
+{{Doctrine_Table}} provides basic finder methods. These finder methods are very fast and should be used if you only need 
+to fetch data from one database table. If you need queries that use several components (database tables) use 
+{{Doctrine_Connection::query()}}.
 
 <code type="php">
-$table = $conn->getTable("User");
+$table = Doctrine::getTable('User');
 
 // find by primary key
 
@@ -699,7 +771,8 @@ foreach($table->findByDql("name LIKE '%John%'") as $user) {
 
 ++++ Custom table classes
 
-Adding custom table classes is very easy. Only thing you need to do is name the classes as {{[componentName]Table}} and make them inherit {{Doctrine_Table}}.
+Adding custom table classes is very easy. Only thing you need to do is name the classes as {{[componentName]Table}} 
+and make them inherit {{Doctrine_Table}}.
 
 <code type="php">
 
@@ -716,7 +789,8 @@ class GroupTable { }
 
 +++ Custom finders
 
-You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} finder methods or DQL API ({{Doctrine_Connection::query()}}).
+You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} 
+finder methods or DQL API ({{Doctrine_Connection::query()}}).
 
 <code type="php">
 class UserTable extends Doctrine_Table {
@@ -724,18 +798,20 @@ class UserTable extends Doctrine_Table {
      * you can add your own finder methods here
      */
     public function findByName($name) {
-        return $this->getConnection()->query("FROM User WHERE name LIKE '%$name%'");
+        return Doctrine_Query::create()
+                ->from('User u')
+                ->where('u.name LIKE ?', "%$name%")
+                ->execute();
     }
 }
 class User extends Doctrine_Record { }
 
-$conn = Doctrine_Manager::getInstance()
-           ->openConnection(new PDO("dsn","username","password"));
+$conn = Doctrine_Manager::getInstance()->openConnection('mysql://username:password@localhost/dbname');
 
 // doctrine will now check if a class called UserTable exists 
 // and if it inherits Doctrine_Table
 
-$table   = $conn->getTable("User");
+$table   = Doctrine::getTable('User');
 
 print get_class($table); // UserTable
 
@@ -747,4 +823,3 @@ $users   = $table->findByName("Jack");
 ++ Profiler
 ++ Locking manager
 ++ View
-

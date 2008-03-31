@@ -2,7 +2,7 @@
 ++++ Getting table information
 
 <code type="php">
-$table = $conn->getTable('User');
+$table = Doctrine::getTable('User');
 
 // getting column names
 
@@ -16,10 +16,12 @@ $columns = $table->getColumns();
 
 ++++ Finder methods
 
-{{Doctrine_Table}} provides basic finder methods. These finder methods are very fast and should be used if you only need to fetch data from one database table. If you need queries that use several components (database tables) use {{Doctrine_Connection::query()}}.
+{{Doctrine_Table}} provides basic finder methods. These finder methods are very fast and should be used if you only need 
+to fetch data from one database table. If you need queries that use several components (database tables) use 
+{{Doctrine_Connection::query()}}.
 
 <code type="php">
-$table = $conn->getTable("User");
+$table = Doctrine::getTable('User');
 
 // find by primary key
 
@@ -43,7 +45,8 @@ foreach($table->findByDql("name LIKE '%John%'") as $user) {
 
 ++++ Custom table classes
 
-Adding custom table classes is very easy. Only thing you need to do is name the classes as {{[componentName]Table}} and make them inherit {{Doctrine_Table}}.
+Adding custom table classes is very easy. Only thing you need to do is name the classes as {{[componentName]Table}} 
+and make them inherit {{Doctrine_Table}}.
 
 <code type="php">
 
@@ -60,32 +63,36 @@ class GroupTable { }
 
 ++++ Custom finders
 
-You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} finder methods or DQL API ({{Doctrine_Connection::query()}}).
+You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} 
+finder methods or DQL API ({{Doctrine_Connection::query()}}).
 
 <code type="php">
-class UserTable extends Doctrine_Table {
+class UserTable extends Doctrine_Table
+{
     /**
      * you can add your own finder methods here
      */
-    public function findByName($name) {
-        return $this->getConnection()->query("FROM User WHERE name LIKE '%$name%'");
+    public function findByName($name)
+    {
+        return Doctrine_Query::create()
+                ->from('User u')
+                ->where('u.name LIKE ?', "%$name%")
+                ->execute();
     }
 }
 class User extends Doctrine_Record { }
 
-$conn = Doctrine_Manager::getInstance()
-           ->openConnection(new PDO("dsn","username","password"));
+$conn = Doctrine_Manager::getInstance()->openConnection('mysql://username:password@localhost/dbname');
 
 // doctrine will now check if a class called UserTable exists 
 // and if it inherits Doctrine_Table
 
-$table   = $conn->getTable("User");
+$table   = Doctrine::getTable('User');
 
 print get_class($table); // UserTable
 
-$users   = $table->findByName("Jack");
+$users   = $table->findByName('Jack');
 
 </code>
-
 
 ++++ Getting relation objects

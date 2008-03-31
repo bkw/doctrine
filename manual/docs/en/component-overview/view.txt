@@ -1,6 +1,7 @@
 +++ Introduction
 
-Database views can greatly increase the performance of complex queries. You can think of them as cached queries. {{Doctrine_View}} provides integration between database views and DQL queries.
+Database views can greatly increase the performance of complex queries. You can think of them as cached queries. 
+{{Doctrine_View}} provides integration between database views and DQL queries.
 
 
 +++ Managing views
@@ -9,7 +10,7 @@ Database views can greatly increase the performance of complex queries. You can 
 $conn = Doctrine_Manager::getInstance()
         ->openConnection(new PDO("dsn","username","password"));
 
-$query = new Doctrine_Query($conn);
+$query = Doctrine_Query::create($conn);
 $query->from('User.Phonenumber')->limit(20);
 
 $view  = new Doctrine_View($query, 'MyView');
@@ -21,15 +22,14 @@ $view->create();
 $view->drop();
 </code>
 
-
 +++ Using views
 
 <code type="php">
 $conn = Doctrine_Manager::getInstance()
         ->openConnection(new PDO("dsn","username","password"));
 
-$query = new Doctrine_Query($conn);
-$query->from('User.Phonenumber')->limit(20);
+$query = Doctrine_Query::create($conn);
+$query->from('User u, u.Phonenumber')->limit(20);
 
 // hook the query into appropriate view
 $view  = new Doctrine_View($query, 'MyView');

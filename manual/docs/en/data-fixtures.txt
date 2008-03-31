@@ -1,4 +1,5 @@
-Doctrine Data uses the Doctrine Parser for the dumping and loading of fixtures data so it is possible to use any of the formats available in the Parser. Currently yml is the only fully supported format but xml and others are next.
+Doctrine Data uses the Doctrine Parser for the dumping and loading of fixtures data so it is possible to use any of the 
+formats available in the Parser. Currently yml is the only fully supported format but xml and others are next.
 
 ++ Exporting
 
@@ -24,12 +25,14 @@ You can import data from fixtures files in many different formats
 // Path can be in a few different formats
 $path = 'path/to/data.yml'; // Path directly to one yml file
 $path = array('data.yml', 'data2.yml', 'more.yml'); // Array of yml file paths
-$path = array('directory1', 'directory2', 'directory3'); // Array of directories which contain yml files. It will find all files with an extension of .yml
+$path = array('directory1', 'directory2', 'directory3'); // Array of directories which contain yml files. It will find 
+all files with an extension of .yml
 
 // Specify the format of the data you are importing
 $format = 'yml'; // xml, yml, json
 
-$models = array('User', 'Phonenumber'); // you can optionally specify an array of the models you wish to import the data for, by default it loads data for all the available loaded models and the data that exists
+$models = array('User', 'Phonenumber'); // you can optionally specify an array of the models you wish to import the data 
+for, by default it loads data for all the available loaded models and the data that exists
 
 $data = new Doctrine_Data();
 $data->importData($path, $format, $models);
@@ -41,7 +44,8 @@ With Doctrine Data you can import dummy data to all your Doctrine Records
 
 <code type="php">
 $numRecords = 3; // Number of dummy records to populate for each model
-$models = array('User', 'Email'); // Models to generate dummy data for. If none specified it generates dummy data for all loaded models.
+$models = array('User', 'Email'); // Models to generate dummy data for. If none specified it generates dummy data for all 
+loaded models.
 
 $data = new Doctrine_Data();
 $data->importDummyData($numRecords, $models);
@@ -49,7 +53,9 @@ $data->importDummyData($numRecords, $models);
 
 ++ Writing
 
-You can write your fixtures files manually and load them in to your applications. Below is a sample data.yml fixtures file. You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, then load all data.
+You can write your fixtures files manually and load them in to your applications. Below is a sample data.yml fixtures file. 
+You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, 
+then load all data.
 
 Imagine a schema with the following relationships:
 
@@ -60,7 +66,7 @@ ResourceType hasMany Resource as Resources
 Tag hasMany Resource as Resources
 </code>
 
-<code type="yml">
+<code type="yaml">
 ---
 Resource:
   Resource_1:
@@ -91,7 +97,7 @@ Tag:
 
 You could optionally specify the Resources each tag is related to instead of specifying the Tags a Resource has.
 
-<code type="yml">
+<code type="yaml">
 Tag:
   tutorial:
     name: tutorial
@@ -116,9 +122,10 @@ $data->importData('data.yml', 'yml');
 
 ++ Fixtures For Nested Sets
 
-Writing a fixtures file for a nested set tree is slightly different from writing regular fixtures files. The structure of the tree is defined like this:
+Writing a fixtures file for a nested set tree is slightly different from writing regular fixtures files. The structure of 
+the tree is defined like this:
 
-<code type="yml">
+<code type="yaml">
 ---
 Category:
   Category_1:
@@ -131,4 +138,19 @@ Category:
         children:
           Category_4:
             title: Subcategory of Category 2
+</code>
+
+++ Fixtures For I18n
+
+<code type="yaml">
+Article:
+  Article_1:
+    name: Test article
+    Translation:
+      en:
+        title: Title of article
+        body: Body of article
+      fr:
+        title: French title of article
+        body: French body of article
 </code>

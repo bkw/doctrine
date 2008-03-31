@@ -1,8 +1,10 @@
 ++ Introduction
 
-Doctrine_RawSql provides convient interface for building raw sql queries. Similar to Doctrine_Query, Doctrine_RawSql provides means for fetching arrays and objects, the way you prefer.
+Doctrine_RawSql provides convient interface for building raw sql queries. Similar to Doctrine_Query, Doctrine_RawSql 
+provides means for fetching arrays and objects, the way you prefer.
 
-Using raw sql for fetching might be useful when you want to utilize database specific features such as query hints or the CONNECT keyword in Oracle.
+Using raw sql for fetching might be useful when you want to utilize database specific features such as query hints or 
+the CONNECT keyword in Oracle.
 
 Creating Doctrine_RawSql object is easy:
 
@@ -18,7 +20,8 @@ $q = new Doctrine_RawSql($conn); // here $conn is an instance of Doctrine_Connec
 
 ++ Component queries
 
-The first thing to notice when using Doctrine_RawSql is that you always have to place the fields you are selecting in curly brackets {}. Also for every selected component you have to call addComponent().
+The first thing to notice when using Doctrine_RawSql is that you always have to place the fields you are selecting in 
+curly brackets {}. Also for every selected component you have to call addComponent().
 
 The following example should clarify the usage of these:
 
@@ -41,7 +44,8 @@ Pay attention to following things:
 
 ++ Fetching from multiple components
 
-When fetching from multiple components the addComponent calls become a bit more complicated as not only do we have to tell which tables are bound to which components, we also have to tell the parser which components belongs to which.
+When fetching from multiple components the addComponent calls become a bit more complicated as not only do we have to 
+tell which tables are bound to which components, we also have to tell the parser which components belongs to which.
 
 Consider the following model:
 

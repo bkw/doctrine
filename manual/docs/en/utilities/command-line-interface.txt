@@ -69,7 +69,8 @@ Actual php file named "doctrine.php" that implements the Doctrine_Cli.
 // Include your Doctrine configuration/setup here, your connections, models, etc.
 
 // Configure Doctrine Cli
-// Normally these are arguments to the cli tasks but if they are set here the arguments will be auto-filled and are not required for you to enter them.
+// Normally these are arguments to the cli tasks but if they are set here the arguments will be auto-filled and are not 
+required for you to enter them.
 
 $config = array('data_fixtures_path'  =>  '/path/to/data/fixtures',
                 'models_path'         =>  '/path/to/models',

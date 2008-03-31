@@ -1,6 +1,7 @@
 +++ Introduction
 
-Doctrine supports exporting record classes into database. This means that based on the definitions given in your record definitions Doctrine will alter your database schema.
+Doctrine supports exporting record classes into database. This means that based on the definitions given in your record 
+classes Doctrine will create the tables in your database.
 
 Lets say we have a classes called User and Phonenumber with the following definitions:
 
@@ -35,7 +36,8 @@ class Phonenumber extends Doctrine_Record
 }
 </code>
 
-Now lets say these classes are in directory 'models/'. We can make Doctrine to iterate through this directory and attach these classes into your database structure with the following script:
+Now lets say these classes are in directory 'models/'. We can make Doctrine to iterate through this directory and 
+attach these classes into your database structure with the following script:
 
 <code type="php">
 
@@ -64,7 +66,8 @@ Pay attention to the following things:
 
 +++ Getting export queries
 
-There might be situations where you don't want to execute the export queries immediately rather you want to get the query strings and maybe attach them to a build.sql file. This can be easily achieved as follows:
+There might be situations where you don't want to execute the export queries immediately rather you want to get the 
+query strings and maybe attach them to a build.sql file. This can be easily achieved as follows:
 
 <code type="php">
 require_once('path-to-doctrine/lib/Doctrine.php');
@@ -78,7 +81,8 @@ $queries = Doctrine::generateSqlFromModels('models');
 echo $queries;
 </code>
 
-Consider the same situation and you want to get the string of sql queries needed to perform the exporting. It can be achieved with Doctrine::generateSqlFromModels().
+Consider the same situation and you want to get the string of sql queries needed to perform the exporting. It can be 
+achieved with Doctrine::generateSqlFromModels().
 
 +++ Export options
 

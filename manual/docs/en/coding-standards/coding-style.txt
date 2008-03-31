@@ -6,14 +6,16 @@
 
 +++ Strings
 
-* When a string is literal (contains no variable substitutions), the apostrophe or "single quote" must always used to demarcate the string:
+* When a string is literal (contains no variable substitutions), the apostrophe or "single quote" must always used to 
+demarcate the string:
 
 <code type="php">
 // literal string
 $string = 'something';
 </code>
 
-* When a literal string itself contains apostrophes, it is permitted to demarcate the string with quotation marks or "double quotes". This is especially encouraged for SQL statements:
+* When a literal string itself contains apostrophes, it is permitted to demarcate the string with quotation marks or 
+"double quotes". This is especially encouraged for SQL statements:
 
 <code type="php">
 // string contains apostrophes
@@ -27,14 +29,17 @@ $sql = "SELECT id, name FROM people WHERE name = 'Fred' OR name = 'Susan'";
 $greeting = "Hello $name, welcome back!";
 </code>
 
-* Strings may be concatenated using the "." operator. A space must always be added before and after the "." operator to improve readability:
+* Strings may be concatenated using the "." operator. A space must always be added before and after the "." operator 
+to improve readability:
 
 <code type="php">
 // concatenation
 $framework = 'Doctrine' . ' ORM ' . 'Framework';
 </code>
 
-* When concatenating strings with the "." operator, it is permitted to break the statement into multiple lines to improve readability. In these cases, each successive line should be padded with whitespace such that the "."; operator is aligned under the "=" operator:
+* When concatenating strings with the "." operator, it is permitted to break the statement into multiple lines to improve 
+readability. In these cases, each successive line should be padded with whitespace such that the "."; operator is aligned 
+under the "=" operator:
 
 <code type="php">
 // concatenation line breaking
@@ -47,10 +52,14 @@ $sql = "SELECT id, name FROM user "
 +++ Arrays
 
 * Negative numbers are not permitted as indices.
-* An indexed array may be started with any non-negative number, however this is discouraged and it is recommended that all arrays have a base index of 0.
-* When declaring indexed arrays with the array construct, a trailing space must be added after each comma delimiter to improve readability.
-* It is also permitted to declare multiline indexed arrays using the "array" construct. In this case, each successive line must be padded with spaces.
-* When declaring associative arrays with the array construct, it is encouraged to break the statement into multiple lines. In this case, each successive line must be padded with whitespace such that both the keys and the values are aligned:
+* An indexed array may be started with any non-negative number, however this is discouraged and it is recommended that all 
+arrays have a base index of 0.
+* When declaring indexed arrays with the array construct, a trailing space must be added after each comma delimiter to 
+improve readability.
+* It is also permitted to declare multiline indexed arrays using the "array" construct. In this case, each successive line 
+must be padded with spaces.
+* When declaring associative arrays with the array construct, it is encouraged to break the statement into multiple lines. 
+In this case, each successive line must be padded with whitespace such that both the keys and the values are aligned:
 
 <code type="php">
 $sampleArray = array('Doctrine', 'ORM', 1, 2, 3);
@@ -93,7 +102,8 @@ class Doctrine_SampleClass
 
 * Methods must be named by following the naming conventions.
 * Methods must always declare their visibility by using one of the private, protected, or public constructs.
-* Like classes, the brace is always written next line after the method name. There is no space between the function name and the opening parenthesis for the arguments.
+* Like classes, the brace is always written next line after the method name. There is no space between the function name 
+and the opening parenthesis for the arguments.
 * Functions in the global scope are strongly discouraged.
 * This is an example of an acceptable function declaration in a class:
 
@@ -132,7 +142,8 @@ class Foo
 </code>
 
 * Call-time pass by-reference is prohibited.
-* The return value must not be enclosed in parentheses. This can hinder readability and can also break code if a method is later changed to return by reference.
+* The return value must not be enclosed in parentheses. This can hinder readability and can also break code if a method 
+is later changed to return by reference.
 
 <code type="php">
 /** 
@@ -156,14 +167,16 @@ class Foo
 }
 </code>
 
-* Function arguments are separated by a single trailing space after the comma delimiter. This is an example of an acceptable function call for a function that takes three arguments:
+* Function arguments are separated by a single trailing space after the comma delimiter. This is an example of an 
+acceptable function call for a function that takes three arguments:
 
 <code type="php">
 threeArguments(1, 2, 3);
 </code>
 
 * Call-time pass by-reference is prohibited. See above for the proper way to pass function arguments by-reference.
-* For functions whose arguments permitted arrays, the function call may include the {{array}} construct and can be split into multiple lines to improve readability. In these cases, the standards for writing arrays still apply:
+* For functions whose arguments permitted arrays, the function call may include the {{array}} construct and can be split 
+into multiple lines to improve readability. In these cases, the standards for writing arrays still apply:
 
 <code type="php">
 threeArguments(array(1, 2, 3), 2, 3);
@@ -175,9 +188,12 @@ threeArguments(array(1, 2, 3, 'Framework',
 
 +++ Control statements
 
-* Control statements based on the {{if}} and {{elseif}} constructs must have a single space before the opening parenthesis of the conditional, and a single space after the closing parenthesis.
-* Within the conditional statements between the parentheses, operators must be separated by spaces for readability. Inner parentheses are encouraged to improve logical grouping of larger conditionals.
-* The opening brace is written on the same line as the conditional statement. The closing brace is always written on its own line. Any content within the braces must be indented four spaces.
+* Control statements based on the {{if}} and {{elseif}} constructs must have a single space before the opening parenthesis 
+of the conditional, and a single space after the closing parenthesis.
+* Within the conditional statements between the parentheses, operators must be separated by spaces for readability. Inner 
+parentheses are encouraged to improve logical grouping of larger conditionals.
+* The opening brace is written on the same line as the conditional statement. The closing brace is always written on its 
+own line. Any content within the braces must be indented four spaces.
 
 <code type="php">
 if ($foo != 2) {
@@ -210,8 +226,10 @@ if ( ! $foo) {
 }
 </code>
 
-* Control statements written with the {{switch}} construct must have a single space before the opening parenthesis of the conditional statement, and also a single space after the closing parenthesis.
-* All content within the {{switch}} statement must be indented four spaces. Content under each {{case}} statement must be indented an additional four spaces but the breaks must be at the same indentation level as the {{case}} statements.
+* Control statements written with the {{switch}} construct must have a single space before the opening parenthesis of the 
+conditional statement, and also a single space after the closing parenthesis.
+* All content within the {{switch}} statement must be indented four spaces. Content under each {{case}} statement must be 
+indented an additional four spaces but the breaks must be at the same indentation level as the {{case}} statements.
 
 <code type="php">
 switch ($case) {
@@ -232,15 +250,16 @@ switch ($case) {
 
 Documentation Format:
 
-* All documentation blocks ("docblocks") must be compatible with the phpDocumentor format. Describing the phpDocumentor format is beyond the scope of this document. For more information, visit: http://phpdoc.org/
+* All documentation blocks ("docblocks") must be compatible with the phpDocumentor format. Describing the phpDocumentor 
+format is beyond the scope of this document. For more information, visit: http://phpdoc.org/
 
 Methods:
 
-* Every method, must have a docblock that contains at a minimum: 
+ * Every method, must have a docblock that contains at a minimum: 
  * A description of the function
  * All of the arguments
  * All of the possible return values
-* It is not necessary to use the {{@access}} tag because the access level is already known from the {{public}}, {{private}}, or {{protected}} construct used to declare the function.
-* If a function/method may throw an exception, use {{@throws}}:
+ * It is not necessary to use the {{@access}} tag because the access level is already known from the {{public}}, 
+ {{private}}, or {{protected}} construct used to declare the function.
+ * If a function/method may throw an exception, use {{@throws}}:
  * {{@throws exceptionclass [description]}}
-

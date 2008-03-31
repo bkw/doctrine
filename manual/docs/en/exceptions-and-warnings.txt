@@ -16,7 +16,9 @@ Relation exceptions are being thrown if something failed during the relation par
 
 ++ Connection exceptions
 
-Connection exceptions are being thrown if something failed at the database level. Doctrine offers fully portable database error handling. This means that whether you are using sqlite or some other database you can always get portable error code and message for the occurred error.
+Connection exceptions are being thrown if something failed at the database level. Doctrine offers fully portable database 
+error handling. This means that whether you are using sqlite or some other database you can always get portable error 
+code and message for the occurred error.
 
 <code type="php">
 try {
@@ -29,4 +31,4 @@ try {
 
 ++ Query exceptions
 
-thrown if DQL parsing fails somehow
+An exception will be thrown when a query is executed if the DQL query is invalid in some way.

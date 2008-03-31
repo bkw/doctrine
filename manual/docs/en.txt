@@ -2,10 +2,13 @@
 + Connection management
 + Basic schema mapping
 + Relations
++ Schema Files
++ Utilities
 + Working with objects
 + Component overview
 + Hierarchical data
 + Configuration
++ Data fixtures
 + DQL (Doctrine Query Language)
 + Native SQL
 + Transactions
@@ -15,8 +18,6 @@
 + Plugins
 + File parser
 + Migration
-+ Data fixtures
-+ Schema Files
 + Searching
 + Database abstraction
 + Improving Performance
@@ -24,4 +25,3 @@
 + Exceptions and warnings
 + Real world examples
 + Coding standards
-+ Utilities

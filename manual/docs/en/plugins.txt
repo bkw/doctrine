@@ -1,17 +1,28 @@
-This chapter describes the usage of various plugins availible for Doctrine. You'll also learn how to create your own plugins. In order to grasp the concepts of this chapter you should already be familiar with the theory behind Doctrine_Template and Doctrine_Record_Generator. When refering to plugins we refer to class packages that use templates, generators and listeners extensively. All the introduced components in this chapter can be considered 'core' plugins, that means they reside at the Doctrine main repository. There are other official plugins too which can be found at the homesite of the Sensei project (www.sensei-project.org).
+This chapter describes the usage of various plugins availible for Doctrine. You'll also learn how to create your own 
+plugins. In order to grasp the concepts of this chapter you should already be familiar with the theory behind 
+Doctrine_Template and Doctrine_Record_Generator. When refering to plugins we refer to class packages that use 
+templates, generators and listeners extensively. All the introduced components in this chapter can be considered 
+'core' plugins, that means they reside at the Doctrine main repository. There are other official plugins too which 
+can be found at the homesite of the Sensei project (www.sensei-project.org).
 
-Usually plugins use generators side-to-side with template classes (classes that extend Doctrine_Template). The common workflow is:
+Usually plugins use generators side-to-side with template classes (classes that extend Doctrine_Template). The common 
+workflow is:
 
 # A new template is being initiliazed
 # The template creates the generator and calls initialize() method
 # The template is attached to given class
 
-As you may already know templates are used for adding common definitions and options to record classes. The purpose of generators is much more complex. Usually they are being used for creating generic record classes dynamically. The definitions of these generic classes usually depend on the owner class. For example the columns of the auditlog versioning class are the columns of the parent class with all the sequence and autoincrement definitions removed.
+As you may already know templates are used for adding common definitions and options to record classes. The purpose of 
+generators is much more complex. Usually they are being used for creating generic record classes dynamically. The 
+definitions of these generic classes usually depend on the owner class. For example the columns of the auditlog 
+versioning class are the columns of the parent class with all the sequence and autoincrement definitions removed.
 
 
 ++ Internationalization with I18n
 
-Doctrine_I18n package is a plugin for Doctrine that provides internationalization support for record classes. In the following example we have a NewsItem class with two fields 'title' and 'content'. We want to have the field 'title' with different languages support. This can be achieved as follows:
+Doctrine_I18n package is a plugin for Doctrine that provides internationalization support for record classes. In the 
+following example we have a NewsItem class with two fields 'title' and 'content'. We want to have the field 'title' 
+with different languages support. This can be achieved as follows:
 
 <code type="php">
 class NewsItem extends Doctrine_Record
@@ -29,7 +40,8 @@ class NewsItem extends Doctrine_Record
 }
 </code>
 
-Now the first time you initialize a new NewsItem record Doctrine initializes the plugin that builds the followings things:
+Now the first time you initialize a new NewsItem record Doctrine initializes the plugin that builds the followings 
+things:
 
 1. Record class called NewsItemTranslation
 2. Bi-directional relations between NewsItemTranslation and NewsItem
@@ -51,7 +63,9 @@ CREATE TABLE news_item (id INT NOT NULL AUTO_INCREMENT, content TEXT)
 CREATE TABLE news_item_translation (id INT NOT NULL, title VARCHAR(200), lang VARCHAR(20))
 </code>
 
-Notice how the field 'title' is not present in the news_item table. Since its present in the translation table it would be a waste of resources to have that same field in the main table. Basically Doctrine always automatically removes all translated fields from the main table.
+Notice how the field 'title' is not present in the news_item table. Since its present in the translation table it would 
+be a waste of resources to have that same field in the main table. Basically Doctrine always automatically removes all 
+translated fields from the main table.
 
 +++ Using I18n
 
@@ -80,7 +94,8 @@ $items[0]->Translation['FI']->title; // 'joku otsikko'
 
 
 ++ AuditLog and versioning
-Doctrine_AuditLog provides a full versioning solution. Lets say we have a NewsItem class that we want to be versioned. This functionality can be applied by simply adding $this->actAs('Versionable') into your record setup. 
+Doctrine_AuditLog provides a full versioning solution. Lets say we have a NewsItem class that we want to be versioned. 
+This functionality can be applied by simply adding $this->actAs('Versionable') into your record setup. 
 
 <code type="php">
 class NewsItem extends Doctrine_Record
@@ -108,7 +123,9 @@ Now when we have defined this record to be versionable, Doctrine does internally
 
 +++ Creating the version table
 
-As with all other plugins, the plugin-table, in this case the table that holds the different versions, can be created by enabling Doctrine::EXPORT_PLUGINS. The easiest way to set this is by setting the value of Doctrine::ATTR_EXPORT to Doctrine::EXPORT_ALL. The following example shows the usage:
+As with all other plugins, the plugin-table, in this case the table that holds the different versions, can be created 
+by enabling Doctrine::EXPORT_PLUGINS. The easiest way to set this is by setting the value of Doctrine::ATTR_EXPORT to 
+Doctrine::EXPORT_ALL. The following example shows the usage:
 
 <code type="php">
 $conn->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
@@ -140,7 +157,9 @@ $newsItem->version; // 2
 
 +++ Reverting changes
 
-Doctrine_Record provides a method called revert() which can be used for reverting to specified version. Internally Doctrine queries the version table and fetches the data for given version. If the given version is not found a Doctrine_Record_Exception is being thrown.
+Doctrine_Record provides a method called revert() which can be used for reverting to specified version. Internally 
+Doctrine queries the version table and fetches the data for given version. If the given version is not found a 
+Doctrine_Record_Exception is being thrown.
 
 <code type="php">
 $newsItem->revert(1);
@@ -150,7 +169,8 @@ $newsItem->title; // No news is good news
 
 +++ Advanced usage
 
-There are many options for the versioning plugin. Sometimes you may want to use other version column than 'version'. This can be achieved by giving the options parameter to actAs() method.
+There are many options for the versioning plugin. Sometimes you may want to use other version column than 'version'. 
+This can be achieved by giving the options parameter to actAs() method.
 
 <code type="php">
 class NewsItem extends Doctrine_Record
@@ -170,13 +190,18 @@ class NewsItem extends Doctrine_Record
 }
 </code>
 
-You can also control the name of the versioning record and the name of the version table with option attributes 'className' and 'tableName'.
+You can also control the name of the versioning record and the name of the version table with option attributes 
+'className' and 'tableName'.
 
 ++ Soft-delete
 
-Soft-delete is a very simple plugin for achieving the following behaviour: when a record is deleted its not removed from database. Usually the record contains some special field like 'deleted' which tells the state of the record (deleted or alive).
+Soft-delete is a very simple plugin for achieving the following behaviour: when a record is deleted its not removed 
+from database. Usually the record contains some special field like 'deleted' which tells the state of the record 
+(deleted or alive).
 
-The following code snippet shows what you need in order to achieve this kind of behaviour. Notice how we define two event hooks: preDelete and postDelete. Also notice how the preDelete hook skips the actual delete-operation with skipOperation() call. For more info about the event hooks see chapter [doc event-listeners :index :name].
+The following code snippet shows what you need in order to achieve this kind of behaviour. Notice how we define two 
+event hooks: preDelete and postDelete. Also notice how the preDelete hook skips the actual delete-operation with 
+skipOperation() call. For more info about the event hooks see chapter [doc event-listeners :index :name].
 
 <code type="php">
 class SoftDeleteTest extends Doctrine_Record
@@ -215,9 +240,13 @@ var_dump($record->deleted); // true
 
 ++ Creating plugins
 
-This subchapter provides you the means for creating your own plugins. Lets say we have various different Record classes that need to have one-to-many emails. We achieve this functionality by creating a generic plugin which creates Email classes on the fly.
+This subchapter provides you the means for creating your own plugins. Lets say we have various different Record 
+classes that need to have one-to-many emails. We achieve this functionality by creating a generic plugin which 
+creates Email classes on the fly.
 
-We start this task by creating a plugin called EmailPlugin with setTableDefinition() method. Inside the setTableDefinition() method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
+We start this task by creating a plugin called EmailPlugin with setTableDefinition() method. Inside the 
+setTableDefinition() method various helper methods can be used for easily creating the dynamic record definition. 
+Commonly the following methods are being used:
 
 public function initOptions()
 public function buildLocalRelation()
@@ -249,7 +278,8 @@ class EmailPlugin extends Doctrine_Record_Generator
 
 ++ Nesting plugins
 
-Below is an example of several behaviors to give a complete wiki database that is versionable, searchable, sluggable, and full I18n.
+Below is an example of several behaviors to give a complete wiki database that is versionable, searchable, sluggable, 
+and full I18n.
 
 <code type="php">
 <?php

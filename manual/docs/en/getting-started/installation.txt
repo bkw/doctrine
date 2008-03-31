@@ -8,6 +8,22 @@ There are currently four different methods to install Doctrine.
 It is recommended to download Doctrine via SVN (subversion), because in this case updating is easy. 
 If your project is already under version control with SVN, you should choose SVN externals. 
 
+If you wish to just try out Doctrine in under 5 minutes, the sandbox package is recommended.
+
++++ Sandbox Package
+
+Doctrine also provides a special package which is a zero configuration Doctrine implementation. It 
+includes a fully featured command line interface for managing your schema files, migrations, 
+database connections, data fixtures, and many other features. You can read about the sandbox package 
+and how to use it in the [doc utilities :name] chapter under the Sandbox section.
+
+Below you will find the url to a tutorial on how to how to get started using 
+Doctrine with the sandbox package. With the sandbox and this tutorial you can get Doctrine up 
+and running in under 5 minutes. The tutorial offers example schema files, data fixtures, and a simple 
+script for managing a "User" model with Doctrine. Simple create, update, delete functionality.
+
+The tutorial can be found here http://trac.phpdoctrine.org/wiki/MyFirstProject and the sandbox package 
+can be downloaded from here http://www.phpdoctrine.org/download
 
 +++ SVN 
 
@@ -19,7 +35,9 @@ In order to check out Doctrine in the current directory using the **svn** comman
 svn co http://svn.phpdoctrine.org/branches/0.10 .
 </code>
 
-If you do not have a SVN client, chose one from the list below. Find the **Checkout** option and enter svn.phpdoctrine.org/branches/0.10 in the **path** or **repository url** parameter. There is no need for a username or password to check out Doctrine. 
+If you do not have a SVN client, chose one from the list below. Find the **Checkout** option and enter 
+svn.phpdoctrine.org/branches/0.10 in the **path** or **repository url** parameter. There is no need for a username 
+or password to check out Doctrine. 
 
 * [http://tortoisesvn.tigris.org/ TortoiseSVN] a Windows application that  integrates into Windows Explorer
 * [http://www.apple.com/downloads/macosx/development_tools/svnx.html svnx] a  Mac OS X GUI svn application 
@@ -33,10 +51,10 @@ svn update
 
 in your doctrine directory.
 
-
 +++ SVN externals
 
-If your project is under version control with SVN, you should set up doctrine via svn externals. You can do this with the **svn** command line tool:
+If your project is under version control with SVN, you should set up doctrine via svn externals. You can do this with 
+the **svn** command line tool:
 
 <code type="bash"> 
 svn pe svn:externals /path/to/project
@@ -54,7 +72,6 @@ Afterwards you can download doctrine with
 svn update
 </code>
 
-
 +++ PEAR
 
 You can install Doctrine via PEAR with the following command:
@@ -62,7 +79,6 @@ You can install Doctrine via PEAR with the following command:
 <code type="bash"> 
 pear install http://pear.phpdoctrine.org/Doctrine-0.10.2
 </code>
-
 
 +++ Zip-package
 
@@ -74,18 +90,3 @@ Under Linux you can extract the .tgz package with the following command line ins
 <code type="bash"> 
 tar xzf Doctrine-0.10.1.tgz
 </code>
-
-+++ Sandbox Package
-
-Doctrine also provides a special package which is a zero configuration Doctrine implementation. It 
-includes a fully featured command line interface for managing your schema files, migrations, 
-database connections, data fixtures, and many other features. You can read about the sandbox package 
-and how to use it in the [doc utilities :name] chapter under the Sandbox section.
-
-Below you will find the url to a tutorial on how to how to get started using 
-Doctrine with the sandbox package. With the sandbox and this tutorial you can get Doctrine up 
-and running in under 5 minutes. The tutorial offers example schema files, data fixtures, and a simple 
-script for managing a "User" model with Doctrine. Simple create, update, delete functionality.
-
-The tutorial can be found here http://trac.phpdoctrine.org/wiki/MyFirstProject and the sandbox package 
-can be downloaded from here http://www.phpdoctrine.org/download

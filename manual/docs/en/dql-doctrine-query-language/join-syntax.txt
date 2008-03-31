@@ -7,9 +7,11 @@ DQL JOIN Syntax:
 [[LEFT | INNER] JOIN <component_referenceN>] [ON | WITH] <join_conditionN> [INDEXBY] <map_conditionN>
 </code>
 
-DQL supports two kinds of joins INNER JOINs and LEFT JOINs. For each joined component, you can optionally specify an alias.
+DQL supports two kinds of joins INNER JOINs and LEFT JOINs. For each joined component, you can optionally specify an 
+alias.
 
-* The default join type is {{LEFT JOIN}}. This join can be indicated by the use of either {{LEFT JOIN}} clause or simply '{{,}}', hence the following queries are equal:
+* The default join type is {{LEFT JOIN}}. This join can be indicated by the use of either {{LEFT JOIN}} clause or simply 
+'{{,}}', hence the following queries are equal:
 
 <code type="sql">
 SELECT u.*, p.* FROM User u LEFT JOIN u.Phonenumber
@@ -19,7 +21,9 @@ SELECT u.*, p.* FROM User u, u.Phonenumber p
 
 The recommended form is the first one.
 
-* {{INNER JOIN}} produces an intersection between two specified components (that is, each and every record in the first component is joined to each and every record in the second component). So basically {{INNER JOIN}} can be used when you want to efficiently fetch for example all users which have one or more phonenumbers.
+* {{INNER JOIN}} produces an intersection between two specified components (that is, each and every record in the first 
+component is joined to each and every record in the second component). So basically {{INNER JOIN}} can be used when you 
+want to efficiently fetch for example all users which have one or more phonenumbers.
 
 <code type="sql">
 SELECT u.*, p.* FROM User u INNER JOIN u.Phonenumber p
@@ -38,7 +42,8 @@ SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id 
 </code>
 
 +++ ON keyword
-If you want to override this behaviour and add your own custom join condition you can do it with the {{ON}} keyword. Consider the following DQL query:
+If you want to override this behaviour and add your own custom join condition you can do it with the {{ON}} keyword. 
+Consider the following DQL query:
 
 <code type="sql">
 SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber ON u.id = 2
@@ -51,7 +56,8 @@ SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id 
 </code>
 
 +++ WITH keyword
-Most of the time you don't need to override the primary join condition, rather you may want to add some custom conditions. This can be achieved with the {{WITH}} keyword.
+Most of the time you don't need to override the primary join condition, rather you may want to add some custom conditions. 
+This can be achieved with the {{WITH}} keyword.
 
 DQL:
 <code type="sql">
@@ -64,10 +70,11 @@ SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id 
 </code>
 
 
-The Doctrine_Query API offers two convenience methods for adding JOINS. These are called innerJoin() and leftJoin(), which usage should be quite intuitive as shown below:
+The Doctrine_Query API offers two convenience methods for adding JOINS. These are called innerJoin() and leftJoin(), 
+which usage should be quite intuitive as shown below:
 
 <code type="php">
-$q = new Doctrine_Query();
+$q = Doctrine_Query::create();
 $q->from('User u')
   ->leftJoin('u.Group g')
   ->innerJoin('u.Phonenumber p WITH u.id > 3')
