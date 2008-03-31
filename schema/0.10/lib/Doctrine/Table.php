@@ -154,6 +154,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     protected $_options      = array('name'           => null,
                                      'tableName'      => null,
+                                     'schemaName'     => null,
                                      'sequenceName'   => null,
                                      'inheritanceMap' => array(),
                                      'enumMap'        => array(),
@@ -1739,6 +1740,27 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     {
         return $this->_options['name'];
     }
+    
+    /**
+     * getSchemaName
+     *  return the database schema of table
+     * @return String
+     */
+    public function getSchemaName()
+    {
+        return $this->_options['schemaName'];
+    }
+    
+    /**
+     * setSchemaName
+     *
+     * @param string $schemaName
+     * @return void
+     */
+    public function setSchemaName($schemaName)
+    {
+        return $this->_options['schemaName'];
+    }
 
     /**
      * getTableName
@@ -1747,7 +1769,11 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     public function getTableName()
     {
-        return $this->_options['tableName'];
+        if ($this->getSchemaName() ){
+            return $this->_options['schemaName'].'.'.$this->_options['tableName'];
+        }else{
+            return $this->_options['tableName'];
+        }
     }
 
     /**
