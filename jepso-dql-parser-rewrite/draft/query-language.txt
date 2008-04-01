@@ -38,6 +38,7 @@ UpdateItem = PathExpression "=" (Expression | "NULL")
 
 IdentificationVariableDeclaration = RangeVariableDeclaration [IndexBy] {Join [IndexBy]}
 RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
+VariableDeclaration = identifier [["AS"] IdentificationVariable]
 
 Join = ["LEFT" | "INNER"] "JOIN" RangeVariableDeclaration [("ON" | "WITH") ConditionalExpression]
 IndexBy = "INDEX" "BY" identifier
