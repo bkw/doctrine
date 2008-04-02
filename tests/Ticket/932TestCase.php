@@ -25,6 +25,8 @@ class Doctrine_Ticket_932_TestCase extends Doctrine_UnitTestCase
 		$newUser->id = 1;
 		$newUser->display_name = "Mah Name";
 		$newUser->save();
+		$this->assertEqual(Doctrine_Record::STATE_CLEAN, $newUser->state());
+		$this->assertEqual(1, $newUser->id);
 	}
 }
 
