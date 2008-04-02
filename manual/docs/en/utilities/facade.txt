@@ -73,9 +73,6 @@ Doctrine::generateSqlFromModels('/path/to/models');
 // Generate YAML schema from an existing set of models
 Doctrine::generateYamlFromModels('/path/to/schema.yml', '/path/to/models');
 
-// It is required your connection name to be the same as your database name in order for the drop/create functionality 
-// below to work.
-
 // Create all databases for connections.
 // Array of connection names is optional
 Doctrine::createDatabases(array('connection_name'));
