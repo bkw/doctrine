@@ -24,7 +24,7 @@ actually were changed.
 $q = Doctrine_Query::create();
 
 $rows = $q->update('Account')
-          ->set('amount', 'amount + 200')
+          ->set('amount', 'amount + ?', '200')
           ->where('id > 200')
           ->execute();
           
