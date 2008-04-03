@@ -20,7 +20,7 @@
  */
 
 /**
- * DeleteClause = "DELETE" "FROM" RangeVariableDeclaration
+ * DeleteClause = "DELETE" ["FROM"] RangeVariableDeclaration
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -33,23 +33,29 @@
  */
 class Doctrine_Query_Production_DeleteClause extends Doctrine_Query_Production
 {
-    protected $_rangeVariableDeclaration;
+    protected $_variableDeclaration;
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
-        // DeleteClause = "DELETE" "FROM" RangeVariableDeclaration
+        // DeleteClause = "DELETE" ["FROM"] RangeVariableDeclaration
         $this->_parser->match(Doctrine_Query_Token::T_DELETE);
-        $this->_parser->match(Doctrine_Query_Token::T_FROM);
 
-        $this->_rangeVariableDeclaration = $this->RangeVariableDeclaration();
+        if ($this->_isNextToken(Doctrine_Query_Token::T_FROM)) {
+            $this->_parser->match(Doctrine_Query_Token::T_FROM);
+        }
 
-        return $this;
+        $this->_variableDeclaration = $this->VariableDeclaration();
+    }
+
+
+    protected function _semantical($params = array())
+    {
     }
 
 
     public function buildSql()
     {
-        return 'DELETE FROM ' . $this->_rangeVariableDeclaration->buildSql();
+        return 'DELETE FROM ' . $this->_variableDeclaration->buildSql();
     }
 }

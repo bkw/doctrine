@@ -20,11 +20,11 @@
  */
 
 /**
- * Primary = PathExpression | Atom | "(" Expression ")" | Function |
- *     AggregateExpression
+ * Primary = PathExpression | Atom | "(" Expression ")" | Function | AggregateExpression
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -33,38 +33,64 @@
  */
 class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_isExpression;
+
+    protected $_item;
+
+
+    protected function _syntax($params = array())
     {
+        // Primary = PathExpression | Atom | "(" Expression ")" | Function | AggregateExpression
+        $this->_isExpression = false;
+
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_IDENTIFIER:
                 if ($this->_isFunction()) {
-                    $this->Function();
+                    $this->_item = $this->Function();
                 } else {
-                    $this->PathExpression();
+                    $this->_item = $this->PathExpression();
                 }
             break;
+
             case Doctrine_Query_Token::T_STRING:
             case Doctrine_Query_Token::T_INTEGER:
             case Doctrine_Query_Token::T_FLOAT:
             case Doctrine_Query_Token::T_INPUT_PARAMETER:
-                $this->Atom();
+                $this->_item = $this->Atom();
             break;
+
             case Doctrine_Query_Token::T_AVG:
             case Doctrine_Query_Token::T_COUNT:
             case Doctrine_Query_Token::T_MAX:
             case Doctrine_Query_Token::T_MIN:
             case Doctrine_Query_Token::T_SUM:
-                $this->AggregateExpression();
+                $this->_item = $this->AggregateExpression();
             break;
+
             case Doctrine_Query_Token::T_NONE:
                 if ($this->_isNextToken('(')) {
                     $this->_parser->match('(');
-                    $this->Expression();
+                    $this->_item = $this->Expression();
                     $this->_parser->match(')');
-                    break;
+
+                    $this->_isExpression = true;
                 }
+            break;
+
             default:
                 $this->_parser->logError();
+            break;
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return (($this->_isExpression) ? '(' . $this->_item->buildSql() . ')' : $this->_item->buildSql());
     }
 }

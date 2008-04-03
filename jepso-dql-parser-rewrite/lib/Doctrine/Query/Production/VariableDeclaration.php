@@ -38,67 +38,95 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
     protected $_componentAlias;
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
         // VariableDeclaration = identifier [["AS"] IdentificationVariable]
-        $path = '';
-
-        $parserResult = $this->_parser->getParserResult();
-        $connection = $this->_parser->getConnection();
-
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
+            // identifier
             $this->_componentName = $this->_parser->token['value'];
-            $path = $this->_componentName;
 
-            if ($parserResult->hasQueryComponent($this->_componentName)) {
-                $queryComponent = $parserResult->getQueryComponent($this->_componentName);
-                $metadata = $queryComponent['metadata'];
-            } else {
-                // get the connection for the component
-                $manager = Doctrine_Manager::getInstance();
-                if ($manager->hasConnectionForComponent($this->_componentName)) {
-                    $this->_parser->setConnection($manager->getConnectionForComponent($this->_componentName));
-                }
-
-                $conn = $this->_parser->getConnection();
-
-                try {
-                    $metadata = $conn->getMetadata($this->_componentName);
-                    $mapper = $conn->getMapper($this->_componentName);
-                } catch (Doctrine_Exception $e) {
-                    $this->_parser->semanticalError($e->getMessage());
-                }
-
-                $queryComponent = array(
-                    'metadata'  => $metadata,
-                    'mapper'    => $mapper,
-                    'map'       => null
-                );
-            }
-
-            $parent = $path;
+            // IdentificationVariable (identifier if alias not defined)
+            $this->_componentAlias = $this->_componentName;
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
             $this->_parser->match(Doctrine_Query_Token::T_AS);
-            $this->_componentAlias = $this->IdentificationVariable();
-        } elseif ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->_componentAlias = $this->IdentificationVariable();
-        } else {
-            $this->_componentAlias = $path;
         }
 
-        $parserResult->setQueryComponent($this->_componentAlias, $queryComponent);
+        if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $this->_componentAlias = $this->_parser->token['value'];
+        }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
+        $parserResult = $this->_parser->getParserResult();
+
+        if ($parserResult->hasQueryComponent($this->_componentAlias)) {
+            // We should throw semantical error if there's already a component for this alias
+            $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
+            $componentName = $queryComponent['metadata']->getClassName();
+
+            $message  = "Cannot re-declare component alias '{$this->_componentAlias}'"
+                      . "for '{$this->_componentName}'. It was already declared for '"
+                      . "component '{$componentName}'.";
+
+            $this->_parser->semanticalError($message);
+        } elseif ($parserResult->hasQueryComponent($this->_componentName)) {
+            // Since name != alias, we can try to bring the queryComponent from name (already processed)
+            $queryComponent = $parserResult->getQueryComponent($this->_componentName);
+            $metadata = $queryComponent['metadata'];
+        } else {
+            // No queryComponent was found. We will have to build it for the first time
+
+            // Get the connection for the component
+            $conn = $this->_parser->getSqlBuilder()->getConnection();
+            $manager = Doctrine_Manager::getInstance();
+
+            if ($manager->hasConnectionForComponent($this->_componentName)) {
+                $conn = $manager->getConnectionForComponent($this->_componentName);
+            }
+
+            // Retrieving ClassMetadata and Mapper
+            try {
+                $metadata = $conn->getMetadata($this->_componentName);
+                $mapper = $conn->getMapper($this->_componentName);
+            } catch (Doctrine_Exception $e) {
+                $this->_parser->semanticalError($e->getMessage());
+            }
+
+            // Building queryComponent
+            $queryComponent = array(
+                'metadata'  => $metadata,
+                'mapper'    => $mapper,
+                'map'       => null
+            );
+        }
+
+        // Define ParserResult assertions for later usage
+        $tableAlias = $this->_parser->getParserResult()->generateTableAlias($this->_componentName);
+
+        $parserResult->setQueryComponent($this->_componentAlias, $queryComponent);
+        $parserResult->setTableAlias($tableAlias, $this->_componentAlias);
     }
 
 
     public function buildSql()
     {
+        // Basic handy variables
         $parserResult = $this->_parser->getParserResult();
         $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
 
-        return $queryComponent['metadata']->getTableName(). ' ' . $this->_sqlBuilder->generateTableAlias();
+        // Retrieving connection
+        $conn = $this->_parser->getSqlBuilder()->getConnection();
+        $manager = Doctrine_Manager::getInstance();
+
+        if ($manager->hasConnectionForComponent($this->_componentName)) {
+            $conn = $manager->getConnectionForComponent($this->_componentName);
+        }
+
+        return $conn->quoteIdentifier($queryComponent['metadata']->getTableName()) . ' '
+             . $conn->quoteIdentifier($parserResult->getTableAliasFromComponentAlias($this->_componentAlias));
     }
 }

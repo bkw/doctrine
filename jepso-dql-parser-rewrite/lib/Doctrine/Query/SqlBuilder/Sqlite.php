@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  $Id$
  *
@@ -20,7 +21,7 @@
  */
 
 /**
- * ConditionalFactor = ["NOT"] ConditionalPrimary
+ * Sqlite class of Sql Builder object
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -31,34 +32,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Production
+class Doctrine_Query_SqlBuilder_Sqlite extends Doctrine_Query_SqlBuilder
 {
-    protected $_notFactor = false;
 
-    protected $_conditionalPrimary;
-
-
-    protected function _syntax($params = array())
-    {
-        // ConditionalFactor = ["NOT"] ConditionalPrimary
-        $this->_notFactor = false;
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
-            $this->_parser->match(Doctrine_Query_Token::T_NOT);
-            $this->_notFactor = true;
-        }
-
-        $this->_conditionalPrimary = $this->ConditionalPrimary();
-    }
-
-
-    protected function _semantical($params = array())
-    {
-    }
-
-
-    public function buildSql()
-    {
-        return (($this->_notFactor) ? 'NOT ' : '') . $this->_conditionalPrimary->buildSql();
-    }
 }

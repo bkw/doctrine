@@ -182,7 +182,11 @@ abstract class Doctrine_Query_Abstract
     {
         $this->free();
 
-        $this->_dql = $dqlQuery;
+        if ($dqlQuery !== null) {
+            $this->_dql = $dqlQuery;
+
+            $this->_state = self::STATE_DIRTY;
+        }
     }
 
 

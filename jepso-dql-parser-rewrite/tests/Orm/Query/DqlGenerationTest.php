@@ -34,7 +34,7 @@
  */
 class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
 {
-    const QueryClass = 'Doctrine_Query2';
+    const QueryClass = 'Doctrine_Query';
 
     public function testSelect()
     {
@@ -216,6 +216,25 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q->select('u.name')->from('User u')->whereIn('u.type', array('admin', 'moderator'))->andWhereNotIn('u.id', array(1, 2))->orWhereNotIn('u.type', array('admin', 'moderator'))->andWhereNotIn('u.email', array('user@localhost', 'guest@localhost'));
         $this->assertEquals('SELECT u.name FROM User u WHERE u.type IN (?, ?) AND u.id NOT IN (?, ?) OR u.type NOT IN (?, ?) AND u.email NOT IN (?, ?)', $q->getDql());
         $this->assertEquals(array('admin', 'moderator', 1, 2, 'admin', 'moderator', 'user@localhost', 'guest@localhost'), $q->getParams());
+        $q->free();
+    }
+
+
+    public function testDelete()
+    {
+        $class = self::QueryClass;
+        $q = new $class();
+
+        $q->setDql('DELETE CmsUser u');
+        $this->assertEquals('DELETE CmsUser u', $q->getDql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u');
+        $this->assertEquals('DELETE FROM CmsUser u', $q->getDql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('u.id = ?', 1);
+        $this->assertEquals('DELETE FROM CmsUser u WHERE u.id = ?', $q->getDql());
         $q->free();
     }
 

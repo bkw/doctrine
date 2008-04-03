@@ -36,25 +36,32 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
     protected $_queryStatement;
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
             case Doctrine_Query_Token::T_FROM:
                 $this->_queryStatement = $this->SelectStatement();
+            break;
 
             case Doctrine_Query_Token::T_UPDATE:
                 $this->_queryStatement = $this->UpdateStatement();
+            break;
 
             case Doctrine_Query_Token::T_DELETE:
                 $this->_queryStatement = $this->DeleteStatement();
+            break;
 
             default:
-                $this->_parser->syntaxError();
+                $this->_parser->syntaxError('SELECT, FROM, UPDATE or DELETE');
                 $this->_queryStatement = null;
+            break;
         }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
     }
 
 

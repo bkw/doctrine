@@ -37,6 +37,15 @@ Doctrine::autoload('Doctrine_Query_AbstractResult');
 class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
 {
     /**
+     * A simple array keys representing table aliases and values table alias
+     * seeds. The seeds are used for generating short table aliases.
+     *
+     * @var array $_tableAliasSeeds
+     */
+    protected $_tableAliasSeeds = array();
+
+
+    /**
      * Returns generated SQL.
      *
      * @return string SQL generated.
@@ -44,6 +53,38 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
     public function getSql()
     {
         return $this->_data;
+    }
+
+
+    /**
+     * @nodoc
+     */
+    public function setSql($sql)
+    {
+        $this->_data = $sql;
+    }
+
+
+    /**
+     * Generates a table alias from given table name and associates 
+     * it with given component alias
+     *
+     * @param string $componentName Component name to be associated with generated table alias
+     * @return string               Generated table alias
+     */
+    public function generateTableAlias($componentName)
+    {
+        $baseAlias = strtolower(preg_replace('/[^A-Z]/', '\\1', $componentName));
+
+        $alias = $baseAlias;
+
+        if ( ! isset($this->_tableAliasSeeds[$baseAlias])) {
+            $this->_tableAliasSeeds[$baseAlias] = 1;
+        } else {
+            $alias .= $this->_tableAliasSeeds[$baseAlias]++;
+        }
+
+        return $alias;
     }
 
 }

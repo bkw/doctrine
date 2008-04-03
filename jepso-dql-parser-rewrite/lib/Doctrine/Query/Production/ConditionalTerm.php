@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -35,16 +36,20 @@ class Doctrine_Query_Production_ConditionalTerm extends Doctrine_Query_Productio
     protected $_conditionalFactors = array();
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
+        // ConditionalTerm = ConditionalFactor {"AND" ConditionalFactor}
         $this->_conditionalFactors[] = $this->ConditionalFactor();
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_AND)) {
             $this->_parser->match(Doctrine_Query_Token::T_AND);
             $this->_conditionalFactors[] = $this->ConditionalFactor();
         }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
     }
 
 

@@ -32,24 +32,46 @@
  */
 class Doctrine_Query_Production_QuantifiedExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_type;
+
+    protected $_subselect;
+
+
+    protected function _syntax(array $params = array())
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_ALL:
                 $this->_parser->match(Doctrine_Query_Token::T_ALL);
             break;
+
             case Doctrine_Query_Token::T_ANY:
                 $this->_parser->match(Doctrine_Query_Token::T_ANY);
             break;
+
             case Doctrine_Query_Token::T_SOME:
                 $this->_parser->match(Doctrine_Query_Token::T_SOME);
             break;
+
             default:
-                $this->_parser->logError();
+                $this->_parser->logError('ALL, ANY or SOME');
+            break;
         }
 
+        $this->_type = strtoupper($this->_parser->lookahead['value']);
+
         $this->_parser->match('(');
-        $this->Subselect();
+        $this->_subselect = $this->Subselect();
         $this->_parser->match(')');
+    }
+
+
+    protected function _semantical(array $params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_type . ' (' . $this->_subselect->buildSql() . ')';
     }
 }

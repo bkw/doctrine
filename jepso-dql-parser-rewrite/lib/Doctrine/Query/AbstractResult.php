@@ -72,7 +72,7 @@ abstract class Doctrine_Query_AbstractResult
      * @param array $enumParams Enum params.
      * @return Doctrine_Query_CacheHandler
      */
-    protected function __construct($data, $queryComponents, $tableAliasMap, $enumParams)
+    public function __construct($data = '', $queryComponents = array(), $tableAliasMap = array(), $enumParams = array())
     {
         $this->_data = $data;
         $this->_queryComponents = $queryComponents;
@@ -190,6 +190,18 @@ abstract class Doctrine_Query_AbstractResult
         }
 
         return $this->_tableAliasMap[$tableAlias];
+    }
+
+
+    /**
+     * Get table alias associated with given component alias.
+     *
+     * @param string $componentAlias Component alias that identifies the table alias
+     * @return string Component alias
+     */
+    public function getTableAliasFromComponentAlias($componentAlias)
+    {
+        return array_search($componentAlias, $this->_tableAliasMap);
     }
 
 

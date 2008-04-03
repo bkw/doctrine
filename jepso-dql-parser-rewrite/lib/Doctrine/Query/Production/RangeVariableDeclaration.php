@@ -41,9 +41,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
         $parserResult = $this->_parser->getParserResult();
         $connection = $this->_parser->getConnection();
 
-        // [TODO] Figure it out WHY this is inside an IF. It should fail if it does not match
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
-
             $component = $this->_parser->token['value'];
             $path = $component;
 

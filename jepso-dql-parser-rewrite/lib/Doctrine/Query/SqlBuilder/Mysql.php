@@ -21,7 +21,7 @@
  */
 
 /**
- * Base class of each Sql Builder object
+ * MySql class of Sql Builder object
  *
  * @package     Doctrine
  * @subpackage  Query

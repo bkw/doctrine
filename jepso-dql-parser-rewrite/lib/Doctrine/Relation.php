@@ -154,7 +154,7 @@ abstract class Doctrine_Relation implements ArrayAccess
             }
         }
         $this->definition = $def;
-        $this->_foreignMapper = $this->getTable()->getConnection()->getMapper($def['class']);
+        $this->_foreignMapper = $this->getClassMetadata()->getConnection()->getMapper($def['class']);
     }
 
     /**
@@ -255,7 +255,7 @@ abstract class Doctrine_Relation implements ArrayAccess
      *
      * @return object Doctrine_Table
      */
-    final public function getTable()
+    final public function getClassMetadata()
     {
         return Doctrine_Manager::getInstance()
                ->getConnectionForComponent($this->definition['class'])
@@ -335,7 +335,7 @@ abstract class Doctrine_Relation implements ArrayAccess
      */
     public function getRelationDql($count)
     {
-        $component = $this->getTable()->getComponentName();
+        $component = $this->getClassMetadata()->getComponentName();
 
         $dql  = 'FROM ' . $component
               . ' WHERE ' . $component . '.' . $this->definition['foreign']

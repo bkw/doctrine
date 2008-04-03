@@ -208,8 +208,8 @@ class Doctrine_Query_Scanner
         }
     }
 
-    public function resetPosition()
+    public function resetPosition($position = 0)
     {
-        $this->_position = 0;
+        $this->_position = $position;
     }
 }

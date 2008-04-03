@@ -38,7 +38,7 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
     protected $_whereClause;
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
         // DeleteStatement = DeleteClause [WhereClause]
         $this->_deleteClause = $this->DeleteClause();
@@ -46,13 +46,18 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
             $this->_whereClause = $this->WhereClause();
         }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
     }
 
 
     public function buildSql()
     {
+        // The 1=1 is needed to workaround the affected_rows in MySQL.
+        // Simple "DELETE FROM table_name" gives 0 affected rows.
         return $this->_deleteClause->buildSql() . (($this->_whereClause !== null)
              ? $this->_whereClause->buildSql() : ' WHERE 1=1');
     }

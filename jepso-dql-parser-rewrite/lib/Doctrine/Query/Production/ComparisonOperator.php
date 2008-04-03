@@ -20,7 +20,7 @@
  */
 
 /**
- * ComparisonOperator = "=" | "<" | "<=" | "<>" | ">" | ">="
+ * ComparisonOperator = "=" | "<" | "<=" | "<>" | ">" | ">=" | "!="
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -32,28 +32,59 @@
  */
 class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_operator;
+
+
+    protected function _syntax($params = array())
     {
         switch ($this->_parser->lookahead['value']) {
             case '=':
                 $this->_parser->match('=');
+                $this->_operator = '=';
             break;
+
             case '<':
                 $this->_parser->match('<');
+                $this->_operator = '<';
+
                 if ($this->_isNextToken('=')) {
                     $this->_parser->match('=');
+                    $this->_operator .= '=';
                 } elseif ($this->_isNextToken('>')) {
                     $this->_parser->match('>');
+                    $this->_operator .= '>';
                 }
             break;
+
             case '>':
                 $this->_parser->match('>');
+                $this->_operator = '>';
+
                 if ($this->_isNextToken('=')) {
                     $this->_parser->match('=');
+                    $this->_operator .= '=';
                 }
             break;
+
+            case '!':
+                $this->_parser->match('=');
+                $this->_operator = '<>';
+            break;
+
             default:
-                $this->_parser->logError();
+                $this->_parser->logError('=, <, <=, <>, >, >=, !=');
+            break;
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_operator;
     }
 }

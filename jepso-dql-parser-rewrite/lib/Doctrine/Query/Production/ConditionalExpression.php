@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -35,16 +36,20 @@ class Doctrine_Query_Production_ConditionalExpression extends Doctrine_Query_Pro
     protected $_conditionalTerms = array();
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
+        // ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
         $this->_conditionalTerms[] = $this->ConditionalTerm();
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_OR)) {
             $this->_parser->match(Doctrine_Query_Token::T_OR);
             $this->_conditionalTerms[] = $this->ConditionalTerm();
         }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
     }
 
 

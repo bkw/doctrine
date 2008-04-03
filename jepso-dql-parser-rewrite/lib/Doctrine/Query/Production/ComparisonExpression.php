@@ -32,24 +32,48 @@
  */
 class Doctrine_Query_Production_ComparisonExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_operator;
+
+    protected $_expression;
+
+    protected $_isSubselect;
+
+
+    protected function _syntax($params = array())
     {
-        $this->ComparisonOperator();
+        $this->_operator = $this->ComparisonOperator();
+        $this->_isSubselect = false;
 
         if ($this->_isSubselect()) {
             $this->_parser->match('(');
-            $this->Subselect();
+            $this->_expression = $this->Subselect();
             $this->_parser->match(')');
+
+            $this->_isSubselect = true;
         } else {
             switch ($this->_parser->lookahead['type']) {
                 case Doctrine_Query_Token::T_ALL:
                 case Doctrine_Query_Token::T_ANY:
                 case Doctrine_Query_Token::T_SOME:
-                    $this->QuantifiedExpression();
+                    $this->_expression = $this->QuantifiedExpression();
                 break;
+
                 default:
-                    $this->Expression();
+                    $this->_expression = $this->Expression();
+                break;
             }
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_operator->buildSql() . ' '
+             . (($this->_isSubselect) ? '(' . $this->_expression->buildSql() . ')' : $this->_expression->buildSql());
     }
 }

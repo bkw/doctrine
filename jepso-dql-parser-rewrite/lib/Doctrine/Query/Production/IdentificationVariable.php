@@ -32,7 +32,7 @@
  */
 class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    public function execute($params = array())
     {
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
             $alias = $this->_parser->token['value'];
@@ -45,5 +45,15 @@ class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Pr
         }
 
         return null;
+    }
+
+
+    protected function _syntax($params = array())
+    {
+    }
+
+
+    protected function _semantical(array $params = array())
+    {
     }
 }

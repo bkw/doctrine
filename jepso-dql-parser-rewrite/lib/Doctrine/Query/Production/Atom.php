@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,23 +33,68 @@
  */
 class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_type;
+
+    protected $_value;
+
+
+    protected function _syntax($params = array())
     {
+        // Atom = string | integer | float | input_parameter
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_STRING:
                 $this->_parser->match(Doctrine_Query_Token::T_STRING);
+                $this->_type = 'string';
             break;
+
             case Doctrine_Query_Token::T_INTEGER:
                 $this->_parser->match(Doctrine_Query_Token::T_INTEGER);
+                $this->_type = 'integer';
             break;
+
             case Doctrine_Query_Token::T_FLOAT:
                 $this->_parser->match(Doctrine_Query_Token::T_FLOAT);
+                $this->_type = 'float';
             break;
+
             case Doctrine_Query_Token::T_INPUT_PARAMETER:
                 $this->_parser->match(Doctrine_Query_Token::T_INPUT_PARAMETER);
+                $this->_type = 'param';
             break;
+
             default:
-                $this->_parser->syntaxError();
+                $this->_parser->syntaxError('string, number or parameter (? or :)');
+            break;
+        }
+
+        $this->_value = $this->_parser->token['value'];
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        switch ($this->_type) {
+            case 'param':
+                return $this->_value;
+            break;
+
+            case 'integer':
+            case 'float':
+                return $this->_parser->getSqlBuilder()->getConnection()->quote($this->_value, $this->_type);
+            break;
+
+            default:
+                $conn = $this->_parser->getSqlBuilder()->getConnection();
+
+                return $conn->string_quoting['start'] 
+                     . $this->_parser->getConnection()->quote($this->_value, $this->_type)
+                     . $conn->string_quoting['end'];
+            break;
         }
     }
 }

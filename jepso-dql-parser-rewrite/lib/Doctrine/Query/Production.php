@@ -110,7 +110,17 @@ abstract class Doctrine_Query_Production
      * their values
      * @return Doctrine_Query_SqlBuilder
      */
-    abstract public function execute(array $params = array());
+    public function execute(array $params = array())
+    {
+        // Syntax check
+        $this->_syntax($params);
+
+        // Semantical check
+        $this->_semantical($params);
+
+        // Return AST instance
+        return $this;
+    }
 
 
     /**
@@ -122,8 +132,19 @@ abstract class Doctrine_Query_Production
     {
         $className = get_class($this);
         $methodName = substr($className, strrpos($className, '_'));
-        $methodName[0] = strtolower($methodName[0]);
 
         $this->_sqlBuilder->$methodName($this);
     }
+
+
+    /**
+     * @nodoc
+     */
+    abstract protected function _syntax($params = array());
+
+
+    /**
+     * @nodoc
+     */
+    abstract protected function _semantical($params = array());
 }

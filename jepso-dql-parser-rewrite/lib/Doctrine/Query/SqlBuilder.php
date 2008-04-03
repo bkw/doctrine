@@ -67,6 +67,15 @@ abstract class Doctrine_Query_SqlBuilder
     }
 
 
+    /**
+     * @nodoc
+     */
+    public function quoteIdentifier($identifier)
+    {
+        return $this->_connection->quoteIdentifier($identifier);
+    }
+
+
 
     // Start Common SQL generations
     // Here we follow the SQL-99 specifications available at:

@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,19 +33,47 @@
  */
 class Doctrine_Query_Production_Expression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_terms = array();
+
+
+    protected function _syntax($params = array())
     {
-        $this->Term();
+        // Expression = Term {("+" | "-") Term}
+        $this->_terms[] = $this->Term();
 
         while ($this->_isNextToken('+') || $this->_isNextToken('-')) {
             if ($this->_isNextToken('+')) {
-               $this->_parser->match('+');
+                $this->_parser->match('+');
+                $this->_terms[] = '+';
             } else{
                 $this->_parser->match('-');
+                $this->_terms[] = '-';
             }
-            $this->Term();
-        }
 
-        return $this;
+            $this->_terms[] = $this->Term();
+        }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return implode(' ', $this->_mapTerms());
+    }
+
+
+    protected function _mapTerms()
+    {
+        return array_map(array(&$this, '_mapTerm'), $this->_terms);
+    }
+
+
+    protected function _mapTerm($value)
+    {
+        return (is_string($value) ? $value : $value->buildSql());
     }
 }

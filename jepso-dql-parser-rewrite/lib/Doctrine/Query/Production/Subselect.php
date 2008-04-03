@@ -25,6 +25,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -33,11 +34,23 @@
  */
 class Doctrine_Query_Production_Subselect extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected function _syntax(array $params = array())
     {
+        // We need to populate the symbol table first (Objects aliases)
+        // Otherwise the SELECT fields will fail gracefully.
+        // We'll move to FROM statement, process it and then go back.
+        // After that, process the DQL again, now do not considering semantical
+        // check in FROM statement (it was already done in the first pass).
+
+        $position = $this->_moveCursorToFromStatement();
+        $this->FromClause();
+        $this->_parser->free(false, $position); // Cannot be deep, it would clean already processed errors
+
+        // End of symbol table population
+
         $this->SimpleSelectClause();
 
-        $this->FromClause();
+        $this->FromClause(array('semanticalCheck' => false));
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
             $this->WhereClause();
@@ -58,5 +71,32 @@ class Doctrine_Query_Production_Subselect extends Doctrine_Query_Production
         if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
             $this->LimitClause();
         }
+    }
+
+
+    protected function _semantical(array $params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+    }
+
+
+    protected function _moveCursorToFromStatement()
+    {
+        $position = $this->_parser->token['position'];
+
+        while ( ! $this->_isNextToken(Doctrine_Query_Token::T_FROM) || $this->_parser->lookahead !== null) {
+            // Move to the next token
+            $this->_parser->next();
+        }
+
+        if ($this->_parser->lookahead === null) {
+            $this->syntaxError('FROM');
+        }
+
+        return $position;
     }
 }

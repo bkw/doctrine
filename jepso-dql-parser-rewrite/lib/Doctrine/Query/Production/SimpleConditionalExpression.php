@@ -21,12 +21,12 @@
 
 /**
  * SimpleConditionalExpression =
- *     Expression (ComparisonExpression | BetweenExpression | LikeExpression |
- *     InExpression | NullComparisonExpression | QuantifiedExpression) |
- *     ExistsExpression
+ *     ExistsExpression | Expression (ComparisonExpression | BetweenExpression |
+ *     LikeExpression | InExpression | NullComparisonExpression | QuantifiedExpression)
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -35,40 +35,76 @@
  */
 class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_leftExpression;
+
+    protected $_rightExpression;
+
+
+    protected function _syntax($params = array())
     {
+        // SimpleConditionalExpression =
+        //     ExistsExpression | Expression (ComparisonExpression | BetweenExpression |
+        //     LikeExpression | InExpression | NullComparisonExpression | QuantifiedExpression)
         if ($this->_getExpressionType() === Doctrine_Query_Token::T_EXISTS) {
-            $this->ExistsExpression();
+            $this->_leftExpression = $this->ExistsExpression();
         } else {
-            $this->Expression();
+            $this->_leftExpression = $this->Expression();
 
             switch ($this->_getExpressionType()) {
                 case Doctrine_Query_Token::T_BETWEEN:
-                    $this->BetweenExpression();
+                    $this->_rightExpression = $this->BetweenExpression();
                 break;
+
                 case Doctrine_Query_Token::T_LIKE:
-                    $this->LikeExpression();
+                    $this->_rightExpression = $this->LikeExpression();
                 break;
+
                 case Doctrine_Query_Token::T_IN:
-                    $this->InExpression();
+                    $this->_rightExpression = $this->InExpression();
                 break;
+
                 case Doctrine_Query_Token::T_IS:
-                    $this->NullComparisonExpression();
+                    $this->_rightExpression = $this->NullComparisonExpression();
                 break;
+
+                case Doctrine_Query_Token::T_ALL:
+                case Doctrine_Query_Token::T_ANY:
+                case Doctrine_Query_Token::T_SOME:
+                    $this->_rightExpression = $this->QuantifiedExpression();
+                break;
+
                 case Doctrine_Query_Token::T_NONE:
-                    $this->ComparisonExpression();
+                    $this->_rightExpression = $this->ComparisonExpression();
                 break;
+
                 default:
-                    $this->_parser->logError();
+                    $message = "BETWEEN, LIKE, IN, IS, quantified (ALL, ANY or SOME) "
+                             . "or comparison (=, <, <=, <>, >, >=, !=)";
+                    $this->_parser->syntaxError($message);
+                break;
             }
         }
     }
 
 
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_leftExpression->buildSql()
+             . (($this->_rightExpression !== null) ? ' ' . $this->_rightExpression->buildSql() : '');
+    }
+
+
     protected function _getExpressionType() {
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
-            $token = $this->_parser->getScanner()->peek();
-            $this->_parser->getScanner()->resetPeek();
+            $scanner = $this->_parser->getScanner();
+
+            $token = $scanner()->peek();
+            $scanner()->resetPeek();
         } else {
             $token = $this->_parser->lookahead;
         }

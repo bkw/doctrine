@@ -20,11 +20,11 @@
  */
 
 /**
- * AggregateExpression =
- *     ("AVG" | "MAX" | "MIN" | "SUM" | "COUNT") "(" ["DISTINCT"] Expression ")"
+ * AggregateExpression = ("AVG" | "MAX" | "MIN" | "SUM" | "COUNT") "(" ["DISTINCT"] Expression ")"
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -33,8 +33,17 @@
  */
 class Doctrine_Query_Production_AggregateExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_functionName;
+
+    protected $_isDistinct;
+
+    protected $_expression;
+
+
+    protected function _syntax($params = array())
     {
+        // AggregateExpression = ("AVG" | "MAX" | "MIN" | "SUM" | "COUNT") "(" ["DISTINCT"] Expression ")"
+        $this->_isDistinct = false;
         $token = $this->_parser->lookahead;
 
         switch ($token['type']) {
@@ -44,20 +53,37 @@ class Doctrine_Query_Production_AggregateExpression extends Doctrine_Query_Produ
             case Doctrine_Query_Token::T_SUM:
             case Doctrine_Query_Token::T_COUNT:
                 $this->_parser->match($token['type']);
+                $this->_functionName = strtoupper($token['value']);
             break;
 
             default:
-                $this->_parser->logError();
+                $this->_parser->logError('AVG, MAX, MIN, SUM or COUNT');
+            break;
         }
 
         $this->_parser->match('(');
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_DISTINCT)) {
             $this->_parser->match(Doctrine_Query_Token::T_DISTINCT);
+            $this->_isDistinct = true;
         }
 
-        $this->Expression();
+        $this->_expression = $this->Expression();
 
         $this->_parser->match(')');
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_functionName
+             . '(' . (($this->_isDistinct) ? 'DISTINCT ' : '')
+             . $this->_expression->buildSql()
+             . ')';
     }
 }

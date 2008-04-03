@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,12 +33,27 @@
  */
 class Doctrine_Query_Production_ExistsExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_subselect;
+
+
+    protected function _syntax($params = array())
     {
+        // ExistsExpression = "EXISTS" "(" Subselect ")"
         $this->_parser->match(Doctrine_Query_Token::T_EXISTS);
 
         $this->_parser->match('(');
-        $this->Subselect();
+        $this->_subselect = $this->Subselect();
         $this->_parser->match(')');
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return 'EXISTS (' . $this->_subselect->buildSql() . ')';
     }
 }

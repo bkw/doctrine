@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -35,8 +36,9 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
     protected $_conditionalExpression;
 
 
-    public function execute(array $params = array())
+    protected function _syntax($params = array())
     {
+        // ConditionalPrimary = SimpleConditionalExpression | "(" ConditionalExpression ")"
         if ($this->_isConditionalExpression()) {
             $this->_parser->match('(');
             $this->_conditionalExpression = $this->ConditionalExpression();
@@ -44,8 +46,11 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
         } else {
             $this->_conditionalExpression = $this->SimpleConditionalExpression();
         }
+    }
 
-        return $this;
+
+    protected function _semantical($params = array())
+    {
     }
 
 
@@ -56,8 +61,7 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
         );
 
         return ($isConditionExpression)
-             ? '(' . $this->_conditionalExpression->buildSql() . ')'
-             : $this->_conditionalExpression->buildSql();
+             ? '(' . $this->_conditionalExpression->buildSql() . ')' : $this->_conditionalExpression->buildSql();
     }
 
 
@@ -94,6 +98,7 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
                             case '=':
                             case '<':
                             case '>':
+                            case '!':
                                 return true;
                         }
                     break;

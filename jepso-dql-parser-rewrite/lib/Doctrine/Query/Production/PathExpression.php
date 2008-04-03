@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,13 +33,112 @@
  */
 class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_identifiers = array();
+
+
+    protected function _syntax($params = array())
     {
         $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+        $this->_identifiers[] = $this->_parser->token['value'];
 
         while ($this->_isNextToken('.')) {
             $this->_parser->match('.');
             $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+
+            $this->_identifiers[] = $this->_parser->token['value'];
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+        $parserResult = $this->_parser->getParserResult();
+        $classMetadata = null;
+
+        for ($i = 0, $l = count($this->_identifiers); $i < $l; $i++) {
+            if ($i < $l - 1) {
+                $relationName = $this->_identifiers[$i];
+
+                // We are still checking for relations
+                if ( $classMetadata !== null && ! $classMetadata->hasRelation($relationName)) {
+                    $className = $classMetadata->getClassName();
+
+                    $this->_parser->semanticalError("Relation '{$relationName}' does not exist in component '{$className}'");
+
+                    // Assigning new ClassMetadata
+                    $classMetadata = $classMetadata->getRelation($relationName)->getClassMetadata();
+                } elseif ( $classMetadata === null ) {
+                    $queryComponent = $this->_parser->getParserResult()->getQueryComponent($relationName);
+
+                    // Initializing ClassMetadata
+                    $classMetadata = $queryComponent['metadata'];
+                }
+            } else {
+                $fieldName = $this->_identifiers[$i];
+
+                // We are checking for fields
+                if ($classMetadata === null) {
+                    // No metadata selection until now. We might need to deal with:
+                    // DELETE FROM Obj alias WHERE field = X
+                    $queryComponents = $this->_parser->getParserResult()->getQueryComponents();
+
+                    // Check if we have more than one queryComponent defined
+                    if (count($queryComponents) > 1) {
+                        $this->_parser->semanticalError("Undefined component alias for field '{$fieldName}'");
+                    }
+
+                    // Retrieve ClassMetadata
+                    $componentAlias = '';
+                    $queryComponent = array();
+
+                    foreach ($queryComponents as $componentAlias => $queryComponent) {
+                        break;
+                    }
+
+                    $classMetadata = $queryComponent['metadata'];
+                    array_unshift($this->_identifiers, $componentAlias);
+                }
+
+                // Check if field exists in ClassMetadata
+                if ( ! $classMetadata->hasField($fieldName)) {
+                    $className = $classMetadata->getClassName();
+
+                    $this->_parser->semanticalError("Field '{$fieldName}' does not exist in component '{$className}'");
+                }
+            }
+        }
+    }
+
+
+    public function buildSql()
+    {
+        // Basic handy variables
+        $parserResult = $this->_parser->getParserResult();
+
+        // Retrieving connection
+        $conn = $this->_parser->getSqlBuilder()->getConnection();
+        $manager = Doctrine_Manager::getInstance();
+
+        // _identifiers are always >= 2
+        if ($manager->hasConnectionForComponent($this->_identifiers[0])) {
+            $conn = $manager->getConnectionForComponent($this->_identifiers[0]);
+        }
+
+        for ($i = 0, $l = count($this->_identifiers); $i < $l; $i++) {
+            if ($i < $l - 1) {
+                // [TODO] We are assuming we never define relations in WHERE clauses.
+                // So, do not bother about table alias that may not be previously added.
+                // At a later stage, we should deal with it too.
+                $str .= $parserResult->getTableAliasFromComponentAlias($this->_identifiers[$i]) . '.';
+            } else {
+                // Retrieving last ClassMetadata
+                $queryComponent = $parserResult->getQueryComponent($this->_identifiers[$i - 1]);
+                $classMetadata = $queryComponent['metadata'];
+
+                $str .= $classMetadata->getColumnName($this->_identifiers[$i]);
+            }
+        }
+
+        return $conn->quoteIdentifier($str);
     }
 }

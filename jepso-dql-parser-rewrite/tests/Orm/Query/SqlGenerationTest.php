@@ -20,45 +20,41 @@
  */
 
 /**
- * ConditionalFactor = ["NOT"] ConditionalPrimary
+ * Test case for testing the saving and referencing of query identifiers.
  *
  * @package     Doctrine
  * @subpackage  Query
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Production
+class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
 {
-    protected $_notFactor = false;
+    const QueryClass = 'Doctrine_Query';
 
-    protected $_conditionalPrimary;
-
-
-    protected function _syntax($params = array())
+    public function testDelete()
     {
-        // ConditionalFactor = ["NOT"] ConditionalPrimary
-        $this->_notFactor = false;
+        $class = self::QueryClass;
+        $q = new $class();
 
-        if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
-            $this->_parser->match(Doctrine_Query_Token::T_NOT);
-            $this->_notFactor = true;
-        }
+        $q->setDql('DELETE CmsUser u');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE 1=1', $q->getSql());
+        $q->free();
 
-        $this->_conditionalPrimary = $this->ConditionalPrimary();
-    }
+        $q->delete()->from('CmsUser u');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE 1=1', $q->getSql());
+        $q->free();
 
+        $q->delete()->from('CmsUser u')->where('id = ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
+        $q->free();
 
-    protected function _semantical($params = array())
-    {
-    }
-
-
-    public function buildSql()
-    {
-        return (($this->_notFactor) ? 'NOT ' : '') . $this->_conditionalPrimary->buildSql();
+        $q->delete()->from('CmsUser u')->where('u.id = ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
+        $q->free();
     }
 }

@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,20 +33,52 @@
  */
 class Doctrine_Query_Production_Function extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_functionName;
+
+    protected $_arguments = array();
+
+
+    protected function _syntax($params = array())
     {
+        // Function = identifier "(" [Expression {"," Expression}] ")"
         $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+        $this->_functionName = $this->_parser->token['value'];
 
         $this->_parser->match('(');
 
         if ( ! $this->_isNextToken(')')) {
-            $this->Expression();
+            $this->_arguments[] = $this->Expression();
+
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
-                $this->Expression();
+
+                $this->_arguments[] = $this->Expression();
             }
         }
 
         $this->_parser->match(')');
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_functionName . '(' . implode(', ', $this->_mapArguments()) . ')';
+    }
+
+
+    protected function _mapArguments()
+    {
+        return array_map(array(&$this, '_mapArgument'), $this->_arguments);
+    }
+
+
+    protected function _mapArgument($value)
+    {
+        return $value->buildSql();
     }
 }

@@ -174,10 +174,10 @@ class Doctrine_Query_Parser
     }
 
 
-    public function free($deep = false)
+    public function free($deep = false, $position = 0)
     {
         // WARNING! Use this method with care. It resets the scanner!
-        $this->_scanner->resetPosition();
+        $this->_scanner->resetPosition($position);
 
         // Deep = true cleans peek and also any previously defined errors
         if ($deep) {
@@ -290,7 +290,7 @@ class Doctrine_Query_Parser
         }
 
         // Formatting message
-        $message = 'line 0, col ' . $token['position'] . ': Error: ';
+        $message = 'line 0, col ' . (isset($token['position']) ? $token['position'] : '-1') . ': Error: ';
 
         if ($expected !== '') {
             $message .= "Expected '$expected', got ";

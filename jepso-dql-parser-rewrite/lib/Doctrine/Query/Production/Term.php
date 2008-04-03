@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,17 +33,47 @@
  */
 class Doctrine_Query_Production_Term extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_factors = array();
+
+
+    protected function _syntax($params = array())
     {
-        $this->Factor();
+        // Term = Factor {("*" | "/") Factor}
+        $this->_factors[] = $this->Factor();
 
         while ($this->_isNextToken('*') || $this->_isNextToken('/')) {
             if ($this->_isNextToken('*')) {
                 $this->_parser->match('*');
+                $this->_factors[] = '*';
             } else {
                 $this->_parser->match('/');
+                $this->_factors[] = '/';
             }
-            $this->Factor();
+
+            $this->_factors[] = $this->Factor();
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return implode(' ', $this->_mapFactors());
+    }
+
+
+    protected function _mapFactors()
+    {
+        return array_map(array(&$this, '_mapFactor'), $this->_factors);
+    }
+
+
+    protected function _mapFactor($value)
+    {
+        return (is_string($value) ? $value : $value->buildSql());
     }
 }

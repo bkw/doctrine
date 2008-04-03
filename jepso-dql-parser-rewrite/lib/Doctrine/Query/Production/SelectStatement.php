@@ -41,9 +41,9 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
         // After that, process the DQL again, now do not considering semantical
         // check in FROM statement (it was already done in the first pass).
 
-        $this->_moveCursorToFromStatement();
+        $position = $this->_moveCursorToFromStatement();
         $this->FromClause();
-        $this->_parser->free(); // Cannot be deep, it would clean already processed errors
+        $this->_parser->free(false, $position); // Cannot be deep, it would clean already processed errors
 
         // End of symbol table population
 
@@ -77,6 +77,8 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
     protected function _moveCursorToFromStatement()
     {
+        $position = $this->_parser->token['position'];
+
         while ( ! $this->_isNextToken(Doctrine_Query_Token::T_FROM) || $this->_parser->lookahead !== null) {
             // Move to the next token
             $this->_parser->next();
@@ -85,5 +87,7 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
         if ($this->_parser->lookahead === null) {
             $this->syntaxError('FROM');
         }
+
+        return $position;
     }
 }
