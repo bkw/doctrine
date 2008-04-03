@@ -60,7 +60,7 @@ class Doctrine_Ticket_935_TestCase extends Doctrine_UnitTestCase {
         $q = new Doctrine_Query();
         $row = $q->select('a.*')
                  ->from('EnumUpdateBug a')
-                 ->where('id = 1')
+                 ->where('a.id = 1')
                  ->fetchOne();
         
         $this->assertEqual($row->bla_id, 5);
