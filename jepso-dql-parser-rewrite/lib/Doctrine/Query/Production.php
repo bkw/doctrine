@@ -89,11 +89,17 @@ abstract class Doctrine_Query_Production
     {
         $this->_parser->getPrinter()->startProduction($method);
 
-        if (is_array($args[0])) {
-            $params = $args[0];
+        if (isset($args[0])) {
+            if (is_array($args[0])) {
+                $params = $args[0];
+            } else {
+                $params = array($args[0]);
+            }
         } else {
-            $params = array($args[0]);
+            $params = array();
         }
+
+
 
         $retval = $this->_parser->getProduction($method)->execute($params);
 

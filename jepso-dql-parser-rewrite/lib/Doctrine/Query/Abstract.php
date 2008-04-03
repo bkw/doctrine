@@ -654,7 +654,7 @@ abstract class Doctrine_Query_Abstract
      * @param mixed $params An array of parameters or a simple scalar
      * @return Doctrine_Query
      */
-    public function andWhereNotIn($expr, $params = array())
+    public function andWhereNotIn($expr, $params = array(), $override = false)
     {
         if (count($this->getDqlQueryPart('where')) > 0) {
             $this->_addDqlQueryPart('where', 'AND', true);

@@ -124,6 +124,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
             $conn = $manager->getConnectionForComponent($this->_identifiers[0]);
         }
 
+        $str = "";
         for ($i = 0, $l = count($this->_identifiers); $i < $l; $i++) {
             if ($i < $l - 1) {
                 // [TODO] We are assuming we never define relations in WHERE clauses.
