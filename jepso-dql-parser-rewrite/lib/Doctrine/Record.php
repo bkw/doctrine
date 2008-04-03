@@ -1407,13 +1407,13 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     }
 
     /**
-     * Checks whether the entity already has a persistent state.
+     * Checks whether the entity already has not a persistent state.
      *
-     * @return boolean  TRUE if the object is managed and has persistent state, FALSE otherwise.
+     * @return boolean  TRUE if the object is not managed and has not persistent state, FALSE otherwise.
      */
-    public function exists()
+    public function isNew()
     {
-        return ($this->_state !== Doctrine_Record::STATE_TCLEAN &&
+        return ! ($this->_state !== Doctrine_Record::STATE_TCLEAN &&
                 $this->_state !== Doctrine_Record::STATE_TDIRTY);
     }
 
