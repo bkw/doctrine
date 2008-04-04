@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,10 +33,21 @@
  */
 class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_not;
+
+    protected $_subselect;
+
+    protected $_atoms = array();
+
+
+    protected function _syntax($params = array())
     {
+        // InExpression = ["NOT"] "IN" "(" (Atom {"," Atom} | Subselect) ")"
+        $this->_not = false;
+
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $this->_parser->match(Doctrine_Query_Token::T_NOT);
+            $this->_not = true;
         }
 
         $this->_parser->match(Doctrine_Query_Token::T_IN);
@@ -43,15 +55,41 @@ class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
         $this->_parser->match('(');
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_SELECT)) {
-            $this->Subselect();
+            $this->_subselect = $this->Subselect();
         } else {
-            $this->Atom();
+            $this->_atoms[] = $this->Atom();
+
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
-                $this->Atom();
+                $this->_atoms[] = $this->Atom();
             }
         }
 
         $this->_parser->match(')');
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return (($this->_not) ? 'NOT ' : '') . 'IN ('
+             . (($this->_subselect !== null) ? $this->_subselect->buildSql() : implode(', ', $this->_mapAtoms()))
+             . ')';
+    }
+
+
+    protected function _mapAtoms()
+    {
+        return array_map(array(&$this, '_mapAtom'), $this->_atoms);
+    }
+
+
+    protected function _mapAtom($value)
+    {
+        return $value->buildSql();
     }
 }

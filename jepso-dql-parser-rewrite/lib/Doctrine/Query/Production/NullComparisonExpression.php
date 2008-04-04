@@ -20,7 +20,7 @@
  */
 
 /**
- * BetweenExpression = ["NOT"] "BETWEEN" Expression "AND" Expression
+ * NullComparisonExpression = "IS" ["NOT"] "NULL"
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -31,32 +31,23 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Production
+class Doctrine_Query_Production_NullComparisonExpression extends Doctrine_Query_Production
 {
     protected $_not;
-
-    protected $_fromExpression;
-
-    protected $_toExpression;
 
 
     protected function _syntax($params = array())
     {
-        // BetweenExpression = ["NOT"] "BETWEEN" Expression "AND" Expression
         $this->_not = false;
+
+        $this->_parser->match(Doctrine_Query_Token::T_IS);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $this->_parser->match(Doctrine_Query_Token::T_NOT);
             $this->_not = true;
         }
 
-        $this->_parser->match(Doctrine_Query_Token::T_BETWEEN);
-
-        $this->_fromExpression = $this->Expression();
-
-        $this->_parser->match(Doctrine_Query_Token::T_AND);
-
-        $this->_toExpression = $this->Expression();
+        $this->_parser->match(Doctrine_Query_Token::T_NULL);
     }
 
 
@@ -67,7 +58,6 @@ class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Product
 
     public function buildSql()
     {
-        return (($this->_not) ? 'NOT ' : '') . 'BETWEEN '
-             . $this->_fromExpression->buildSql() . ' AND ' . $this->_toExpression->buildSql();
+        return 'IS ' . (($this->_not) ? 'NOT ' : '') . 'NULL';
     }
 }

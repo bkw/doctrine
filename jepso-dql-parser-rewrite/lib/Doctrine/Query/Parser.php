@@ -174,6 +174,12 @@ class Doctrine_Query_Parser
     }
 
 
+    public function isA($value, $token)
+    {
+        return $this->_scanner->isA($value, $token);
+    }
+
+
     public function free($deep = false, $position = 0)
     {
         // WARNING! Use this method with care. It resets the scanner!

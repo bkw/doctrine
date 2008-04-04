@@ -67,6 +67,7 @@ class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Produc
             break;
 
             case '!':
+                $this->_parser->match('!');
                 $this->_parser->match('=');
                 $this->_operator = '<>';
             break;

@@ -76,7 +76,6 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         } elseif ($parserResult->hasQueryComponent($this->_componentName)) {
             // Since name != alias, we can try to bring the queryComponent from name (already processed)
             $queryComponent = $parserResult->getQueryComponent($this->_componentName);
-            $metadata = $queryComponent['metadata'];
         } else {
             // No queryComponent was found. We will have to build it for the first time
 

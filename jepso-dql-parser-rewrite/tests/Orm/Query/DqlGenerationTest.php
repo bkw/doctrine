@@ -152,12 +152,12 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q->free();
 
         $q->select('u.name')->from('User u')->where('u.id = ?', 1)->andWhere('u.type != ?', 'admin');
-        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND ( u.type != ? )', $q->getDql());
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND u.type != ?', $q->getDql());
         $this->assertEquals(array(1, 'admin'), $q->getParams());
         $q->free();
 
         $q->select('u.name')->from('User u')->where('( u.id = ?', 1)->andWhere('u.type != ? )', 'admin');
-        $this->assertEquals('SELECT u.name FROM User u WHERE ( u.id = ? AND ( u.type != ? ) )', $q->getDql());
+        $this->assertEquals('SELECT u.name FROM User u WHERE ( u.id = ? AND u.type != ? )', $q->getDql());
         $this->assertEquals(array(1, 'admin'), $q->getParams());
         $q->free();
 
@@ -167,12 +167,12 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q->free();
 
         $q->select('u.name')->from('User u')->where('u.id = ?', 1)->orWhere('u.type != ?', 'admin');
-        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? OR ( u.type != ? )', $q->getDql());
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? OR u.type != ?', $q->getDql());
         $this->assertEquals(array(1, 'admin'), $q->getParams());
         $q->free();
 
         $q->select('u.name')->from('User u')->andwhere('u.id = ?', 1)->andWhere('u.type != ?', 'admin')->orWhere('u.email = ?', 'admin@localhost');
-        $this->assertEquals('SELECT u.name FROM User u WHERE ( u.id = ? ) AND ( u.type != ? ) OR ( u.email = ? )', $q->getDql());
+        $this->assertEquals('SELECT u.name FROM User u WHERE u.id = ? AND u.type != ? OR u.email = ?', $q->getDql());
         $this->assertEquals(array(1, 'admin', 'admin@localhost'), $q->getParams());
         $q->free();
     }
@@ -235,6 +235,10 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
 
         $q->delete()->from('CmsUser u')->where('u.id = ?', 1);
         $this->assertEquals('DELETE FROM CmsUser u WHERE u.id = ?', $q->getDql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('u.username = ?', 'gblanco')->orWhere('u.name = ?', 'Guilherme');
+        $this->assertEquals('DELETE FROM CmsUser u WHERE u.username = ? OR u.name = ?', $q->getDql());
         $q->free();
     }
 

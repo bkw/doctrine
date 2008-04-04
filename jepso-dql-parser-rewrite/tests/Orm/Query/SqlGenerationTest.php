@@ -34,27 +34,193 @@
  */
 class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
 {
-    const QueryClass = 'Doctrine_Query';
-
-    public function testDelete()
+    public function testDeleteWithoutWhere()
     {
-        $class = self::QueryClass;
-        $q = new $class();
+        $q = new Doctrine_Query();
 
+        // NO WhereClause
         $q->setDql('DELETE CmsUser u');
-        $this->assertEquals('DELETE FROM cms_user cu WHERE 1=1', $q->getSql());
+        $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
         $q->free();
 
         $q->delete()->from('CmsUser u');
-        $this->assertEquals('DELETE FROM cms_user cu WHERE 1=1', $q->getSql());
+        $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
         $q->free();
+    }
 
+
+    public function testDeleteWithWhere()
+    {
+        $q = new Doctrine_Query();
+
+        // "WHERE" ConditionalExpression
+        // ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
+        // ConditionalTerm       = ConditionalFactor {"AND" ConditionalFactor}
+        // ConditionalFactor     = ["NOT"] ConditionalPrimary
+        // ConditionalPrimary    = SimpleConditionalExpression | "(" ConditionalExpression ")"
+        // SimpleConditionalExpression
+        //                       = Expression (ComparisonExpression | BetweenExpression | LikeExpression
+        //                       | InExpression | NullComparisonExpression) | ExistsExpression
+
+        // If this one test fail, all others will fail too. That's the simplest case possible
         $q->delete()->from('CmsUser u')->where('id = ?', 1);
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
         $q->free();
+    }
 
-        $q->delete()->from('CmsUser u')->where('u.id = ?', 1);
-        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
+
+    public function testDeleteWithConditionalExpressions()
+    {
+        $q = new Doctrine_Query();
+
+        $q->delete()->from('CmsUser u')->where('u.username = ?', 'gblanco')
+          ->orWhere('u.name = ?', 'Guilherme');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ? OR cu.name = ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('u.id = ?', 2)
+          ->orWhere('( u.username = ? OR u.name = ? )', array('gblanco', 'Guilherme'));
+        $this->assertEquals(
+            'DELETE FROM cms_user cu WHERE cu.id = ? OR (cu.username = ? OR cu.name = ?)',
+            $q->getSql()
+        );
+        $q->free();
+    }
+
+
+    public function testDeleteWithConditionalTerms()
+    {
+        $q = new Doctrine_Query();
+
+        $q->delete()->from('CmsUser u')->where('u.username = ?', 'gblanco')->andWhere('u.name = ?', 'Guilherme');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ? AND cu.name = ?', $q->getSql());
+        $q->free();
+    }
+
+
+    public function testDeleteWithConditionalFactors()
+    {
+        $q = new Doctrine_Query();
+
+        $q->delete()->from('CmsUser u')->where('NOT id != ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE NOT cu.id <> ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('NOT ( id != ? )', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE NOT (cu.id <> ?)', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('NOT ( id != ? AND username = ? )', array(1, 'gblanco'));
+        $this->assertEquals('DELETE FROM cms_user cu WHERE NOT (cu.id <> ? AND cu.username = ?)', $q->getSql());
+        $q->free();
+    }
+
+
+    // ConditionalPrimary was already tested (see testDeleteWithWhere() and testDeleteWithConditionalFactors())
+
+
+    public function testDeleteWithExprAndComparison()
+    {
+        $q = new Doctrine_Query();
+
+        // id = ? was already tested (see testDeleteWithWhere())
+
+        $q->delete()->from('CmsUser u')->where('id > ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id > ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('id >= ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id >= ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('id < ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id < ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('id <= ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <= ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('id <> ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <> ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('id != ?', 1);
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <> ?', $q->getSql());
+        $q->free();
+    }
+
+
+    public function testDeleteWithExprAndBetween()
+    {
+        $q = new Doctrine_Query();
+
+        // "WHERE" Expression BetweenExpression
+        $q->delete()->from('CmsUser u')->where('u.id NOT BETWEEN ? AND ?', array(1, 10));
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id NOT BETWEEN ? AND ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('u.id BETWEEN ? AND ?', array(1, 10))
+          ->andWhere('u.username != ?', 'admin');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id BETWEEN ? AND ? AND cu.username <> ?', $q->getSql());
+        $q->free();
+    }
+
+
+    public function testDeleteWithExprAndLike()
+    {
+        $q = new Doctrine_Query();
+
+        // "WHERE" Expression LikeExpression
+        $q->delete()->from('CmsUser u')->where('u.username NOT LIKE ?', 'gblanco');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username NOT LIKE ?', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where("u.username LIKE ? ESCAPE '\\'", 'gblanco');
+        $this->assertEquals("DELETE FROM cms_user cu WHERE cu.username LIKE ? ESCAPE '\\'", $q->getSql());
+        $q->free();
+    }
+
+
+    public function testDeleteWithExprAndIn()
+    {
+        $q = new Doctrine_Query();
+
+        // "WHERE" Expression InExpression
+        $q->delete()->from('CmsUser u')->whereIn('u.id', array(1, 3, 7, 10));
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id IN (?, ?, ?, ?)', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->whereNotIn('u.id', array(1, 10));
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id NOT IN (?, ?)', $q->getSql());
+        $q->free();
+    }
+
+
+    public function testDeleteWithExprAndNull()
+    {
+        $q = new Doctrine_Query();
+
+        // "WHERE" Expression NullComparisonExpression
+        $q->delete()->from('CmsUser u')->where('u.name IS NULL');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.name IS NULL', $q->getSql());
+        $q->free();
+
+        $q->delete()->from('CmsUser u')->where('u.name IS NOT NULL');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.name IS NOT NULL', $q->getSql());
+        $q->free();
+    }
+
+
+    // All previously defined tests used Primary as PathExpression. No need to check it again.
+
+    public function testDeleteWithPrimaryAsAtom()
+    {
+        $q = new Doctrine_Query();
+
+        // Atom = string | integer | float | boolean | input_parameter
+        $q->delete()->from('CmsUser u')->where('1 = 1');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
         $q->free();
     }
 }

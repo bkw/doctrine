@@ -100,23 +100,7 @@ class Doctrine_Query_Scanner
         foreach ($matches as $match) {
             $value = $match[0];
 
-            if ($this->_is_numeric($value)) {
-                // Do not care about locale specific 
-                $value = $this->_get_numeric($value);
-                if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
-                    $type = Doctrine_Query_Token::T_FLOAT;
-                } else {
-                    $type = Doctrine_Query_Token::T_INTEGER;
-                }
-            } elseif ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
-                $type = Doctrine_Query_Token::T_STRING;
-            } elseif (ctype_alpha($value[0]) || $value[0] === '_') {
-                $type = $this->_checkLiteral($value);
-            } elseif ($value[0] === '?' || $value[0] === ':') {
-                $type = Doctrine_Query_Token::T_INPUT_PARAMETER;
-            } else {
-                $type = Doctrine_Query_Token::T_NONE;
-            }
+            $type = $this->_getType($value);
 
             $this->_tokens[] = array(
                 'value' => $value,
@@ -127,7 +111,34 @@ class Doctrine_Query_Scanner
     }
 
 
-    public function _is_numeric($value)
+    protected function _getType(&$value)
+    {
+        // $value is referenced because it can be changed if it is numeric.
+        // [TODO] Revisit the _isNumeric and _getNumeric methods to reduce overhead.
+        $type = Doctrine_Query_Token::T_NONE;
+
+        if ($this->_isNumeric($value)) {
+            // Do not care about locale specific 
+            $value = $this->_getNumeric($value);
+
+            if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
+                $type = Doctrine_Query_Token::T_FLOAT;
+            } else {
+                $type = Doctrine_Query_Token::T_INTEGER;
+            }
+        } elseif ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
+            $type = Doctrine_Query_Token::T_STRING;
+        } elseif (ctype_alpha($value[0]) || $value[0] === '_') {
+            $type = $this->_checkLiteral($value);
+        } elseif ($value[0] === '?' || $value[0] === ':') {
+            $type = Doctrine_Query_Token::T_INPUT_PARAMETER;
+        }
+
+        return $type;
+    }
+
+
+    protected function _isNumeric($value)
     {
         // Checking for valid numeric numbers: 1.234, -1.234e-2
         if (!is_numeric($value)) {
@@ -148,7 +159,8 @@ class Doctrine_Query_Scanner
         return true;
     }
 
-    public function _get_numeric($value)
+
+    protected function _getNumeric($value)
     {
         if (is_scalar($value)) {
             // Checking for valid numeric numbers: 1.234, -1.234e-2
@@ -172,6 +184,15 @@ class Doctrine_Query_Scanner
         return false;
     }
 
+
+    public function isA($value, $token)
+    {
+        $type = $this->_getType($value);
+
+        return $type === $token;
+    }
+
+
     public function peek()
     {
         if (isset($this->_tokens[$this->_position + $this->_peek])) {
@@ -181,10 +202,12 @@ class Doctrine_Query_Scanner
         }
     }
 
+
     public function resetPeek()
     {
         $this->_peek = 0;
     }
+
 
     /**
      * Returns the next token in the input string.
@@ -207,6 +230,7 @@ class Doctrine_Query_Scanner
             return null;
         }
     }
+
 
     public function resetPosition($position = 0)
     {

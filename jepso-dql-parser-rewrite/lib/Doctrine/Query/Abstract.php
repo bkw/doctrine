@@ -570,7 +570,7 @@ abstract class Doctrine_Query_Abstract
             $this->_addDqlQueryPart('where', 'AND', true);
         }
 
-        return $this->where('( ' . $where . ' )', $params, $override);
+        return $this->where($where, $params, $override);
     }
 
 
@@ -587,7 +587,7 @@ abstract class Doctrine_Query_Abstract
             $this->_addDqlQueryPart('where', 'OR', true);
         }
 
-        return $this->where('( ' . $where . ' )', $params, $override);
+        return $this->where($where, $params, $override);
     }
 
 

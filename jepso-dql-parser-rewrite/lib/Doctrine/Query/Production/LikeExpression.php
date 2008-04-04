@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,19 +33,46 @@
  */
 class Doctrine_Query_Production_LikeExpression extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_not;
+
+    protected $_expression;
+
+    protected $_escapeString;
+
+
+
+    protected function _syntax($params = array())
     {
+        // LikeExpression = ["NOT"] "LIKE" Expression ["ESCAPE" string]
+        $this->_escapeString = null;
+        $this->_not = false;
+
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $this->_parser->match(Doctrine_Query_Token::T_NOT);
+            $this->_not = true;
         }
 
         $this->_parser->match(Doctrine_Query_Token::T_LIKE);
 
-        $this->Expression();
+        $this->_expression = $this->Expression();
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ESCAPE)) {
             $this->_parser->match(Doctrine_Query_Token::T_ESCAPE);
             $this->_parser->match(Doctrine_Query_Token::T_STRING);
+
+            $this->_escapeString = $this->_parser->token['value'];
         }
+    }
+
+
+    protected function _semantical($params = array())
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return (($this->_not) ? 'NOT ' : '') . 'LIKE ' . $this->_expression->buildSql()
+             . (($this->_escapeString !== null) ? ' ESCAPE ' . $this->_escapeString : '');
     }
 }

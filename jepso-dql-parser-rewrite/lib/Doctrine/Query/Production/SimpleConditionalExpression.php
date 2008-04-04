@@ -74,6 +74,7 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
                 break;
 
                 case Doctrine_Query_Token::T_NONE:
+                    // [TODO] Check out ticket #935 to understand what will be done with enumParams
                     $this->_rightExpression = $this->ComparisonExpression();
                 break;
 
@@ -89,6 +90,15 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
 
     protected function _semantical($params = array())
     {
+        // Check if it is not an ExistsExpression
+        if ($this->_rightExpression !== null) {
+            // [TODO] Figure it out a better way to do this check (must access the DQL, not the SQL)
+            $sqlPiece = $this->_leftExpression->buildSql();
+
+            if ($this->_parser->isA($sqlPiece, Doctrine_Query_Token::T_INPUT_PARAMETER)) {
+                $this->_parser->semanticalError('Input parameter cannot be the left side of a comparison expression');
+            }
+        }
     }
 
 
@@ -103,8 +113,8 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $scanner = $this->_parser->getScanner();
 
-            $token = $scanner()->peek();
-            $scanner()->resetPeek();
+            $token = $scanner->peek();
+            $scanner->resetPeek();
         } else {
             $token = $this->_parser->lookahead;
         }

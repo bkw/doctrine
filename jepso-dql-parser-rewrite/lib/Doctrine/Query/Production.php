@@ -99,8 +99,6 @@ abstract class Doctrine_Query_Production
             $params = array();
         }
 
-
-
         $retval = $this->_parser->getProduction($method)->execute($params);
 
         $this->_parser->getPrinter()->endProduction();
