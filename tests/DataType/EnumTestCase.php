@@ -215,7 +215,8 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         }
     }
 
-    public function testEnumFetchArray() {
+    public function testEnumFetchArray()
+    {
         $q = new Doctrine_Query();
         $q->select('e.*')
           ->from('EnumTest e')
@@ -229,12 +230,11 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
 
     public function testLiteralEnumValueConversionSupportsJoins()
     {
-
         $q = new Doctrine_Query($this->connection);
         $q->addSelect('e.*')
           ->addSelect('e3.*')
           ->from('EnumTest e')
-          ->leftjoin('e.Enum3 e3')
+          ->leftJoin('e.Enum3 e3')
           ->where("e.status = 'verified'")
           ->execute();
 

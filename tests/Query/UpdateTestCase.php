@@ -33,7 +33,13 @@
  */
 class Doctrine_Query_Update_TestCase extends Doctrine_UnitTestCase 
 {
-
+    public function prepareData() 
+    { }
+    public function prepareTables() 
+    {
+        $this->tables = array('Entity', 'User', 'EnumTest');
+        parent::prepareTables();
+    }
     public function testUpdateAllWithColumnAggregationInheritance() 
     {
         $q = new Doctrine_Query();
@@ -79,5 +85,59 @@ class Doctrine_Query_Update_TestCase extends Doctrine_UnitTestCase
         $q->update('User u')->set('u.id', 'u.id + 1');
 
         $this->assertEqual($q->getQuery(), "UPDATE entity SET id = id + 1 WHERE (type = 0)");
+    }
+    public function testUpdateSupportsNullSetting()
+    {
+        $user = new User();
+        $user->name = 'jon';
+        $user->loginname = 'jwage';
+        $user->password = 'changeme';
+        $user->save();
+
+        $id = $user->id;
+        $user->free();
+
+        $q = Doctrine_Query::create()
+                ->update('User u')
+                ->set('u.name', 'NULL')
+                ->where('u.id = ?', $id);
+
+        $this->assertEqual($q->getQuery(), 'UPDATE entity SET name = NULL WHERE id = ? AND (type = 0)');
+
+        $q->execute();
+
+        $user = Doctrine_Query::create()
+                    ->from('User u')
+                    ->where('u.id = ?', $id)
+                    ->fetchOne();
+
+        $this->assertEqual($user->name, '');
+    }
+    public function testEnumAndAnotherColumnUpdate()
+    {
+        $enumTest = new EnumTest();
+        $enumTest->status = 'open';
+        $enumTest->text = 'test';
+        $enumTest->save();
+
+        $id = $enumTest->id;
+        $enumTest->free();
+
+        $q = Doctrine_Query::create()
+                ->update('EnumTest t')
+                ->set('status', '?', 'closed')
+                ->set('text', '?', 'test2')
+                ->where('t.id = ?', $id);
+        $q->execute();
+
+        $this->assertEqual($q->getQuery(), 'UPDATE enum_test SET status = ?, text = ? WHERE id = ?');
+
+        $enumTest = Doctrine_Query::create()
+                        ->from('EnumTest t')
+                        ->where('t.id = ?', $id)
+                        ->fetchOne();
+
+        $this->assertEqual($enumTest->status, 'closed');
+        $this->assertEqual($enumTest->text, 'test2');
     }
 }
