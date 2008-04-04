@@ -130,6 +130,27 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         
         $this->assertTrue($query2->getSql(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
+    
+    public function testNullAggregateIsSet()
+    {
+        $user = new User();
+        $user->name = 'jon';
+        $user->loginname = 'jwage';
+        $user->Phonenumber[0]->phonenumber = new Doctrine_Expression('NULL');
+        $user->save();
+        $id = $user->id;
+        $user->free();
+
+        $query = Doctrine_Query::create()
+                    ->select('u.*, p.*, SUM(p.phonenumber) summ')
+                    ->from('User u')
+                    ->leftJoin('u.Phonenumber p')
+                    ->where('u.id = ?', $id);
+
+        $users = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertTrue(isset($users[0]['Phonenumber'][0]) && array_key_exists('summ', $users[0]['Phonenumber'][0]));
+    }
 }
 class MyQuery extends Doctrine_Query
 {
