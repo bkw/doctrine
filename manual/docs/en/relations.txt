@@ -600,122 +600,11 @@ Group:
     type: simple
 </code>
 
-+++ Class table inheritance
-
-Class table inheritance is the basic inheritance type, yet its internally the most complex one. Class table inheritance 
-allows the child classes to have additional columns compared with the parent.
-
-Internally the parent and the child classes are stored in separate tables, with parent and children containing only their 
-own distinct columns and the shared primary key column(s).
-
-Consider the following class definition.
-
-<code type="php">
-class Entity extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string', 100);
-    }
-}
-
-class User extends Entity
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('age', 'integer', 2);
-        $this->hasColumn('password', 'string', 16);
-    }
-}
-</code>
-
-<code type="yaml">
----
-Entity:
-  columns:
-    name: string(100)
-
-User:
-  inheritance:
-    extends: Entity
-    type: class_table
-  columns:
-    age: integer(2)
-    password: string(16)
-</code>
-
-When class 'User' is being exported into mysql database Doctrine would issue the following queries:
-
-<code>
-CREATE TABLE entity (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(100), PRIMARY KEY(id))
-CREATE TABLE user (id INT NOT NULL, age INT, password VARCHAR(16), PRIMARY KEY(id))
-</code>
-
-Notice how only the parent has the auto-incremented id column. When no primary keys are set for the entire inheritance 
-tree this is the default strategy Doctrine uses. When setting the primary keys manually all classes in the inheritance 
-tree should share the same primary key definition, with the exception of autoinc/sequential primary key. In class table 
-inheritance only the tree root can contain autoinc/sequential pk .
-
-Whenever you fetch data with DQL from a class that uses class table inheritance, Doctrine is smart enough to produce the 
-necessary joins. Lets say we want to fetch all users with their name starting with letter A. 
-
-<code type="php">
-$q = Doctrine_Query::create();
-
-$users = $q->from('User u')->where("u.name LIKE 'A%'")->execute();
-</code>
-
-Now Doctrine would issue the following query:
-
-<code>
-SELECT ... FROM user u LEFT JOIN entity e ON u.id = e.id WHERE u.name LIKE 'A%'
-</code>
-
-Doctrine also knows how to perform other operations as multi-table operations. Creating and saving a new user will 
-actually execute two INSERT statements as seen above. Notice how Doctrine is smart enough to attach the newly created 
-entity id for the user record.
-
-<code type="php">
-$user = new User();
-$user->age = 13;
-$user->password = 'secret';
-$user->name = 'someone';
-
-$user->save();
-</code>
-
-Executes:
-<code>
-INSERT INTO entity (name) VALUES ('someone')
-INSERT INTO user (id, age, password) VALUES (1, 13, 'secret')
-</code>
-
-The updates and deletes are also performed to span accross multiple tables. Consider the following example:
-
-<code type="php">
-$user->age = 14;
-$user->password = 'newpassword';
-$user->name = 'newname';
-
-$user->save();
-
-$user->delete();
-</code>
-
-The example would execute the following statements:
-<code>
-UPDATE entity SET name = 'newname' WHERE id = 1
-UPDATE user SET age = 14, password = 'newpassword' WHERE id = 1
-
-DELETE FROM entity WHERE id = 1
-DELETE FROM user WHERE id = 1
-</code>
-
 +++ Concrete inheritance
 
-Concrete inheritance is similar to class table inheritance in a way that it creates separate tables for child classes. 
-However in concrete inheritance each class generates a table which contains all columns (including inherited columns). 
-In order to use concrete inheritance instead of the default class table inheritance you'll need to add explicit 
+Concrete inheritance creates separate tables for child classes. However in concrete inheritance each 
+class generates a table which contains all columns (including inherited columns). In order to use 
+concrete inheritance you'll need to add explicit 
 parent::setTableDefinition() calls to child classes as shown above.
 
 <code type="php">
@@ -811,11 +700,6 @@ Group:
     extends: Entity
     type: concrete
 </code>
-
-Even though concrete inheritance duplicates schema definitions its in many cases much better inheritance strategy to use 
-than class table inheritance. In class table inheritance an inheritance tree of depth N uses N number of joins for 
-SELECTs and executes N number of statements for each manipulation operation whereas in concrete inheritance every 
-operation can be invoked by single statement.
 
 +++ Column aggregation inheritance
 
