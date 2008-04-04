@@ -15,6 +15,7 @@ $test = new DoctrineTest();
 $tickets = new GroupTest('Tickets Tests', 'tickets');
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_381_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_384_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_424B_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_424C_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_428_TestCase());
