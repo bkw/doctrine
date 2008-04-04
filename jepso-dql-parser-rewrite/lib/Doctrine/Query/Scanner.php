@@ -116,17 +116,17 @@ class Doctrine_Query_Scanner
         // [TODO] Revisit the _isNumeric and _getNumeric methods to reduce overhead.
         $type = Doctrine_Query_Token::T_NONE;
 
-				$newVal = $this->_getNumeric($value);
-				if($newVal !== false){
-					$value = $newVal;
-					if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
-						$type =  Doctrine_Query_Token::T_FLOAT;
-					} else{
-					  $type = Doctrine_Query_Token::T_INTEGER;
-					}
+        $newVal = $this->_getNumeric($value);
+        if($newVal !== false){
+            $value = $newVal;
+            if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
+                $type =  Doctrine_Query_Token::T_FLOAT;
+            } else{
+                $type = Doctrine_Query_Token::T_INTEGER;
+            }
 
-				}
-   			if ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
+        }
+        if ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
             $type = Doctrine_Query_Token::T_STRING;
         } elseif (ctype_alpha($value[0]) || $value[0] === '_') {
             $type = $this->_checkLiteral($value);
@@ -152,7 +152,7 @@ class Doctrine_Query_Scanner
         $worldnum = strtr($value, array('.' => '', ',' => '.'));
         if(is_numeric($worldnum)) {
             return $worldnum;
-         }
+        }
 
         // American extensive number: 1,000,000.02
         $american_en = strtr($value, array(',' => ''));
