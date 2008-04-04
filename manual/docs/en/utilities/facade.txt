@@ -70,6 +70,9 @@ Doctrine::createTablesFromModels('/path/to/models');
 // Will generate sql for all loaded models if no directory is given
 Doctrine::generateSqlFromModels('/path/to/models');
 
+// Generate array of sql statements to create the array of passed models
+Doctrine::generateSqlFromArray(array('User', 'Phonenumber'));
+
 // Generate YAML schema from an existing set of models
 Doctrine::generateYamlFromModels('/path/to/schema.yml', '/path/to/models');
 
