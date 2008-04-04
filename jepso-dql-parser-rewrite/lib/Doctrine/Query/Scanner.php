@@ -43,7 +43,6 @@ class Doctrine_Query_Scanner
 
     protected $_peek = 0;
 
-
     /**
      * Creates a new query scanner object.
      *
@@ -73,7 +72,7 @@ class Doctrine_Query_Scanner
         }
 
         return Doctrine_Query_Token::T_IDENTIFIER;
-   }
+    }
 
     /**
      * Scans the input string for tokens.
@@ -117,16 +116,17 @@ class Doctrine_Query_Scanner
         // [TODO] Revisit the _isNumeric and _getNumeric methods to reduce overhead.
         $type = Doctrine_Query_Token::T_NONE;
 
-        if ($this->_isNumeric($value)) {
-            // Do not care about locale specific 
-            $value = $this->_getNumeric($value);
+				$newVal = $this->_getNumeric($value);
+				if($newVal !== false){
+					$value = $newVal;
+					if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
+						$type =  Doctrine_Query_Token::T_FLOAT;
+					} else{
+					  $type = Doctrine_Query_Token::T_INTEGER;
+					}
 
-            if (strpos($value, '.') !== false || stripos($value, 'e') !== false) {
-                $type = Doctrine_Query_Token::T_FLOAT;
-            } else {
-                $type = Doctrine_Query_Token::T_INTEGER;
-            }
-        } elseif ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
+				}
+   			if ($value[0] === "'" && $value[strlen($value) - 1] === "'") {
             $type = Doctrine_Query_Token::T_STRING;
         } elseif (ctype_alpha($value[0]) || $value[0] === '_') {
             $type = $this->_checkLiteral($value);
@@ -138,50 +138,30 @@ class Doctrine_Query_Scanner
     }
 
 
-    protected function _isNumeric($value)
-    {
-        // Checking for valid numeric numbers: 1.234, -1.234e-2
-        if (!is_numeric($value)) {
-            // Are we dealing with numbers?
-            if (strspn($value, "0123456789-+,.eE") == strlen($value)) {
-                // World: 1.000.000,02 , 1,3e-2 (remove the '.' and convert ',' into '.')
-                if (!is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
-                    // American: 1,000,000.02   (only need to remove the ',' chars)
-                    if (!is_numeric(strtr($value, array(',' => '')))) {
-                        return false; // We tried... =\
-                    }
-                }
-            } else {
-                return false; // String...
-            }
-        }
-
-        return true;
-    }
-
-
     protected function _getNumeric($value)
     {
-        if (is_scalar($value)) {
-            // Checking for valid numeric numbers: 1.234, -1.234e-2
-            if (is_numeric($value)) {
-                return $value;
-            }
-
-            // World number: 1.000.000,02 or -1,234e-2
-            if (is_numeric(strtr($value, array('.' => '', ',' => '.')))) {
-                return strtr($value, array('.' => '', ',' => '.'));
-            }
-
-            // American extensive number: 1,000,000.02
-            if (is_numeric(strtr($value, array(',' => '')))) {
-                return strtr($value, array(',' => ''));
-            }
-
+        if (!is_scalar($value)) {
             return false;
+        }
+        // Checking for valid numeric numbers: 1.234, -1.234e-2
+        if (is_numeric($value)) {
+            return $value;
+        }
+
+        // World number: 1.000.000,02 or -1,234e-2
+        $worldnum = strtr($value, array('.' => '', ',' => '.'));
+        if(is_numeric($worldnum)) {
+            return $worldnum;
+         }
+
+        // American extensive number: 1,000,000.02
+        $american_en = strtr($value, array(',' => ''));
+        if (is_numeric($american_en)) {
+            return $american_en;
         }
 
         return false;
+
     }
 
 

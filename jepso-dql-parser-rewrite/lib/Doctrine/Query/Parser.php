@@ -118,8 +118,9 @@ class Doctrine_Query_Parser
      * Creates a new query parser object.
      *
      * @param string $dql DQL to be parsed.
+     * @param Doctrine_Connection $connection The connection to use
      */
-    public function __construct($dql, $connection = null)
+    public function __construct($dql, Doctrine_Connection $connection = null)
     {
         $this->_scanner = new Doctrine_Query_Scanner($dql);
         $this->_parserResult = new Doctrine_Query_ParserResult();
@@ -150,16 +151,17 @@ class Doctrine_Query_Parser
             $isMatch = ($this->lookahead['type'] === $token);
         }
 
-        if ($isMatch) {
-            $this->_printer->println($this->lookahead['value']);
 
-            $this->next();
-        } else {
+        if ( ! $isMatch) {
             // No definition for value checking.
             $this->syntaxError($this->_keywordTable->getLiteral($token));
+
         }
 
-        return $isMatch;
+        $this->_printer->println($this->lookahead['value']);
+
+        $this->next();
+        return true;
     }
 
 
@@ -173,13 +175,19 @@ class Doctrine_Query_Parser
         $this->_errorDistance++;
     }
 
-
     public function isA($value, $token)
     {
         return $this->_scanner->isA($value, $token);
     }
 
 
+    /**
+     * Free this parser enabling it to be reused 
+     * 
+     * @param boolean $deep     Whether to clean peek and reset errors 
+     * @param integer $position Position to reset 
+     * @return void
+     */
     public function free($deep = false, $position = 0)
     {
         // WARNING! Use this method with care. It resets the scanner!
