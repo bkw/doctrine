@@ -244,6 +244,7 @@ $query_tests->addTestCase(new Doctrine_Query_PgsqlSubquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MysqlSubqueryHaving_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_SelectExpression_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Registry_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_RemoveQueryPart_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Copy_TestCase());
 $test->addTestCase($query_tests);
 
