@@ -53,6 +53,9 @@ Doctrine::autoload('Doctrine_Configurable');
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (MDB2 library)
  * @author      Roman Borschel <roman@code-factory.org>
+ * @todo Split up into Doctrine::DBAL::Connection & Doctrine::ORM::EntityManager.
+ *       Doctrine::DBAL::Connection must have no dependencies on ORM components since
+ *       it sits one layer below.
  */
 abstract class Doctrine_Connection extends Doctrine_Configurable implements Countable, IteratorAggregate
 {
@@ -229,7 +232,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         }
 
-        $this->setParent($manager);
+        $this->setConfigurableParent($manager);
 
         $this->setAttribute(Doctrine::ATTR_CASE, Doctrine::CASE_NATURAL);
         $this->setAttribute(Doctrine::ATTR_ERRMODE, Doctrine::ERRMODE_EXCEPTION);
@@ -275,10 +278,10 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function getAttribute($attribute)
     {
         if ($attribute >= 100) {
-            if ( ! isset($this->attributes[$attribute])) {
+            if ( ! isset($this->_attributes[$attribute])) {
                 return parent::getAttribute($attribute);
             }
-            return $this->attributes[$attribute];
+            return $this->_attributes[$attribute];
         }
 
         if ($this->isConnected) {
@@ -863,6 +866,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      * @param int $hydrationMode        Doctrine::FETCH_ARRAY or Doctrine::FETCH_RECORD
      * @see Doctrine_Query
      * @return Doctrine_Collection      Collection of Doctrine_Record objects
+     * @todo package:orm
      */
     public function query($query, array $params = array(), $hydrationMode = null)
     {
@@ -882,17 +886,17 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
         try {
             $event = new Doctrine_Event($this, Doctrine_Event::CONN_PREPARE, $statement);
-
+    
             $this->getAttribute(Doctrine::ATTR_LISTENER)->prePrepare($event);
 
             $stmt = false;
-
+    
             if ( ! $event->skipOperation) {
                 $stmt = $this->dbh->prepare($statement);
             }
-
+    
             $this->getAttribute(Doctrine::ATTR_LISTENER)->postPrepare($event);
-
+            
             return new Doctrine_Connection_Statement($this, $stmt);
         } catch(Doctrine_Adapter_Exception $e) {
         } catch(PDOException $e) { }
@@ -1141,11 +1145,11 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         } else {
             // instantiate correct mapper type
             $inheritanceType = $metadata->getInheritanceType();
-            if ($inheritanceType == Doctrine::INHERITANCETYPE_JOINED) {
+            if ($inheritanceType == Doctrine::INHERITANCE_TYPE_JOINED) {
                 $mapper = new Doctrine_Mapper_Joined($entityName, $metadata);
-            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_SINGLE_TABLE) {
+            } else if ($inheritanceType == Doctrine::INHERITANCE_TYPE_SINGLE_TABLE) {
                 $mapper = new Doctrine_Mapper_SingleTable($entityName, $metadata);
-            } else if ($inheritanceType == Doctrine::INHERITANCETYPE_TABLE_PER_CLASS) {
+            } else if ($inheritanceType == Doctrine::INHERITANCE_TYPE_TABLE_PER_CLASS) {
                 $mapper = new Doctrine_Mapper_TablePerClass($entityName, $metadata);
             } else {
                 throw new Doctrine_Connection_Exception("Unknown inheritance type '$inheritanceType'. Can't create mapper.");
@@ -1562,5 +1566,49 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
     public function __toString()
     {
         return Doctrine_Lib::getConnectionAsString($this);
+    }
+    
+    public function hasAttribute($key)
+    {
+        switch ($key) {
+            case Doctrine::ATTR_COLL_KEY:
+            case Doctrine::ATTR_LISTENER:
+            case Doctrine::ATTR_RECORD_LISTENER:
+            case Doctrine::ATTR_QUOTE_IDENTIFIER:
+            case Doctrine::ATTR_SEQCOL_NAME:
+            case Doctrine::ATTR_FIELD_CASE:
+            case Doctrine::ATTR_IDXNAME_FORMAT:
+            case Doctrine::ATTR_SEQNAME_FORMAT:
+            case Doctrine::ATTR_DBNAME_FORMAT:
+            case Doctrine::ATTR_TBLCLASS_FORMAT:
+            case Doctrine::ATTR_TBLNAME_FORMAT:
+            case Doctrine::ATTR_EXPORT:
+            case Doctrine::ATTR_DECIMAL_PLACES:
+            case Doctrine::ATTR_PORTABILITY:
+            case Doctrine::ATTR_VALIDATE:
+            case Doctrine::ATTR_QUERY_LIMIT:
+            case Doctrine::ATTR_DEFAULT_TABLE_TYPE:
+            case Doctrine::ATTR_DEF_TEXT_LENGTH:
+            case Doctrine::ATTR_DEF_VARCHAR_LENGTH:
+            case Doctrine::ATTR_DEF_TABLESPACE:
+            case Doctrine::ATTR_EMULATE_DATABASE:
+            case Doctrine::ATTR_USE_NATIVE_ENUM:
+            case Doctrine::ATTR_CREATE_TABLES:
+            case Doctrine::ATTR_COLL_LIMIT:
+            case Doctrine::ATTR_CACHE: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE:
+            case Doctrine::ATTR_CACHE_LIFESPAN: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE_LIFESPAN:
+            case Doctrine::ATTR_LOAD_REFERENCES:
+            case Doctrine::ATTR_THROW_EXCEPTIONS:
+            case Doctrine::ATTR_QUERY_CACHE:
+            case Doctrine::ATTR_QUERY_CACHE_LIFESPAN:
+            case Doctrine::ATTR_MODEL_LOADING:
+            case Doctrine::ATTR_METADATA_CACHE:
+            case Doctrine::ATTR_METADATA_CACHE_LIFESPAN:
+                return true;
+            default:
+                return false;
+        }
     }
 }

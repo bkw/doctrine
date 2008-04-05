@@ -26,6 +26,7 @@ $tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626D_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_912_TestCase());
 $test->addTestCase($tickets);
 
 // Connection drivers (not yet fully tested)
@@ -122,7 +123,6 @@ $core->addTestCase(new Doctrine_Access_TestCase());
 //$core->addTestCase(new Doctrine_Configurable_TestCase());
 $core->addTestCase(new Doctrine_Manager_TestCase());
 $core->addTestCase(new Doctrine_Connection_TestCase());
-$core->addTestCase(new Doctrine_Table_TestCase());
 $core->addTestCase(new Doctrine_UnitOfWork_TestCase());
 //$core->addTestCase(new Doctrine_Collection_TestCase());
 $core->addTestCase(new Doctrine_Collection_Snapshot_TestCase());
@@ -259,8 +259,8 @@ $test->addTestCase(new Doctrine_Inheritance_TablePerClass_TestCase());
 $test->addTestCase(new Doctrine_Metadata_Factory_TestCase());
 
 // nestedset tests
-$test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
-$test->addTestCase(new Doctrine_NestedSet_LoadInSetUp_TestCase());
+//$test->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
+//$test->addTestCase(new Doctrine_NestedSet_LoadInSetUp_TestCase());
 
 // Search tests
 $search = new GroupTest('Search tests','search');
@@ -304,6 +304,11 @@ $data->addTestCase(new Doctrine_Data_Import_TestCase());
 $data->addTestCase(new Doctrine_Data_Export_TestCase());
 $test->addTestCase($data);
 
+$s = microtime(true);
 $test->run();
+$e = microtime(true);
 
-echo memory_get_peak_usage() / 1024 . "\n";
+echo 'test run took: ' . ($e - $s) . ' seconds<br />';
+
+
+echo "peak memory usage: " . memory_get_peak_usage() / 1024 . "KB\n";

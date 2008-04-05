@@ -21,7 +21,7 @@
 
 /**
  * The joined mapping strategy maps a single entity instance to several tables in the
- * database as it is defined by <b>Class Table Inheritance</b>.
+ * database as it is defined by <tt>Class Table Inheritance</tt>.
  *
  * @author      Roman Borschel <roman@code-factory.org>
  * @package     Doctrine
@@ -135,18 +135,19 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
         try {
             $class = $this->_mapper->getClassMetadata();
             $conn->beginInternalTransaction();
-            $this->deleteComposites($record);
+            $this->_deleteComposites($record);
 
             $record->state(Doctrine_Record::STATE_TDIRTY);
 
             $identifier = $this->_convertFieldToColumnNames($record->identifier(), $class);
-
+            
+            // run deletions, starting from the class, upwards the hierarchy
+            $conn->delete($class->getTableName(), $identifier);
             foreach ($class->getParentClasses() as $parent) {
                 $parentClass = $conn->getClassMetadata($parent);
                 $this->_deleteRow($parentClass->getTableName(), $identifier);
             }
-
-            $conn->delete($class->getTableName(), $identifier);
+            
             $record->state(Doctrine_Record::STATE_TCLEAN);
 
             $this->_mapper->removeRecord($record);
@@ -174,7 +175,7 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
         foreach ($classMetadata->getParentClasses() as $parentClass) {
             $customJoins[$parentClass] = 'INNER';
         }
-        foreach ((array)$classMetadata->getSubclasses() as $subClass) {
+        foreach ($classMetadata->getSubclasses() as $subClass) {
             if ($subClass != $this->_mapper->getComponentName()) {
                 $customJoins[$subClass] = 'LEFT';
             }
@@ -199,7 +200,7 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
         $fields = array($classMetadata->getInheritanceOption('discriminatorColumn'));
         if ($classMetadata->getSubclasses()) {
             foreach ($classMetadata->getSubclasses() as $subClass) {
-                $fields = array_merge($conn->getMetadata($subClass)->getFieldNames(), $fields);
+                $fields = array_merge($conn->getClassMetadata($subClass)->getFieldNames(), $fields);
             }
         }
         
@@ -238,15 +239,7 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
             return $this->_columnNameFieldNameMap[$columnName];
         }
         
-        foreach ($classMetadata->getParentClasses() as $parentClass) {
-            $parentTable = $conn->getClassMetadata($parentClass);
-            if ($parentTable->hasColumn($columnName)) {
-                $this->_columnNameFieldNameMap[$columnName] = $parentTable->getFieldName($columnName);
-                return $this->_columnNameFieldNameMap[$columnName];
-            }
-        }
-        
-        foreach ((array)$classMetadata->getSubclasses() as $subClass) {
+        foreach ($classMetadata->getSubclasses() as $subClass) {
             $subTable = $conn->getClassMetadata($subClass);
             if ($subTable->hasColumn($columnName)) {
                 $this->_columnNameFieldNameMap[$columnName] = $subTable->getFieldName($columnName);
@@ -261,7 +254,7 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
      * 
      * @todo Looks like this better belongs into the ClassMetadata class.
      */
-    public function getOwningTable($fieldName)
+    public function getOwningClass($fieldName)
     {
         $conn = $this->_mapper->getConnection();
         $classMetadata = $this->_mapper->getClassMetadata();
@@ -283,13 +276,14 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
             }
         }
         
-        throw new Doctrine_Mapper_Exception("Unable to find owner of field '$fieldName'.");
+        throw new Doctrine_Mapper_Exception("Unable to find defining class of field '$fieldName'.");
     }
     
     /**
      * Analyzes the fields of the entity and creates a map in which the field names
      * are grouped by the class names they belong to. 
      *
+     * @return array
      */
     protected function _groupFieldsByDefiningClass(Doctrine_Record $record)
     {

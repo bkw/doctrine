@@ -30,7 +30,7 @@
  * @version     $Revision: 3192 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
+abstract class Doctrine_Hydrator_Abstract
 {
     /**
      * @var array $_queryComponents
@@ -54,6 +54,8 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
      * The current hydration mode.
      */
     protected $_hydrationMode = Doctrine::HYDRATE_RECORD;
+    
+    protected $_nullObject;
 
 
     /**
@@ -61,7 +63,10 @@ abstract class Doctrine_Hydrator_Abstract extends Doctrine_Locator_Injectable
      *
      * @param Doctrine_Connection|null $connection
      */
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->_nullObject = Doctrine_Null::$INSTANCE;
+    }
 
 
     /**

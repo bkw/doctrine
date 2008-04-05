@@ -23,6 +23,8 @@ class Orm_AllTests
         $suite = new Doctrine_OrmTestSuite('Doctrine Orm');
 
         $suite->addTestSuite('Orm_UnitOfWorkTestCase');
+        //$suite->addTestSuite('Orm_ConfigurableTestCase');
+        
         $suite->addTest(Orm_Component_AllTests::suite());
         $suite->addTest(Orm_Query_AllTests::suite());
         $suite->addTest(Orm_Ticket_AllTests::suite());

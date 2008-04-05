@@ -110,10 +110,9 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
         // Initialize
         foreach ($this->_queryComponents as $dqlAlias => $component) {
             // Disable lazy-loading of related elements during hydration
-            $component['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+            $component['table']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
             $componentName = $component['mapper']->getComponentName();
-
-            $listeners[$componentName] = $component['mapper']->getRecordListener();
+            $listeners[$componentName] = $component['table']->getRecordListener();
             $identifierMap[$dqlAlias] = array();
             $prev[$dqlAlias] = array();
             $id[$dqlAlias] = '';
@@ -126,7 +125,9 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             $nonemptyComponents = array();
             $rowData = $this->_gatherRowData($data, $cache, $id, $nonemptyComponents);
 
-            // Hydrate the data of the root component from the current row
+            //
+            // hydrate the data of the root entity from the current row
+            //
             $table = $this->_queryComponents[$rootAlias]['table'];
             $mapper = $this->_queryComponents[$rootAlias]['mapper'];
             $componentName = $mapper->getComponentName();
@@ -168,7 +169,6 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             // $prev[$rootAlias] now points to the last element in $result.
             // now hydrate the rest of the data found in the current row, that belongs to other
             // (related) components.
-            $oneToOne = false;
 
             foreach ($rowData as $dqlAlias => $data) {
                 $index = false;
@@ -190,12 +190,13 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                 $path = $parent . '.' . $dqlAlias;
 
                 if ( ! isset($prev[$parent])) {
-                    break;
+                    continue;
                 }
 
                 // Check the type of the relation
                 if ( ! $relation->isOneToOne() && $driver->initRelated($prev[$parent], $relationAlias)) {
-                    // Append element
+                    $oneToOne = false;
+                    // append element
                     if (isset($nonemptyComponents[$dqlAlias])) {
                         if ($isSimpleQuery || ! isset($identifierMap[$path][$id[$parent]][$id[$dqlAlias]])) {
                             $event->set('data', $element);
@@ -217,10 +218,9 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                         } else {
                             $index = $identifierMap[$path][$id[$parent]][$id[$dqlAlias]];
                         }
+                        // register collection for later snapshots
+                        $driver->registerCollection($prev[$parent][$relationAlias]);
                     }
-
-                    // Register collection for later snapshots
-                    $driver->registerCollection($prev[$parent][$relationAlias]);
                 } else {
                     // 1-1 relation
                     $oneToOne = true; 
@@ -245,7 +245,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
 
         // Re-enable lazy loading
         foreach ($this->_queryComponents as $dqlAlias => $data) {
-            $data['mapper']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
+            $data['table']->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, true);
         }
 
         //$e = microtime(true);
@@ -266,7 +266,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
      */
     protected function _setLastElement(&$prev, &$coll, $index, $dqlAlias, $oneToOne)
     {
-        if ($coll === self::$_null) {
+        if ($coll === $this->_nullObject) {
             return false;
         }
 

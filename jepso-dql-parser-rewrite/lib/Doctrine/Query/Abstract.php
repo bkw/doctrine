@@ -181,7 +181,6 @@ abstract class Doctrine_Query_Abstract
     public function setDql($dqlQuery)
     {
         $this->free();
-
         if ($dqlQuery !== null) {
             $this->_dql = $dqlQuery;
 
@@ -334,7 +333,6 @@ abstract class Doctrine_Query_Abstract
 
         return $str;
     }
-
 
     /**
      * Returns the type of this query object

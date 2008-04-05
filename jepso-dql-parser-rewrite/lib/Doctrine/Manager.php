@@ -77,7 +77,6 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     private function __construct()
     {
         $this->_root = dirname(__FILE__);
-        Doctrine_Locator_Injectable::initNullObject(new Doctrine_Null);
     }
 
     /**
@@ -122,11 +121,57 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
         }
         return false;
     }
+    
+    public function hasAttribute($key)
+    {
+        switch ($key) {
+            case Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE:
+            case Doctrine::ATTR_COLL_KEY:
+            case Doctrine::ATTR_SEQCOL_NAME:
+            case Doctrine::ATTR_LISTENER:
+            case Doctrine::ATTR_RECORD_LISTENER:
+            case Doctrine::ATTR_QUOTE_IDENTIFIER:
+            case Doctrine::ATTR_FIELD_CASE:
+            case Doctrine::ATTR_IDXNAME_FORMAT:
+            case Doctrine::ATTR_SEQNAME_FORMAT:
+            case Doctrine::ATTR_DBNAME_FORMAT:
+            case Doctrine::ATTR_TBLCLASS_FORMAT:
+            case Doctrine::ATTR_TBLNAME_FORMAT:
+            case Doctrine::ATTR_EXPORT:
+            case Doctrine::ATTR_DECIMAL_PLACES:
+            case Doctrine::ATTR_PORTABILITY:
+            case Doctrine::ATTR_VALIDATE:
+            case Doctrine::ATTR_QUERY_LIMIT:
+            case Doctrine::ATTR_DEFAULT_TABLE_TYPE:
+            case Doctrine::ATTR_DEF_TEXT_LENGTH:
+            case Doctrine::ATTR_DEF_VARCHAR_LENGTH:
+            case Doctrine::ATTR_DEF_TABLESPACE:
+            case Doctrine::ATTR_EMULATE_DATABASE:
+            case Doctrine::ATTR_USE_NATIVE_ENUM:
+            case Doctrine::ATTR_CREATE_TABLES:
+            case Doctrine::ATTR_COLL_LIMIT:
+            case Doctrine::ATTR_CACHE: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE:
+            case Doctrine::ATTR_CACHE_LIFESPAN: // deprecated
+            case Doctrine::ATTR_RESULT_CACHE_LIFESPAN:
+            case Doctrine::ATTR_LOAD_REFERENCES:
+            case Doctrine::ATTR_THROW_EXCEPTIONS:
+            case Doctrine::ATTR_QUERY_CACHE:
+            case Doctrine::ATTR_QUERY_CACHE_LIFESPAN:
+            case Doctrine::ATTR_MODEL_LOADING:
+            case Doctrine::ATTR_METADATA_CACHE:
+            case Doctrine::ATTR_METADATA_CACHE_LIFESPAN:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * returns the root directory of Doctrine
      *
      * @return string
+     * @todo Better name.
      */
     final public function getRoot()
     {
@@ -372,8 +417,12 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     public function parseDsn($dsn)
     {
         // fix sqlite dsn so that it will parse correctly
-        $dsn = str_replace("////", "/", $dsn);
-        $dsn = str_replace("///c:/", "//c:/", $dsn);
+        if (false !== strpos($dsn, ':///')) {
+            // replace windows directory separators
+            $dsn = str_replace("\\", "/", $dsn);
+            // replace file:/// format with parse_url()-compatible file://
+            $dsn = str_replace(":///", "://", $dsn);
+        }
 
         // silence any warnings
         $parts = @parse_url($dsn);
@@ -497,7 +546,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     }
     
     /**
-     * Creates a new native query (instance of Doctrine_RawSql).
+     * Creates a new native (SQL) query.
      *
      * @return Doctrine_RawSql
      */

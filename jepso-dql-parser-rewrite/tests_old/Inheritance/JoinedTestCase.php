@@ -45,10 +45,10 @@ class Doctrine_Inheritance_Joined_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual('cti_supermanager', $suManagerTable->getTableName());
         
         // expected joined parents option
-        $this->assertEqual(array(), $userTable->getOption('parents'));
-        $this->assertEqual(array('CTI_User'), $managerTable->getOption('parents'));
-        $this->assertEqual(array('CTI_User'), $customerTable->getOption('parents'));
-        $this->assertEqual(array('CTI_Manager', 'CTI_User'), $suManagerTable->getOption('parents'));
+        $this->assertEqual(array(), $userTable->getParentClasses());
+        $this->assertEqual(array('CTI_User'), $managerTable->getParentClasses());
+        $this->assertEqual(array('CTI_User'), $customerTable->getParentClasses());
+        $this->assertEqual(array('CTI_Manager', 'CTI_User'), $suManagerTable->getParentClasses());
         
         // check inheritance map
         $this->assertEqual(array(1 => 'CTI_User', 2 => 'CTI_Manager',
@@ -187,7 +187,7 @@ class CTI_User extends Doctrine_Record
 {    
     public static function initMetadata($class)
     {
-        $class->setInheritanceType(Doctrine::INHERITANCETYPE_JOINED, array(
+        $class->setInheritanceType(Doctrine::INHERITANCE_TYPE_JOINED, array(
                 'discriminatorColumn' => 'dtype',
                 'discriminatorMap' => array(1 => 'CTI_User', 2 => 'CTI_Manager',
                         3 => 'CTI_Customer', 4 => 'CTI_SuperManager')

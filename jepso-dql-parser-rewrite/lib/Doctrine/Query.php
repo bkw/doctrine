@@ -255,7 +255,6 @@ class Doctrine_Query extends Doctrine_Query_Abstract
             if ($cached === false) {
                 // Cache does not exist, we have to create it.
                 $result = $this->_execute($params, Doctrine::HYDRATE_ARRAY);
-
                 $queryResult = Doctrine_Query_CacheHandler::fromResultSet($this, $result);
                 $cacheDriver->save($hash, $queryResult->toCachedForm(), $this->_resultCacheTTL);
 
