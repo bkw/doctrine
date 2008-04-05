@@ -52,7 +52,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
             $this->_parser->match(Doctrine_Query_Token::T_AS);
         }
-
+        
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
             $this->_componentAlias = $this->_parser->token['value'];
         }

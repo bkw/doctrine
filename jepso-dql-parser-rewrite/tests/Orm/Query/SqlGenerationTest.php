@@ -31,6 +31,13 @@
  * @link        http://www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
+ * @todo        1) [romanb] We  might want to split the SQL generation tests into multiple
+ *              testcases later since we'll have a lot of them and we might want to have special SQL
+ *              generation tests for some dbms specific SQL syntaxes.
+ *              2) [romanb] IMHO, all these tests here should use $q->setDql() since we don't test
+ *              Doctrine_Query and the DQL generation here, we test the SQL generation.
+ *              All tests that test the DQL generation using the fluent interface should be
+ *              in DqlGeneration testcases.
  */
 class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
 {
@@ -85,8 +92,45 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
             $q->getSql()
         );
         $q->free();
+        
+        //$q->setDql('DELETE FROM CmsUser WHERE id = ?');
+        //$this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
+        //$q->free();
     }
-
+    
+    public function testInvalidSyntaxIsRejected()
+    {
+        $q = new Doctrine_Query();
+        
+        $invalidDql = 'FOOBAR CmsUser';
+        $q->setDql($invalidDql);
+        try {
+            $q->getSql();
+            $this->fail("Invalid DQL '$invalidDql' was not rejected.");
+        } catch (Doctrine_Query_Parser_Exception $parseEx) {}
+        
+        $invalidDql = 'DELETE FROM hey.boy';
+        $q->setDql($invalidDql);
+        try {
+            $q->getSql();
+            $this->fail("Invalid DQL '$invalidDql' was not rejected.");
+        } catch (Doctrine_Query_Parser_Exception $parseEx) {}
+        
+        $invalidDql = 'DELETE FROM CmsUser cu WHERE cu.my.thing > ?';
+        $q->setDql($invalidDql);
+        try {
+            $q->getSql();
+            $this->fail("Invalid DQL '$invalidDql' was not rejected.");
+        } catch (Doctrine_Relation_Exception $parseEx) {}
+        
+    }
+    
+    public function testParserIsCaseAgnostic()
+    {
+        $q = new Doctrine_Query();
+        $q->setDql('delete from CmsUser u where u.username = ?');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ?', $q->getSql());
+    }
 
     public function testDeleteWithConditionalTerms()
     {
