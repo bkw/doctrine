@@ -965,3 +965,86 @@ Phonenumber:
       foreign: id
       onDelete: CASCADE
 </code>
+
+
+
+++ Transitive Persistence
++++ Application-level cascades
+Since it can be quite cumbersome to save and delete individual objects, especially if you deal with an object graph, Doctrine provides
+application-level cascading of operations.
+
+++++ Save cascades
+You may already have noticed that save() operations are already cascaded to associated objects by default.
+
+++++ Delete cascades
+Starting with Doctrine 0.11, Doctrine provides a second application-level cascade style: delete. Unlike the save() cascade, the delete 
+cascade needs to be turned on explicitly as can be seen in the following code snippet:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    //...
+    public function setUp()
+    {
+        $this->hasOne('Address as address', array(
+                'local' => 'id',
+                'foreign' => 'user_id',
+                'cascade' => array('delete') // application-level delete cascade
+                ));
+    }
+}
+</code>
+
+The 'cascade' option is used to specify the operations that are cascaded to the related objects on the application-level.
+Note that the only currently supported value is 'delete', more options will be added in future releases of Doctrine.
+
+In the example above, Doctrine would cascade the deletion of a User to it's associated Address.
+The following describes the generic procedure when you delete a record through $record->delete():
+
+**1.** Doctrine looks at the relations to see if there are any deletion cascades it needs to apply. If there are no deletion cascades, go to 3).
+
+**2.** For each relation that has a delete cascade specified, Doctrine verifies that the objects that are the target of the cascade are loaded.
+   That usually means that Doctrine fetches the related objects from the database if they're not yet loaded.
+   (Exception: many-valued associations are always re-fetched from the database, to make sure all objects are loaded).
+   For each asociated object, proceed with step 1).
+   
+**3.** Doctrine orders all deletions and executes them in the most efficient way, maintaining referential integrity.
+
+From this description one thing should be instantly clear:
+Application-level cascades happen on the object-level, meaning operations are cascaded from one object to another and in order to do that the participating objects need to be available.
+
+This has some important implications:
+* Application-level delete cascades don't perform well on many-valued associations when there are a lot of objects in the related collection (that is because they need to be fetched from the database, the actual deletion is pretty efficient).
+* Application-level delete cascades do not skip the object lifecycle as database-level cascades do (see next chapter). Therefore all registered event listeners and other callback methods are properly executed in an application-level cascade.
+
++++ Database-level cascades
+Some cascading operations can be done much more efficiently at the database level. The best example is the delete cascade.
+
+Database-level delete cascades are generally preferrable over application-level delete cascades except:
+
+* Your database does not support database-level cascades (i.e. when using MySql with MYISAM tables).
+* You have listeners that listen on the object lifecycle and you want them to get invoked.
+
+Database-level delete cascades are applied on the foreign key constraint. Therefore they're specified on that side of the relation that owns the foreign key. Picking up the example from above, the definition of a database-level cascade would look as follows:
+
+<code type="php">
+class Address extends Doctrine_Record
+{
+    //...
+    public function setUp()
+    {
+        $this->hasOne('User as user', array(
+                'local' => 'user_id', // this is the foreign key in the database
+                'foreign' => 'id',
+                'onDelete' => 'CASCADE' // database-level delete cascade, applied on the foreign key
+                ));
+    }
+}
+</code>
+
+The 'onDelete' => 'CASCADE' option is translated to proper DDL/DML statements when Doctrine creates your tables.
+Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the Address owns the foreign key (user_id) and database-level cascades are applied on the foreign key.
+
+Currently, the only two supported database-level cascade styles are 'onDelete' => 'CASCADE' and 'onUpdate' => 'CASCADE'. Both are specified on the side that owns the foreign key and applied to your database schema when Doctrine creates your tables.
+
+

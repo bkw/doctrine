@@ -380,7 +380,6 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $e) {
             $this->pass();
         }
-        $r->delete(); // clean up
         
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }

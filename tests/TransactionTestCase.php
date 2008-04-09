@@ -162,6 +162,46 @@ class Doctrine_Transaction_TestCase extends Doctrine_UnitTestCase
     {
         $this->assertEqual($this->transaction->getTransactionLevel(), 0);
     }
+    
+    public function testSubsequentTransactionsAfterRollback()
+    {
+        try {
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            throw new Exception();
+        } catch (Exception $e) {
+            $this->transaction->rollback();
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->commit();
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+        }
+        
+        $i = 0;
+        while ($i < 5) {
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+    		$this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+    		try {
+    		    if ($i == 0) {
+    		        throw new Exception();
+    		    }                
+    		    $this->transaction->commit();
+    		}
+    		catch (Exception $e) {
+    			$this->transaction->rollback();
+                $this->assertEqual(0, $this->transaction->getTransactionLevel());
+    		}
+    		++$i;
+    	}
+    }
 
     public function testGetStateReturnsStateConstant() 
     {

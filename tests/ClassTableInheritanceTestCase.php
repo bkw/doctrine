@@ -228,14 +228,14 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
         $record->delete();
 
         // pop the commit event
-        $profiler->pop();
-        $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent4 WHERE id = ?');
-        // pop the prepare event
-        $profiler->pop();
-        $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent3 WHERE id = ?');
+        
         // pop the prepare event
         $profiler->pop();
         $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent2 WHERE id = ?');
+        $profiler->pop();
+        $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent3 WHERE id = ?');
+        $profiler->pop();
+        $this->assertEqual($profiler->pop()->getQuery(), 'DELETE FROM c_t_i_test_parent4 WHERE id = ?');
         $this->conn->addListener(new Doctrine_EventListener());
     }
     

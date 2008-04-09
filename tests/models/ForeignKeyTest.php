@@ -15,8 +15,8 @@ class ForeignKeyTest extends Doctrine_Record
                              'onUpdate' => 'RESTRICT')
                        );
 
-        $this->hasMany('ForeignKeyTest as Children',
-                       'ForeignKeyTest.parent_id');
+        $this->hasMany('ForeignKeyTest as Children', array(
+                'local' => 'id', 'foreign' => 'parent_id', 'cascade' => array('delete')));
 
         $this->option('type', 'INNODB');
 

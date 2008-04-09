@@ -149,11 +149,15 @@ class Doctrine_Connection_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($this->connection->getManager() === $this->manager);
     }
 
-    public function testDelete() 
+    public function testDeleteOnTransientRecordThrowsException() 
     {
         $user = $this->connection->create('User');
-        $this->connection->unitOfWork->delete($user);
-        $this->assertEqual($user->state(),Doctrine_Record::STATE_TCLEAN);
+        try {
+            $this->connection->unitOfWork->delete($user);
+            $this->fail();
+        } catch (Doctrine_Connection_Exception $e) {
+            $this->pass();
+        }
     }
 
     public function testGetTable() 

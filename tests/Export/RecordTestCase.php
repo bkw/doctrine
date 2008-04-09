@@ -18,7 +18,7 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-
+clearstatcache();
 /**
  * Doctrine_Export_Record_TestCase
  *
