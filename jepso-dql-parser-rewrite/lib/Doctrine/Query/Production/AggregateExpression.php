@@ -40,7 +40,7 @@ class Doctrine_Query_Production_AggregateExpression extends Doctrine_Query_Produ
     protected $_expression;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // AggregateExpression = ("AVG" | "MAX" | "MIN" | "SUM" | "COUNT") "(" ["DISTINCT"] Expression ")"
         $this->_isDistinct = false;
@@ -68,13 +68,13 @@ class Doctrine_Query_Production_AggregateExpression extends Doctrine_Query_Produ
             $this->_isDistinct = true;
         }
 
-        $this->_expression = $this->Expression();
+        $this->_expression = $this->Expression($paramHolder);
 
         $this->_parser->match(')');
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

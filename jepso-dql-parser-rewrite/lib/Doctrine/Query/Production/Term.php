@@ -36,10 +36,10 @@ class Doctrine_Query_Production_Term extends Doctrine_Query_Production
     protected $_factors = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // Term = Factor {("*" | "/") Factor}
-        $this->_factors[] = $this->Factor();
+        $this->_factors[] = $this->Factor($paramHolder);
 
         while ($this->_isNextToken('*') || $this->_isNextToken('/')) {
             if ($this->_isNextToken('*')) {
@@ -50,12 +50,12 @@ class Doctrine_Query_Production_Term extends Doctrine_Query_Production
                 $this->_factors[] = '/';
             }
 
-            $this->_factors[] = $this->Factor();
+            $this->_factors[] = $this->Factor($paramHolder);
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

@@ -35,7 +35,7 @@ class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Produc
     protected $_operator;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         switch ($this->_parser->lookahead['value']) {
             case '=':
@@ -79,7 +79,7 @@ class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Produc
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

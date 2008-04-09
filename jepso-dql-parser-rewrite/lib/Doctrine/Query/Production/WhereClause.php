@@ -36,16 +36,16 @@ class Doctrine_Query_Production_WhereClause extends Doctrine_Query_Production
     protected $_conditionalExpression;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // WhereClause = "WHERE" ConditionalExpression
         $this->_parser->match(Doctrine_Query_Token::T_WHERE);
 
-        $this->_conditionalExpression = $this->ConditionalExpression();
+        $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

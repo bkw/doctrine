@@ -38,18 +38,18 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
     protected $_whereClause;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // DeleteStatement = DeleteClause [WhereClause]
-        $this->_deleteClause = $this->DeleteClause();
+        $this->_deleteClause = $this->DeleteClause($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->_whereClause = $this->WhereClause();
+            $this->_whereClause = $this->WhereClause($paramHolder);
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

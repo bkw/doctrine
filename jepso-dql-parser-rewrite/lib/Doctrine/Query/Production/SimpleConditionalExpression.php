@@ -40,42 +40,42 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
     protected $_rightExpression;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // SimpleConditionalExpression =
         //     ExistsExpression | Expression (ComparisonExpression | BetweenExpression |
         //     LikeExpression | InExpression | NullComparisonExpression | QuantifiedExpression)
         if ($this->_getExpressionType() === Doctrine_Query_Token::T_EXISTS) {
-            $this->_leftExpression = $this->ExistsExpression();
+            $this->_leftExpression = $this->ExistsExpression($paramHolder);
         } else {
-            $this->_leftExpression = $this->Expression();
+            $this->_leftExpression = $this->Expression($paramHolder);
 
             switch ($this->_getExpressionType()) {
                 case Doctrine_Query_Token::T_BETWEEN:
-                    $this->_rightExpression = $this->BetweenExpression();
+                    $this->_rightExpression = $this->BetweenExpression($paramHolder);
                 break;
 
                 case Doctrine_Query_Token::T_LIKE:
-                    $this->_rightExpression = $this->LikeExpression();
+                    $this->_rightExpression = $this->LikeExpression($paramHolder);
                 break;
 
                 case Doctrine_Query_Token::T_IN:
-                    $this->_rightExpression = $this->InExpression();
+                    $this->_rightExpression = $this->InExpression($paramHolder);
                 break;
 
                 case Doctrine_Query_Token::T_IS:
-                    $this->_rightExpression = $this->NullComparisonExpression();
+                    $this->_rightExpression = $this->NullComparisonExpression($paramHolder);
                 break;
 
                 case Doctrine_Query_Token::T_ALL:
                 case Doctrine_Query_Token::T_ANY:
                 case Doctrine_Query_Token::T_SOME:
-                    $this->_rightExpression = $this->QuantifiedExpression();
+                    $this->_rightExpression = $this->QuantifiedExpression($paramHolder);
                 break;
 
                 case Doctrine_Query_Token::T_NONE:
                     // [TODO] Check out ticket #935 to understand what will be done with enumParams
-                    $this->_rightExpression = $this->ComparisonExpression();
+                    $this->_rightExpression = $this->ComparisonExpression($paramHolder);
                 break;
 
                 default:
@@ -88,17 +88,8 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
-        // Check if it is not an ExistsExpression
-        if ($this->_rightExpression !== null) {
-            // [TODO] Figure it out a better way to do this check (must access the DQL, not the SQL)
-            $sqlPiece = $this->_leftExpression->buildSql();
-
-            if ($this->_parser->isA($sqlPiece, Doctrine_Query_Token::T_INPUT_PARAMETER)) {
-                $this->_parser->semanticalError('Input parameter cannot be the left side of a comparison expression');
-            }
-        }
     }
 
 

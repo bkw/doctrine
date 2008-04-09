@@ -36,7 +36,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
     protected $_identifiers = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
         $this->_identifiers[] = $this->_parser->token['value'];
@@ -50,7 +50,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
         $parserResult = $this->_parser->getParserResult();
         $classMetadata = null;

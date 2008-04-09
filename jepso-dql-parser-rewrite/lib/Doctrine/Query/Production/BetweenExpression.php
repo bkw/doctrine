@@ -40,7 +40,7 @@ class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Product
     protected $_toExpression;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // BetweenExpression = ["NOT"] "BETWEEN" Expression "AND" Expression
         $this->_not = false;
@@ -52,15 +52,15 @@ class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Product
 
         $this->_parser->match(Doctrine_Query_Token::T_BETWEEN);
 
-        $this->_fromExpression = $this->Expression();
+        $this->_fromExpression = $this->Expression($paramHolder);
 
         $this->_parser->match(Doctrine_Query_Token::T_AND);
 
-        $this->_toExpression = $this->Expression();
+        $this->_toExpression = $this->Expression($paramHolder);
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

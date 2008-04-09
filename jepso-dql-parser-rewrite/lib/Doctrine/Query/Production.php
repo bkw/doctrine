@@ -88,8 +88,10 @@ abstract class Doctrine_Query_Production
     public function __call($method, $args)
     {
         if (substr($method, 0, 3) === 'get') {
-            $var = substr($method, 3);
-            $var[0] = strtolower($var);
+            $var = '_' . substr($method, 3);
+            $var[1] = strtolower($var[1]);
+
+            return $this->$var;
         }
 
         $this->_parser->getPrinter()->startProduction($method);
@@ -110,14 +112,20 @@ abstract class Doctrine_Query_Production
      */
     public function execute($paramHolder)
     {
+        $return = null;
+
         // Syntax check
-        $this->_syntax($paramHolder);
+        if ( ! $paramHolder->has('syntaxCheck') || $paramHolder->get('syntaxCheck') === true) {
+            $return = $this->syntax($paramHolder);
+        }
 
         // Semantical check
-        $this->_semantical($paramHolder);
+        if ( ! $paramHolder->has('semanticalCheck') || $paramHolder->get('semanticalCheck') === true) {
+            $this->semantical($paramHolder);
+        }
 
         // Return AST instance
-        return $this;
+        return ($return === null) ? $this : $return;
     }
 
 
@@ -138,11 +146,11 @@ abstract class Doctrine_Query_Production
     /**
      * @nodoc
      */
-    abstract protected function _syntax($paramHolder);
+    abstract public function syntax($paramHolder);
 
 
     /**
      * @nodoc
      */
-    abstract protected function _semantical($paramHolder);
+    abstract public function semantical($paramHolder);
 }

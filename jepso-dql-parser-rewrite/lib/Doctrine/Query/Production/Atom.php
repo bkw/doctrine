@@ -38,7 +38,7 @@ class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
     protected $_value;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // Atom = string | integer | float | input_parameter
         switch ($this->_parser->lookahead['type']) {
@@ -71,7 +71,7 @@ class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

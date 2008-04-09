@@ -36,19 +36,19 @@ class Doctrine_Query_Production_ConditionalExpression extends Doctrine_Query_Pro
     protected $_conditionalTerms = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
-        $this->_conditionalTerms[] = $this->ConditionalTerm();
+        $this->_conditionalTerms[] = $this->ConditionalTerm($paramHolder);
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_OR)) {
             $this->_parser->match(Doctrine_Query_Token::T_OR);
-            $this->_conditionalTerms[] = $this->ConditionalTerm();
+            $this->_conditionalTerms[] = $this->ConditionalTerm($paramHolder);
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

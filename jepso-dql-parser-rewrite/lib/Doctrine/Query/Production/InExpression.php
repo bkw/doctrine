@@ -40,7 +40,7 @@ class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
     protected $_atoms = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // InExpression = ["NOT"] "IN" "(" (Atom {"," Atom} | Subselect) ")"
         $this->_not = false;
@@ -55,13 +55,13 @@ class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
         $this->_parser->match('(');
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_SELECT)) {
-            $this->_subselect = $this->Subselect();
+            $this->_subselect = $this->Subselect($paramHolder);
         } else {
-            $this->_atoms[] = $this->Atom();
+            $this->_atoms[] = $this->Atom($paramHolder);
 
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
-                $this->_atoms[] = $this->Atom();
+                $this->_atoms[] = $this->Atom($paramHolder);
             }
         }
 
@@ -69,7 +69,7 @@ class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

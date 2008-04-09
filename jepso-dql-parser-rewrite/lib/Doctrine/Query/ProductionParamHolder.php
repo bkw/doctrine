@@ -32,7 +32,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_ProductionParamHolder implements ArrayObject
+class Doctrine_Query_ProductionParamHolder implements ArrayAccess
 {
     protected static $_instance;
 
@@ -41,13 +41,13 @@ class Doctrine_Query_ProductionParamHolder implements ArrayObject
 
     protected function __construct()
     {
-        $thid->_data = array();
+        $this->free();
     }
 
 
     public function create()
     {
-        if (self::$_instance === null) {
+        if ( ! isset(self::$_instance)) {
             self::$_instance = new self;
         }
 
@@ -55,29 +55,54 @@ class Doctrine_Query_ProductionParamHolder implements ArrayObject
     }
 
 
-    public function set($key, $value)
+    // Interface methods
+    public function offsetSet($offset, $value) {
+        $this->set($offset, $value);
+    }
+
+    public function offsetGet($offset) {
+        return $this->get($offset);
+    }
+
+    public function offsetUnset($offset) {
+        $this->remove($offset);
+    }
+
+    public function offsetExists($offset) {
+        return $this->has($offset);
+    }
+    // End of Interface methods
+
+
+    public function free()
     {
-        $this->_data[$key] = $value;
+        $this->_data = array();
     }
 
 
-    public function get($key)
+    public function set($offset, $value)
     {
-        return isset($this->_data[$key]) ? $this->_data[$key] : null;
+        $this->_data[$offset] = $value;
     }
 
 
-    public function has($key)
+    public function get($offset)
     {
-        return isset($this->_data[$key]);
+        return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
     }
 
 
-    public function remove($key)
+    public function has($offset)
     {
-        if ($this->isset($key)) {
-            $this->_data[$key] = null;
-            unset($this->_data[$key]);
+        return isset($this->_data[$offset]);
+    }
+
+
+    public function remove($offset)
+    {
+        if ($this->has($offset)) {
+            $this->_data[$offset] = null;
+            unset($this->_data[$offset]);
         }
     }
 }

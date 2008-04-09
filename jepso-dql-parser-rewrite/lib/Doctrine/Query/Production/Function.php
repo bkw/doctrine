@@ -38,7 +38,7 @@ class Doctrine_Query_Production_Function extends Doctrine_Query_Production
     protected $_arguments = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // Function = identifier "(" [Expression {"," Expression}] ")"
         $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
@@ -47,12 +47,12 @@ class Doctrine_Query_Production_Function extends Doctrine_Query_Production
         $this->_parser->match('(');
 
         if ( ! $this->_isNextToken(')')) {
-            $this->_arguments[] = $this->Expression();
+            $this->_arguments[] = $this->Expression($paramHolder);
 
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
 
-                $this->_arguments[] = $this->Expression();
+                $this->_arguments[] = $this->Expression($paramHolder);
             }
         }
 
@@ -60,7 +60,7 @@ class Doctrine_Query_Production_Function extends Doctrine_Query_Production
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

@@ -36,20 +36,20 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
     protected $_conditionalExpression;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // ConditionalPrimary = SimpleConditionalExpression | "(" ConditionalExpression ")"
         if ($this->_isConditionalExpression()) {
             $this->_parser->match('(');
-            $this->_conditionalExpression = $this->ConditionalExpression();
+            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
             $this->_parser->match(')');
         } else {
-            $this->_conditionalExpression = $this->SimpleConditionalExpression();
+            $this->_conditionalExpression = $this->SimpleConditionalExpression($paramHolder);
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

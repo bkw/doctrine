@@ -36,7 +36,7 @@ class Doctrine_Query_Production_NullComparisonExpression extends Doctrine_Query_
     protected $_not;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         $this->_not = false;
 
@@ -51,7 +51,7 @@ class Doctrine_Query_Production_NullComparisonExpression extends Doctrine_Query_
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

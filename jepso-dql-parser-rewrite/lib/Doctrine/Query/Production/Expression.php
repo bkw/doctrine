@@ -36,10 +36,10 @@ class Doctrine_Query_Production_Expression extends Doctrine_Query_Production
     protected $_terms = array();
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // Expression = Term {("+" | "-") Term}
-        $this->_terms[] = $this->Term();
+        $this->_terms[] = $this->Term($paramHolder);
 
         while ($this->_isNextToken('+') || $this->_isNextToken('-')) {
             if ($this->_isNextToken('+')) {
@@ -50,12 +50,12 @@ class Doctrine_Query_Production_Expression extends Doctrine_Query_Production
                 $this->_terms[] = '-';
             }
 
-            $this->_terms[] = $this->Term();
+            $this->_terms[] = $this->Term($paramHolder);
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

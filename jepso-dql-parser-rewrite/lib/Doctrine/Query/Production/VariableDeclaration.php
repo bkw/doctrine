@@ -38,7 +38,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
     protected $_componentAlias;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // VariableDeclaration = identifier [["AS"] IdentificationVariable]
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
@@ -52,14 +52,14 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
             $this->_parser->match(Doctrine_Query_Token::T_AS);
         }
-        
+
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
             $this->_componentAlias = $this->_parser->token['value'];
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
         $parserResult = $this->_parser->getParserResult();
 

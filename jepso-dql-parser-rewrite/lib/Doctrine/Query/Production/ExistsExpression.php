@@ -36,18 +36,18 @@ class Doctrine_Query_Production_ExistsExpression extends Doctrine_Query_Producti
     protected $_subselect;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // ExistsExpression = "EXISTS" "(" Subselect ")"
         $this->_parser->match(Doctrine_Query_Token::T_EXISTS);
 
         $this->_parser->match('(');
-        $this->_subselect = $this->Subselect();
+        $this->_subselect = $this->Subselect($paramHolder);
         $this->_parser->match(')');
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

@@ -38,7 +38,7 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
     protected $_primary;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // Factor = [("+" | "-")] Primary
         if ($this->_isNextToken('+')) {
@@ -49,11 +49,11 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
             $this->_type = '-';
         }
 
-        $this->_primary = $this->Primary();
+        $this->_primary = $this->Primary($paramHolder);
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

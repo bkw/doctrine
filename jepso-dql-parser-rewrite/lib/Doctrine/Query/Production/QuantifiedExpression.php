@@ -37,7 +37,7 @@ class Doctrine_Query_Production_QuantifiedExpression extends Doctrine_Query_Prod
     protected $_subselect;
 
 
-    protected function _syntax(array $params = array())
+    public function syntax($paramHolder)
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_ALL:
@@ -60,12 +60,12 @@ class Doctrine_Query_Production_QuantifiedExpression extends Doctrine_Query_Prod
         $this->_type = strtoupper($this->_parser->lookahead['value']);
 
         $this->_parser->match('(');
-        $this->_subselect = $this->Subselect();
+        $this->_subselect = $this->Subselect($paramHolder);
         $this->_parser->match(')');
     }
 
 
-    protected function _semantical(array $params = array())
+    public function semantical($paramHolder)
     {
     }
 

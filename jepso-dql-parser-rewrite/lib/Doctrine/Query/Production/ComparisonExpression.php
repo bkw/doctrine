@@ -39,14 +39,14 @@ class Doctrine_Query_Production_ComparisonExpression extends Doctrine_Query_Prod
     protected $_isSubselect;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
-        $this->_operator = $this->ComparisonOperator();
+        $this->_operator = $this->ComparisonOperator($paramHolder);
         $this->_isSubselect = false;
 
         if ($this->_isSubselect()) {
             $this->_parser->match('(');
-            $this->_expression = $this->Subselect();
+            $this->_expression = $this->Subselect($paramHolder);
             $this->_parser->match(')');
 
             $this->_isSubselect = true;
@@ -55,18 +55,18 @@ class Doctrine_Query_Production_ComparisonExpression extends Doctrine_Query_Prod
                 case Doctrine_Query_Token::T_ALL:
                 case Doctrine_Query_Token::T_ANY:
                 case Doctrine_Query_Token::T_SOME:
-                    $this->_expression = $this->QuantifiedExpression();
+                    $this->_expression = $this->QuantifiedExpression($paramHolder);
                 break;
 
                 default:
-                    $this->_expression = $this->Expression();
+                    $this->_expression = $this->Expression($paramHolder);
                 break;
             }
         }
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

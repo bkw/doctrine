@@ -38,7 +38,7 @@ class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Product
     protected $_conditionalPrimary;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // ConditionalFactor = ["NOT"] ConditionalPrimary
         $this->_notFactor = false;
@@ -48,11 +48,11 @@ class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Product
             $this->_notFactor = true;
         }
 
-        $this->_conditionalPrimary = $this->ConditionalPrimary();
+        $this->_conditionalPrimary = $this->ConditionalPrimary($paramHolder);
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

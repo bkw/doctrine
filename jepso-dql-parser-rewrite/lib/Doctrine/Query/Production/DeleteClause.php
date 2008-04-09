@@ -36,7 +36,7 @@ class Doctrine_Query_Production_DeleteClause extends Doctrine_Query_Production
     protected $_variableDeclaration;
 
 
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         // DeleteClause = "DELETE" ["FROM"] RangeVariableDeclaration
         $this->_parser->match(Doctrine_Query_Token::T_DELETE);
@@ -45,11 +45,11 @@ class Doctrine_Query_Production_DeleteClause extends Doctrine_Query_Production
             $this->_parser->match(Doctrine_Query_Token::T_FROM);
         }
 
-        $this->_variableDeclaration = $this->VariableDeclaration();
+        $this->_variableDeclaration = $this->VariableDeclaration($paramHolder);
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 

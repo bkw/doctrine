@@ -33,20 +33,20 @@
  */
 class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
 {
-    protected function _syntax($params = array())
+    public function syntax($paramHolder)
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
             case Doctrine_Query_Token::T_FROM:
-                return $this->SelectStatement();
+                return $this->SelectStatement($paramHolder);
             break;
 
             case Doctrine_Query_Token::T_UPDATE:
-                return $this->UpdateStatement();
+                return $this->UpdateStatement($paramHolder);
             break;
 
             case Doctrine_Query_Token::T_DELETE:
-                return $this->DeleteStatement();
+                return $this->DeleteStatement($paramHolder);
             break;
 
             default:
@@ -56,7 +56,7 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
     }
 
 
-    protected function _semantical($params = array())
+    public function semantical($paramHolder)
     {
     }
 
