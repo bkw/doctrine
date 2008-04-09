@@ -87,19 +87,14 @@ abstract class Doctrine_Query_Production
      */
     public function __call($method, $args)
     {
-        $this->_parser->getPrinter()->startProduction($method);
-
-        if (isset($args[0])) {
-            if (is_array($args[0])) {
-                $params = $args[0];
-            } else {
-                $params = array($args[0]);
-            }
-        } else {
-            $params = array();
+        if (substr($method, 0, 3) === 'get') {
+            $var = substr($method, 3);
+            $var[0] = strtolower($var);
         }
 
-        $retval = $this->_parser->getProduction($method)->execute($params);
+        $this->_parser->getPrinter()->startProduction($method);
+
+        $retval = $this->_parser->getProduction($method)->execute($args[0]);
 
         $this->_parser->getPrinter()->endProduction();
 
@@ -110,17 +105,16 @@ abstract class Doctrine_Query_Production
     /**
      * Executes this production using the specified parameters.
      *
-     * @param array $params an associative array containing parameter names and
-     * their values
-     * @return Doctrine_Query_SqlBuilder
+     * @param array $paramHolder Production parameter holder
+     * @return Doctrine_Query_Production
      */
-    public function execute(array $params = array())
+    public function execute($paramHolder)
     {
         // Syntax check
-        $this->_syntax($params);
+        $this->_syntax($paramHolder);
 
         // Semantical check
-        $this->_semantical($params);
+        $this->_semantical($paramHolder);
 
         // Return AST instance
         return $this;
@@ -144,11 +138,11 @@ abstract class Doctrine_Query_Production
     /**
      * @nodoc
      */
-    abstract protected function _syntax($params = array());
+    abstract protected function _syntax($paramHolder);
 
 
     /**
      * @nodoc
      */
-    abstract protected function _semantical($params = array());
+    abstract protected function _semantical($paramHolder);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  $Id$
  *
@@ -20,7 +21,7 @@
  */
 
 /**
- * QueryLanguage = SelectStatement | UpdateStatement | DeleteStatement
+ * Production variables holder
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -31,37 +32,52 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
+class Doctrine_Query_ProductionParamHolder implements ArrayObject
 {
-    protected function _syntax($params = array())
+    protected static $_instance;
+
+    protected $_data;
+
+
+    protected function __construct()
     {
-        switch ($this->_parser->lookahead['type']) {
-            case Doctrine_Query_Token::T_SELECT:
-            case Doctrine_Query_Token::T_FROM:
-                return $this->SelectStatement();
-            break;
+        $thid->_data = array();
+    }
 
-            case Doctrine_Query_Token::T_UPDATE:
-                return $this->UpdateStatement();
-            break;
 
-            case Doctrine_Query_Token::T_DELETE:
-                return $this->DeleteStatement();
-            break;
-
-            default:
-                $this->_parser->syntaxError('SELECT, FROM, UPDATE or DELETE');
-            break;
+    public function create()
+    {
+        if (self::$_instance === null) {
+            self::$_instance = new self;
         }
+
+        return self::$_instance;
     }
 
 
-    protected function _semantical($params = array())
+    public function set($key, $value)
     {
+        $this->_data[$key] = $value;
     }
 
 
-    public function buildSql()
+    public function get($key)
     {
+        return isset($this->_data[$key]) ? $this->_data[$key] : null;
+    }
+
+
+    public function has($key)
+    {
+        return isset($this->_data[$key]);
+    }
+
+
+    public function remove($key)
+    {
+        if ($this->isset($key)) {
+            $this->_data[$key] = null;
+            unset($this->_data[$key]);
+        }
     }
 }

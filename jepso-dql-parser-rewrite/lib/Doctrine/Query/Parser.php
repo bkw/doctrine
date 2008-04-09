@@ -175,6 +175,7 @@ class Doctrine_Query_Parser
         $this->_errorDistance++;
     }
 
+
     public function isA($value, $token)
     {
         return $this->_scanner->isA($value, $token);
@@ -214,7 +215,9 @@ class Doctrine_Query_Parser
         $this->lookahead = $this->_scanner->next();
 
         // Building the Abstract Syntax Tree
-        $AST = $this->getProduction('QueryLanguage')->execute();
+        $AST = $this->getProduction('QueryLanguage')->execute(
+            Doctrine_Query_ProductionParamHolder::create()
+        );
 
         // Check for end of string
         if ($this->lookahead !== null) {
