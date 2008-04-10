@@ -117,7 +117,11 @@ abstract class Doctrine_Query_Production
 
         // Semantical check
         if ( ! $paramHolder->has('semanticalCheck') || $paramHolder->get('semanticalCheck') === true) {
-            $this->semantical($paramHolder);
+            $return = $this->semantical($paramHolder);
+
+            if ($return !== null) {
+                return $return;
+            }
         }
 
         // Return AST instance

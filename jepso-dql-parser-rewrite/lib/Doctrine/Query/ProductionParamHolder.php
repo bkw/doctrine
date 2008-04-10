@@ -45,7 +45,7 @@ class Doctrine_Query_ProductionParamHolder implements ArrayAccess
     }
 
 
-    public function create()
+    public static function create()
     {
         if ( ! isset(self::$_instance)) {
             self::$_instance = new self;

@@ -52,7 +52,7 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
         $this->_primary = $this->Primary($paramHolder);
 
         // Optimize depth instances in AST
-        if ($this->type === null) {
+        if ($this->_type === null) {
             return $this->_primary;
         }
     }

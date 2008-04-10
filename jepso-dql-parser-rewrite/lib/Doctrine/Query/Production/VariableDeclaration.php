@@ -54,9 +54,12 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+            $paramHolder->set('componentName', $this->_componentName);
 
-            $this->_componentAlias = $this->_parser->token['value'];
+            // Will return an identifier, with the semantical check already applied
+            $this->_componentAlias = $this->IdentificationVariable($paramHolder);
+
+            $paramHolder->remove('componentName');
         }
     }
 
@@ -65,17 +68,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
     {
         $parserResult = $this->_parser->getParserResult();
 
-        if ($parserResult->hasQueryComponent($this->_componentAlias)) {
-            // We should throw semantical error if there's already a component for this alias
-            $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
-            $componentName = $queryComponent['metadata']->getClassName();
-
-            $message  = "Cannot re-declare component alias '{$this->_componentAlias}'"
-                      . "for '{$this->_componentName}'. It was already declared for '"
-                      . "component '{$componentName}'.";
-
-            $this->_parser->semanticalError($message);
-        } elseif ($parserResult->hasQueryComponent($this->_componentName)) {
+        if ($parserResult->hasQueryComponent($this->_componentName)) {
             // Since name != alias, we can try to bring the queryComponent from name (already processed)
             $queryComponent = $parserResult->getQueryComponent($this->_componentName);
         } else {
@@ -93,16 +86,18 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
             try {
                 $metadata = $conn->getMetadata($this->_componentName);
                 $mapper = $conn->getMapper($this->_componentName);
+
+                // Building queryComponent
+                $queryComponent = array(
+                    'metadata'  => $metadata,
+                    'mapper'    => $mapper,
+                    'map'       => null
+                );
             } catch (Doctrine_Exception $e) {
                 $this->_parser->semanticalError($e->getMessage());
-            }
 
-            // Building queryComponent
-            $queryComponent = array(
-                'metadata'  => $metadata,
-                'mapper'    => $mapper,
-                'map'       => null
-            );
+                return;
+            }
         }
 
         // Define ParserResult assertions for later usage

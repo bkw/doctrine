@@ -37,7 +37,6 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
     {
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
-            case Doctrine_Query_Token::T_FROM:
                 return $this->SelectStatement($paramHolder);
             break;
 
@@ -50,7 +49,7 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
             break;
 
             default:
-                $this->_parser->syntaxError('SELECT, FROM, UPDATE or DELETE');
+                $this->_parser->syntaxError('SELECT, UPDATE or DELETE');
             break;
         }
     }

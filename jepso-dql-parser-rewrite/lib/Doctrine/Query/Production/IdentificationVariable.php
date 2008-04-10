@@ -32,28 +32,33 @@
  */
 class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Production
 {
-    public function execute($params = array())
+    protected $_componentAlias;
+
+
+    public function syntax($paramHolder)
     {
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $alias = $this->_parser->token['value'];
+            $this->_componentAlias = $this->_parser->token['value'];
+        }
+    }
 
-            if ($this->_parser->getQueryObject()->hasQueryComponent($alias)) {
-                $this->_parser->semanticalError("Duplicate alias '$alias' in query.");
-            }
 
-            return $alias;
+    public function semantical($paramHolder)
+    {
+        $parserResult = $this->_parser->getParserResult();
+
+        if ($parserResult->hasQueryComponent($this->_componentAlias)) {
+            // We should throw semantical error if there's already a component for this alias
+            $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
+            $componentName = $queryComponent['metadata']->getClassName();
+
+            $message  = "Cannot re-declare component alias '{$this->_componentAlias}'"
+                      . "for '{$paramHolder['componentName']}'. It was already declared for "
+                      . "component '{$componentName}'.";
+
+            $this->_parser->semanticalError($message);
         }
 
-        return null;
-    }
-
-
-    protected function _syntax($params = array())
-    {
-    }
-
-
-    protected function _semantical(array $params = array())
-    {
+        return $this->_componentAlias;
     }
 }
