@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,16 +33,35 @@
  */
 class Doctrine_Query_Production_GroupByClause extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_groupByItems = array();
+
+
+    public function syntax($paramHolder)
     {
         $this->_parser->match(Doctrine_Query_Token::T_GROUP);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->GroupByItem();
+        $this->_groupByItems[] = $this->GroupByItem($paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->GroupByItem();
+            $this->_groupByItems[] = $this->GroupByItem($paramHolder);
         }
+    }
+
+
+    public function buildSql()
+    {
+        $str = 'GROUP BY ';
+
+        for ($i = 0, $l = count($this->_groupByItems); $i < $l; $i++) {
+            if ($i != 0) {
+                $str .= ', ';
+            }
+
+            $str .= $this->_groupByItems[$i]->buildSql();
+        }
+
+        return $str;
     }
 }

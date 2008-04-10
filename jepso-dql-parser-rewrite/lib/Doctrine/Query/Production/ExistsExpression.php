@@ -47,11 +47,6 @@ class Doctrine_Query_Production_ExistsExpression extends Doctrine_Query_Producti
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return 'EXISTS (' . $this->_subselect->buildSql() . ')';

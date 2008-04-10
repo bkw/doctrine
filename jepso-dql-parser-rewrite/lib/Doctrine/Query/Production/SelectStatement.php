@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -90,15 +91,11 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
     public function buildSql()
     {
-        $selectClause = ($this->_selectClause !== null) ? $this->_selectClause->buildSql() : '';
-
-        if ($selectClause === '') {
-            // We need to retrieve all the components defined and add 
-            // PathExpressionEndingWithAsterisk to them
-            
-        }
-
-        return $selectClause . ' ' . $this->_fromClause->buildSql()
+        // We marked the SelectClause as optional in DQL, but it is required all the time.
+        // The workaround of "SELECT *" add is defined in Doctrine_Query::getSql(), which
+        // is transparent to the end user (he still thinks it's an optional param).
+        // [TODO] We have to find a fix and get it working without the hack.
+        return $this->_selectClause->buildSql() . ' ' . $this->_fromClause->buildSql()
              . (($this->_whereClause !== null) ? ' ' . $this->_whereClause->buildSql() : '')
              . (($this->_groupByClause !== null) ? ' ' . $this->_groupByClause->buildSql() : '')
              . (($this->_havingClause !== null) ? ' ' . $this->_havingClause->buildSql() : '')

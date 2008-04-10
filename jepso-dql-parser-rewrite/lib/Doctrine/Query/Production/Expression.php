@@ -52,11 +52,11 @@ class Doctrine_Query_Production_Expression extends Doctrine_Query_Production
 
             $this->_terms[] = $this->Term($paramHolder);
         }
-    }
 
-
-    public function semantical($paramHolder)
-    {
+        // Optimize depth instances in AST
+        if (count($this->_terms) == 1) {
+            return $this->_terms[0];
+        }
     }
 
 

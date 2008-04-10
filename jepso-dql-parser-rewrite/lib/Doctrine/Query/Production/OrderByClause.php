@@ -36,25 +36,23 @@ class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
     protected $_orderByItems = array();
 
 
-    public function execute(array $params = array())
+    public function syntax($paramHolder)
     {
         $this->_parser->match(Doctrine_Query_Token::T_ORDER);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->_orderByItems[] = $this->OrderByItem();
+        $this->_orderByItems[] = $this->OrderByItem($paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_orderByItems[] = $this->OrderByItem();
+            $this->_orderByItems[] = $this->OrderByItem($paramHolder);
         }
-
-        return $this;
     }
 
 
     public function buildSql()
     {
-        $str = ' ORDER BY ';
+        $str = 'ORDER BY ';
 
         for ($i = 0, $l = count($this->_orderByItems); $i < $l; $i++) {
             if ($i != 0) {

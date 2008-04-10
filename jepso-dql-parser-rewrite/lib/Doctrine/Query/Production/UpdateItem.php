@@ -54,11 +54,6 @@ class Doctrine_Query_Production_UpdateItem extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return $this->_pathExpression->buildSql() . ' = ' 

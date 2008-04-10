@@ -54,14 +54,4 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
             break;
         }
     }
-
-
-    public function semantical($paramHolder)
-    {
-    }
-
-
-    public function buildSql()
-    {
-    }
 }

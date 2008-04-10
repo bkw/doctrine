@@ -39,29 +39,19 @@ class Doctrine_Query_Production_ConditionalPrimary extends Doctrine_Query_Produc
     public function syntax($paramHolder)
     {
         // ConditionalPrimary = SimpleConditionalExpression | "(" ConditionalExpression ")"
-        if ($this->_isConditionalExpression()) {
-            $this->_parser->match('(');
-            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
-            $this->_parser->match(')');
-        } else {
-            $this->_conditionalExpression = $this->SimpleConditionalExpression($paramHolder);
+        if ( ! $this->_isConditionalExpression()) {
+            return $this->SimpleConditionalExpression($paramHolder);
         }
-    }
 
-
-    public function semantical($paramHolder)
-    {
+        $this->_parser->match('(');
+        $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+        $this->_parser->match(')');
     }
 
 
     public function buildSql()
     {
-        $isConditionExpression = (
-            $this->_conditionalExpression instanceof Doctrine_Query_Production_ConditionalExpression
-        );
-
-        return ($isConditionExpression)
-             ? '(' . $this->_conditionalExpression->buildSql() . ')' : $this->_conditionalExpression->buildSql();
+        return '(' . $this->_conditionalExpression->buildSql() . ')';
     }
 
 

@@ -49,11 +49,6 @@ class Doctrine_Query_Production_UpdateStatement extends Doctrine_Query_Productio
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         // The 1=1 is needed to workaround the affected_rows in MySQL.

@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,13 +33,18 @@
  */
 class Doctrine_Query_Production_OrderByItem extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_expression;
+
+    protected $_orderType;
+
+
+    public function syntax($paramHolder)
     {
-        $this->_expression = $this->Expression();
+        $this->_expression = $this->Expression($paramHolder);
+        $this->_orderType = 'ASC';
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ASC)) {
             $this->_parser->match(Doctrine_Query_Token::T_ASC);
-            $this->_orderType = 'ASC';
         } elseif ($this->_isNextToken(Doctrine_Query_Token::T_DESC)) {
             $this->_parser->match(Doctrine_Query_Token::T_DESC);
             $this->_orderType = 'DESC';

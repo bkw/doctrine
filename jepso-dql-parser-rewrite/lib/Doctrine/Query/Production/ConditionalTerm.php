@@ -45,11 +45,11 @@ class Doctrine_Query_Production_ConditionalTerm extends Doctrine_Query_Productio
             $this->_parser->match(Doctrine_Query_Token::T_AND);
             $this->_conditionalFactors[] = $this->ConditionalFactor($paramHolder);
         }
-    }
 
-
-    public function semantical($paramHolder)
-    {
+        // Optimize depth instances in AST
+        if (count($this->_conditionalFactors) == 1) {
+            return $this->_conditionalFactors[0];
+        }
     }
 
 

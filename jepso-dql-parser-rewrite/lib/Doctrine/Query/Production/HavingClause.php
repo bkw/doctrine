@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,10 +33,20 @@
  */
 class Doctrine_Query_Production_HavingClause extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_conditionalExpression;
+
+
+    public function syntax($paramHolder)
     {
+        // HavingClause = "HAVING" ConditionalExpression
         $this->_parser->match(Doctrine_Query_Token::T_HAVING);
 
-        $this->ConditionalExpression();
+        $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+    }
+
+
+    public function buildSql()
+    {
+        return 'HAVING ' . $this->_conditionalExpression->buildSql();
     }
 }

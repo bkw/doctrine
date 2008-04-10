@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,8 +33,8 @@
  */
 class Doctrine_Query_Production_GroupByItem extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    public function syntax($paramHolder)
     {
-        $this->PathExpression();
+        return $this->PathExpression($paramHolder);
     }
 }

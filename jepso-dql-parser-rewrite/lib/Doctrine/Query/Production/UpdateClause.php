@@ -57,11 +57,6 @@ class Doctrine_Query_Production_UpdateClause extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return 'UPDATE ' . $this->_variableDeclaration->buildSql()

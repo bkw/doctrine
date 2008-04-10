@@ -49,11 +49,6 @@ class Doctrine_Query_Production_DeleteClause extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return 'DELETE FROM ' . $this->_variableDeclaration->buildSql();

@@ -71,11 +71,6 @@ class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         switch ($this->_type) {

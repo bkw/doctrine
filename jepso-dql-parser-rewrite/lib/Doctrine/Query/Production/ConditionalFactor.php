@@ -33,32 +33,31 @@
  */
 class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Production
 {
-    protected $_notFactor = false;
-
     protected $_conditionalPrimary;
 
 
     public function syntax($paramHolder)
     {
         // ConditionalFactor = ["NOT"] ConditionalPrimary
-        $this->_notFactor = false;
+        $notFactor = false;
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_NOT)) {
             $this->_parser->match(Doctrine_Query_Token::T_NOT);
-            $this->_notFactor = true;
+            $notFactor = true;
         }
 
         $this->_conditionalPrimary = $this->ConditionalPrimary($paramHolder);
-    }
 
-
-    public function semantical($paramHolder)
-    {
+        // Optimize depth instances in AST
+        if ( ! $notFactor) {
+            return $this->_conditionalPrimary;
+        }
     }
 
 
     public function buildSql()
     {
-        return (($this->_notFactor) ? 'NOT ' : '') . $this->_conditionalPrimary->buildSql();
+        // Do not need to check $notFactor. It'll be always present if we have this instance.
+        return 'NOT ' . $this->_conditionalPrimary->buildSql();
     }
 }

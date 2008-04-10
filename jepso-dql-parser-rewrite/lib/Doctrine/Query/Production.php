@@ -106,11 +106,13 @@ abstract class Doctrine_Query_Production
      */
     public function execute($paramHolder)
     {
-        $return = null;
-
         // Syntax check
         if ( ! $paramHolder->has('syntaxCheck') || $paramHolder->get('syntaxCheck') === true) {
             $return = $this->syntax($paramHolder);
+
+            if ($return !== null) {
+                return $return;
+            }
         }
 
         // Semantical check
@@ -119,7 +121,7 @@ abstract class Doctrine_Query_Production
         }
 
         // Return AST instance
-        return ($return === null) ? $this : $return;
+        return $this;
     }
 
 
@@ -146,5 +148,7 @@ abstract class Doctrine_Query_Production
     /**
      * @nodoc
      */
-    abstract public function semantical($paramHolder);
+    public function semantical($paramHolder)
+    {
+    }
 }

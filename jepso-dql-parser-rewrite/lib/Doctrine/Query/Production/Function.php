@@ -60,11 +60,6 @@ class Doctrine_Query_Production_Function extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return $this->_functionName . '(' . implode(', ', $this->_mapArguments()) . ')';

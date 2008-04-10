@@ -33,22 +33,18 @@
  */
 class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
 {
-    protected $_isExpression;
-
-    protected $_item;
+    protected $_expression;
 
 
     public function syntax($paramHolder)
     {
         // Primary = PathExpression | Atom | "(" Expression ")" | Function | AggregateExpression
-        $this->_isExpression = false;
-
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_IDENTIFIER:
                 if ($this->_isFunction()) {
-                    $this->_item = $this->Function($paramHolder);
+                    return $this->Function($paramHolder);
                 } else {
-                    $this->_item = $this->PathExpression($paramHolder);
+                    return $this->PathExpression($paramHolder);
                 }
             break;
 
@@ -56,7 +52,7 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
             case Doctrine_Query_Token::T_INTEGER:
             case Doctrine_Query_Token::T_FLOAT:
             case Doctrine_Query_Token::T_INPUT_PARAMETER:
-                $this->_item = $this->Atom($paramHolder);
+                return $this->Atom($paramHolder);
             break;
 
             case Doctrine_Query_Token::T_AVG:
@@ -64,16 +60,14 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
             case Doctrine_Query_Token::T_MAX:
             case Doctrine_Query_Token::T_MIN:
             case Doctrine_Query_Token::T_SUM:
-                $this->_item = $this->AggregateExpression($paramHolder);
+                return $this->AggregateExpression($paramHolder);
             break;
 
             case Doctrine_Query_Token::T_NONE:
                 if ($this->_isNextToken('(')) {
                     $this->_parser->match('(');
-                    $this->_item = $this->Expression($paramHolder);
+                    $this->_expression = $this->Expression($paramHolder);
                     $this->_parser->match(')');
-
-                    $this->_isExpression = true;
                 }
             break;
 
@@ -84,13 +78,8 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
-        return (($this->_isExpression) ? '(' . $this->_item->buildSql() . ')' : $this->_item->buildSql());
+        return '(' . $this->_expression->buildSql() . ')';
     }
 }

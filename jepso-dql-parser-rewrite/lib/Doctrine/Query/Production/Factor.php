@@ -50,11 +50,11 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
         }
 
         $this->_primary = $this->Primary($paramHolder);
-    }
 
-
-    public function semantical($paramHolder)
-    {
+        // Optimize depth instances in AST
+        if ($this->type === null) {
+            return $this->_primary;
+        }
     }
 
 
