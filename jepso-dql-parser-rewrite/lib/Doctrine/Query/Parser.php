@@ -73,15 +73,6 @@ class Doctrine_Query_Parser
      */
     protected $_keywordTable;
 
-    /**
-     * A query printer object used to print a parse tree from the input string
-     * for debugging purposes.
-     *
-     * @var Doctrine_Query_Printer
-     */
-    protected $_printer;
-
-
     // Scanner Stuff
 
     /**
@@ -128,9 +119,6 @@ class Doctrine_Query_Parser
         $this->_keywordTable = new Doctrine_Query_Token();
 
         $this->free(true);
-
-        // Used for debug purposes. Remove it later!
-        $this->_printer = new Doctrine_Query_Printer(true);
     }
 
 
@@ -157,8 +145,6 @@ class Doctrine_Query_Parser
             $this->syntaxError($this->_keywordTable->getLiteral($token));
 
         }
-
-        $this->_printer->println($this->lookahead['value']);
 
         $this->next();
         return true;
@@ -266,17 +252,6 @@ class Doctrine_Query_Parser
     public function getParserResult()
     {
         return $this->_parserResult;
-    }
-
-
-    /**
-     * Returns the parse tree printer object associated with this object.
-     *
-     * @return Doctrine_Query_Printer
-     */
-    public function getPrinter()
-    {
-        return $this->_printer;
     }
 
 

@@ -34,14 +34,10 @@
  * @todo        1) [romanb] We  might want to split the SQL generation tests into multiple
  *              testcases later since we'll have a lot of them and we might want to have special SQL
  *              generation tests for some dbms specific SQL syntaxes.
- *              2) [romanb] IMHO, all these tests here should use $q->setDql() since we don't test
- *              Doctrine_Query and the DQL generation here, we test the SQL generation.
- *              All tests that test the DQL generation using the fluent interface should be
- *              in DqlGeneration testcases.
  */
-class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
+class Orm_Query_DeleteSqlGenerationTest extends Doctrine_OrmTestCase
 {
-    public function testDeleteWithoutWhere()
+    public function testWithoutWhere()
     {
         $q = new Doctrine_Query();
 
@@ -50,13 +46,13 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u');
+        $q->setDql('DELETE FROM CmsUser u');
         $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithWhere()
+    public function testWithWhere()
     {
         $q = new Doctrine_Query();
 
@@ -70,61 +66,61 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
         //                       | InExpression | NullComparisonExpression) | ExistsExpression
 
         // If this one test fail, all others will fail too. That's the simplest case possible
-        $q->delete()->from('CmsUser u')->where('id = ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id = ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithConditionalExpressions()
+    public function testWithConditionalExpressions()
     {
         $q = new Doctrine_Query();
 
-        $q->delete()->from('CmsUser u')->where('u.username = ?', 'gblanco')
-          ->orWhere('u.name = ?', 'Guilherme');
+        $q->setDql('DELETE CmsUser u WHERE u.username = ? OR u.name = ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ? OR cu.name = ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('u.id = ?', 2)
-          ->orWhere('( u.username = ? OR u.name = ? )', array('gblanco', 'Guilherme'));
+        $q->setDql('DELETE CmsUser u WHERE u.id = ? OR ( u.username = ? OR u.name = ? )');
         $this->assertEquals(
             'DELETE FROM cms_user cu WHERE cu.id = ? OR (cu.username = ? OR cu.name = ?)',
             $q->getSql()
         );
         $q->free();
-        
-        //$q->setDql('DELETE FROM CmsUser WHERE id = ?');
-        //$this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
-        //$q->free();
+
+        $q->setDql('DELETE FROM CmsUser WHERE id = ?');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id = ?', $q->getSql());
+        $q->free();
     }
-    
+
+
     public function testInvalidSyntaxIsRejected()
     {
         $q = new Doctrine_Query();
-        
+
         $invalidDql = 'FOOBAR CmsUser';
         $q->setDql($invalidDql);
         try {
             $q->getSql();
             $this->fail("Invalid DQL '$invalidDql' was not rejected.");
         } catch (Doctrine_Query_Parser_Exception $parseEx) {}
-        
+
         $invalidDql = 'DELETE FROM hey.boy';
         $q->setDql($invalidDql);
         try {
             $q->getSql();
             $this->fail("Invalid DQL '$invalidDql' was not rejected.");
         } catch (Doctrine_Query_Parser_Exception $parseEx) {}
-        
+
         $invalidDql = 'DELETE FROM CmsUser cu WHERE cu.my.thing > ?';
         $q->setDql($invalidDql);
         try {
             $q->getSql();
             $this->fail("Invalid DQL '$invalidDql' was not rejected.");
         } catch (Doctrine_Relation_Exception $parseEx) {}
-        
+
     }
-    
+
+
     public function testParserIsCaseAgnostic()
     {
         $q = new Doctrine_Query();
@@ -132,29 +128,30 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ?', $q->getSql());
     }
 
-    public function testDeleteWithConditionalTerms()
+
+    public function testWithConditionalTerms()
     {
         $q = new Doctrine_Query();
 
-        $q->delete()->from('CmsUser u')->where('u.username = ?', 'gblanco')->andWhere('u.name = ?', 'Guilherme');
+        $q->setDql('DELETE CmsUser u WHERE u.username = ? AND u.name = ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username = ? AND cu.name = ?', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithConditionalFactors()
+    public function testWithConditionalFactors()
     {
         $q = new Doctrine_Query();
 
-        $q->delete()->from('CmsUser u')->where('NOT id != ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE NOT id != ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE NOT cu.id <> ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('NOT ( id != ? )', 1);
+        $q->setDql('DELETE CmsUser u WHERE NOT ( id != ? )');
         $this->assertEquals('DELETE FROM cms_user cu WHERE NOT (cu.id <> ?)', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('NOT ( id != ? AND username = ? )', array(1, 'gblanco'));
+        $q->setDql('DELETE CmsUser u WHERE NOT ( id != ? AND username = ? )');
         $this->assertEquals('DELETE FROM cms_user cu WHERE NOT (cu.id <> ? AND cu.username = ?)', $q->getSql());
         $q->free();
     }
@@ -163,94 +160,93 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
     // ConditionalPrimary was already tested (see testDeleteWithWhere() and testDeleteWithConditionalFactors())
 
 
-    public function testDeleteWithExprAndComparison()
+    public function testWithExprAndComparison()
     {
         $q = new Doctrine_Query();
 
         // id = ? was already tested (see testDeleteWithWhere())
 
-        $q->delete()->from('CmsUser u')->where('id > ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id > ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id > ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('id >= ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id >= ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id >= ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('id < ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id < ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id < ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('id <= ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id <= ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <= ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('id <> ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id <> ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <> ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('id != ?', 1);
+        $q->setDql('DELETE CmsUser u WHERE id != ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id <> ?', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithExprAndBetween()
+    public function testWithExprAndBetween()
     {
         $q = new Doctrine_Query();
 
         // "WHERE" Expression BetweenExpression
-        $q->delete()->from('CmsUser u')->where('u.id NOT BETWEEN ? AND ?', array(1, 10));
+        $q->setDql('DELETE CmsUser u WHERE u.id NOT BETWEEN ? AND ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id NOT BETWEEN ? AND ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('u.id BETWEEN ? AND ?', array(1, 10))
-          ->andWhere('u.username != ?', 'admin');
+        $q->setDql('DELETE CmsUser u WHERE u.id BETWEEN ? AND ? AND u.username != ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id BETWEEN ? AND ? AND cu.username <> ?', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithExprAndLike()
+    public function testWithExprAndLike()
     {
         $q = new Doctrine_Query();
 
         // "WHERE" Expression LikeExpression
-        $q->delete()->from('CmsUser u')->where('u.username NOT LIKE ?', 'gblanco');
+        $q->setDql('DELETE CmsUser u WHERE u.username NOT LIKE ?');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.username NOT LIKE ?', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where("u.username LIKE ? ESCAPE '\\'", 'gblanco');
+        $q->setDql("DELETE CmsUser u WHERE u.username LIKE ? ESCAPE '\\'");
         $this->assertEquals("DELETE FROM cms_user cu WHERE cu.username LIKE ? ESCAPE '\\'", $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithExprAndIn()
+    public function testWithExprAndIn()
     {
         $q = new Doctrine_Query();
 
         // "WHERE" Expression InExpression
-        $q->delete()->from('CmsUser u')->whereIn('u.id', array(1, 3, 7, 10));
+        $q->setDql('DELETE CmsUser u WHERE u.id IN ( ?, ?, ?, ? )');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id IN (?, ?, ?, ?)', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->whereNotIn('u.id', array(1, 10));
+        $q->setDql('DELETE CmsUser u WHERE u.id NOT IN ( ?, ? )');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.id NOT IN (?, ?)', $q->getSql());
         $q->free();
     }
 
 
-    public function testDeleteWithExprAndNull()
+    public function testWithExprAndNull()
     {
         $q = new Doctrine_Query();
 
         // "WHERE" Expression NullComparisonExpression
-        $q->delete()->from('CmsUser u')->where('u.name IS NULL');
+        $q->setDql('DELETE CmsUser u WHERE u.name IS NULL');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.name IS NULL', $q->getSql());
         $q->free();
 
-        $q->delete()->from('CmsUser u')->where('u.name IS NOT NULL');
+        $q->setDql('DELETE CmsUser u WHERE u.name IS NOT NULL');
         $this->assertEquals('DELETE FROM cms_user cu WHERE cu.name IS NOT NULL', $q->getSql());
         $q->free();
     }
@@ -258,13 +254,17 @@ class Orm_Query_SqlGenerationTest extends Doctrine_OrmTestCase
 
     // All previously defined tests used Primary as PathExpression. No need to check it again.
 
-    public function testDeleteWithPrimaryAsAtom()
+    public function testWithPrimaryAsAtom()
     {
         $q = new Doctrine_Query();
 
         // Atom = string | integer | float | boolean | input_parameter
-        $q->delete()->from('CmsUser u')->where('1 = 1');
+        $q->setDql('DELETE CmsUser u WHERE 1 = 1');
         $this->assertEquals('DELETE FROM cms_user cu WHERE 1 = 1', $q->getSql());
+        $q->free();
+
+        $q->setDql('DELETE CmsUser u WHERE ? = 1');
+        $this->assertEquals('DELETE FROM cms_user cu WHERE ? = 1', $q->getSql());
         $q->free();
     }
 }

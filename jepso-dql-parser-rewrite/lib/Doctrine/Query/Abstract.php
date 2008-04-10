@@ -181,6 +181,7 @@ abstract class Doctrine_Query_Abstract
     public function setDql($dqlQuery)
     {
         $this->free();
+
         if ($dqlQuery !== null) {
             $this->_dql = $dqlQuery;
 

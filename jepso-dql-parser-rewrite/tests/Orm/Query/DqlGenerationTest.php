@@ -42,6 +42,10 @@ class Orm_Query_DqlGenerationTest extends Doctrine_OrmTestCase
         $q = new $class();
 
         // select and from
+        $q->setDql('FROM User u');
+        $this->assertEquals('FROM User u', $q->getDql()); // Internally we use SELECT * FROM User u to process the DQL
+        $q->free();
+
         $q->select()->from('User u');
         $this->assertEquals('SELECT * FROM User u', $q->getDql());
         $q->free();

@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,16 +33,35 @@
  */
 class Doctrine_Query_Production_UpdateItem extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_pathExpression;
+
+    protected $_expression;
+
+
+    public function syntax($paramHolder)
     {
-        $this->PathExpression();
+        // UpdateItem = PathExpression "=" (Expression | "NULL")
+        $this->_pathExpression = $this->PathExpression($paramHolder);
 
         $this->_parser->match('=');
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_NULL)) {
             $this->_parser->match(Doctrine_Query_Token::T_NULL);
+            $this->_expression = null;
         } else {
-            $this->Expression();
+            $this->_expression = $this->Expression($paramHolder);
         }
+    }
+
+
+    public function semantical($paramHolder)
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_pathExpression->buildSql() . ' = ' 
+             . ($this->_expression === null ? 'NULL' : $this->_expression->buildSql());
     }
 }

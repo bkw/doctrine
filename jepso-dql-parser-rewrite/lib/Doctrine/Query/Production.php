@@ -36,7 +36,7 @@
 abstract class Doctrine_Query_Production
 {
     /**
-     * a parser object
+     * Parser object
      *
      * @var Doctrine_Query_Parser
      */
@@ -94,13 +94,7 @@ abstract class Doctrine_Query_Production
             return $this->$var;
         }
 
-        $this->_parser->getPrinter()->startProduction($method);
-
-        $retval = $this->_parser->getProduction($method)->execute($args[0]);
-
-        $this->_parser->getPrinter()->endProduction();
-
-        return $retval;
+        return $this->_parser->getProduction($method)->execute($args[0]);
     }
 
 

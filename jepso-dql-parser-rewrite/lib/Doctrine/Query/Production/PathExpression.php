@@ -72,7 +72,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
 
                     // We should have a semantical error if the queryComponent does not exists yet
                     if ($queryComponent === null) {
-                        $this->_parser->semanticalError("Undefined compononed alias for relation '{$relationName}'");
+                        $this->_parser->semanticalError("Undefined component alias for relation '{$relationName}'");
                     }
 
                     // Initializing ClassMetadata

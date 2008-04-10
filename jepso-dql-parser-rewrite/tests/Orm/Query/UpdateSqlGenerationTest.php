@@ -20,63 +20,34 @@
  */
 
 /**
- * UpdateClause = "UPDATE" VariableDeclaration "SET" UpdateItem {"," UpdateItem}
+ * Test case for testing the saving and referencing of query identifiers.
  *
  * @package     Doctrine
  * @subpackage  Query
  * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
+ * @todo        1) [romanb] We  might want to split the SQL generation tests into multiple
+ *              testcases later since we'll have a lot of them and we might want to have special SQL
+ *              generation tests for some dbms specific SQL syntaxes.
  */
-class Doctrine_Query_Production_UpdateClause extends Doctrine_Query_Production
+class Orm_Query_UpdateSqlGenerationTest extends Doctrine_OrmTestCase
 {
-    protected $_variableDeclaration;
-
-    protected $_updateItems = array();
-
-
-    public function syntax($paramHolder)
+    public function testWithoutWhere()
     {
-        // UpdateClause = "UPDATE" VariableDeclaration "SET" UpdateItem {"," UpdateItem}
-        $this->_parser->match(Doctrine_Query_Token::T_UPDATE);
+        $q = new Doctrine_Query();
 
-        $this->_variableDeclaration = $this->VariableDeclaration($paramHolder);
+        // NO WhereClause
+        $q->setDql('UPDATE CmsUser u SET name = ?');
+        $this->assertEquals('UPDATE cms_user cu SET cu.name = ? WHERE 1 = 1', $q->getSql());
+        $q->free();
 
-        $this->_parser->match(Doctrine_Query_Token::T_SET);
-
-        $this->_updateItems[] = $this->UpdateItem($paramHolder);
-
-        while ($this->_isNextToken(',')) {
-            $this->_parser->match(',');
-
-            $this->_updateItems[] = $this->UpdateItem($paramHolder);
-        }
-    }
-
-
-    public function semantical($paramHolder)
-    {
-    }
-
-
-    public function buildSql()
-    {
-        return 'UPDATE ' . $this->_variableDeclaration->buildSql()
-             . ' SET ' . implode(', ', $this->_mapUpdateItems());
-    }
-
-
-    protected function _mapUpdateItems()
-    {
-        return array_map(array(&$this, '_mapUpdateItem'), $this->_updateItems);
-    }
-
-
-    protected function _mapUpdateItem($value)
-    {
-        return $value->buildSql();
+        $q->setDql('UPDATE CmsUser u SET name = ?, username = ?');
+        $this->assertEquals('UPDATE cms_user cu SET cu.name = ?, cu.username = ? WHERE 1 = 1', $q->getSql());
+        $q->free();
     }
 }

@@ -20,10 +20,11 @@
  */
 
 /**
- * UpdateStatement = UpdateClause [WhereClause] [OrderByClause] [LimitClause]
+ * UpdateStatement = UpdateClause [WhereClause]
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,20 +33,32 @@
  */
 class Doctrine_Query_Production_UpdateStatement extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_updateClause;
+
+    protected $_whereClause;
+
+
+    public function syntax($paramHolder)
     {
-        $this->UpdateClause();
+        // UpdateStatement = UpdateClause [WhereClause]
+        $this->_updateClause = $this->UpdateClause($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->WhereClause();
+            $this->_whereClause = $this->WhereClause($paramHolder);
         }
+    }
 
-        if ($this->_isNextToken(Doctrine_Query_Token::T_ORDER)) {
-            $this->OrderByClause();
-        }
 
-        if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
-            $this->LimitClause();
-        }
+    public function semantical($paramHolder)
+    {
+    }
+
+
+    public function buildSql()
+    {
+        // The 1=1 is needed to workaround the affected_rows in MySQL.
+        // Simple "UPDATE table_name SET column_name = value" gives 0 affected rows.
+        return $this->_updateClause->buildSql() . (($this->_whereClause !== null)
+             ? $this->_whereClause->buildSql() : ' WHERE 1 = 1');
     }
 }

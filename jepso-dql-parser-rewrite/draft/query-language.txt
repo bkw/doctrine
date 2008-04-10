@@ -11,15 +11,16 @@
  *  - a vertical bar | represents an alternative
  *
  * At a first glance we'll support SQL-99 based queries
+ * Initially Select and Sub-select DQL will not support LIMIT and OFFSET (due to limit-subquery algorithm)
  */
 
 QueryLanguage   = SelectStatement | UpdateStatement | DeleteStatement
 
-SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause] [LimitClause] [OffsetClause]
-UpdateStatement = UpdateClause [WhereClause] [OrderByClause] [LimitClause] [OffsetClause]
+SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
+UpdateStatement = UpdateClause [WhereClause]
 DeleteStatement = DeleteClause [WhereClause]
 
-Subselect       = SimpleSelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause] [LimitClause] [OffsetClause]
+Subselect       = SimpleSelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
 SelectClause    = "SELECT" ["ALL" | "DISTINCT"] SelectExpression {"," SelectExpression}
 SimpleSelectClause = "SELECT" ["ALL" | "DISTINCT"] SelectExpression
 DeleteClause    = "DELETE" ["FROM"] VariableDeclaration
@@ -30,14 +31,14 @@ GroupByClause   = "GROUP" "BY" GroupByItem {"," GroupByItem}
 OrderByClause   = "ORDER" "BY" OrderByItem {"," OrderByItem}
 LimitClause     = "LIMIT" integer
 OffsetClause    = "OFFSET" integer
-UpdateClause    = "UPDATE" RangeVariableDeclaration "SET" UpdateItem {"," UpdateItem}
+UpdateClause    = "UPDATE" VariableDeclaration "SET" UpdateItem {"," UpdateItem}
 
 OrderByItem = Expression ["ASC" | "DESC"]
 GroupByItem = PathExpression
 UpdateItem = PathExpression "=" (Expression | "NULL")
 
 IdentificationVariableDeclaration = RangeVariableDeclaration [IndexBy] {Join [IndexBy]}
-RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
+RangeVariableDeclaration = identifier {"." identifier} [["AS"] identifier]
 VariableDeclaration = identifier [["AS"] identifier]
 
 Join = ["LEFT" | "INNER"] "JOIN" RangeVariableDeclaration [("ON" | "WITH") ConditionalExpression]
@@ -58,7 +59,7 @@ Term       = Factor {("*" | "/") Factor}
 Factor     = [("+" | "-")] Primary
 Primary    = PathExpression | Atom | "(" Expression ")" | Function | AggregateExpression
 
-SelectExpression  = (PathExpressionEndingWithAsterisk | Expression | "(" Subselect ")" ) [["AS"] IdentificationVariable]
+SelectExpression  = (PathExpressionEndingWithAsterisk | Expression | "(" Subselect ")" ) [["AS"] identifier]
 PathExpression = identifier {"." identifier}
 PathExpressionEndingWithAsterisk = {identifier "."} "*"
 
