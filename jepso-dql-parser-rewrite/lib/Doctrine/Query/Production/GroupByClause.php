@@ -52,16 +52,18 @@ class Doctrine_Query_Production_GroupByClause extends Doctrine_Query_Production
 
     public function buildSql()
     {
-        $str = 'GROUP BY ';
+        return 'GROUP BY ' . implode(', ', $this->_mapGroupByItems()) . ')';
+    }
 
-        for ($i = 0, $l = count($this->_groupByItems); $i < $l; $i++) {
-            if ($i != 0) {
-                $str .= ', ';
-            }
 
-            $str .= $this->_groupByItems[$i]->buildSql();
-        }
+    protected function _mapGroupByItems()
+    {
+        return array_map(array(&$this, '_mapGroupByItem'), $this->_groupByItems);
+    }
 
-        return $str;
+
+    protected function _mapGroupByItem($value)
+    {
+        return $value->buildSql();
     }
 }

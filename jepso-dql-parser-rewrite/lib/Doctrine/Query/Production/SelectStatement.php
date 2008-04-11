@@ -20,7 +20,7 @@
  */
 
 /**
- * SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
+ * SelectStatement = SelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -48,17 +48,13 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
     public function syntax($paramHolder)
     {
-        // SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
+        // SelectStatement = SelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
 
         // Disable the semantical check for SelectClause now. This is needed
         // since we dont know the query components yet (will be known only
         // when the FROM clause be processed).
         $paramHolder->set('semanticalCheck', false);
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_SELECT)) {
-            $this->_selectClause = $this->SelectClause($paramHolder);
-        }
-
+        $this->_selectClause = $this->SelectClause($paramHolder);
         $paramHolder->remove('semanticalCheck');
 
         $this->_fromClause = $this->FromClause($paramHolder);
@@ -91,10 +87,6 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
     public function buildSql()
     {
-        // We marked the SelectClause as optional in DQL, but it is required all the time.
-        // The workaround of "SELECT *" add is defined in Doctrine_Query::getSql(), which
-        // is transparent to the end user (he still thinks it's an optional param).
-        // [TODO] We have to find a fix and get it working without the hack.
         return $this->_selectClause->buildSql() . ' ' . $this->_fromClause->buildSql()
              . (($this->_whereClause !== null) ? ' ' . $this->_whereClause->buildSql() : '')
              . (($this->_groupByClause !== null) ? ' ' . $this->_groupByClause->buildSql() : '')

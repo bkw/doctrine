@@ -221,14 +221,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
     public function getSql()
     {
         if ($this->_state === self::STATE_DIRTY) {
-            // We need to make sure SELECT clause will always exist
-            $dql = $this->getDql();
-
-            if (substr($dql, 0, strpos($dql, ' ')) == 'FROM') {
-                $dql = 'SELECT * ' . $dql;
-            }
-
-            $parser = new Doctrine_Query_Parser($dql);
+            $parser = new Doctrine_Query_Parser($this->getDql());
             $this->_parserResult = $parser->parse();
 
             $this->_state = self::STATE_CLEAN;

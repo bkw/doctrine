@@ -36,34 +36,34 @@ class Doctrine_Query_Production_FromClause extends Doctrine_Query_Production
     protected $_identificationVariableDeclaration = array();
 
 
-    public function execute(array $params = array())
+    public function syntax($paramHolder)
     {
         // FromClause = "FROM" IdentificationVariableDeclaration {"," IdentificationVariableDeclaration}
         $this->_parser->match(Doctrine_Query_Token::T_FROM);
 
-        $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration();
+        $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration($paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration();
+            $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration($paramHolder);
         }
-
-        return $this;
     }
 
 
     public function buildSql()
     {
-        $str = '';
+        return 'FROM ' . implode(', ', $this->_mapIdentificationVariableDeclarations());
+    }
 
-        for ($i = 0, $l = count($this->_identificationVariableDeclaration); $i < $l; $i++) {
-            if ($i != 0) {
-                $str .= ', ';
-            }
 
-            $str .= $this->_identificationVariableDeclaration[$i]->buildSql();
-        }
+    protected function _mapIdentificationVariableDeclarations()
+    {
+        return array_map(array(&$this, '_mapIdentificationVariableDeclaration'), $this->_identificationVariableDeclaration);
+    }
 
-        return ' FROM ' . $str;
+
+    protected function _mapIdentificationVariableDeclaration($value)
+    {
+        return $value->buildSql();
     }
 }

@@ -60,11 +60,6 @@ class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Product
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return (($this->_not) ? 'NOT ' : '') . 'BETWEEN '

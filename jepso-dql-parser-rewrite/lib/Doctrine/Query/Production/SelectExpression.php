@@ -25,6 +25,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -33,7 +34,55 @@
  */
 class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Production
 {
-    private function _isPathExpressionEndingWithAsterisk()
+    protected $_leftExpression;
+
+    protected $_isSubselect;
+
+    protected $_identificationVariable;
+
+
+    public function syntax($paramHolder)
+    {
+        // SelectExpression = (PathExpressionEndingWithAsterisk | Expression | "(" Subselect ")")
+        //                    [["AS"] IdentificationVariable]
+        $this->_isSubselect = false;
+
+        if ($this->_isPathExpressionEndingWithAsterisk()) {
+            $this->_leftExpression = $this->PathExpressionEndingWithAsterisk($paramHolder);
+        } elseif(($this->_isSubselect = $this->_isSubselect()) === true) {
+            $this->_parser->match('(');
+            $this->_leftExpression = $this->Subselect($paramHolder);
+            $this->_parser->match(')');
+        } else {
+            $this->_leftExpression = $this->Expression($paramHolder);
+        }
+
+        if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
+            $this->_parser->match(Doctrine_Query_Token::T_AS);
+        }
+
+        if ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $this->_identificationVariable = $this->IdentificationVariable($paramHolder);
+        }
+    }
+
+
+    public function semantical($paramHolder)
+    {
+        // Here we inspect for duplicate IdentificationVariable, and if the
+        // left expression needs the identification variable. If yes, check
+        // its existance.
+    }
+
+
+    public function buildSql()
+    {
+        return $this->_leftExpression->buildSql()
+             . (($this->_identificationVariable) ? ' AS ' . $this->_identificationVariable->buildSql(): '');
+    }
+
+
+    protected function _isPathExpressionEndingWithAsterisk()
     {
         $token = $this->_parser->lookahead;
         $this->_parser->getScanner()->resetPeek();
@@ -43,25 +92,5 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         }
 
         return $token['value'] === '*';
-    }
-
-    public function execute(array $params = array())
-    {
-        if ($this->_isPathExpressionEndingWithAsterisk()) {
-            $this->PathExpressionEndingWithAsterisk();
-        } elseif ($this->_isSubselect()) {
-            $this->_parser->match('(');
-            $this->Subselect();
-            $this->_parser->match(')');
-        } else {
-            $this->Expression();
-        }
-
-        if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
-            $this->_parser->match(Doctrine_Query_Token::T_AS);
-            $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
-        } elseif ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->IdentificationVariable();
-        }
     }
 }

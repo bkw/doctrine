@@ -32,60 +32,50 @@
  */
 class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Production
 {
-    protected $_operator;
-
-
     public function syntax($paramHolder)
     {
         switch ($this->_parser->lookahead['value']) {
             case '=':
                 $this->_parser->match('=');
-                $this->_operator = '=';
+                return '=';
             break;
 
             case '<':
                 $this->_parser->match('<');
-                $this->_operator = '<';
+                $operator = '<';
 
                 if ($this->_isNextToken('=')) {
                     $this->_parser->match('=');
-                    $this->_operator .= '=';
+                    $operator .= '=';
                 } elseif ($this->_isNextToken('>')) {
                     $this->_parser->match('>');
-                    $this->_operator .= '>';
+                    $operator .= '>';
                 }
+
+                return $operator;
             break;
 
             case '>':
                 $this->_parser->match('>');
-                $this->_operator = '>';
+                $operator = '>';
 
                 if ($this->_isNextToken('=')) {
                     $this->_parser->match('=');
-                    $this->_operator .= '=';
+                    $operator .= '=';
                 }
+
+                return $operator;
             break;
 
             case '!':
                 $this->_parser->match('!');
                 $this->_parser->match('=');
-                $this->_operator = '<>';
+                return '<>';
             break;
 
             default:
                 $this->_parser->logError('=, <, <=, <>, >, >=, !=');
             break;
         }
-    }
-
-
-    public function semantical($paramHolder)
-    {
-    }
-
-
-    public function buildSql()
-    {
-        return $this->_operator;
     }
 }

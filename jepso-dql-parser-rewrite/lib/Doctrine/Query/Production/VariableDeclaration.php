@@ -44,9 +44,6 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
             // identifier
             $this->_componentName = $this->_parser->token['value'];
-
-            // IdentificationVariable (identifier if alias not defined)
-            $this->_componentAlias = $this->_componentName;
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
@@ -71,6 +68,17 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         if ($parserResult->hasQueryComponent($this->_componentName)) {
             // Since name != alias, we can try to bring the queryComponent from name (already processed)
             $queryComponent = $parserResult->getQueryComponent($this->_componentName);
+
+            // Check if we defined _componentAlias. We throw semantical error if not
+            if ($this->_componentAlias === null) {
+                $componentName = $queryComponent['metadata']->getClassName();
+
+                $this->_parser->semanticalError(
+                    "Cannot re-declare component '{$this->_componentName}'. Please assign an alias to it."
+                );
+
+                // [TODO] Shouldnt we return here?
+            }
         } else {
             // No queryComponent was found. We will have to build it for the first time
 

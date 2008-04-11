@@ -35,6 +35,7 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
 {
     public function syntax($paramHolder)
     {
+        // QueryLanguage = SelectStatement | UpdateStatement | DeleteStatement
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
                 return $this->SelectStatement($paramHolder);

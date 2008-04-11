@@ -20,10 +20,11 @@
  */
 
 /**
- * IdentificationVariableDeclaration = RangeVariableDeclaration {Join}
+ * IdentificationVariableDeclaration = RangeVariableDeclaration [IndexBy] {Join [IndexBy]}
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,11 +33,11 @@
  */
 class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    public function syntax($paramHolder)
     {
         $queryObject = $this->_parser->getQueryObject();
 
-        $alias = $this->RangeVariableDeclaration();
+        $alias = $this->RangeVariableDeclaration($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
             $this->IndexBy(array('alias' => $alias));

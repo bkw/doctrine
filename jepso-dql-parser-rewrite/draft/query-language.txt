@@ -16,7 +16,7 @@
 
 QueryLanguage   = SelectStatement | UpdateStatement | DeleteStatement
 
-SelectStatement = [SelectClause] FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
+SelectStatement = SelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
 UpdateStatement = UpdateClause [WhereClause]
 DeleteStatement = DeleteClause [WhereClause]
 
@@ -39,7 +39,7 @@ UpdateItem = PathExpression "=" (Expression | "NULL")
 
 IdentificationVariableDeclaration = RangeVariableDeclaration [IndexBy] {Join [IndexBy]}
 RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
-VariableDeclaration = identifier [["AS"] identifier]
+VariableDeclaration = identifier [["AS"] IdentificationVariable]
 
 Join = ["LEFT" | "INNER"] "JOIN" RangeVariableDeclaration [("ON" | "WITH") ConditionalExpression]
 IndexBy = "INDEX" "BY" identifier

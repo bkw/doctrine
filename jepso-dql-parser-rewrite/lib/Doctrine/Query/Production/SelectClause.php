@@ -24,6 +24,7 @@
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
@@ -32,19 +33,56 @@
  */
 class Doctrine_Query_Production_SelectClause extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_isDistinct;
+
+    protected $_selectExpressions = array();
+
+
+    public function syntax($paramHolder)
     {
+        // SelectClause = "SELECT" ["DISTINCT"] SelectExpression {"," SelectExpression}
+        $this->_isDistinct = false;
+
         $this->_parser->match(Doctrine_Query_Token::T_SELECT);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_DISTINCT)) {
             $this->_parser->match(Doctrine_Query_Token::T_DISTINCT);
+            $this->_isDistinct = true;
         }
 
-        $this->SelectExpression();
+        $this->_selectExpressions[] = $this->SelectExpression($paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->SelectExpression();
+            $this->_selectExpressions[] = $this->SelectExpression($paramHolder);
         }
+    }
+
+
+    public function semantical($paramHolder)
+    {
+        // We need to validate each SelectExpression
+        for ($i = 0, $l = count($this->_selectExpressions); $i < $l; $i++) {
+             $this->_selectExpressions[$i]->semantical($paramHolder);
+        }
+    }
+
+
+    public function buildSql()
+    {
+        return 'SELECT ' . (($this->_isDistinct) ? 'DISTINCT ' : '')
+             . implode(', ', $this->_mapSelectExpressions());
+    }
+
+
+    protected function _mapSelectExpressions()
+    {
+        return array_map(array(&$this, '_mapSelectExpression'), $this->_selectExpressions);
+    }
+
+
+    protected function _mapSelectExpression($value)
+    {
+        return $value->buildSql();
     }
 }
