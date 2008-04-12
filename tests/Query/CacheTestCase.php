@@ -113,14 +113,27 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q->useCache($cache);
         $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p')
           ->where('u.id = ?');
-
+        
         $coll = $q->execute(array(5));
 
+        $this->assertTrue($coll instanceof Doctrine_Collection);
+        $this->assertEqual(5, $coll[0]->id);
+        $this->assertTrue($coll[0] instanceof Doctrine_Record);
+        $this->assertTrue($coll[0]->Phonenumber[0] instanceof Doctrine_Record);
         $this->assertEqual($cache->count(), 1);
         $this->assertEqual(count($coll), 1);
-
+        $coll->free(true);
+        
         $coll = $q->execute(array(5));
 
+        $this->assertTrue($coll instanceof Doctrine_Collection);
+        $this->assertEqual(5, $coll[0]->id);
+        $this->assertTrue($coll[0] instanceof Doctrine_Record);
+        // references to related objects are not serialized/unserialized, so the following
+        // would trigger an additional query (lazy-load).
+        //echo $this->conn->count() . "<br/>";
+        //$this->assertTrue($coll[0]->Phonenumber[0] instanceof Doctrine_Record);
+        //echo $this->conn->count() . "<br/>"; // count is increased => lazy load
         $this->assertEqual($cache->count(), 1);
         $this->assertEqual(count($coll), 1);
     }
@@ -148,4 +161,69 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         
         $this->conn->setAttribute(Doctrine::ATTR_CACHE, null);
     }
+    
+    public function testResultCacheLifeSpan()
+    {
+        // initially NULL = not cached
+        $q = new Doctrine_Query();
+        $this->assertIdentical(null, $q->getResultCacheLifeSpan());
+        $q->free();
+        
+        // 0 = cache forever
+        $this->manager->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 0);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(0, $q->getResultCacheLifeSpan());
+        $q->free();
+        
+        $this->manager->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 3600);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(3600, $q->getResultCacheLifeSpan());
+        $q->free();
+        
+        // test that value set on connection level has precedence
+        $this->conn->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 42);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(42, $q->getResultCacheLifeSpan());
+        $q->free();
+        
+        // test that value set on the query has highest precedence
+        $q = new Doctrine_Query();
+        $q->useResultCache(true, 1234);
+        $this->assertIdentical(1234, $q->getResultCacheLifeSpan());
+        $q->setResultCacheLifeSPan(4321);
+        $this->assertIdentical(4321, $q->getResultCacheLifeSpan());
+        $q->free();
+    }
+    
+    public function testQueryCacheLifeSpan()
+    {
+        // initially NULL = not cached
+        $q = new Doctrine_Query();
+        $this->assertIdentical(null, $q->getQueryCacheLifeSpan());
+        $q->free();
+        
+        // 0 = forever
+        $this->manager->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 0);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(0, $q->getQueryCacheLifeSpan());
+        $q->free();
+        
+        $this->manager->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 3600);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(3600, $q->getQueryCacheLifeSpan());
+        $q->free();
+        
+        // test that value set on connection level has precedence
+        $this->conn->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 42);
+        $q = new Doctrine_Query();
+        $this->assertIdentical(42, $q->getQueryCacheLifeSpan());
+        $q->free();
+        
+        // test that value set on the query has highest precedence
+        $q = new Doctrine_Query();
+        $q->setQueryCacheLifeSpan(4321);
+        $this->assertIdentical(4321, $q->getQueryCacheLifeSpan());
+        $q->free();
+    }
+    
 }
