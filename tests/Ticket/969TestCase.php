@@ -46,9 +46,9 @@ class Doctrine_Ticket_969_TestCase extends Doctrine_UnitTestCase {
       
       for ($i = 0; $i < 10; $i++)
       {
-        $d = new T3();
-        $d->hello_id = 10;
-        $d->save();
+        $t3 = new T3();
+        $t3->hello_id = 10;
+        $t3->save();
       }
     }
 
@@ -64,7 +64,7 @@ class Doctrine_Ticket_969_TestCase extends Doctrine_UnitTestCase {
     public function testTicket()
     {
       $q = new Doctrine_Query;
-      $rows = $q->select('a.*, b.*, c.*')
+      $result = $q->select('a.*, b.*, c.*')
                 ->from('T1 a')
                 ->leftJoin('a.T2 b')
                 ->leftJoin('b.T3 c')
@@ -72,8 +72,21 @@ class Doctrine_Ticket_969_TestCase extends Doctrine_UnitTestCase {
                 ->fetchOne();
       
       // there are 10 rows in T3, and they all have hello_id = 10, so we should have 10 rows here
-      $count = sizeof($rows["T2"]["T3"]);
-      $this->assertEqual($count, 10);
+      $this->assertEqual(10, count($result["T2"]["T3"]));
+      
+      // now with object hydration.
+      $q = new Doctrine_Query;
+      $result = $q->select('a.*, b.*, c.*')
+                ->from('T1 a')
+                ->leftJoin('a.T2 b')
+                ->leftJoin('b.T3 c')
+                ->fetchOne();
+      
+      // test that no additional queries are executed when accessing the relations (lazy-loading).
+      $queryCountBefore = $this->conn->count();
+      // there are 10 rows in T3, and they all have hello_id = 10, so we should have 10 rows here
+      $this->assertEqual(10, count($result["T2"]["T3"]));
+      $this->assertEqual($queryCountBefore, $this->conn->count());
     }
 }
 

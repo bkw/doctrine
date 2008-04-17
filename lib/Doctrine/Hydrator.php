@@ -214,7 +214,7 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
                     $oneToOne = true; 
                     if ( ! isset($nonemptyComponents[$dqlAlias])) {
                         $prev[$parent][$relationAlias] = $driver->getNullPointer();
-                    } else {
+                    } else if ( ! isset($prev[$parent][$relationAlias])) {
                         $prev[$parent][$relationAlias] = $element;
                     }
                 }
