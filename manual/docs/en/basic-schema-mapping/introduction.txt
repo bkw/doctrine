@@ -58,7 +58,7 @@ Email:
   tableName: emails
   columns:
     address:
-      type: string(255)
+      type: string(200)
       notblank: true
       email: true
 </code>
@@ -83,5 +83,5 @@ $conn->export->exportClasses(array('Email'));
 The script would execute the following sql (we are using Mysql here as the database backend):
 
 <code>
-CREATE TABLE emails (id INT NOT NULL AUTO_INCREMENT, address VARCHAR(200) NOT NULL)
+CREATE TABLE emails (id BIGINT AUTO_INCREMENT, address VARCHAR(200), PRIMARY KEY(id)) ENGINE = INNODB;
 </code>
