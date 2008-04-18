@@ -322,6 +322,78 @@ END;
         
         unlink('test.yml');
     }
+
+    public function testNormalNonRecursiveFixturesLoading()
+    {
+        self::prepareTables();
+        $yml1 = <<<END
+---
+User:
+  User_1:
+    name: jwage400
+    pass: changeme
+END;
+
+        $yml2 = <<<END
+---
+User:
+  User_2:
+    name: jwage500
+    pass: changeme2
+END;
+
+        mkdir('test_data_fixtures');
+        file_put_contents('test_data_fixtures/test1.yml', $yml1);
+        file_put_contents('test_data_fixtures/test2.yml', $yml2);
+        $import = new Doctrine_Data_Import(getcwd() . '/test_data_fixtures');
+        $import->setFormat('yml');
+
+        $array = $import->doParsing();
+
+        // Last User definition in test2.yml takes presedence
+        $this->assertTrue(isset($array['User']['User_2']));
+
+        unlink('test_data_fixtures/test1.yml');
+        unlink('test_data_fixtures/test2.yml');
+        rmdir('test_data_fixtures');
+    }
+
+    public function testRecursiveFixturesLoading()
+    {
+        Doctrine_Manager::getInstance()->setAttribute('recursive_merge_fixtures', true);
+        self::prepareTables();
+        $yml1 = <<<END
+---
+User:
+  User_1:
+    name: jwage400
+    pass: changeme
+END;
+
+        $yml2 = <<<END
+---
+User:
+  User_2:
+    name: jwage500
+    pass: changeme2
+END;
+
+        mkdir('test_data_fixtures');
+        file_put_contents('test_data_fixtures/test1.yml', $yml1);
+        file_put_contents('test_data_fixtures/test2.yml', $yml2);
+        $import = new Doctrine_Data_Import(getcwd() . '/test_data_fixtures');
+        $import->setFormat('yml');
+
+        $array = $import->doParsing();
+
+        $this->assertTrue(isset($array['User']['User_1']));
+        $this->assertTrue(isset($array['User']['User_2']));
+
+        unlink('test_data_fixtures/test1.yml');
+        unlink('test_data_fixtures/test2.yml');
+        rmdir('test_data_fixtures');
+        Doctrine_Manager::getInstance()->setAttribute('recursive_merge_fixtures', false);
+    }
 }
 
 class ImportNestedSet extends Doctrine_Record
