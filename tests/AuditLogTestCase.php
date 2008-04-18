@@ -40,7 +40,7 @@ class Doctrine_AuditLog_TestCase extends Doctrine_UnitTestCase
     { 
         $this->profiler = new Doctrine_Connection_Profiler();
         $this->conn->addListener($this->profiler);
-        $this->tables = array('VersioningTest', 'VersioningTestVersion');
+        $this->tables = array('VersioningTest', 'VersioningTestVersion', 'VersioningTest2');
         
         parent::prepareTables();
     }
@@ -91,11 +91,31 @@ class Doctrine_AuditLog_TestCase extends Doctrine_UnitTestCase
         }
     }
 
-    public function testReturnFalseIfVersionTableExists()
+    public function testNoAuditLog()
     {
-        //$entity = new VersioningTest();
-        //$entity_table = $entity->getTable();
-        //$auditLog = new Doctrine_AuditLog(array("table" => $entity_table));
-        //$this->assertFalse($auditLog->buildDefinition($entity_table));
+        $entity = new VersioningTest2();
+        $entity->name = 'test';
+        $entity->save();
+        $this->assertTrue($entity->version, 1);
+        $entity->name = 'test2';
+        $entity->save();
+        $this->assertTrue($entity->version, 2);
+    }
+
+    public function testNoAuditLogThrowsExceptions()
+    {
+        $entity = new VersioningTest2();
+        $entity->name = 'test';
+        $entity->save();
+        $entity->name = 'test2';
+        $entity->save();
+
+        try {
+            $entity->revert(1);
+            $this->fail();
+        } catch (Exception $e) {
+            $this->pass();
+            $this->assertEqual($e->getMessage(), 'Audit log is turned off, no version history is recorded.');
+        }
     }
 }
