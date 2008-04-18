@@ -35,6 +35,19 @@ Here is a full list of available validators within Doctrine:
 || creditcard           ||                       || Checks whether the string is a well formated credit card number ||
 || digits(int, frac)    || Precision and scale   || Checks if given value has //int// number of integer digits and //frac// number of fractional digits ||
 
+Below is an example of how you use the validator and how to specify the arguments for the validators on a column.
+In our example we will use the minlength validator.
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255, array('minlength' => 12));
+    }
+}
+</code>
+
 +++ Notnull
 
 A not-null constraint simply specifies that a column must not assume the null value. A not-null constraint is always 
