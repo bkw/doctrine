@@ -11,6 +11,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = "SluggableItem5";
         $this->tables[] = "SluggableItem6";
         $this->tables[] = "SluggableItem7";
+        $this->tables[] = "SluggableItem8";
         parent::prepareTables();
     }
     
@@ -61,6 +62,9 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->name = 'My item';
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
+        $item->slug = 'New slug';
+        $item->save();
+        $this->assertEqual($item->slug, 'New slug');
     }
     
     public function testSluggableWithMultipleFieldsOption()
@@ -161,6 +165,28 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         parent::prepareTables();
         $itemTable  = Doctrine::getTable('SluggableItem7');
         $this->assertFalse($itemTable->getIndex('sluggable'));
+    }
+    
+    public function testSluggableUniqueSlugOnUpdateWithOptioncanUpdateSlug ()
+    {
+        parent::prepareTables();
+        $item = new SluggableItem8();
+        $item->name = 'My item';
+        $item->save();
+        $this->assertEqual($item->slug, 'my-item');
+        $item1 = new SluggableItem8();
+        $item1->name = 'My item';
+        $item1->save();
+        $this->assertEqual($item1->slug, 'my-item-1');
+        $item1->slug = 'New slug';
+        $item1->save();
+        $this->assertEqual($item1->slug, 'new-slug');
+        $item1->slug = 'My item';
+        $item1->save();
+        $this->assertEqual($item1->slug, 'my-item-1');
+        $item1->name = 'New name';
+        $item1->save();
+        $this->assertEqual($item1->slug, 'my-item-1');
     }
 }
 
@@ -330,5 +356,24 @@ class SluggableItem7 extends Doctrine_Record
         $this->actAs('Sluggable', array('fields'        => array('name'),
                                         'uniqueIndex'   => false,
                                         'unique'        => true));
+    }
+}
+
+// Model with fields option and canUpdateSlug option
+class SluggableItem8 extends Doctrine_Record
+{
+
+    public function setTableDefinition()
+    {
+        $this->setTableName('my_item8');
+        $this->hasColumn('name', 'string', 50);
+    }
+
+    public function setUp()
+    { 
+        parent::setUp();
+        $this->actAs('Sluggable', array('unique'    => true,
+                                        'fields'    => array('name'),
+                                        'canUpdate' => true));
     }
 }
