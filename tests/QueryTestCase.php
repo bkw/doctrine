@@ -151,7 +151,24 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $this->assertTrue(isset($users[0]['Phonenumber'][0]) && array_key_exists('summ', $users[0]['Phonenumber'][0]));
     }
+
+    public function testQueryWithNoSelectFromRootTableThrowsException()
+    {
+        /*
+        try {
+            $users = Doctrine_Query::create()
+                        ->select('p.*')
+                        ->from('User u')
+                        ->leftJoin('u.Phonenumber p')
+                        ->execute();
+            $this->fail();
+        } catch (Exception $e) {
+            $this->pass();
+        }
+        */
+    }
 }
+
 class MyQuery extends Doctrine_Query
 {
     public function preQuery()

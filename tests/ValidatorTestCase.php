@@ -44,6 +44,8 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'ValidatorTest_ClientToAddressModel';
         $this->tables[] = 'ValidatorTest_AddressModel';
         $this->tables[] = 'BooleanTest';
+        $this->tables[] = 'Log_Entry';
+        $this->tables[] = 'Log_Status';
         parent::prepareTables();
     }
 
@@ -455,6 +457,22 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $test = new BooleanTest();
         $test->is_working = '0';
         $test->save();
+
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
+
+    public function testNoValidationOnExpressions()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+
+        try {
+            $entry = new Log_Entry();
+            $entry->stamp = new Doctrine_Expression('NOW()');
+            $entry->save();
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
 
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
