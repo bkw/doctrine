@@ -43,6 +43,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'ValidatorTest_ClientModel';
         $this->tables[] = 'ValidatorTest_ClientToAddressModel';
         $this->tables[] = 'ValidatorTest_AddressModel';
+        $this->tables[] = 'BooleanTest';
         parent::prepareTables();
     }
 
@@ -443,4 +444,18 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 
+    public function testSetBooleanWithNumericZeroOrOne()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+
+        $test = new BooleanTest();
+        $test->is_working = '1';
+        $test->save();
+
+        $test = new BooleanTest();
+        $test->is_working = '0';
+        $test->save();
+
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
 }
