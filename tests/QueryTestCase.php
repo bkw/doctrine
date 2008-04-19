@@ -110,6 +110,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $q->where('u.id = ?', '15');
         
         $this->assertTrue($q->count(), 1);
+        $this->assertTrue($q->count(), $q->execute()->count());
     }
     
     // ticket #821
