@@ -51,9 +51,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT MAX(u.id), MIN(u.name) FROM User u');
+        $q->parseQuery('SELECT u.id, MAX(u.id), MIN(u.name) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
+        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
 
         $q->execute();
     }

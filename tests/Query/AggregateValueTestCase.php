@@ -85,8 +85,8 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getSql(), "SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)");
 
         $users = $q->execute();
-        
-        $this->assertEqual($users->count(), 1);
+
+        $this->assertEqual(count($users), 1);
 
         $this->assertEqual($users[0]->state(), Doctrine_Record::STATE_TCLEAN);
     }
@@ -163,6 +163,19 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[0]->Phonenumber[0]->max, 3);
         $this->assertEqual($users[0]->Phonenumber[0]->count, 3);
     }
+    
+    public function testAggregateValueMappingSupportsMultipleValues2()
+    {
+        $q = new Doctrine_Query();
+
+        $q->select('COUNT(u.id) count, MAX(p.id) max')->from('User u')->innerJoin('u.Phonenumber p')->groupby('u.id');
+
+        $users = $q->execute();
+
+        $this->assertEqual($users[0]['Phonenumber'][0]['max'], 3);
+        $this->assertEqual($users[0]['count'], 3);
+    }
+    
     public function testAggregateValueMappingSupportsInnerJoins()
     {
         $q = new Doctrine_Query();

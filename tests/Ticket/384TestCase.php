@@ -58,17 +58,35 @@ class Doctrine_Ticket_384_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
 
         // simple query with deep relations
-        $q->addSelect('Resume.id, Level.label')
+        $q->addSelect('Resume.id, Level.id, Level.label')
           ->from('ticket384_Resume Resume')
           ->leftJoin('Resume.KnownLanguages KnownLanguages')
           ->leftJoin('KnownLanguages.Level Level')
           ->leftJoin('KnownLanguages.Language Language');
         
-        // get the wrong resultset
+        try {
+            // get the wrong resultset
+            $aResult = $q->fetchArray();
+            $this->fail();
+        } catch (Doctrine_Query_Exception $e) {
+            $this->pass();
+        } 
+        $q->free();
+        
+        // now correct
+        // we have to select at least KnownLanguages.id in order to get the Levels,
+        // which are only reachable through the KnownLanguages, hydrated properly.
+        $q = new Doctrine_Query();
+        $q->addSelect('Resume.id, Level.id, Level.label, KnownLanguages.id')
+          ->from('ticket384_Resume Resume')
+          ->leftJoin('Resume.KnownLanguages KnownLanguages')
+          ->leftJoin('KnownLanguages.Level Level')
+          ->leftJoin('KnownLanguages.Language Language');
+        
         $aResult = $q->fetchArray();
-
         // should be setted
         $bSuccess  = isset($aResult[0]['KnownLanguages'][0]['Level']);
+        $this->assertTrue($bSuccess);
     	  
     	  if ( ! $bSuccess)
     	  {

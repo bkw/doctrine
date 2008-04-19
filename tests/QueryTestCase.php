@@ -154,7 +154,6 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
     public function testQueryWithNoSelectFromRootTableThrowsException()
     {
-        /*
         try {
             $users = Doctrine_Query::create()
                         ->select('p.*')
@@ -162,10 +161,9 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
                         ->leftJoin('u.Phonenumber p')
                         ->execute();
             $this->fail();
-        } catch (Exception $e) {
+        } catch (Doctrine_Query_Exception $e) {
             $this->pass();
         }
-        */
     }
 }
 
