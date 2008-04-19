@@ -195,7 +195,7 @@ END;
 
             $this->pass();
         } catch (Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
 
         unlink('test.yml'); 
