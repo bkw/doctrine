@@ -228,33 +228,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $coll[0];
         $this->assertEqual($coll->count(), 1);
     }
-    public function testExpand() 
-    {
-        $users = $this->connection->query("FROM User.Phonenumber WHERE User.Phonenumber.phonenumber");
-        
-        $this->assertTrue($users instanceof Doctrine_Collection);
-        $this->assertTrue($users[1] instanceof User);
-        $this->assertTrue($users[1]->Phonenumber instanceof Doctrine_Collection);
-        $data = $users[1]->Phonenumber->getData();
-        
-        $coll = $users[1]->Phonenumber;
 
-        $this->assertEqual(count($data), 3);
-
-        foreach($coll as $record) {
-            $record->phonenumber;
-        }
-
-        $coll[1];
-
-        $this->assertEqual(count($coll), 3);
-
-        $this->assertEqual($coll[2]->state(), Doctrine_Record::STATE_PROXY);
-
-        $coll->setKeyColumn('id');
-        $user = $this->connection->getTable("User")->find(4);
-
-    }
     public function testGenerator() 
     {
         $coll = new Doctrine_Collection($this->objTable);
@@ -308,7 +282,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
 
 
         $q = new Doctrine_Query();
-        $users = $q->from('User.Phonenumber')->execute();
+        $users = $q->from('User u, u.Phonenumber p')->execute();
         $this->assertFalse($users->contains(0));
         $this->assertEqual($users->count(), 8);
 
@@ -323,5 +297,4 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[4]->Phonenumber[1]->exists(), false);
         $this->assertEqual($users[4]->Phonenumber[2]->state(), Doctrine_Record::STATE_CLEAN);
     }
-
 }

@@ -38,18 +38,15 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
         parent::prepareTables();
     }
 
-    public function prepareData()
-    {
-        $i = new I18nTest();
-        $i->id = 500;
-        $i->Translation['en']->title = 'english test';
-        $i->Translation['fr']->title = 'french test';
-        $i->save();
-    }
-
     public function testI18nExport()
     {
         try {
+            $i = new I18nTest();
+            $i->assignIdentifier(500);
+            $i->Translation['en']->title = 'english test';
+            $i->Translation['fr']->title = 'french test';
+            $i->save();
+
             $data = new Doctrine_Data();
             $data->exportData('test.yml', 'yml', array('I18nTest'));
 
@@ -62,8 +59,11 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
             
             $this->pass();
         } catch (Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
-        unlink('test.yml');
+
+        if (file_exists('test.yml')) {
+            unlink('test.yml');
+        }
     }
 }

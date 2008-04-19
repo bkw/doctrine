@@ -56,12 +56,17 @@ class Doctrine_Query_Orderby_TestCase extends Doctrine_UnitTestCase
     /* ticket #681 */
     public function testOrderByWithCoalesce()
     {
-        $q = new Doctrine_Query();
+        try {
+            $q = new Doctrine_Query();
         
-        $q->select('u.name')
-          ->from('User u')
-          ->orderby('COALESCE(u.id, u.name) DESC');
-        // nonesese results expected, but query is syntatically ok.
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0) ORDER BY COALESCE(e__id, e__name) DESC');
+            $q->select('u.name')
+              ->from('User u')
+              ->orderby('COALESCE(u.id, u.name) DESC');
+            // nonesese results expected, but query is syntatically ok.
+            $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0) ORDER BY COALESCE(e__id, e__name) DESC');
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
     }
 }
