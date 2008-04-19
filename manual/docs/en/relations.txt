@@ -554,7 +554,7 @@ Now if we access for example the friends of John Beer it would return one user '
 
 ++ Inheritance
 
-Doctrine supports 4 types of inheritance strategies which can be mixed together.
+Doctrine supports 3 types of inheritance strategies which can be mixed together.
 
 +++ Simple inheritance
 
