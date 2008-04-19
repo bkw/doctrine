@@ -51,13 +51,13 @@ abstract class BaseFile extends Doctrine_Record
   public function setTableDefinition()
   {
     $this->setTableName('file');
-    $this->hasColumn('id', 'integer', 4, array('alltypes' =>  array(  0 => 'integer', ), 'ntype' => 'int(10) unsigned', 'unsigned' => 1, 'values' =>  array(), 'primary' => true, 'notnull' => true, 'autoincrement' => true));
-    $this->hasColumn('name', 'string', 150, array('alltypes' =>  array(  0 => 'string', ), 'ntype' => 'varchar(150)', 'fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-    $this->hasColumn('size', 'integer', 8, array('alltypes' =>  array(  0 => 'integer', ), 'ntype' => 'bigint(20)', 'unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-    $this->hasColumn('modified', 'integer', 8, array('alltypes' =>  array(  0 => 'integer', ), 'ntype' => 'bigint(20)', 'unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-    $this->hasColumn('type', 'string', 10, array('alltypes' =>  array(  0 => 'string', ), 'ntype' => 'varchar(10)', 'fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-    $this->hasColumn('content', 'string', null, array('alltypes' =>  array(  0 => 'string',   1 => 'clob', ), 'ntype' => 'text', 'fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-    $this->hasColumn('path', 'string', null, array('alltypes' =>  array(  0 => 'string',   1 => 'clob', ), 'ntype' => 'text', 'fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('id', 'integer', 4, array('unsigned' => 1, 'values' =>  array(), 'primary' => true, 'notnull' => true, 'autoincrement' => true));
+    $this->hasColumn('name', 'string', 150, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('size', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('modified', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('type', 'string', 10, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('content', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('path', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
   }
 
   public function setUp()
