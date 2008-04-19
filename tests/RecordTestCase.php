@@ -607,125 +607,128 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testReferences()
     {
-        $user = $this->connection->getTable('User')->find(5);
+        try {
+            $user = $this->connection->getTable('User')->find(5);
 
-        $this->assertTrue($user->Phonenumber instanceof Doctrine_Collection);
-        $this->assertEqual($user->Phonenumber->count(), 3);
+            $this->assertTrue($user->Phonenumber instanceof Doctrine_Collection);
+            $this->assertEqual($user->Phonenumber->count(), 3);
 
-        $coll = new Doctrine_Collection('Phonenumber');
+            $coll = new Doctrine_Collection('Phonenumber');
 
-        $user->Phonenumber = $coll;
-        $this->assertEqual($user->Phonenumber->count(), 0);
-        $user->save();
+            $user->Phonenumber = $coll;
+            $this->assertEqual($user->Phonenumber->count(), 0);
+            $user->save();
 
-        $user->getTable()->clear();
+            $user->getTable()->clear();
 
-        $user = $this->objTable->find(5);
+            $user = $this->objTable->find(5);
 
-        $this->assertEqual($user->Phonenumber->count(), 0);
-        $this->assertEqual(get_class($user->Phonenumber), 'Doctrine_Collection');
+            $this->assertEqual($user->Phonenumber->count(), 0);
+            $this->assertEqual(get_class($user->Phonenumber), 'Doctrine_Collection');
 
-        $user->Phonenumber[0]->phonenumber;
-        $this->assertEqual($user->Phonenumber->count(), 1);
+            $user->Phonenumber[0]->phonenumber;
+            $this->assertEqual($user->Phonenumber->count(), 1);
 
-        // ADDING REFERENCES
+            // ADDING REFERENCES
 
-        $user->Phonenumber[0]->phonenumber = "123 123";
+            $user->Phonenumber[0]->phonenumber = "123 123";
 
-        $this->assertEqual($user->Phonenumber->count(), 1);
-        $user->Phonenumber[1]->phonenumber = "123 123";
-        $this->assertEqual($user->Phonenumber->count(), 2);
+            $this->assertEqual($user->Phonenumber->count(), 1);
+            $user->Phonenumber[1]->phonenumber = "123 123";
+            $this->assertEqual($user->Phonenumber->count(), 2);
 
-        $user->save();
-
-
-        $this->assertEqual($user->Phonenumber->count(), 2);
-
-        unset($user);
-        $user = $this->objTable->find(5);
-        $this->assertEqual($user->Phonenumber->count(), 2);
-
-        $user->Phonenumber[3]->phonenumber = "123 123";
-        $user->save();
-
-        $this->assertEqual($user->Phonenumber->count(), 3);
-        unset($user);
-        $user = $this->objTable->find(5);
-        $this->assertEqual($user->Phonenumber->count(), 3);
-
-        // DELETING REFERENCES
-
-        $user->Phonenumber->delete();
-
-        $this->assertEqual($user->Phonenumber->count(), 0);
-        unset($user);
-        $user = $this->objTable->find(5);
-        $this->assertEqual($user->Phonenumber->count(), 0);
-
-        // ADDING REFERENCES WITH STRING KEYS
-
-        $user->Phonenumber["home"]->phonenumber = "123 123";
-        $user->Phonenumber["work"]->phonenumber = "444 444";
-        $user->save();
-
-        $this->assertEqual($user->Phonenumber->count(), 2);
-        unset($user);
-        $user = $this->objTable->find(5);
-        $this->assertEqual($user->Phonenumber->count(), 2);
-
-        // REPLACING ONE-TO-MANY REFERENCE
-        unset($coll);
-        $coll = new Doctrine_Collection('Phonenumber');
-        $coll[0]->phonenumber = "123 123";
-        $coll["home"]->phonenumber = "444 444";
-        $coll["work"]->phonenumber = "444 444";
-
-        $user->Phonenumber = $coll;
-        $user->save();
-        $this->assertEqual($user->Phonenumber->count(), 3);
-
-        $user = $this->objTable->find(5);
-        //$this->assertEqual($user->Phonenumber->count(), 3);
+            $user->save();
 
 
-        // ONE-TO-ONE REFERENCES
+            $this->assertEqual($user->Phonenumber->count(), 2);
 
-        $user->Email->address = "drinker@drinkmore.info";
-        $this->assertTrue($user->Email instanceof Email);
-        $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
+            unset($user);
+            $user = $this->objTable->find(5);
+            $this->assertEqual($user->Phonenumber->count(), 2);
 
-        $user->save();
+            $user->Phonenumber[3]->phonenumber = "123 123";
+            $user->save();
 
-        $this->assertTrue($user->Email instanceof Email);
-        $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
-        $this->assertEqual($user->Email->id, $user->email_id);
+            $this->assertEqual($user->Phonenumber->count(), 3);
+            unset($user);
+            $user = $this->objTable->find(5);
+            $this->assertEqual($user->Phonenumber->count(), 3);
 
-        $user = $this->objTable->find(5);
+            // DELETING REFERENCES
 
-        $this->assertTrue($user->Email instanceof Email);
-        $this->assertEqual($user->Email->id, $user->email_id);
-        $this->assertEqual($user->Email->state(), Doctrine_Record::STATE_CLEAN);
-        $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
-        $id = $user->Email->id;
+            $user->Phonenumber->delete();
 
-        // REPLACING ONE-TO-ONE REFERENCES
+            $this->assertEqual($user->Phonenumber->count(), 0);
+            unset($user);
+            $user = $this->objTable->find(5);
+            $this->assertEqual($user->Phonenumber->count(), 0);
 
-        $email = $this->connection->create("Email");
-        $email->address = "absolutist@nottodrink.com";
-        $user->Email = $email;
+            // ADDING REFERENCES WITH STRING KEYS
 
-        $this->assertTrue($user->Email instanceof Email);
-        $this->assertEqual($user->Email->address, "absolutist@nottodrink.com");
-        $user->save();
-        unset($user);
+            $user->Phonenumber["home"]->phonenumber = "123 123";
+            $user->Phonenumber["work"]->phonenumber = "444 444";
+            $user->save();
 
-        $user = $this->objTable->find(5);
-        $this->assertTrue($user->Email instanceof Email);
-        $this->assertEqual($user->Email->address, "absolutist@nottodrink.com");
+            $this->assertEqual($user->Phonenumber->count(), 2);
+            unset($user);
+            $user = $this->objTable->find(5);
+            $this->assertEqual($user->Phonenumber->count(), 2);
 
-        $emails = $this->connection->query("FROM Email WHERE Email.id = $id");
-        //$this->assertEqual(count($emails),0);
+            // REPLACING ONE-TO-MANY REFERENCE
+            unset($coll);
+            $coll = new Doctrine_Collection('Phonenumber');
+            $coll[0]->phonenumber = "123 123";
+            $coll["home"]->phonenumber = "444 444";
+            $coll["work"]->phonenumber = "444 444";
 
+            $user->Phonenumber = $coll;
+            $user->save();
+            $this->assertEqual($user->Phonenumber->count(), 3);
+
+            $user = $this->objTable->find(5);
+            //$this->assertEqual($user->Phonenumber->count(), 3);
+
+
+            // ONE-TO-ONE REFERENCES
+
+            $user->Email->address = "drinker@drinkmore.info";
+            $this->assertTrue($user->Email instanceof Email);
+            $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
+
+            $user->save();
+
+            $this->assertTrue($user->Email instanceof Email);
+            $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
+            $this->assertEqual($user->Email->id, $user->email_id);
+
+            $user = $this->objTable->find(5);
+
+            $this->assertTrue($user->Email instanceof Email);
+            $this->assertEqual($user->Email->id, $user->email_id);
+            $this->assertEqual($user->Email->state(), Doctrine_Record::STATE_CLEAN);
+            $this->assertEqual($user->Email->address, "drinker@drinkmore.info");
+            $id = $user->Email->id;
+
+            // REPLACING ONE-TO-ONE REFERENCES
+
+            $email = $this->connection->create("Email");
+            $email->address = "absolutist@nottodrink.com";
+            $user->Email = $email;
+
+            $this->assertTrue($user->Email instanceof Email);
+            $this->assertEqual($user->Email->address, "absolutist@nottodrink.com");
+            $user->save();
+            unset($user);
+
+            $user = $this->objTable->find(5);
+            $this->assertTrue($user->Email instanceof Email);
+            $this->assertEqual($user->Email->address, "absolutist@nottodrink.com");
+
+            $emails = $this->connection->query("FROM Email WHERE Email.id = $id");
+            //$this->assertEqual(count($emails),0);
+        } catch (Exception $e) {
+            $this->fail();
+        }
     }
 
     public function testDeleteReference()
@@ -921,7 +924,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($result->_underscore_, 'test');
     }
 
-    public function testRecordReplace()
+    public function testRecordReplaceNoException()
     {
         try {
             $user = new User();
@@ -932,5 +935,43 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail('Doctrine_Record::save() does not work: ' . $e->getMessage());
         }
+    }
+
+    public function testReplaceReplacesAndNotInsertsNewRecord()
+    {
+        $users = Doctrine_Query::create()->from('User u');
+        $count = $users->count();
+
+        $user = new User();
+        $user->name = 'jon wage2';
+        $user->loginname = 'jwage2';
+        $user->save();
+        $id = $user->id;
+        $user->free();
+        $count++;
+
+        $users = Doctrine_Query::create()->from('User u')->execute();
+        $this->assertEqual($users->count(), $count);
+        $users->free();
+
+        $user = new User();
+        $user->assignIdentifier($id);
+        $user->name = 'jon wage changed';
+        $user->loginname = 'jwage2';
+        $user->replace();
+        $user->free();
+
+        $users = Doctrine_Query::create()->from('User u')->execute();
+        $this->assertEqual($users->count(), $count);
+        $users->free();
+
+        $user = Doctrine_Query::create()->from('User u')->where('u.loginname = ?', 'jwage2')->fetchOne();
+        $this->assertEqual($user->name, 'jon wage changed');
+
+        $user->name = 'jon wage changed2';
+        $user->replace();
+
+        $user = Doctrine_Query::create()->from('User u')->where('u.loginname = ?', 'jwage2')->fetchOne();
+        $this->assertEqual($user->name, 'jon wage changed2');
     }
 }
