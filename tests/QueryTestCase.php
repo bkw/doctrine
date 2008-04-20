@@ -106,13 +106,22 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->from('User u');
-        $q->leftJoin('u.Phonenumber p WITH p.id = ?', '11');
-        $q->where('u.id = ?', '15');
-        
-        $this->assertTrue($q->count(), 1);
-        $this->assertTrue($q->count(), $q->execute()->count());
+        $q->leftJoin('u.Phonenumber p');
+        $q->where('u.name = ?', 'zYne');
+
+        $this->assertEqual($q->count(), $q->execute()->count());
     }
-    
+
+    public function testCountWithGroupBy()
+    {
+        $q = new Doctrine_Query();
+        $q->from('User u');
+        $q->leftJoin('u.Phonenumber p');
+        $q->groupBy('p.entity_id');
+
+        $this->assertEqual($q->count(), $q->execute()->count());
+    }
+
     // ticket #821
     public function testQueryCopyClone()
     {
