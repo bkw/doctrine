@@ -195,13 +195,9 @@ You can also control the name of the versioning record and the name of the versi
 
 ++ Soft-delete
 
-Soft-delete is a very simple plugin for achieving the following behaviour: when a record is deleted its not removed 
-from database. Usually the record contains some special field like 'deleted' which tells the state of the record 
-(deleted or alive).
-
-The following code snippet shows what you need in order to achieve this kind of behaviour. Notice how we define two 
-event hooks: preDelete and postDelete. Also notice how the preDelete hook skips the actual delete-operation with 
-skipOperation() call. For more info about the event hooks see chapter [doc event-listeners :index :name].
+Soft-delete is a very simple model behavior which will overrides the delete() functionality and adds a delete 
+column. When delete() is called, instead of deleting the record from the database, a delete flag is set to 1. 
+Below is an example of how to create a model with the SoftDelete behavior being used.
 
 <code type="php">
 class SoftDeleteTest extends Doctrine_Record
@@ -209,20 +205,23 @@ class SoftDeleteTest extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->hasColumn('name', 'string', null, array('primary' => true));
-        $this->hasColumn('deleted', 'boolean', 1);
     }
     
-    public function preDelete($event)
+    public function setUp()
     {
-        $event->skipOperation();
-    }
-    
-    public function postDelete($event)
-    {
-        $this->deleted = true;
-        $this->save();
+        $this->actAs('SoftDelete');
     }
 }
+</code>
+
+<code type="yaml">
+---
+SoftDeleteTest:
+  actAs: [SoftDelete]
+  columns:
+    name:
+      type: string
+      primary: true
 </code>
 
 Now lets put the plugin in action:

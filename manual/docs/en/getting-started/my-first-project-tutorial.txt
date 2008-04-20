@@ -63,6 +63,10 @@ Doctrine Command Line Interface
 </code>
 
 +++ Defining Schema
+
+Below is a sample yaml schema file to get started. You can place the yaml file in schemas/schema.yml. The command 
+line interface looks for all *.yml files in the schemas folder.
+
 <code type="yaml">
 ---
 User:
@@ -100,6 +104,9 @@ UserGroup:
 </code>
 
 +++ Test Data Fixtures
+
+Below is a sample yaml data fixtures file. You can place this file in data/fixtures/data.yml. The command line 
+interface looks for all *.yml files in the data/fixtures folder.
 
 <code type="yaml">
 ---
