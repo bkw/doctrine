@@ -269,6 +269,7 @@ User:
     Versionable:
       versionColumn: version
       className: %CLASS%Version
+      auditLog: true # Can be used to optionally turn off the audit log history table
   columns:
     username:
       type: string(125)
@@ -361,7 +362,9 @@ class User extends Doctrine_Record
     
     public function setUp()
     {
-        $this->actAs('Sluggable', array('fields' => array('username')));
+        $this->actAs('Sluggable', array('unique'    => true,
+                                        'fields'    => array('username'),
+                                        'canUpdate' => true));
     }
 }
 </code>
@@ -371,13 +374,21 @@ class User extends Doctrine_Record
 User:
   actAs:
     Sluggable:
+      unique: true
       fields: [username]
+      canUpdate: true
   columns:
     username:
       type: string(125)
     password:
       type: string(255)
 </code>
+
+The unique flag will enforce that the slug created is unique. If it is not unique an auto incremented integer 
+will be appended to the slug before saving to database.
+
+The canUpdate flag will allow the users to manually set the slug value to be used when building the url friendly 
+slug.
 
 +++ I18n
 <code type="php">
