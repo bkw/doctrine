@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-03-28</date>
- <time>13:03:26</time>
+ <date>2008-04-21</date>
+ <time>12:52:41</time>
  <version>
   <release>0.11.0</release>
   <api>0.11.0</api>
@@ -190,7 +190,6 @@ requiring needless code duplication.</description>
      </dir> <!-- /lib/Doctrine/I18n -->
      <dir name="Import">
       <dir name="Builder">
-       <file name="BaseClass.php" role="php" />
        <file name="Exception.php" role="php" />
       </dir> <!-- /lib/Doctrine/Import/Builder -->
       <file name="Builder.php" role="php" />
@@ -418,6 +417,7 @@ requiring needless code duplication.</description>
      <dir name="Template">
       <dir name="Listener">
        <file name="Sluggable.php" role="php" />
+       <file name="SoftDelete.php" role="php" />
        <file name="Timestampable.php" role="php" />
       </dir> <!-- /lib/Doctrine/Template/Listener -->
       <file name="Geographical.php" role="php" />
@@ -425,6 +425,7 @@ requiring needless code duplication.</description>
       <file name="NestedSet.php" role="php" />
       <file name="Searchable.php" role="php" />
       <file name="Sluggable.php" role="php" />
+      <file name="SoftDelete.php" role="php" />
       <file name="Timestampable.php" role="php" />
       <file name="Versionable.php" role="php" />
      </dir> <!-- /lib/Doctrine/Template -->
@@ -462,7 +463,6 @@ requiring needless code duplication.</description>
       <file name="Notblank.php" role="php" />
       <file name="Notnull.php" role="php" />
       <file name="Past.php" role="php" />
-      <file name="Protected.php" role="php" />
       <file name="Range.php" role="php" />
       <file name="Readonly.php" role="php" />
       <file name="Regexp.php" role="php" />
@@ -546,11 +546,6 @@ requiring needless code duplication.</description>
        <file name="table-and-class-naming.txt" role="php" />
        <file name="table-options.txt" role="php" />
       </dir> <!-- /manual/docs/en/basic-schema-mapping -->
-      <dir name="caching">
-       <file name="configuration.txt" role="php" />
-       <file name="introduction.txt" role="php" />
-       <file name="overview.txt" role="php" />
-      </dir> <!-- /manual/docs/en/caching -->
       <dir name="coding-standards">
        <file name="coding-style.txt" role="php" />
        <file name="naming-conventions.txt" role="php" />
@@ -559,7 +554,6 @@ requiring needless code duplication.</description>
        <file name="testing.txt" role="php" />
       </dir> <!-- /manual/docs/en/coding-standards -->
       <dir name="component-overview">
-       <file name="hook.txt" role="php" />
        <file name="locking-manager.txt" role="php" />
        <file name="profiler.txt" role="php" />
        <file name="validators.txt" role="php" />
@@ -596,15 +590,18 @@ requiring needless code duplication.</description>
        <file name="where-clause.txt" role="php" />
       </dir> <!-- /manual/docs/en/dql-doctrine-query-language -->
       <dir name="getting-started">
-       <file name="exporting-classes.txt" role="php" />
+       <file name="auto-loading-models.txt" role="php" />
+       <file name="command-line-interface.txt" role="php" />
+       <file name="creating-tables.txt" role="php" />
+       <file name="generating-models.txt" role="php" />
        <file name="installation.txt" role="php" />
+       <file name="my-first-project-tutorial.txt" role="php" />
        <file name="starting-new-project.txt" role="php" />
        <file name="working-with-existing-databases.txt" role="php" />
       </dir> <!-- /manual/docs/en/getting-started -->
       <dir name="hierarchical-data">
-       <file name="adjacency-list.txt" role="php" />
+       <file name="examples.txt" role="php" />
        <file name="introduction.txt" role="php" />
-       <file name="materialized-path.txt" role="php" />
        <file name="nested-set.txt" role="php" />
       </dir> <!-- /manual/docs/en/hierarchical-data -->
       <dir name="improving-performance">
@@ -616,7 +613,6 @@ requiring needless code duplication.</description>
        <file name="use-a-bytecode-cache.txt" role="php" />
       </dir> <!-- /manual/docs/en/improving-performance -->
       <dir name="real-world-examples">
-       <file name="album-lister.txt" role="php" />
        <file name="forum-application.txt" role="php" />
        <file name="user-management-system.txt" role="php" />
       </dir> <!-- /manual/docs/en/real-world-examples -->
@@ -657,45 +653,6 @@ requiring needless code duplication.</description>
        </dir> <!-- /manual/docs/en/working-with-objects/component-overview -->
        <file name="dealing-with-relations.txt" role="php" />
       </dir> <!-- /manual/docs/en/working-with-objects -->
-      <dir name="_old-docs">
-       <file name="Configuration - Custom getters and setters.php" role="php" />
-       <file name="Configuration - Custom primary key column.php" role="php" />
-       <file name="Configuration - List of attributes.php" role="php" />
-       <file name="Configuration - Setting default eventlistener.php" role="php" />
-       <file name="Configuration - Setting default fetchmode.php" role="php" />
-       <file name="Configuration - Using sequences.php" role="php" />
-       <file name="Database operations - Limit and offset.php" role="php" />
-       <file name="Database operations - Nested transactions.php" role="php" />
-       <file name="Database operations - Query logging.php" role="php" />
-       <file name="Database operations - Sequences.php" role="php" />
-       <file name="Database operations - Transactions.php" role="php" />
-       <file name="DQL (Doctrine Query Language) - Functions - Contains.php" role="php" />
-       <file name="DQL (Doctrine Query Language) - Functions - Like.php" role="php" />
-       <file name="DQL (Doctrine Query Language) - Functions - Regexp.php" role="php" />
-       <file name="DQL (Doctrine Query Language) - Operators - Logical operators.php" role="php" />
-       <file name="Object relational mapping - Relations - Composites and aggregates.php" role="php" />
-       <file name="Runtime classes - Doctrine_Association.php" role="php" />
-       <file name="Runtime classes - Doctrine_Collection.php" role="php" />
-       <file name="Runtime classes - Doctrine_Collection_Batch.php" role="php" />
-       <file name="Runtime classes - Doctrine_Collection_Immediate.php" role="php" />
-       <file name="Runtime classes - Doctrine_Collection_Lazy.php" role="php" />
-       <file name="Runtime classes - Doctrine_ForeignKey.php" role="php" />
-       <file name="Runtime classes - Doctrine_Manager.php" role="php" />
-       <file name="Runtime classes - Doctrine_Record.php" role="php" />
-       <file name="Runtime classes - Doctrine_Session.php" role="php" />
-       <file name="Runtime classes - Doctrine_Table.php" role="php" />
-       <file name="Schema reference - Data types - Array.php" role="php" />
-       <file name="Schema reference - Foreign keys - Introduction.php" role="php" />
-       <file name="Working with objects - Component overview - Collection - Fetching strategies.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Aggregate functions.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Bound parameters.php" role="php" />
-       <file name="Working with objects - Component overview - Query - DQL - SQL conversion.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Fetching strategies.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Lazy property fetching.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Method overloading.php" role="php" />
-       <file name="Working with objects - Component overview - Query - Relation operators.php" role="php" />
-       <file name="Working with objects - Component overview - Record - Adding records.php" role="php" />
-      </dir> <!-- /manual/docs/en/_old-docs -->
       <file name="basic-schema-mapping.txt" role="php" />
       <file name="caching.txt" role="php" />
       <file name="class-templates.txt" role="php" />
@@ -1288,6 +1245,7 @@ requiring needless code duplication.</description>
      <file name="CheckTestCase.php" role="test" />
      <file name="ComponentAliasTestCase.php" role="test" />
      <file name="ConditionTestCase.php" role="test" />
+     <file name="CopyTestCase.php" role="test" />
      <file name="DeleteTestCase.php" role="test" />
      <file name="DriverTestCase.php" role="test" />
      <file name="ExpressionTestCase.php" role="test" />
@@ -1308,6 +1266,7 @@ requiring needless code duplication.</description>
      <file name="PgsqlSubqueryTestCase.php" role="test" />
      <file name="ReferenceModelTestCase.php" role="test" />
      <file name="RegistryTestCase.php" role="test" />
+     <file name="RemoveQueryPartTestCase.php" role="test" />
      <file name="SelectExpressionTestCase.php" role="test" />
      <file name="SelectTestCase.php" role="test" />
      <file name="ShortAliasesTestCase.php" role="test" />
@@ -1357,8 +1316,12 @@ requiring needless code duplication.</description>
      <file name="PgsqlTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Sequence -->
+    <dir name="Table">
+     <file name="RemoveColumnTestCase.php" role="test" />
+    </dir> <!-- /tests/Table -->
     <dir name="Ticket">
      <file name="381TestCase.php" role="test" />
+     <file name="384TestCase.php" role="test" />
      <file name="424BTestCase.php" role="test" />
      <file name="424CTestCase.php" role="test" />
      <file name="428TestCase.php" role="test" />
@@ -1366,6 +1329,7 @@ requiring needless code duplication.</description>
      <file name="480TestCase.php" role="test" />
      <file name="486TestCase.php" role="test" />
      <file name="565TestCase.php" role="test" />
+     <file name="574TestCase.php" role="test" />
      <file name="576TestCase.php" role="test" />
      <file name="583TestCase.php" role="test" />
      <file name="587TestCase.php" role="test" />
@@ -1384,10 +1348,18 @@ requiring needless code duplication.</description>
      <file name="838TestCase.php" role="test" />
      <file name="867TestCase.php" role="test" />
      <file name="876TestCase.php" role="test" />
+     <file name="889TestCase.php" role="test" />
      <file name="904TestCase.php" role="test" />
      <file name="912TestCase.php" role="test" />
      <file name="915TestCase.php" role="test" />
      <file name="923TestCase.php" role="test" />
+     <file name="927TestCase.php" role="test" />
+     <file name="929TestCase.php" role="test" />
+     <file name="932TestCase.php" role="test" />
+     <file name="935TestCase.php" role="test" />
+     <file name="963TestCase.php" role="test" />
+     <file name="966TestCase.php" role="test" />
+     <file name="969TestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1769,6 +1741,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>0.11.0</release>
+    <api>0.11.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-04-21</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>0.10.4</release>
