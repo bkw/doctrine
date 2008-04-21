@@ -24,12 +24,12 @@ requiring needless code duplication.</description>
  <date>2008-03-28</date>
  <time>13:03:26</time>
  <version>
-  <release>0.10.4</release>
-  <api>0.10.4</api>
+  <release>0.11.0</release>
+  <api>0.11.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
