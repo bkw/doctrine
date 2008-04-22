@@ -727,7 +727,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
             $emails = $this->connection->query("FROM Email WHERE Email.id = $id");
             //$this->assertEqual(count($emails),0);
         } catch (Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
     }
 
@@ -973,5 +973,21 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $user = Doctrine_Query::create()->from('User u')->where('u.loginname = ?', 'jwage2')->fetchOne();
         $this->assertEqual($user->name, 'jon wage changed2');
+    }
+
+    public function testDeleteReturnBooleanAndThrowsException()
+    {
+        $user = new User();
+        $user->name = 'jonnnn wage';
+        $user->loginname = 'jwage3';
+        $user->save();
+
+        $this->assertTrue($user->delete());
+        try {
+          $user->delete();
+          $this->fail();
+        } catch (Exception $e) {
+          $this->pass();
+        }
     }
 }
