@@ -60,6 +60,7 @@ $tickets->addTestCase(new Doctrine_Ticket_915_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_932_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_929_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_963_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_894_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
@@ -324,4 +325,9 @@ $unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
+$s = microtime(true);
 $test->run();
+$e = microtime(true);
+
+echo 'test run took: ' . ($e - $s) . ' seconds' . PHP_EOL;
+echo "peak memory usage: " . memory_get_peak_usage() / 1024 . "KB" . PHP_EOL;
