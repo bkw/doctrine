@@ -79,12 +79,11 @@ class Ticket_950_CountryRecord extends Doctrine_Record
                                               'primary' => true,
                                               'autoincrement' => true));
 
-		$this->hasColumn('iso', 'string', 2, array('notnull' => true)); // <--------------------------
+		$this->hasColumn('iso', 'string', 2, array('notnull' => true));
 
 		$this->hasColumn('name', 'string', 80);
 		$this->hasColumn('printable_name', 'string', 80);
 		$this->hasColumn('iso3', 'string', 3);
 		$this->hasColumn('numcode', 'integer', 10);
-		$this->index('iso', array('fields' => 'iso')); // <- need this else I get the error.
 	}
 }
