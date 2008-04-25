@@ -984,10 +984,10 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $this->assertTrue($user->delete());
         try {
+          // delete() on transient objects should just be ignored.
           $user->delete();
-          $this->fail();
         } catch (Exception $e) {
-          $this->pass();
+          $this->fail();
         }
     }
 }
