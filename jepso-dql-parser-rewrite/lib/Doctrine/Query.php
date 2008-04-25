@@ -216,21 +216,29 @@ class Doctrine_Query extends Doctrine_Query_Abstract
      * Builds the sql query from the given parameters and applies things such as
      * column aggregation inheritance and limit subqueries if needed
      *
-     * @return string The built sql query
+     * @return mixed The built sql query or an array of all sql queries.
      */
     public function getSql()
+    {
+        $this->_parse();
+        return $this->_parserResult->getSqlExecutor()->getSqlStatements();
+    }
+    
+    /**
+     * Parses the DQL query, if necessary, and stores the parser result.
+     *
+     * @return Doctrine_Query_ParserResult
+     */
+    private function _parse()
     {
         if ($this->_state === self::STATE_DIRTY) {
             $parser = new Doctrine_Query_Parser($this->getDql());
             $this->_parserResult = $parser->parse();
-
             $this->_state = self::STATE_CLEAN;
-            $this->_sql = $this->_parserResult->getSql();
         }
-
-        return $this->_sql;
+        
+        return $this->_parserResult;
     }
-
 
     /**
      * Executes the query and populates the data set.
@@ -315,7 +323,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
             if ($cached === false) {
                 // Cache does not exist, we have to create it.
-                $query = $this->getSql();
+                $executor = $this->_parse()->getSqlExecutor();
 
                 // To-be cached item is parserResult
                 $cacheDriver->save($hash, $this->_parserResult->toCachedForm(), $this->_queryCacheTTL);
@@ -323,10 +331,10 @@ class Doctrine_Query extends Doctrine_Query_Abstract
                 // Cache exists, recover it and return the results.
                 $this->_parserResult = Doctrine_Query_CacheHandler::fromCachedQuery($this, $cached);
 
-                $query = $this->_parserResult->getSql();
+                $executor = $this->_parserResult->getSqlExecutor();
             }
         } else {
-            $query = $this->getSql();
+            $executor = $this->_parse()->getSqlExecutor();
         }
 
         // Assignments for Hydrator and Enums
@@ -344,12 +352,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract
             $params = array_merge($params, $params);
         }
 
-        // Executing the query and assigning PDOStatement
-        if ($this->_type !== self::SELECT) {
-            return $this->_connection->exec($query, $params);
-        }
-
-        return $this->_connection->execute($query, $params);
+        // Executing the query and assigning PDOStatement        
+        return $executor->execute($this->_conn, $params);
     }
 
 

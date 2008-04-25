@@ -1,5 +1,4 @@
 <?php
-
 /*
  *  $Id$
  *
@@ -31,7 +30,7 @@ Doctrine::autoload('Doctrine_Query_AbstractResult');
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
- * @since       1.0
+ * @since       2.0
  * @version     $Revision$
  */
 class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
@@ -43,27 +42,22 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
      * @var array $_tableAliasSeeds
      */
     protected $_tableAliasSeeds = array();
-
-
-    /**
-     * Returns generated SQL.
-     *
-     * @return string SQL generated.
-     */
-    public function getSql()
-    {
-        return $this->_data;
-    }
-
-
+    
     /**
      * @nodoc
      */
-    public function setSql($sql)
+    public function setSqlExecutor(Doctrine_Query_SqlExecutor_Abstract $executor)
     {
-        $this->_data = $sql;
+        $this->_data = $executor;
     }
-
+    
+    /**
+     * @nodoc
+     */
+    public function getSqlExecutor()
+    {
+        return $this->_data;
+    }
 
     /**
      * Generates a table alias from given table name and associates 

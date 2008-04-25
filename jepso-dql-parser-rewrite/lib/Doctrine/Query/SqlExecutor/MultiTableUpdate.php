@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  *  $Id$
  *
@@ -19,30 +19,26 @@
  * <http://www.phpdoctrine.org>.
  */
 
-Doctrine::autoload('Doctrine_Query_AbstractResult');
-
 /**
- * Doctrine_Query_QueryResult
+ * Executes the SQL statements for bulk DQL UPDATE statements on classes in
+ * Class Table Inheritance (JOINED).
  *
  * @package     Doctrine
  * @subpackage  Query
- * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
- * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
+ * @author      Roman Borschel <roman@code-factory.org>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        http://www.phpdoctrine.org
- * @since       1.0
+ * @since       2.0
  * @version     $Revision$
+ * @todo For a good implementation that uses temporary tables see the Hibernate sources:
+ *       (org.hibernate.hql.ast.exec.MultiTableUpdateExecutor).
  */
-class Doctrine_Query_QueryResult extends Doctrine_Query_AbstractResult
+class Doctrine_Query_SqlExecutor_MultiTableUpdate extends Doctrine_Query_SqlExecutor_Abstract
 {
-    /**
-     * Returns cached resultset.
-     *
-     * @return array Resultset.
-     */
-    public function getResultSet()
+    public function __construct(Doctrine_Query_Production $AST)
     {
-        return $this->_data;
+        // TODO: Inspect the AST, create the necessary SQL queries and store them
+        // in $this->_sqlStatements
     }
-
+    
 }

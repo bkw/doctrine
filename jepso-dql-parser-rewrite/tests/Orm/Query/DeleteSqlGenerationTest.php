@@ -18,7 +18,7 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-
+require_once 'lib/DoctrineTestInit.php';
 /**
  * Test case for testing the saving and referencing of query identifiers.
  *

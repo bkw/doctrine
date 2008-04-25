@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  *  $Id$
  *
@@ -19,30 +19,27 @@
  * <http://www.phpdoctrine.org>.
  */
 
-Doctrine::autoload('Doctrine_Query_AbstractResult');
-
 /**
- * Doctrine_Query_QueryResult
+ * Executor that executes the SQL statement for simple DQL SELECT statements.
  *
  * @package     Doctrine
- * @subpackage  Query
- * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
- * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
+ * @subpackage  Abstract
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        http://www.phpdoctrine.org
- * @since       1.0
+ * @author      Roman Borschel <roman@code-factory.org>
  * @version     $Revision$
+ * @link        www.phpdoctrine.org
+ * @since       2.0
  */
-class Doctrine_Query_QueryResult extends Doctrine_Query_AbstractResult
-{
-    /**
-     * Returns cached resultset.
-     *
-     * @return array Resultset.
-     */
-    public function getResultSet()
+class Doctrine_Query_SqlExecutor_SingleSelect extends Doctrine_Query_SqlExecutor_Abstract
+{    
+    public function __construct(Doctrine_Query_Production $AST)
     {
-        return $this->_data;
+        parent::__construct($AST);
+        $this->_sqlStatements = $AST->buildSql();
     }
-
+    
+    public function execute(Doctrine_Connection $conn, array $params)
+    {
+        return $conn->execute($this->_sqlStatements, $params);
+    }
 }
