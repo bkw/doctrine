@@ -135,6 +135,20 @@ class Doctrine_Record_CascadingDelete_TestCase extends Doctrine_UnitTestCase
         
     }
     
+    public function testCascadingDeleteInOneToZeroOrOneRelation()
+    {
+        $owner = new CascadeDelete_HouseOwner();
+        $owner->name = 'Jeff Bridges';
+        $owner->save();
+        try {
+            $owner->delete();
+            $this->pass();
+        } catch (Doctrine_Exception $e) {
+            $this->fail("Failed to delete record. Message:" . $e->getMessage());
+        }
+        
+    }
+    
     public function testDeletionOfCompositeKeys()
     {
         $compItem = new CascadeDelete_CompositeKeyItem();
