@@ -428,7 +428,7 @@ END;
             $this->fail();
         } catch (Exception $e) {
             $this->pass();
-            $this->assertEqual($e->getMessage(), 'Class referred to is expected to be "Group" and "User" was given');
+            $this->assertEqual($e->getMessage(), 'Class referred to in "Groupuser_1" is expected to be "User" and "Group" was given');
         }
 
         unlink('test.yml');
