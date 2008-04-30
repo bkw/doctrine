@@ -80,7 +80,7 @@ Aggregate value {{SELECT}} syntax:
 
 $query = Doctrine_Query::create();
 
-$query->select('u.*, COUNT(p.id) num_posts')
+$query->select('u.id, COUNT(p.id) num_posts')
       ->from('User u, u.Posts p')
       ->where('u.id = ?', 1)
       ->groupby('u.id');
@@ -89,6 +89,3 @@ $users = $query->execute();
 
 echo $users->Posts[0]->num_posts . ' posts found';
 </code>
-
-This above example works only in mysql. In pgsql it is required that you group by all the columns being selected 
-when using aggregate functions in the select.
