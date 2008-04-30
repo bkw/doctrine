@@ -1,3 +1,47 @@
+0.11.0-RC2
+----------
+    * [r4282] Updating package.xml for 0.11
+    * [r4283] fixes #974
+    * [r4284] Updated documentation.
+    * [r4285] Fixed error messagge in _getImportedObject() to be accurate and more complete.
+    * [r4286] Fixed delete() so it returns true as it did before.
+    * [r4287] Stricter condition
+    * [r4288] Added as testcase for #894. No success in reproducing the issue so far.
+    * [r4289] Fixed issue with column aggregation keyField
+    * [r4290] Fixing notice in Tree.php using subclasses option when it is not present.
+    * [r4291] added coverage for ticket #950
+    * [r4292] Fixed test so it fails
+    * [r4293] Fixed a bug in the new application-level cascading deletes.
+    * [r4294] Changed the deletion to simply ignore transient objects in general. This is a much better behavior (in fact this is how it used to be in the past).
+    * [r4296] Fixed #982.
+    * [r4297] Fixing test case and bug with Doctrine::initializeModels()
+    * [r4298] fixes #992
+    * [r4299] fixes #634
+    * [r4300] Cleanup
+    * [r4301] Removing deprecated alias methods.
+    * [r4302] Covered for ticket #987
+    * [r4303] fixes #987
+    * [r4304] Fixed type.
+    * [r4305] each record's errorstack is now initialized lazily to save some memory.
+    * [r4306] Documentation cleanup
+    * [r4307] Removing log component. Not needed for 1.0. Will reimplement for 2.0
+    * [r4308] Fix to allow aliases in schema files.
+    * [r4309] Fixed test to fail properly.
+    * [r4310] fixes #986
+    * [r4311] fixes #1001
+    * [r4312] fixes #1001 again
+    * [r4313] fixes #889
+    * [r4314] fixes #991
+    * [r4315] Updating documentation for modifiedFields()
+    * [r4316] fixed issue with order in which actAs() tries to find the template for the behavior causing all registered autoloaders to be called every single time.
+    * [r4317] Added attribute for singularizing when importing from existing databases. On by default but can be turned off at the manager or connection level.
+    * [r4318] fixes #994
+    * [r4319] Fixed #963. Since it is impossible for Doctrine to determine where the foreign key resides we added a new option that can be used in such scenarios to help Doctrine: owningSide => true. Please refer to the ticket testcase and the introduction of chapter 4, Relations, for the usage.
+    * [r4320] Removed getSize()
+    * [r4321] fixes #983
+    * [r4322] fixes #1002
+    * [r4323] Updating changelog to be current and accurate.
+
 0.11.0-RC1
 ----------
     * [r4153] Updated test.
