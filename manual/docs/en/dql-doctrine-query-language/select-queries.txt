@@ -89,3 +89,6 @@ $users = $query->execute();
 
 echo $users->Posts[0]->num_posts . ' posts found';
 </code>
+
+This above example works only in mysql. In pgsql it is required that you group by all the columns being selected 
+when using aggregate functions in the select.
