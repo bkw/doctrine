@@ -146,6 +146,28 @@ Test:
     floattest: float
 </code>
 
+++++ Decimal
+
+The decimal data type may store fixed precision decimal numbers. This data type is suitable for representing 
+numbers that require high precision and accuracy.
+
+<code type="php">
+class Test extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('decimaltest', 'decimal');
+    }
+}
+</code>
+
+<code type="yaml">
+---
+Test:
+  columns:
+    decimaltest: float
+</code>
+
 ++++ String
 
 The text data type is available with two options for the length: one that is explicitly length limited and another of 
