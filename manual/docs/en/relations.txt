@@ -51,6 +51,7 @@ Forum_Board:
       class: Forum_Thread
       local: id
       foreign: board_id
+      type: many
 </code>
 
 Then lets have a peek at the Forum_Thread class. The columns here are irrelevant, but pay attention to how we define the 
