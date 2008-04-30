@@ -193,7 +193,8 @@ Doctrine_Query::create()
 
 +++ Refreshing records
 
-Sometimes you may want to refresh your record with data from the database, use {{Doctrine_Record::refresh()}}.
+Sometimes you may want to refresh your record with data from the database, use
+ {{Doctrine_Record::refresh()}}.
 
 <code type="php">
 $user = Doctrine::getTable('User')->find(2);
@@ -204,7 +205,9 @@ $user->refresh();
 
 ++++ Refreshing relationships
 
-The {{Doctrine_Record::refresh()}} method can also refresh record relationships, but you need to specify them on the query.
+The {{Doctrine_Record::refresh($deep = false)}} method can also refresh the 
+already loaded record relationships, but you need to specify them on the
+original query.
 
 <code type="php">
 $user = Doctrine_Query::create()
@@ -228,6 +231,16 @@ $userGroup->save();
 $user->refresh(true);
 // get new user on group
 $group->refresh(true);
+</code>
+
+You can also lazily refresh individual relationships or all defined relationships 
+of a model using  {{Doctrine_Record::refreshRelated($name = null)}}.
+
+<code type="php">
+$user = Doctrine::getTable('User')->findOneByName('jon');
+$user->refreshRelated(); // Will lazily load all defined relationships
+
+$user->refreshRelated('Phonenumber'); // Will lazily load the Phonenumber relationship
 </code>
 
 +++ Deleting records
