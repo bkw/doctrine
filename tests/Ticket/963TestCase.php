@@ -32,11 +32,20 @@
  */
 class Doctrine_Ticket_963_TestCase extends Doctrine_UnitTestCase 
 {
-  public function testExportSql()
-  {
-    $sql = Doctrine::generateSqlFromArray(array('Ticket_963_User', 'Ticket_963_Email'));
-    $this->assertTrue(count($sql) > 2);
-  }
+    public function testInit()
+    {
+        $this->dbh = new Doctrine_Adapter_Mock('mysql');
+        $this->conn = Doctrine_Manager::getInstance()->openConnection($this->dbh);
+    }
+
+    public function testExportSql()
+    {
+        $sql = $this->conn->export->exportClassesSql(array('Ticket_963_User', 'Ticket_963_Email'));
+        $this->assertEqual(count($sql), 3);
+        $this->assertEqual($sql[0], 'CREATE TABLE ticket_963__user (id BIGINT AUTO_INCREMENT, username VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id)) ENGINE = INNODB');
+        $this->assertEqual($sql[1], 'CREATE TABLE ticket_963__email (user_id INT, address2 VARCHAR(255), PRIMARY KEY(user_id)) ENGINE = INNODB');
+        $this->assertEqual($test = isset($sql[2]) ? $sql[2]:null, 'ALTER TABLE ticket_963__email ADD FOREIGN KEY (user_id) REFERENCES ticket_963__user(id) ON DELETE CASCADE');
+    }
 }
 
 class Ticket_963_User extends Doctrine_Record

@@ -37,6 +37,7 @@ class Doctrine_Ticket_950_TestCase extends Doctrine_UnitTestCase
         $this->dbh = new Doctrine_Adapter_Mock('mysql');
         $this->conn = Doctrine_Manager::getInstance()->openConnection($this->dbh);
     }
+
     public function testTest()
     {
         $sql = $this->conn->export->exportClassesSql(array('Ticket_950_AdresseRecord','Ticket_950_CountryRecord'));
