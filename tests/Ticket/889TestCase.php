@@ -54,7 +54,7 @@ class Doctrine_Ticket_889_TestCase extends Doctrine_UnitTestCase
 
             $this->fail();
         }
-        $this->assertTrue($rel instanceof Doctrine_Relation_ForeignKey);
+        $this->assertEqual(get_class($rel), 'Doctrine_Relation_Nest');
 
         $this->assertTrue($component->Children instanceof Doctrine_Collection);
         $this->assertTrue($component->Children[0] instanceof Ticket_889);
@@ -72,7 +72,7 @@ class Doctrine_Ticket_889_TestCase extends Doctrine_UnitTestCase
 
             $this->fail();
         }
-        $this->assertTrue($rel instanceof Doctrine_Relation_ForeignKey);
+        $this->assertEqual(get_class($rel), 'Doctrine_Relation_Nest');
 
         $this->assertTrue($component->Parents instanceof Doctrine_Collection);
         $this->assertTrue($component->Parents[0] instanceof Ticket_889);
@@ -188,5 +188,16 @@ class Ticket_889_Relationship extends Doctrine_Record
     				'unsigned' => true 
     		)
     	);
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('Ticket_889 as Parent', array('local'     => 'parent_id',
+                                                    'foreign'   => 'id',
+                                                    'onDelete'  => 'CASCADE'));
+
+        $this->hasOne('Ticket_889 as Child', array('local'     => 'child_id',
+                                                   'foreign'   => 'id',
+                                                   'onDelete'  => 'CASCADE'));
     }
 }
