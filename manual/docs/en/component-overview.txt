@@ -69,15 +69,15 @@ if (isset($user['name'])) {
 unset($user['name']);
 </code>
 
-When you have set values for record properties you can get the names of modified properties with modifiedFields() method. 
-This method returns an array of modified field names.
+When you have set values for record properties you can get an array of the modified fields and values using 
+{{Doctrine_Record::modifiedFields()}}
 
 <code type="php">
 $user['name'] = 'Jack Daniels';
 
 $user['age'] = 100;
 
-print_r($user->modifiedFields()); // array('name', 'age');
+print_r($user->modifiedFields()); // array('name' => 'Jack Daniels', 'age' => 100);
 
 $user->isModified(); // true
 </code>
