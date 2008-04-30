@@ -51,8 +51,8 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
     }
     public function testClassifyTableize() {
         $name = "Forum_Category";
-        $this->assertEqual(Doctrine::tableize($name), "forum__category");
-        $this->assertEqual(Doctrine::classify(Doctrine::tableize($name)), $name);
+        $this->assertEqual(Doctrine_Inflector::tableize($name), "forum__category");
+        $this->assertEqual(Doctrine_Inflector::classify(Doctrine_Inflector::tableize($name)), $name);
         
         
     }
