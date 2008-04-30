@@ -7,11 +7,12 @@ Unlike the column definitions the {{hasMany}} and {{hasOne}} methods are placed 
 methods take two arguments: the first argument is a string containing the name of the class and optional alias, the 
 second argument is an array consisting of relation options. The option array contains the following keys:
 
-* **local**, the local field of the relation. Local field is the linked field or fields in the defining class.
-* **foreign**, the foreign field of the relation. Foreign field is the linked field or fields in the linked class.
-* **refClass**, the name of the reference / join class. This is needed for many-to-many associations.
-* **onDelete**, the onDelete integrity action.
-* **onUpdate**, the onUpdate integrity action.
+* **local**, the local field of the relation. Local field is the linked field in the defining class.
+* **foreign**, the foreign field of the relation. Foreign field is the linked field in the linked class.
+* **refClass**, the name of the association class. This is only needed for many-to-many associations.
+* **owningSide**, (optional) set to boolean true to indicate the owning side of the relation. The owning side is the side that owns the foreign key. There can only be one owning side in an association between two classes. Note that this option is required if Doctrine can't guess the owning side or it's guess is wrong. An example where this is the case is when both 'local' and 'foreign' are part of the identifier (primary key). It never hurts to specify the owning side in this way.', 
+* **onDelete**, (optional) the onDelete integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
+* **onUpdate**, (optional) the onUpdate integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
 
 So lets take our first example, say we have two classes Forum_Board and Forum_Thread. Here Forum_Board has many 
 Forum_Threads, hence their relation is one-to-many. We don't want to write Forum_ when accessing relations, so we 

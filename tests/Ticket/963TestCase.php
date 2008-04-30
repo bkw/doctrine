@@ -73,8 +73,10 @@ class Ticket_963_Email extends Doctrine_Record
 
   public function setUp()
   {
-    $this->hasOne('Ticket_963_User as User', array('local' => 'user_id',
+    $this->hasOne('Ticket_963_User as User', array(
+                                'local' => 'user_id',
                                 'foreign' => 'id',
+                                'owningSide' => true,
                                 'onDelete' => 'CASCADE'));
   }
 }
