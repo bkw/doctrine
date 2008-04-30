@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-04-21</date>
- <time>12:52:41</time>
+ <date>2008-04-30</date>
+ <time>22:43:10</time>
  <version>
   <release>0.11.0</release>
   <api>0.11.0</api>
@@ -213,27 +213,6 @@ requiring needless code duplication.</description>
       </dir> <!-- /lib/Doctrine/Locking/Manager -->
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Locking -->
-     <dir name="Log">
-      <dir name="Filter">
-       <file name="Interface.php" role="php" />
-       <file name="Message.php" role="php" />
-       <file name="Priority.php" role="php" />
-       <file name="Suppress.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Filter -->
-      <dir name="Formatter">
-       <file name="Interface.php" role="php" />
-       <file name="Simple.php" role="php" />
-       <file name="Xml.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Formatter -->
-      <dir name="Writer">
-       <file name="Abstract.php" role="php" />
-       <file name="Db.php" role="php" />
-       <file name="Mock.php" role="php" />
-       <file name="Null.php" role="php" />
-       <file name="Stream.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Writer -->
-      <file name="Exception.php" role="php" />
-     </dir> <!-- /lib/Doctrine/Log -->
      <dir name="Manager">
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Manager -->
@@ -503,7 +482,6 @@ requiring needless code duplication.</description>
      <file name="IntegrityMapper.php" role="php" />
      <file name="Lib.php" role="php" />
      <file name="Locator.php" role="php" />
-     <file name="Log.php" role="php" />
      <file name="Manager.php" role="php" />
      <file name="Migration.php" role="php" />
      <file name="Node.php" role="php" />
@@ -1349,6 +1327,7 @@ requiring needless code duplication.</description>
      <file name="867TestCase.php" role="test" />
      <file name="876TestCase.php" role="test" />
      <file name="889TestCase.php" role="test" />
+     <file name="894TestCase.php" role="test" />
      <file name="904TestCase.php" role="test" />
      <file name="912TestCase.php" role="test" />
      <file name="915TestCase.php" role="test" />
@@ -1357,9 +1336,12 @@ requiring needless code duplication.</description>
      <file name="929TestCase.php" role="test" />
      <file name="932TestCase.php" role="test" />
      <file name="935TestCase.php" role="test" />
+     <file name="941TestCase.php" role="test" />
+     <file name="950TestCase.php" role="test" />
      <file name="963TestCase.php" role="test" />
      <file name="966TestCase.php" role="test" />
      <file name="969TestCase.php" role="test" />
+     <file name="987TestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1750,7 +1732,7 @@ requiring needless code duplication.</description>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2008-04-21</date>
+   <date>2008-04-30</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
