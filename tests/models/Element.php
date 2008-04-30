@@ -5,8 +5,10 @@ class Element extends Doctrine_Record {
         $this->hasColumn('parent_id', 'integer');
     }
     public function setUp() {
-        $this->hasMany('Element as Child', 'Child.parent_id');
-        $this->hasOne('Element as Parent', 'Element.parent_id');
+        $this->hasMany('Element as Child', array('local'   => 'id',
+                                                 'foreign' => 'parent_id'));
+        $this->hasOne('Element as Parent', array('local'   => 'parent_id',
+                                                 'foreign' => 'id'));
     }
 }
 
