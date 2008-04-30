@@ -50,6 +50,8 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
 
+        $this->assertEqual(Doctrine::getTable('AliasTest')->getFieldName('test_col'), 'test_col_alias');
+
         Doctrine_Lib::removeDirectories($path);
     }
     
@@ -74,6 +76,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(array_key_exists('inheritance', $model) && is_array($model['inheritance']));
         $this->assertTrue(array_key_exists('detect_relations', $model) && is_bool($model['detect_relations']));
         $this->assertTrue(array_key_exists('generate_accessors', $model) && is_bool($model['generate_accessors']));
+        $this->assertEqual($array['AliasTest']['columns']['test_col']['name'], 'test_col as test_col_alias');
     }
     
     public function testSchemaRelationshipCompletion()

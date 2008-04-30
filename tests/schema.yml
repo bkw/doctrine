@@ -141,3 +141,9 @@ SchemaTestColumnAggregationInheritanceChild:
   columns:
     title: string(255)
     description: string(255)
+
+AliasTest:
+  columns:
+    test_col:
+      name: test_col as test_col_alias
+      type: string(255)
