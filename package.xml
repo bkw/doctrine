@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-02-15</date>
- <time>22:19:57</time>
+ <date>2008-02-16</date>
+ <time>04:49:58</time>
  <version>
   <release>0.9.1</release>
   <api>0.9.1</api>
@@ -1519,7 +1519,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2008-02-15</date>
+   <date>2008-02-16</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
