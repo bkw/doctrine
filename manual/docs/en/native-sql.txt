@@ -33,7 +33,7 @@ $q->select('{u.*}')
   ->addComponent('user', 'User'); // here we tell that user table is bound to class called 'User'
 
 $users = $q->execute();
-$user[0]; // User object
+$users[0]; // User object
 </code>
 
 Pay attention to following things:
