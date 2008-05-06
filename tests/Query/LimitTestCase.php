@@ -205,13 +205,15 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->from('User.Group')->limit(5);
-
+        
         $users = $q->execute();
 
         $this->assertEqual($users->count(), 5);
         
         $user = $this->objTable->find(5);
+        
         $user->Group[1]->name = "Tough guys inc.";
+        
         $user->Group[2]->name = "Terminators";
         
         $user2 = $this->objTable->find(4);
@@ -224,20 +226,17 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($user->Group), 3);
 
         $this->connection->flush();
-
+        
         $this->assertEqual($user->Group[0]->name, "Action Actors");
         $this->assertEqual(count($user->Group), 3);
-
-
-
+        
         $q = new Doctrine_Query();
-        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);
-
-
+        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);       
+             
         $users = $q->execute(array($user->Group[1]->id));
-
+        
         $this->assertEqual($users->count(), 3);
-
+        
         $this->connection->clear();
         $q = new Doctrine_Query();
         $q->from('User')->where('User.Group.id = ?')->orderby('User.id DESC');

@@ -86,7 +86,9 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         $userArray = $user->toArray(true);
         $userArray['Phonenumber'][] = array('phonenumber' => '333 238');
 
+
         $user->synchronizeWithArray($userArray);
+        
         $this->assertEqual($user->Phonenumber->count(), 2);
         $this->assertEqual($user->Phonenumber[1]->phonenumber, '333 238');
         $user->save();
@@ -95,6 +97,7 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
     public function testSynchronizeAfterAddRecord()
     {
         $user = Doctrine_Query::create()->from('User u, u.Email, u.Phonenumber')->fetchOne();
+        
         $this->assertEqual($user->Phonenumber->count(), 2);
         $this->assertEqual($user->Phonenumber[1]->phonenumber, '333 238');
     }
