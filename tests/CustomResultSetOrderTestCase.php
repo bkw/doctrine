@@ -41,6 +41,7 @@ class Doctrine_CustomResultSetOrder_TestCase extends Doctrine_UnitTestCase {
      * 
      */
     public function prepareData() {
+        $this->connection->clear();
         $cat1 = new CategoryWithPosition();
         $cat1->position = 0;
         $cat1->name = "First";

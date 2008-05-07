@@ -46,6 +46,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testOne2OneForeign()
     {
+        $this->conn->clear();
         $user = new User();
         $user->name = "Richard Linklater";
 
@@ -335,7 +336,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testManyToManyTreeStructure()
     {
-
+        $this->conn->clear();
         $task = $this->connection->create("Task");
 
         $task->name = "Task 1";
@@ -412,6 +413,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testTreeStructure()
     {
+        $this->conn->clear();
         $e = new Element();
 
         $fk = $e->getTable()->getRelation("Child");

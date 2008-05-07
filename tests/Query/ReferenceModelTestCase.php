@@ -45,6 +45,7 @@ class Doctrine_Query_ReferenceModel_TestCase extends Doctrine_UnitTestCase {
     { }
 
     public function testInitializeData() {
+        $this->connection->clear();
         $query = new Doctrine_Query($this->connection);
 
         $category = new Forum_Category();

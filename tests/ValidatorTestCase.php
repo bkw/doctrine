@@ -476,4 +476,25 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
 
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
+    
+    public function testValidationIsTriggeredOnFlush()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $this->conn->clear();
+
+        $r = new ValidatorTest_Person();
+        $r->identifier = '5678';
+        $r->save();
+
+        $r = new ValidatorTest_Person();
+        $r->identifier = 5678;
+        try {
+            $this->conn->flush();
+            $this->fail("No validator exception thrown on unique validation, triggered by flush().");
+        } catch (Doctrine_Validator_Exception $e) {
+            $this->pass();
+        }
+        
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
 }
