@@ -41,13 +41,11 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
     public function testNestedPluginsGetExportedRecursively()
     {
-
-
         $sql = $this->conn->export->exportClassesSql(array('Wiki'));
 
-        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (title VARCHAR(255), content VARCHAR(2147483647), lang CHAR(2), id INTEGER, version INTEGER, PRIMARY KEY(lang, id, version))');
-        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (keyword VARCHAR(200), field VARCHAR(50), position INTEGER, lang CHAR(2), id INTEGER, PRIMARY KEY(keyword, field, position, lang, id))');
-        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (title VARCHAR(255), content VARCHAR(2147483647), lang CHAR(2), id INTEGER, version INTEGER, PRIMARY KEY(lang, id))');
+        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content VARCHAR(2147483647), version INTEGER, PRIMARY KEY(id, lang, version))');
+        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))');
+        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (id INTEGER, title VARCHAR(255), content VARCHAR(2147483647), lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))');
         $this->assertEqual($sql[3], 'CREATE TABLE wiki (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME, updated_at DATETIME)');
 
         foreach ($sql as $query) {
@@ -85,6 +83,45 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($wiki->Translation['FI']->version, 2);
     }
+
+    public function testSearchableChildTemplate()
+    {
+    	  $this->conn->clear();
+
+        $wiki = new Wiki();
+        $wiki->state(Doctrine_Record::STATE_TDIRTY);
+        $wiki->save();
+        $fi = $wiki->Translation['FI'];
+        $fi->title = 'New Title';
+        $fi->content = "Sorry, I'm not able to write a Finish sentence about Michael Jordan...";
+
+        $fi->save();
+
+        $t = Doctrine::getTable('WikiTranslationIndex');
+        $oQuery = new Doctrine_Search_Query($t);
+        $oQuery->query("jordan");
+        $out = $this->conn->fetchAll($oQuery->getSql(), $oQuery->getParams());
+
+        $this->assertEqual($out[0]['relevance'], 2);
+        $this->assertEqual($out[1]['relevance'], 1);
+        $this->assertEqual($out[0]['id'], 1);
+        $this->assertEqual($out[1]['id'], 2);
+    }
+
+    public function testSluggableChildTemplate()
+    {
+    	  $this->conn->clear();
+
+        $wiki = new Wiki();
+        $wiki->state(Doctrine_Record::STATE_TDIRTY);
+        $wiki->save();
+        $fi = $wiki->Translation['FI'];
+        $fi->title = 'This is the title';
+        $fi->content = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla sed.";
+
+        $fi->save();
+        $this->assertEqual($fi->slug, 'this-is-the-title');
+		}
 }
 
 class Wiki extends Doctrine_Record
@@ -97,10 +134,10 @@ class Wiki extends Doctrine_Record
 
     public function setUp()
     {
-    	$options = array('fields' => array('title', 'content'));
+        $options = array('fields' => array('title', 'content'));
         $auditLog = new Doctrine_Template_Versionable($options);
         $search = new Doctrine_Template_Searchable($options);
-    	$slug = new Doctrine_Template_Sluggable($options);
+        $slug = new Doctrine_Template_Sluggable(array('fields' => array('title')));
         $i18n = new Doctrine_Template_I18n($options);
 
         $i18n->addChild($auditLog)

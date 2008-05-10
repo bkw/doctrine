@@ -195,7 +195,7 @@ $test->addTestCase($data_types);
 
 // Behaviors Testing
 $behaviors = new GroupTest('Behaviors Tests', 'behaviors');
-//$behaviors->addTestCase(new Doctrine_Plugin_TestCase());
+$behaviors->addTestCase(new Doctrine_Plugin_TestCase());
 $behaviors->addTestCase(new Doctrine_View_TestCase());
 $behaviors->addTestCase(new Doctrine_AuditLog_TestCase());
 $behaviors->addTestCase(new Doctrine_Hook_TestCase());
