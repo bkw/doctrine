@@ -60,6 +60,22 @@ class Doctrine_Record_Generator_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
     }
+
+    public function testGeneratorComponentBinding2()
+    {
+        try {
+            $i = new I18nGeneratorComponentBinding();
+            $i->name = 'test';
+            $i->Translation['EN']->title = 'en test';
+            $i->Translation['FR']->title = 'fr test';
+            $i->save();
+            $i->free();
+
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+    }
 }
 
 class I18nGeneratorComponentBinding extends Doctrine_Record
