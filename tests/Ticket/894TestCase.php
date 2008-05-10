@@ -61,22 +61,3 @@ class T894_Day extends Doctrine_Record
     $this->hasColumn('number', 'integer');
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

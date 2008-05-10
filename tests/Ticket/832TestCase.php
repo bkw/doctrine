@@ -46,7 +46,7 @@ class Doctrine_Ticket_832_TestCase extends Doctrine_UnitTestCase
     public function testTest()
     {
         try {
-            $user = new User();
+            $user = new Ticket_832_User();
             $user->name = 'test';
             $user->save();
             $this->assertEqual($user->name, 'test');
