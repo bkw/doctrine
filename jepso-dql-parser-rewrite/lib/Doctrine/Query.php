@@ -220,25 +220,26 @@ class Doctrine_Query extends Doctrine_Query_Abstract
      */
     public function getSql()
     {
-        $this->_parse();
-        return $this->_parserResult->getSqlExecutor()->getSqlStatements();
+        return $this->parse()->getSqlExecutor()->getSqlStatements();
     }
-    
+
+
     /**
      * Parses the DQL query, if necessary, and stores the parser result.
      *
      * @return Doctrine_Query_ParserResult
      */
-    private function _parse()
+    public function parse()
     {
         if ($this->_state === self::STATE_DIRTY) {
             $parser = new Doctrine_Query_Parser($this->getDql());
             $this->_parserResult = $parser->parse();
             $this->_state = self::STATE_CLEAN;
         }
-        
+
         return $this->_parserResult;
     }
+
 
     /**
      * Executes the query and populates the data set.
@@ -323,7 +324,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
 
             if ($cached === false) {
                 // Cache does not exist, we have to create it.
-                $executor = $this->_parse()->getSqlExecutor();
+                $executor = $this->parse()->getSqlExecutor();
 
                 // To-be cached item is parserResult
                 $cacheDriver->save($hash, $this->_parserResult->toCachedForm(), $this->_queryCacheTTL);
@@ -334,7 +335,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
                 $executor = $this->_parserResult->getSqlExecutor();
             }
         } else {
-            $executor = $this->_parse()->getSqlExecutor();
+            $executor = $this->parse()->getSqlExecutor();
         }
 
         // Assignments for Hydrator and Enums

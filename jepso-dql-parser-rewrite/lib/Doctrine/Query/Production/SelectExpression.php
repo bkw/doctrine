@@ -72,6 +72,13 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         // Here we inspect for duplicate IdentificationVariable, and if the
         // left expression needs the identification variable. If yes, check
         // its existance.
+	if ( $this->_leftExpression instanceof PathExpressionEndingWithAsterisk && $this->_identificationVariable !== null ) {
+		$this->_parser->semanticalError(
+                    "Cannot assign an identification variable to a path expression with asterisk."
+                );
+	}
+
+	// The check for duplicate IdentificationVariable was already done
     }
 
 

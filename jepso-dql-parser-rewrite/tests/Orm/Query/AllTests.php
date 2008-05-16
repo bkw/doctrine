@@ -5,7 +5,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 
 require_once 'lib/DoctrineTestInit.php';
 
-//require_once 'IdentifierRecognitionTest.php';
+require_once 'IdentifierRecognitionTest.php';
 require_once 'ScannerTest.php';
 require_once 'DqlGenerationTest.php';
 require_once 'DeleteSqlGenerationTest.php';
@@ -24,7 +24,7 @@ class Orm_Query_AllTests
     {
         $suite = new Doctrine_TestSuite('Doctrine Orm Query');
 
-        //$suite->addTestSuite('Orm_Query_IdentifierRecognitionTest');
+        $suite->addTestSuite('Orm_Query_IdentifierRecognitionTest');
         $suite->addTestSuite('Orm_Query_ScannerTest');
         $suite->addTestSuite('Orm_Query_DqlGenerationTest');
         $suite->addTestSuite('Orm_Query_DeleteSqlGenerationTest');

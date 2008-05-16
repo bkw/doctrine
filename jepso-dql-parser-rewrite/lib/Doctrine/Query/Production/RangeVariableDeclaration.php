@@ -33,7 +33,48 @@
  */
 class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_identifiers = array();
+
+    protected $_identificationVariable;
+
+
+    public function syntax($paramHolder)
+    {
+        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+        $this->_identifiers[] = $this->_parser->token['value'];
+
+        while ($this->_isNextToken('.')) {
+            $this->_parser->match('.');
+            $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+
+            $this->_identifiers[] = $this->_parser->token['value'];
+        }
+
+        if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
+            $this->_parser->match(Doctrine_Query_Token::T_AS);
+        }
+
+        if ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $paramHolder->set('componentName', implode('.', $this->_identifiers));
+
+            // Will return an identifier, with the semantical check already applied
+            $this->_identificationVariable = $this->IdentificationVariable($paramHolder);
+
+            $paramHolder->remove('componentName');
+        }
+    }
+
+
+    public function semantical($paramHolder)
+    {
+    }
+
+
+    public function buildSql()
+    {}
+
+
+    /*public function execute(array $params = array())
     {
         // RangeVariableDeclaration = identifier {"." identifier} [["AS"] IdentificationVariable]
         $path = '';
@@ -123,5 +164,5 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
         $parserResult->setQueryComponent($alias, $queryComponent);
 
         return $alias;
-    }
+    }*/
 }

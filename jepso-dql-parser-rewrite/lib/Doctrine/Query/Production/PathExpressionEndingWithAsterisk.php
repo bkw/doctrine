@@ -32,13 +32,76 @@
  */
 class Doctrine_Query_Production_PathExpressionEndingWithAsterisk extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_identifiers = array();
+
+
+    public function syntax($paramHolder)
     {
+        // PathExpressionEndingWithAsterisk = {identifier "."} "*"
         while ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $this->_identifiers[] = $this->_parser->token['value'];
+
             $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
             $this->_parser->match('.');
         }
 
         $this->_parser->match('*');
+    }
+
+
+    public function semantical($paramHolder)
+    {
+        $parserResult = $this->_parser->getParserResult();
+
+        if (($l = count($this->_identifiers)) > 0) {
+            // We are working with relations here.
+            $queryComponent = $parserResult->getQueryComponent($this->_identifiers[0]);
+            $classMetadata = $queryComponent['metadata'];
+
+            for ($i = 1; $i < $l; $i++) {
+                $relationName = $this->_identifiers[$i];
+
+                // We are still checking for relations
+                if ( $classMetadata !== null && ! $classMetadata->hasRelation($relationName)) {
+                    $className = $classMetadata->getClassName();
+
+                    $this->_parser->semanticalError("Relation '{$relationName}' does not exist in component '{$className}'");
+
+                    // Assigning new ClassMetadata
+                    $classMetadata = $classMetadata->getRelation($relationName)->getClassMetadata();
+                } elseif ( $classMetadata === null ) {
+                    $queryComponent = $parserResult->getQueryComponent($relationName);
+
+                    // We should have a semantical error if the queryComponent does not exists yet
+                    if ($queryComponent === null) {
+                        $this->_parser->semanticalError("Undefined component alias for relation '{$relationName}'");
+                    }
+
+                    // Initializing ClassMetadata
+                    $classMetadata = $queryComponent['metadata'];
+                }
+            }
+        } else {
+            // We are dealing with a simple * as our PathExpression.
+            // We need to check if there's only one query component.
+            $queryComponents = $parserResult->getQueryComponents();
+
+            if (count($queryComponents) != 1) {
+                $this->_parser->semanticalError(
+                    "Cannot use * as selector expression for multiple components."
+                );
+            }
+
+            // We simplify our life adding the component alias to our AST,
+            // since we have it on hands now.
+            $k = array_keys($queryComponents);
+            $this->_identifiers[] = $k[0];
+        }
+    }
+
+
+    public function buildSql()
+    {
+        return '';
     }
 }

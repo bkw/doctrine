@@ -36,10 +36,10 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testSingleAliasDeclarationIsSupported()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM CmsUser u');
-        $query->parse();
+        $query->setDql('SELECT u.* FROM CmsUser u');
+        $parserResult = $query->parse();
 
-        $decl = $query->getQueryComponent('u');
+        $decl = $parserResult->getQueryComponent('u');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertEquals(null, $decl['relation']);
@@ -51,10 +51,10 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testSingleAliasDeclarationWithIndexByIsSupported()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM CmsUser u INDEX BY name');
-        $query->parse();
+        $query->setDql('SELECT u.* FROM CmsUser u INDEX BY name');
+        $parserResult = $query->parse();
 
-        $decl = $query->getQueryComponent('u');
+        $decl = $parserResult->getQueryComponent('u');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertEquals(null, $decl['relation']);
@@ -66,10 +66,10 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testQueryParserSupportsMultipleAliasDeclarations()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.Phonenumber p');
-        $query->parse();
+        $query->setDql('SELECT u.* FROM User u INDEX BY name LEFT JOIN u.Phonenumber p');
+        $parserResult = $query->parse();
 
-        $decl = $query->getQueryComponent('u');
+        $decl = $parserResult->getQueryComponent('u');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertEquals(null, $decl['relation']);
@@ -77,7 +77,7 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEquals(null, $decl['agg']);
         $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getQueryComponent('p');
+        $decl = $parserResult->getQueryComponent('p');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -89,10 +89,10 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testQueryParserSupportsMultipleAliasDeclarationsWithIndexBy()
     {
         $query = new Doctrine_Query;
-        $query->setDql('FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY phonenumber');
-        $query->parse();
+        $query->setDql('SELECT u.* FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY phonenumber');
+        $parserResult = $query->parse();
 
-        $decl = $query->getQueryComponent('u');
+        $decl = $parserResult->getQueryComponent('u');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertEquals(null, $decl['relation']);
@@ -100,7 +100,7 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEquals(null, $decl['agg']);
         $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getQueryComponent('g');
+        $decl = $parserResult->getQueryComponent('g');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
@@ -108,7 +108,7 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEquals(null, $decl['agg']);
         $this->assertEquals('name', $decl['map']);
 
-        $decl = $query->getQueryComponent('p');
+        $decl = $parserResult->getQueryComponent('p');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);

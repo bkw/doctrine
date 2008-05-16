@@ -68,7 +68,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
                     // Assigning new ClassMetadata
                     $classMetadata = $classMetadata->getRelation($relationName)->getClassMetadata();
                 } elseif ( $classMetadata === null ) {
-                    $queryComponent = $this->_parser->getParserResult()->getQueryComponent($relationName);
+                    $queryComponent = $parserResult->getQueryComponent($relationName);
 
                     // We should have a semantical error if the queryComponent does not exists yet
                     if ($queryComponent === null) {
@@ -85,7 +85,7 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
                 if ($classMetadata === null) {
                     // No metadata selection until now. We might need to deal with:
                     // DELETE FROM Obj alias WHERE field = X
-                    $queryComponents = $this->_parser->getParserResult()->getQueryComponents();
+                    $queryComponents = $parserResult->getQueryComponents();
 
                     // Check if we have more than one queryComponent defined
                     if (count($queryComponents) > 1) {
@@ -133,9 +133,10 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
 
         for ($i = 0, $l = count($this->_identifiers); $i < $l; $i++) {
             if ($i < $l - 1) {
-                // [TODO] We are assuming we never define relations in WHERE clauses.
-                // So, do not bother about table alias that may not be previously added.
-                // At a later stage, we should deal with it too.
+                // [TODO] We are assuming we never define relations in SELECT
+                // and WHERE clauses. So, do not bother about table alias that
+                // may not be previously added. At a later stage, we should
+                // deal with it too.
                 $str .= $parserResult->getTableAliasFromComponentAlias($this->_identifiers[$i]) . '.';
             } else {
                 // Retrieving last ClassMetadata

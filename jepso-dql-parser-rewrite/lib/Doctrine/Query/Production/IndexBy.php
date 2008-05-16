@@ -32,10 +32,24 @@
  */
 class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
 {
+    public function syntax($paramHolder)
+    {
+        $this->_parser->match(Doctrine_Query_Token::T_INDEX);
+        $this->_parser->match(Doctrine_Query_Token::T_BY);
+        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+
+        $this->_processIndexBy($paramHolder['alias'], $this->_parser->token['value']);
+    }
+
+
+    public function buildSql()
+    {}
+
+
     private function _processIndexBy($alias, $column)
     {
-        $queryObject = $this->_parser->getQueryObject();
-        $queryComponent = $queryObject->getQueryComponent($alias);
+        $parserResult = $this->_parser->getParserResult();
+        $queryComponent = $parserResult->getQueryComponent($alias);
         $metadata = $queryComponent['metadata'];
 
         if ($metadata instanceof Doctrine_ClassMetadata && ! $metadata->hasField($column)) {
@@ -46,15 +60,6 @@ class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
         }
 
         $queryComponent['map'] = $column;
-        $queryObject->setQueryComponent($alias, $queryComponent);
-    }
-
-    public function execute(array $params = array())
-    {
-        $this->_parser->match(Doctrine_Query_Token::T_INDEX);
-        $this->_parser->match(Doctrine_Query_Token::T_BY);
-        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
-
-        $this->_processIndexBy($params['alias'], $this->_parser->token['value']);
+        $parserResult->setQueryComponent($alias, $queryComponent);
     }
 }

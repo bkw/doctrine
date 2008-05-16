@@ -35,23 +35,31 @@ class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctri
 {
     public function syntax($paramHolder)
     {
-        $queryObject = $this->_parser->getQueryObject();
-
         $alias = $this->RangeVariableDeclaration($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-            $this->IndexBy(array('alias' => $alias));
+            $paramHolder->set('alias', $alias);
+            $this->IndexBy($paramHolder);
+            $paramHolder->remove('alias');
         }
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_LEFT) ||
                $this->_isNextToken(Doctrine_Query_Token::T_INNER) ||
                $this->_isNextToken(Doctrine_Query_Token::T_JOIN)) {
 
-            $this->Join();
+            $this->Join($paramHolder);
 
             if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-                $this->IndexBy(array('alias' => $alias));
+                $paramHolder->set('alias', $alias);
+                $this->IndexBy($paramHolder);
+                $paramHolder->remove('alias');
             }
         }
+    }
+
+
+    public function buildSql()
+    {
+        return '';
     }
 }

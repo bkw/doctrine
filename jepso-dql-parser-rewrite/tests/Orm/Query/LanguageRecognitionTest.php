@@ -34,12 +34,12 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testPlainFromClauseWithoutAlias()
     {
-        $this->assertValidDql('FROM User');
+        $this->assertValidDql('SELECT * FROM User');
     }
 
     public function testPlainFromClauseWithAlias()
     {
-        $this->assertValidDql('FROM User u');
+        $this->assertValidDql('SELECT u.* FROM User u');
     }
 
     public function testSelectSingleComponentWithAsterisk()
@@ -79,27 +79,27 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testArithmeticExpressionsSupportedInWherePart()
     {
-        $this->assertValidDql('FROM Account a WHERE ((a.amount + 5000) * a.amount + 3) < 10000000');
+        $this->assertValidDql('SELECT a.* FROM Account a WHERE ((a.amount + 5000) * a.amount + 3) < 10000000');
     }
 
     public function testInExpressionSupportedInWherePart()
     {
-        $this->assertValidDql('FROM User WHERE User.id IN (1, 2)');
+        $this->assertValidDql('SELECT * FROM User WHERE User.id IN (1, 2)');
     }
 
     public function testNotInExpressionSupportedInWherePart()
     {
-        $this->assertValidDql('FROM User WHERE User.id NOT IN (1)');
+        $this->assertValidDql('SELECT * FROM User WHERE User.id NOT IN (1)');
     }
 
     public function testExistsExpressionSupportedInWherePart()
     {
-        $this->assertValidDql('FROM User WHERE EXISTS (SELECT g.id FROM UserGroupuser g WHERE g.user_id = u.id)');
+        $this->assertValidDql('SELECT * FROM User WHERE EXISTS (SELECT g.id FROM UserGroupuser g WHERE g.user_id = u.id)');
     }
 
     public function testNotExistsExpressionSupportedInWherePart()
     {
-        $this->assertValidDql('FROM User WHERE NOT EXISTS (SELECT g.id FROM UserGroupuser g WHERE g.user_id = u.id)');
+        $this->assertValidDql('SELECT * FROM User WHERE NOT EXISTS (SELECT g.id FROM UserGroupuser g WHERE g.user_id = u.id)');
     }
 
     public function testLiteralValueAsInOperatorOperandIsSupported()
@@ -185,22 +185,22 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testLeftJoin()
     {
-        $this->assertValidDql('FROM User u LEFT JOIN u.UserGroup');
+        $this->assertValidDql('SELECT * FROM User u LEFT JOIN u.UserGroup');
     }
 
     public function testJoin()
     {
-        $this->assertValidDql('FROM User u JOIN u.UserGroup');
+        $this->assertValidDql('SELECT u.* FROM User u JOIN u.UserGroup');
     }
 
     public function testInnerJoin()
     {
-        $this->assertValidDql('FROM User u INNER JOIN u.UserGroup');
+        $this->assertValidDql('SELECT * FROM User u INNER JOIN u.UserGroup');
     }
 
     public function testMultipleLeftJoin()
     {
-        $this->assertValidDql('FROM User u LEFT JOIN u.UserGroup LEFT JOIN u.Phonenumber');
+        $this->assertValidDql('SELECT * FROM User u LEFT JOIN u.UserGroup LEFT JOIN u.Phonenumber');
     }
 
     public function testMultipleInnerJoin()
@@ -250,7 +250,7 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testSubselectInInExpression()
     {
-        $this->assertValidDql("FROM User u WHERE u.id NOT IN (SELECT u2.id FROM User u2 WHERE u2.name = 'zYne')");
+        $this->assertValidDql("SELECT * FROM User u WHERE u.id NOT IN (SELECT u2.id FROM User u2 WHERE u2.name = 'zYne')");
     }
 
     public function testSubselectInSelectPart()
@@ -260,12 +260,12 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testPositionalInputParameter()
     {
-        $this->assertValidDql('FROM User u WHERE u.id = ?');
+        $this->assertValidDql('SELECT * FROM User u WHERE u.id = ?');
     }
 
     public function testNamedInputParameter()
     {
-        $this->assertValidDql('FROM User u WHERE u.id = :id');
+        $this->assertValidDql('SELECT * FROM User u WHERE u.id = :id');
     }
 
     public function testCustomJoinsAndWithKeywordSupported()
@@ -280,42 +280,42 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 
     public function testIndexByClauseWithOneComponent()
     {
-        $this->assertValidDql('FROM Record_City c INDEX BY name');
+        $this->assertValidDql('SELECT * FROM Record_City c INDEX BY name');
     }
 
     public function testIndexBySupportsJoins()
     {
-        $this->assertValidDql('FROM Record_Country c LEFT JOIN c.City c2 INDEX BY name');
+        $this->assertValidDql('SELECT * FROM Record_Country c LEFT JOIN c.City c2 INDEX BY name');
     }
 
     public function testIndexBySupportsJoins2()
     {
-        $this->assertValidDql('FROM User u INDEX BY name LEFT JOIN u.Phonenumber p INDEX BY phonenumber');
+        $this->assertValidDql('SELECT * FROM User u INDEX BY name LEFT JOIN u.Phonenumber p INDEX BY phonenumber');
     }
 
     public function testBetweenExpressionSupported()
     {
-        $this->assertValidDql("FROM User u WHERE u.name BETWEEN 'jepso' AND 'zYne'");
+        $this->assertValidDql("SELECT * FROM User u WHERE u.name BETWEEN 'jepso' AND 'zYne'");
     }
 
     public function testNotBetweenExpressionSupported()
     {
-        $this->assertValidDql("FROM User u WHERE u.name NOT BETWEEN 'jepso' AND 'zYne'");
+        $this->assertValidDql("SELECT * FROM User u WHERE u.name NOT BETWEEN 'jepso' AND 'zYne'");
     }
 
     public function testAllExpression()
     {
-        $this->assertValidDql('FROM Employee e WHERE e.salary > ALL (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
+        $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > ALL (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 
     public function testAnyExpression()
     {
-        $this->assertValidDql('FROM Employee e WHERE e.salary > ANY (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
+        $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > ANY (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 
     public function testSomeExpression()
     {
-        $this->assertValidDql('FROM Employee e WHERE e.salary > SOME (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
+        $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > SOME (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 
     public function testLikeExpression()
