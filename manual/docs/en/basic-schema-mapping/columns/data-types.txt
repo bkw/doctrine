@@ -165,7 +165,7 @@ class Test extends Doctrine_Record
 ---
 Test:
   columns:
-    decimaltest: float
+    decimaltest: decimal
 </code>
 
 ++++ String
