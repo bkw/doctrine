@@ -39,6 +39,7 @@ class Doctrine_Data_Import_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'Album';
         $this->tables[] = 'I18nTest';
         $this->tables[] = 'ImportNestedSet';
+        $this->tables[] = 'I18nNumberLang';
         parent::prepareTables();
     }
     
@@ -433,6 +434,47 @@ END;
 
         unlink('test.yml');
     }
+
+    public function testI18nImportWithInteger()
+    {
+        $yml = <<<END
+---
+I18nNumberLang:
+  I18nNumberLang_1:
+    name: test
+    Translation:
+      0:
+        title: english title
+        body: english body
+      1:
+        title: french title
+        body: french body
+END;
+        try {
+            file_put_contents('test.yml', $yml);
+            Doctrine::loadData('test.yml');
+
+            $this->conn->clear();
+
+            $query = new Doctrine_Query();
+            $query->from('I18nNumberLang i, i.Translation t');
+
+            $i = $query->execute()->getFirst();
+
+            $this->assertEqual($i->name, 'test');
+            $this->assertEqual($i->Translation['0']->title, 'english title');
+            $this->assertEqual($i->Translation['1']->title, 'french title');
+            $this->assertEqual($i->Translation['0']->body, 'english body');
+            $this->assertEqual($i->Translation['1']->body, 'french body');
+
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        unlink('test.yml'); 
+    }
+
 }
 
 class ImportNestedSet extends Doctrine_Record
@@ -445,5 +487,20 @@ class ImportNestedSet extends Doctrine_Record
     public function setUp()
     {
         $this->actAs('NestedSet');
+    }
+}
+
+class I18nNumberLang extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+        $this->hasColumn('title', 'string', 255);
+        $this->hasColumn('body', 'clob');
+    }
+
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('title', 'body'), 'type' => 'integer', 'length' => 4));
     }
 }
