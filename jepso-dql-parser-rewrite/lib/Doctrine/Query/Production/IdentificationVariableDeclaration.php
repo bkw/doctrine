@@ -33,26 +33,36 @@
  */
 class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctrine_Query_Production
 {
+    protected $_rangeVariableDeclaration;
+
+    protected $_indexBy;
+
+    protected $_relations = array();
+
+
     public function syntax($paramHolder)
     {
-        $alias = $this->RangeVariableDeclaration($paramHolder);
+        $this->_rangeVariableDeclaration = $this->RangeVariableDeclaration($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-            $paramHolder->set('alias', $alias);
-            $this->IndexBy($paramHolder);
-            $paramHolder->remove('alias');
+            $paramHolder->set('componentAlias', $this->_rangeVariableDeclaration);
+            $this->_indexBy = $this->IndexBy($paramHolder);
+            $paramHolder->remove('componentAlias');
         }
 
-        while ($this->_isNextToken(Doctrine_Query_Token::T_LEFT) ||
-               $this->_isNextToken(Doctrine_Query_Token::T_INNER) ||
-               $this->_isNextToken(Doctrine_Query_Token::T_JOIN)) {
+        while (
+            $this->_isNextToken(Doctrine_Query_Token::T_LEFT) ||
+            $this->_isNextToken(Doctrine_Query_Token::T_INNER) ||
+            $this->_isNextToken(Doctrine_Query_Token::T_JOIN)
+        ) {
+            $i = count($this->_relations);
 
-            $this->Join($paramHolder);
+            $this->_relations[$i]['join'] = $this->Join($paramHolder);
 
             if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
-                $paramHolder->set('alias', $alias);
-                $this->IndexBy($paramHolder);
-                $paramHolder->remove('alias');
+                $paramHolder->set('componentAlias', $this->_relations[$i]['join']->getRangeVariableDeclaration());
+                $this->_relations[$i]['indexBy'] = $this->IndexBy($paramHolder);
+                $paramHolder->remove('componentAlias');
             }
         }
     }

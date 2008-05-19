@@ -106,8 +106,12 @@ abstract class Doctrine_Query_Production
      */
     public function execute($paramHolder)
     {
+        //echo "Processing class: " . get_class($this) . " params: \n" . var_export($paramHolder, true) . "\n";
+
         // Syntax check
         if ( ! $paramHolder->has('syntaxCheck') || $paramHolder->get('syntaxCheck') === true) {
+            //echo "Processing syntax checks of " . get_class($this) . "...\n";
+
             $return = $this->syntax($paramHolder);
 
             if ($return !== null) {
@@ -117,6 +121,8 @@ abstract class Doctrine_Query_Production
 
         // Semantical check
         if ( ! $paramHolder->has('semanticalCheck') || $paramHolder->get('semanticalCheck') === true) {
+            //echo "Processing semantical checks of " . get_class($this) . "...\n";
+
             $return = $this->semantical($paramHolder);
 
             if ($return !== null) {

@@ -32,14 +32,37 @@
  */
 class Doctrine_Query_Production_SimpleSelectClause extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_isDistinct;
+
+    protected $_selectExpression;
+
+
+    public function syntax($paramHolder)
     {
+        // SimpleSelectClause = "SELECT" ["DISTINCT"] SelectExpression
+        $this->_isDistinct = false;
+
         $this->_parser->match(Doctrine_Query_Token::T_SELECT);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_DISTINCT)) {
             $this->_parser->match(Doctrine_Query_Token::T_DISTINCT);
+            $this->_isDistinct = true;
         }
 
-        $this->SelectExpression();
+        $this->_selectExpression = $this->SelectExpression($paramHolder);
+    }
+
+
+    public function semantical($paramHolder)
+    {
+        // We need to validate the SelectExpression
+        $this->_selectExpression->semantical($paramHolder);
+    }
+
+
+    public function buildSql()
+    {
+        return 'SELECT ' . (($this->_isDistinct) ? 'DISTINCT ' : '')
+             . $this->_selectExpression->buildSql();
     }
 }

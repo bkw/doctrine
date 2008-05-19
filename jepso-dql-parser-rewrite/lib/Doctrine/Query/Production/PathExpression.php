@@ -88,19 +88,15 @@ class Doctrine_Query_Production_PathExpression extends Doctrine_Query_Production
                     $queryComponents = $parserResult->getQueryComponents();
 
                     // Check if we have more than one queryComponent defined
-                    if (count($queryComponents) > 1) {
+                    if (count($queryComponents) != 1) {
                         $this->_parser->semanticalError("Undefined component alias for field '{$fieldName}'");
                     }
 
                     // Retrieve ClassMetadata
-                    $componentAlias = '';
-                    $queryComponent = array();
+                    $k = array_keys($queryComponents);
+                    $componentAlias = $k[0];
 
-                    foreach ($queryComponents as $componentAlias => $queryComponent) {
-                        break;
-                    }
-
-                    $classMetadata = $queryComponent['metadata'];
+                    $classMetadata = $queryComponents[$componentAlias]['metadata'];
                     array_unshift($this->_identifiers, $componentAlias);
                 }
 

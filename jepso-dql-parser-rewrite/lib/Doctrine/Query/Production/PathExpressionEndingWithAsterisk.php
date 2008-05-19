@@ -39,9 +39,9 @@ class Doctrine_Query_Production_PathExpressionEndingWithAsterisk extends Doctrin
     {
         // PathExpressionEndingWithAsterisk = {identifier "."} "*"
         while ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
+            $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
             $this->_identifiers[] = $this->_parser->token['value'];
 
-            $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
             $this->_parser->match('.');
         }
 
@@ -54,11 +54,10 @@ class Doctrine_Query_Production_PathExpressionEndingWithAsterisk extends Doctrin
         $parserResult = $this->_parser->getParserResult();
 
         if (($l = count($this->_identifiers)) > 0) {
-            // We are working with relations here.
-            $queryComponent = $parserResult->getQueryComponent($this->_identifiers[0]);
-            $classMetadata = $queryComponent['metadata'];
+            // We are dealing with component{.component}.*
+            $classMetadata = null;
 
-            for ($i = 1; $i < $l; $i++) {
+            for ($i = 0; $i < $l; $i++) {
                 $relationName = $this->_identifiers[$i];
 
                 // We are still checking for relations

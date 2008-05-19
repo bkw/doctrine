@@ -32,24 +32,53 @@
  */
 class Doctrine_Query_Production_Join extends Doctrine_Query_Production
 {
-    public function execute(array $params = array())
+    protected $_joinType;
+
+    protected $_rangeVariableDeclaration;
+
+    protected $_whereType;
+
+    protected $_conditionalExpression;
+
+
+    public function syntax($paramHolder)
     {
+        $this->_joinType = 'INNER';
+        $this->_whereType = 'WITH';
+
         if ($this->_isNextToken(Doctrine_Query_Token::T_LEFT)) {
             $this->_parser->match(Doctrine_Query_Token::T_LEFT);
+
+            $this->_joinType = 'LEFT';
         } elseif ($this->_isNextToken(Doctrine_Query_Token::T_INNER)) {
             $this->_parser->match(Doctrine_Query_Token::T_INNER);
         }
 
         $this->_parser->match(Doctrine_Query_Token::T_JOIN);
 
-        $this->RangeVariableDeclaration();
+        $this->_rangeVariableDeclaration = $this->RangeVariableDeclaration($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ON)) {
             $this->_parser->match(Doctrine_Query_Token::T_ON);
-            $this->ConditionalExpression();
+
+            $this->_whereType = 'ON';
+
+            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
         } elseif ($this->_isNextToken(Doctrine_Query_Token::T_WITH)) {
             $this->_parser->match(Doctrine_Query_Token::T_WITH);
-            $this->ConditionalExpression();
+
+            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
         }
+    }
+
+
+    public function semantical($paramHolder)
+    {
+    }
+
+
+    public function buildSql()
+    {
+        return '';
     }
 }

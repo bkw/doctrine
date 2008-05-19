@@ -32,34 +32,55 @@
  */
 class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
 {
+    protected $_componentAlias;
+
+    protected $_fieldName;
+
+
     public function syntax($paramHolder)
     {
+        $this->_componentAlias = $paramHolder->get('componentAlias');
+
         $this->_parser->match(Doctrine_Query_Token::T_INDEX);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
         $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
 
-        $this->_processIndexBy($paramHolder['alias'], $this->_parser->token['value']);
+        $this->_fieldName = $this->_parser->token['value'];
+    }
+
+
+    public function semantical($paramHolder)
+    {
+        $parserResult = $this->_parser->getParserResult();
+
+        //echo "Component alias: " . $this->_componentAlias . "\n";
+        //echo "Has query component: " . ($parserResult->hasQueryComponent($this->_componentAlias) ? "TRUE" : "FALSE") . "\n";
+        //$qc = $parserResult->getQueryComponents();
+        //$qc = array_keys($qc);
+        //echo "Query Components: " . var_export($qc, true) . "\n";
+
+        try {
+            $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
+            $metadata = $queryComponent['metadata'];
+        } catch (Doctrine_Exception $e) {
+            $this->_parser->semanticalError($e->getMessage());
+
+            return;
+        }
+
+        if ($metadata instanceof Doctrine_ClassMetadata && ! $metadata->hasField($this->_fieldName)) {
+            $this->_parser->semanticalError(
+                "Cannot use key mapping. Field '" . $this->_fieldName . "' " . 
+                "does not exist in component '" . $metadata->getClassName() . "'.",
+                $this->_parser->token
+            );
+        }
+
+        $queryComponent['map'] = $this->_fieldName;
+        $parserResult->setQueryComponent($this->_componentAlias, $queryComponent);
     }
 
 
     public function buildSql()
     {}
-
-
-    private function _processIndexBy($alias, $column)
-    {
-        $parserResult = $this->_parser->getParserResult();
-        $queryComponent = $parserResult->getQueryComponent($alias);
-        $metadata = $queryComponent['metadata'];
-
-        if ($metadata instanceof Doctrine_ClassMetadata && ! $metadata->hasField($column)) {
-            $this->_parser->semanticalError(
-                "Cannot use key mapping. Column " . $column . " does not exist.",
-                $this->_parser->token
-            );
-        }
-
-        $queryComponent['map'] = $column;
-        $parserResult->setQueryComponent($alias, $queryComponent);
-    }
 }

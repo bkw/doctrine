@@ -32,7 +32,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Query_ProductionParamHolder implements ArrayAccess
+class Doctrine_Query_ProductionParamHolder
 {
     protected static $_instance;
 
@@ -53,25 +53,6 @@ class Doctrine_Query_ProductionParamHolder implements ArrayAccess
 
         return self::$_instance;
     }
-
-
-    // Interface methods
-    public function offsetSet($offset, $value) {
-        $this->set($offset, $value);
-    }
-
-    public function offsetGet($offset) {
-        return $this->get($offset);
-    }
-
-    public function offsetUnset($offset) {
-        $this->remove($offset);
-    }
-
-    public function offsetExists($offset) {
-        return $this->has($offset);
-    }
-    // End of Interface methods
 
 
     public function free()

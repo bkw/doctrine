@@ -34,69 +34,72 @@
  */
 class Doctrine_Query_Production_Subselect extends Doctrine_Query_Production
 {
-    protected function _syntax(array $params = array())
+    protected $_simpleSelectClause;
+
+    protected $_fromClause;
+
+    protected $_whereClause;
+
+    protected $_groupByClause;
+
+    protected $_havingClause;
+
+    protected $_orderByClause;
+
+    protected $_limitClause;
+
+
+    public function syntax($paramHolder)
     {
-        // We need to populate the symbol table first (Objects aliases)
-        // Otherwise the SELECT fields will fail gracefully.
-        // We'll move to FROM statement, process it and then go back.
-        // After that, process the DQL again, now do not considering semantical
-        // check in FROM statement (it was already done in the first pass).
+        // Subselect = SimpleSelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause] [LimitClause]
 
-        $position = $this->_moveCursorToFromStatement();
-        $this->FromClause();
-        $this->_parser->free(false, $position); // Cannot be deep, it would clean already processed errors
+        // Disable the semantical check for SelectClause now. This is needed
+        // since we dont know the query components yet (will be known only
+        // when the FROM clause be processed).
+	$paramHolder->set('semanticalCheck', false);
+        $this->_selectClause = $this->SimpleSelectClause($paramHolder);
+        $paramHolder->remove('semanticalCheck');
 
-        // End of symbol table population
-
-        $this->SimpleSelectClause();
-
-        $this->FromClause(array('semanticalCheck' => false));
+        $this->_fromClause = $this->FromClause($paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->WhereClause();
+            $this->_whereClause = $this->WhereClause($paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_GROUP)) {
-            $this->GroupByClause();
+            $this->_groupByClause = $this->GroupByClause($paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_HAVING)) {
-            $this->HavingClause();
+            $this->_havingClause = $this->HavingClause($paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ORDER)) {
-            $this->OrderByClause();
+            $this->_orderByClause = $this->OrderByClause($paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_LIMIT)) {
-            $this->LimitClause();
+            $this->_limitClause = $this->LimitClause($paramHolder);
         }
+
     }
 
 
-    protected function _semantical(array $params = array())
+    public function semantical($paramHolder)
     {
+        // We need to invoke the semantical check of SelectClause here, since
+        // it was not yet checked.
+        $this->_simpleSelectClause->semantical($paramHolder);
     }
 
 
     public function buildSql()
     {
+        return $this->_simpleSelectClause->buildSql() . ' ' . $this->_fromClause->buildSql()
+             . (($this->_whereClause !== null) ? ' ' . $this->_whereClause->buildSql() : '')
+             . (($this->_groupByClause !== null) ? ' ' . $this->_groupByClause->buildSql() : '')
+             . (($this->_havingClause !== null) ? ' ' . $this->_havingClause->buildSql() : '')
+             . (($this->_orderByClause !== null) ? ' ' . $this->_orderByClause->buildSql() : '');
     }
 
-
-    protected function _moveCursorToFromStatement()
-    {
-        $position = $this->_parser->token['position'];
-
-        while ( ! $this->_isNextToken(Doctrine_Query_Token::T_FROM) || $this->_parser->lookahead !== null) {
-            // Move to the next token
-            $this->_parser->next();
-        }
-
-        if ($this->_parser->lookahead === null) {
-            $this->syntaxError('FROM');
-        }
-
-        return $position;
-    }
 }

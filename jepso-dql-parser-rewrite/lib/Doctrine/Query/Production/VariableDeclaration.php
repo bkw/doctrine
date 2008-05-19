@@ -66,7 +66,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
         $parserResult = $this->_parser->getParserResult();
 
         if ($parserResult->hasQueryComponent($this->_componentName)) {
-            // Since name != alias, we can try to bring the queryComponent from name (already processed)
+            // As long as name != alias, try to bring the queryComponent from name (already processed)
             $queryComponent = $parserResult->getQueryComponent($this->_componentName);
 
             // Check if we defined _componentAlias. We throw semantical error if not
@@ -110,6 +110,10 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
 
         // Define ParserResult assertions for later usage
         $tableAlias = $this->_parser->getParserResult()->generateTableAlias($this->_componentName);
+
+        if ($this->_componentAlias === null) {
+            $this->_componentAlias = $this->_componentName;
+        }
 
         $parserResult->setQueryComponent($this->_componentAlias, $queryComponent);
         $parserResult->setTableAlias($tableAlias, $this->_componentAlias);

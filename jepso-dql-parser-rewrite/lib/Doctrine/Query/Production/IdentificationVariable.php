@@ -37,9 +37,9 @@ class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Pr
 
     public function syntax($paramHolder)
     {
-        if ($this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->_componentAlias = $this->_parser->token['value'];
-        }
+        // IdentificationVariable = identifier
+        $this->_parser->match(Doctrine_Query_Token::T_IDENTIFIER);
+        $this->_componentAlias = $this->_parser->token['value'];
     }
 
 
@@ -53,7 +53,7 @@ class Doctrine_Query_Production_IdentificationVariable extends Doctrine_Query_Pr
             $componentName = $queryComponent['metadata']->getClassName();
 
             $message  = "Cannot re-declare component alias '{$this->_componentAlias}'"
-                      . "for '{$paramHolder['componentName']}'. It was already declared for "
+                      . "for '".$paramHolder->get('componentName')."'. It was already declared for "
                       . "component '{$componentName}'.";
 
             $this->_parser->semanticalError($message);

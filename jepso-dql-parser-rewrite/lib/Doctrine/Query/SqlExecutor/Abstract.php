@@ -32,10 +32,11 @@
  */
 abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
 {
+    public $AST;
     protected $_sqlStatements;
     
     public function __construct(Doctrine_Query_Production $AST)
-    {}
+    {$this->AST = $AST;}
     
     /**
      * Gets the SQL statements that are executed by the executor.

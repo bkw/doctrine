@@ -19,11 +19,14 @@
  * <http://www.phpdoctrine.org>.
  */
 
+require_once 'lib/DoctrineTestInit.php';
+
 /**
  * Test case for testing the saving and referencing of query identifiers.
  *
  * @package     Doctrine
  * @subpackage  Query
+ * @author      Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author      Janne Vanhala <jpvanhal@cc.hut.fi>
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
@@ -33,6 +36,7 @@
  */
 class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
 {
+
     public function testSingleAliasDeclarationIsSupported()
     {
         $query = new Doctrine_Query;
@@ -66,7 +70,7 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
     public function testQueryParserSupportsMultipleAliasDeclarations()
     {
         $query = new Doctrine_Query;
-        $query->setDql('SELECT u.* FROM User u INDEX BY name LEFT JOIN u.Phonenumber p');
+        $query->setDql('SELECT u.* FROM CmsUser u INDEX BY name LEFT JOIN u.phonenumbers p');
         $parserResult = $query->parse();
 
         $decl = $parserResult->getQueryComponent('u');
@@ -83,13 +87,14 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
         $this->assertEquals('u', $decl['parent']);
         $this->assertEquals(null, $decl['agg']);
-        $this->assertEquals('name', $decl['map']);
+        $this->assertEquals(null, $decl['map']);
     }
+
 
     public function testQueryParserSupportsMultipleAliasDeclarationsWithIndexBy()
     {
         $query = new Doctrine_Query;
-        $query->setDql('SELECT u.* FROM User u INDEX BY name LEFT JOIN u.UserGroup g INNER JOIN g.Phonenumber p INDEX BY phonenumber');
+        $query->setDql('SELECT u.* FROM CmsUser u INDEX BY name LEFT JOIN u.articles a INNER JOIN u.phonenumbers pn INDEX BY phonenumber');
         $parserResult = $query->parse();
 
         $decl = $parserResult->getQueryComponent('u');
@@ -100,19 +105,19 @@ class Orm_Query_IdentifierRecognitionTest extends Doctrine_OrmTestCase
         $this->assertEquals(null, $decl['agg']);
         $this->assertEquals('name', $decl['map']);
 
-        $decl = $parserResult->getQueryComponent('g');
+        $decl = $parserResult->getQueryComponent('a');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
         $this->assertEquals('u', $decl['parent']);
         $this->assertEquals(null, $decl['agg']);
-        $this->assertEquals('name', $decl['map']);
+        $this->assertEquals(null, $decl['map']);
 
-        $decl = $parserResult->getQueryComponent('p');
+        $decl = $parserResult->getQueryComponent('pn');
 
         $this->assertTrue($decl['metadata'] instanceof Doctrine_ClassMetadata);
         $this->assertTrue($decl['relation'] instanceof Doctrine_Relation);
-        $this->assertEquals('g', $decl['parent']);
+        $this->assertEquals('u', $decl['parent']);
         $this->assertEquals(null, $decl['agg']);
         $this->assertEquals('phonenumber', $decl['map']);
     }
