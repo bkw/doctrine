@@ -11,7 +11,7 @@ require_once 'DqlGenerationTest.php';
 require_once 'DeleteSqlGenerationTest.php';
 require_once 'UpdateSqlGenerationTest.php';
 //require_once 'SelectSqlGenerationTest.php';
-//require_once 'LanguageRecognitionTest.php';
+require_once 'LanguageRecognitionTest.php';
 
 class Orm_Query_AllTests
 {
@@ -29,7 +29,7 @@ class Orm_Query_AllTests
         $suite->addTestSuite('Orm_Query_DqlGenerationTest');
         $suite->addTestSuite('Orm_Query_DeleteSqlGenerationTest');
         $suite->addTestSuite('Orm_Query_UpdateSqlGenerationTest');
-        //$suite->addTestSuite('Orm_Query_LanguageRecognitionTest');
+        $suite->addTestSuite('Orm_Query_LanguageRecognitionTest');
 
         return $suite;
     }

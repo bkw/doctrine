@@ -73,6 +73,8 @@ class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
 
     public function buildSql()
     {
+        $conn = $this->_parser->getSqlBuilder()->getConnection();
+
         switch ($this->_type) {
             case 'param':
                 return $this->_value;
@@ -80,14 +82,12 @@ class Doctrine_Query_Production_Atom extends Doctrine_Query_Production
 
             case 'integer':
             case 'float':
-                return $this->_parser->getSqlBuilder()->getConnection()->quote($this->_value, $this->_type);
+                return $conn->quote($this->_value, $this->_type);
             break;
 
             default:
-                $conn = $this->_parser->getSqlBuilder()->getConnection();
-
-                return $conn->string_quoting['start'] 
-                     . $this->_parser->getConnection()->quote($this->_value, $this->_type)
+                return $conn->string_quoting['start']
+                     . $conn->quote($this->_value, $this->_type)
                      . $conn->string_quoting['end'];
             break;
         }
