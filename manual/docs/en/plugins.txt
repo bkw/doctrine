@@ -281,7 +281,6 @@ Below is an example of several behaviors to give a complete wiki database that i
 and full I18n.
 
 <code type="php">
-<?php
 class Wiki extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -295,7 +294,7 @@ class Wiki extends Doctrine_Record
         $options = array('fields' => array('title', 'content'));
         $auditLog = new Doctrine_Template_Versionable($options);
         $search = new Doctrine_Template_Searchable($options);
-        $slug = new Doctrine_Template_Sluggable($options);
+        $slug = new Doctrine_Template_Sluggable(array('fields' => array('title')));
         $i18n = new Doctrine_Template_I18n($options);
 
         $i18n->addChild($auditLog)
@@ -307,4 +306,22 @@ class Wiki extends Doctrine_Record
         $this->actAs('Timestampable');
     }
 }
+</code>
+
+<code type="yaml">
+---
+WikiTest:
+  actAs:
+    I18n:
+      fields: [title, content]
+      actAs:
+        Versionable:
+          fields: [title, content]
+        Searchable:
+          fields: [title, content]
+        Sluggable:
+          fields: [title]
+  columns:
+    title: string(255)
+    content: string
 </code>
