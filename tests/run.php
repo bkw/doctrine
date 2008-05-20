@@ -141,6 +141,7 @@ $import->addTestCase(new Doctrine_Import_Oracle_TestCase());
 $import->addTestCase(new Doctrine_Import_Sqlite_TestCase());
 $import->addTestCase(new Doctrine_Import_Builder_TestCase());
 $import->addTestCase(new Doctrine_Import_Schema_TestCase());
+$import->addTestCase(new Doctrine_Import_PluginHierarchy_TestCase());
 $test->addTestCase($import);
 
 // Expression Tests (not yet fully tested)
