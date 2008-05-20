@@ -59,5 +59,11 @@ class Doctrine_Expression_TestCase extends Doctrine_UnitTestCase
         $e = new Doctrine_Expression("SUBSTRING(CONCAT('some', 'one'), 0, 3)");
         $this->assertEqual($e->getSql(), "SUBSTR(CONCAT('some', 'one'), 0, 3)");
     }
+
+    public function testExpressionParserSupportsParensInClauses()
+    {
+        $e = new Doctrine_Expression("CONCAT('(some)', '(one)')");
+        $this->assertEqual($e->getSql(), "CONCAT('(some)', '(one)')");
+    }
 }
 
