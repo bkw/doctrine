@@ -60,6 +60,7 @@ $tickets->addTestCase(new Doctrine_Ticket_912_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_915_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_932_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_929_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_930_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_963_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_950_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_894_TestCase());
