@@ -42,11 +42,11 @@ class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctri
 
     public function syntax($paramHolder)
     {
-        $this->_rangeVariableDeclaration = $this->RangeVariableDeclaration($paramHolder);
+        $this->_rangeVariableDeclaration = $this->AST('RangeVariableDeclaration', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
             $paramHolder->set('componentAlias', $this->_rangeVariableDeclaration);
-            $this->_indexBy = $this->IndexBy($paramHolder);
+            $this->_indexBy = $this->AST('IndexBy', $paramHolder);
             $paramHolder->remove('componentAlias');
         }
 
@@ -57,11 +57,11 @@ class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctri
         ) {
             $i = count($this->_relations);
 
-            $this->_relations[$i]['join'] = $this->Join($paramHolder);
+            $this->_relations[$i]['join'] = $this->AST('Join', $paramHolder);
 
             if ($this->_isNextToken(Doctrine_Query_Token::T_INDEX)) {
                 $paramHolder->set('componentAlias', $this->_relations[$i]['join']->getRangeVariableDeclaration());
-                $this->_relations[$i]['indexBy'] = $this->IndexBy($paramHolder);
+                $this->_relations[$i]['indexBy'] = $this->AST('IndexBy', $paramHolder);
                 $paramHolder->remove('componentAlias');
             }
         }

@@ -46,7 +46,7 @@ class Doctrine_Query_Production_ConditionalFactor extends Doctrine_Query_Product
             $notFactor = true;
         }
 
-        $this->_conditionalPrimary = $this->ConditionalPrimary($paramHolder);
+        $this->_conditionalPrimary = $this->AST('ConditionalPrimary', $paramHolder);
 
         // Optimize depth instances in AST
         if ( ! $notFactor) {

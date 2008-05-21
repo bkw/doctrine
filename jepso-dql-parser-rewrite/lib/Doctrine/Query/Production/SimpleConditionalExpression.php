@@ -46,37 +46,37 @@ class Doctrine_Query_Production_SimpleConditionalExpression extends Doctrine_Que
         //     ExistsExpression | Expression (ComparisonExpression | BetweenExpression |
         //     LikeExpression | InExpression | NullComparisonExpression | QuantifiedExpression)
         if ($this->_getExpressionType() === Doctrine_Query_Token::T_EXISTS) {
-            return $this->ExistsExpression($paramHolder);
+            return $this->AST('ExistsExpression', $paramHolder);
         }
 
-        $this->_leftExpression = $this->Expression($paramHolder);
+        $this->_leftExpression = $this->AST('Expression', $paramHolder);
 
         switch ($this->_getExpressionType()) {
             case Doctrine_Query_Token::T_BETWEEN:
-                $this->_rightExpression = $this->BetweenExpression($paramHolder);
+                $this->_rightExpression = $this->AST('BetweenExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_LIKE:
-                $this->_rightExpression = $this->LikeExpression($paramHolder);
+                $this->_rightExpression = $this->AST('LikeExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_IN:
-                $this->_rightExpression = $this->InExpression($paramHolder);
+                $this->_rightExpression = $this->AST('InExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_IS:
-                $this->_rightExpression = $this->NullComparisonExpression($paramHolder);
+                $this->_rightExpression = $this->AST('NullComparisonExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_ALL:
             case Doctrine_Query_Token::T_ANY:
             case Doctrine_Query_Token::T_SOME:
-                $this->_rightExpression = $this->QuantifiedExpression($paramHolder);
+                $this->_rightExpression = $this->AST('QuantifiedExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_NONE:
                 // [TODO] Check out ticket #935 to understand what will be done with enumParams
-                $this->_rightExpression = $this->ComparisonExpression($paramHolder);
+                $this->_rightExpression = $this->AST('ComparisonExpression', $paramHolder);
             break;
 
             default:

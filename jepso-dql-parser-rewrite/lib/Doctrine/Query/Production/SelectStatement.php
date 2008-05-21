@@ -54,25 +54,25 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
         // since we dont know the query components yet (will be known only
         // when the FROM clause be processed).
         $paramHolder->set('semanticalCheck', false);
-        $this->_selectClause = $this->SelectClause($paramHolder);
+        $this->_selectClause = $this->AST('SelectClause', $paramHolder);
         $paramHolder->remove('semanticalCheck');
 
-        $this->_fromClause = $this->FromClause($paramHolder);
+        $this->_fromClause = $this->AST('FromClause', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->_whereClause = $this->WhereClause($paramHolder);
+            $this->_whereClause = $this->AST('WhereClause', $paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_GROUP)) {
-            $this->_groupByClause = $this->GroupByClause($paramHolder);
+            $this->_groupByClause = $this->AST('GroupByClause', $paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_HAVING)) {
-            $this->_havingClause = $this->HavingClause($paramHolder);
+            $this->_havingClause = $this->AST('HavingClause', $paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ORDER)) {
-            $this->_orderByClause = $this->OrderByClause($paramHolder);
+            $this->_orderByClause = $this->AST('OrderByClause', $paramHolder);
         }
     }
 

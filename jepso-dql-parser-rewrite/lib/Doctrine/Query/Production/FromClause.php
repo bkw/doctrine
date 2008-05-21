@@ -41,11 +41,11 @@ class Doctrine_Query_Production_FromClause extends Doctrine_Query_Production
         // FromClause = "FROM" IdentificationVariableDeclaration {"," IdentificationVariableDeclaration}
         $this->_parser->match(Doctrine_Query_Token::T_FROM);
 
-        $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration($paramHolder);
+        $this->_identificationVariableDeclaration[] = $this->AST('IdentificationVariableDeclaration', $paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_identificationVariableDeclaration[] = $this->IdentificationVariableDeclaration($paramHolder);
+            $this->_identificationVariableDeclaration[] = $this->AST('IdentificationVariableDeclaration', $paramHolder);
         }
     }
 

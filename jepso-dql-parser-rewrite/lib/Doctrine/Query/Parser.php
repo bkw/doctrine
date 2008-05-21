@@ -201,9 +201,9 @@ class Doctrine_Query_Parser
         $this->lookahead = $this->_scanner->next();
 
         // Building the Abstract Syntax Tree
-        $AST = $this->getProduction('QueryLanguage')->execute(
-            Doctrine_Query_ProductionParamHolder::create()
-        );
+        // We have to double the call of QueryLanguage to allow it to work correctly... =\
+        $AST = new Doctrine_Query_Production_QueryLanguage($this);
+        $AST = $AST->AST('QueryLanguage', Doctrine_Query_ProductionParamHolder::create());
 
         // Check for end of string
         if ($this->lookahead !== null) {
@@ -252,20 +252,6 @@ class Doctrine_Query_Parser
     public function getParserResult()
     {
         return $this->_parserResult;
-    }
-
-
-    /**
-     * Returns a production object with the given name.
-     *
-     * @param string $name production name
-     * @return Doctrine_Query_Production
-     */
-    public function getProduction($name)
-    {
-        $class = 'Doctrine_Query_Production_' . $name;
-
-        return new $class($this);
     }
 
 

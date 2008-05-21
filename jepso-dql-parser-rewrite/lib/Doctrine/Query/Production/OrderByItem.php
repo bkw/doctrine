@@ -40,7 +40,7 @@ class Doctrine_Query_Production_OrderByItem extends Doctrine_Query_Production
 
     public function syntax($paramHolder)
     {
-        $this->_expression = $this->Expression($paramHolder);
+        $this->_expression = $this->AST('Expression', $paramHolder);
         $this->_orderType = 'ASC';
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ASC)) {

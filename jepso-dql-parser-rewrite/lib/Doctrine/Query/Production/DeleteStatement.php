@@ -41,10 +41,10 @@ class Doctrine_Query_Production_DeleteStatement extends Doctrine_Query_Productio
     public function syntax($paramHolder)
     {
         // DeleteStatement = DeleteClause [WhereClause]
-        $this->_deleteClause = $this->DeleteClause($paramHolder);
+        $this->_deleteClause = $this->AST('DeleteClause', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->_whereClause = $this->WhereClause($paramHolder);
+            $this->_whereClause = $this->AST('WhereClause', $paramHolder);
         }
     }
 

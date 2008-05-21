@@ -41,7 +41,7 @@ class Doctrine_Query_Production_HavingClause extends Doctrine_Query_Production
         // HavingClause = "HAVING" ConditionalExpression
         $this->_parser->match(Doctrine_Query_Token::T_HAVING);
 
-        $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+        $this->_conditionalExpression = $this->AST('ConditionalExpression', $paramHolder);
     }
 
 

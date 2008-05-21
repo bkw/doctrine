@@ -1,7 +1,7 @@
 <?php
 class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 {
-    public function assertValidDql($dql)
+    public function assertValidDql($dql, $method = '')
     {
         try {
             $query = new Doctrine_Query;
@@ -74,13 +74,12 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
     {
         $this->assertValidDql("SELECT u.name FROM CmsUser u WHERE TRIM(u.name) = 'someone'");
     }
-/*
+
     public function testArithmeticExpressionsSupportedInWherePart()
     {
-        // Maximum input nesting level error
         $this->assertValidDql('SELECT u.* FROM CmsUser u WHERE ((u.id + 5000) * u.id + 3) < 10000000');
     }
-*/
+
     public function testInExpressionSupportedInWherePart()
     {
         $this->assertValidDql('SELECT * FROM CmsUser WHERE CmsUser.id IN (1, 2)');
@@ -90,7 +89,7 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
     {
         $this->assertValidDql('SELECT * FROM CmsUser WHERE CmsUser.id NOT IN (1)');
     }
-/*
+
     public function testExistsExpressionSupportedInWherePart()
     {
         $this->assertValidDql('SELECT * FROM CmsUser u WHERE EXISTS (SELECT p.user_id FROM CmsPhonenumber p WHERE p.user_id = u.id)');
@@ -100,7 +99,7 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
     {
         $this->assertValidDql('SELECT * FROM CmsUser u WHERE NOT EXISTS (SELECT p.user_id FROM CmsPhonenumber p WHERE p.user_id = u.id)');
     }
-*/
+
     public function testLiteralValueAsInOperatorOperandIsSupported()
     {
         $this->assertValidDql('SELECT u.id FROM CmsUser u WHERE 1 IN (1, 2)');
@@ -248,14 +247,15 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
     {
         $this->assertValidDql('SELECT u.name FROM CmsUser u ORDER BY COALESCE(u.id, u.name) DESC');
     }
-/*
+
     public function testSubselectInInExpression()
     {
         $this->assertValidDql("SELECT * FROM CmsUser u WHERE u.id NOT IN (SELECT u2.id FROM CmsUser u2 WHERE u2.name = 'zYne')");
     }
-
+/*
     public function testSubselectInSelectPart()
     {
+        // Semantical error: Unknown query component u (probably in subselect)
         $this->assertValidDql("SELECT u.name, (SELECT COUNT(p.phonenumber) FROM CmsPhonenumber p WHERE p.user_id = u.id) pcount FROM CmsUser u WHERE u.name = 'zYne' LIMIT 1");
     }
 */
@@ -271,6 +271,7 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 /*
     public function testCustomJoinsAndWithKeywordSupported()
     {
+        // We need existant classes here, otherwise semantical will always fail
         $this->assertValidDql('SELECT c.*, c2.*, d.* FROM Record_Country c INNER JOIN c.City c2 WITH c2.id = 2 WHERE c.id = 1');
     }
 */
@@ -306,16 +307,19 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
 /*
     public function testAllExpression()
     {
+        // We need existant classes here, otherwise semantical will always fail
         $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > ALL (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 
     public function testAnyExpression()
     {
+        // We need existant classes here, otherwise semantical will always fail
         $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > ANY (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 
     public function testSomeExpression()
     {
+        // We need existant classes here, otherwise semantical will always fail
         $this->assertValidDql('SELECT * FROM Employee e WHERE e.salary > SOME (SELECT m.salary FROM Manager m WHERE m.department = e.department)');
     }
 */

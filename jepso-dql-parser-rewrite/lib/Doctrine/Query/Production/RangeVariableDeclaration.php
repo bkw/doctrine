@@ -59,7 +59,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             $paramHolder->set('componentName', implode('.', $this->_identifiers));
 
             // Will return an identifier, with the semantical check already applied
-            $this->_identificationVariable = $this->IdentificationVariable($paramHolder);
+            $this->_identificationVariable = $this->AST('IdentificationVariable', $paramHolder);
 
             $paramHolder->remove('componentName');
         }
@@ -120,14 +120,16 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 
         // Retrieving ClassMetadata and Mapper
         try {
-            $metadata = $conn->getClassMetadata($componentName);
-            $mapper = $conn->getMapper($componentName);
+            $classMetadata = $conn->getClassMetadata($componentName);
 
             // Building queryComponent
             $queryComponent = array(
-                'metadata'  => $metadata,
-                'mapper'    => $mapper,
-                'map'       => null
+                'metadata' => $classMetadata,
+                'mapper'   => $conn->getMapper($componentName),
+                'parent'   => null,
+                'relation' => null,
+                'map'      => null,
+                'agg'      => null,
             );
         } catch (Doctrine_Exception $e) {
             //echo "Tried to load class metadata from '".$componentName."': " . $e->getMessage() . "\n";
@@ -213,7 +215,8 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
                         'mapper'   => $conn->getMapper($relation->getForeignComponentName()),
                         'parent'   => $parent,
                         'relation' => $relation,
-                        'map'      => null
+                        'map'      => null,
+                        'agg'      => null,
                     );
 
                     $parent = $path;

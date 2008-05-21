@@ -78,6 +78,59 @@ abstract class Doctrine_Query_Production
 
 
     /**
+     * Executes the production AST using the specified parameters.
+     *
+     * @param string $AstName Production AST name
+     * @param array $paramHolder Production parameter holder
+     * @return Doctrine_Query_Production
+     */
+    public function AST($AstName, $paramHolder)
+    {
+        $AST = $this->_getProduction($AstName);
+
+        //echo "Processing class: " . $AstName . " params: \n" . var_export($paramHolder, true) . "\n";
+
+        // Syntax check
+        if ( ! $paramHolder->has('syntaxCheck') || $paramHolder->get('syntaxCheck') === true) {
+            //echo "Processing syntax checks of " . $AstName . "...\n";
+
+            $return = $AST->syntax($paramHolder);
+
+            if ($return !== null) {
+                return $return;
+            }
+        }
+
+        // Semantical check
+        if ( ! $paramHolder->has('semanticalCheck') || $paramHolder->get('semanticalCheck') === true) {
+            //echo "Processing semantical checks of " . $AstName . "...\n";
+
+            $return = $AST->semantical($paramHolder);
+
+            if ($return !== null) {
+                return $return;
+            }
+        }
+
+        return $AST;
+    }
+
+
+    /**
+     * Returns a production object with the given name.
+     *
+     * @param string $name production name
+     * @return Doctrine_Query_Production
+     */
+    protected function _getProduction($name)
+    {
+        $class = 'Doctrine_Query_Production_' . $name;
+
+        return new $class($this->_parser);
+    }
+
+
+    /**
      * Executes a production with specified name and parameters.
      *
      * @param string $name production name
@@ -94,7 +147,7 @@ abstract class Doctrine_Query_Production
             return $this->$var;
         }
 
-        return $this->_parser->getProduction($method)->execute($args[0]);
+        return null;
     }
 
 

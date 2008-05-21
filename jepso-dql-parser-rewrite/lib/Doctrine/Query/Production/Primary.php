@@ -42,9 +42,9 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_IDENTIFIER:
                 if ($this->_isFunction()) {
-                    return $this->Function($paramHolder);
+                    return $this->AST('Function', $paramHolder);
                 } else {
-                    return $this->PathExpression($paramHolder);
+                    return $this->AST('PathExpression', $paramHolder);
                 }
             break;
 
@@ -52,7 +52,7 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
             case Doctrine_Query_Token::T_INTEGER:
             case Doctrine_Query_Token::T_FLOAT:
             case Doctrine_Query_Token::T_INPUT_PARAMETER:
-                return $this->Atom($paramHolder);
+                return $this->AST('Atom', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_AVG:
@@ -60,19 +60,19 @@ class Doctrine_Query_Production_Primary extends Doctrine_Query_Production
             case Doctrine_Query_Token::T_MAX:
             case Doctrine_Query_Token::T_MIN:
             case Doctrine_Query_Token::T_SUM:
-                return $this->AggregateExpression($paramHolder);
+                return $this->AST('AggregateExpression', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_NONE:
                 if ($this->_isNextToken('(')) {
                     $this->_parser->match('(');
-                    $this->_expression = $this->Expression($paramHolder);
+                    $this->_expression = $this->AST('Expression', $paramHolder);
                     $this->_parser->match(')');
                 }
             break;
 
             default:
-                $this->_parser->logError();
+                $this->_parser->syntaxError('Could not process primary type');
             break;
         }
     }

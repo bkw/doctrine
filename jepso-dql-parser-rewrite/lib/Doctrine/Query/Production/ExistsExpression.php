@@ -42,7 +42,7 @@ class Doctrine_Query_Production_ExistsExpression extends Doctrine_Query_Producti
         $this->_parser->match(Doctrine_Query_Token::T_EXISTS);
 
         $this->_parser->match('(');
-        $this->_subselect = $this->Subselect($paramHolder);
+        $this->_subselect = $this->AST('Subselect', $paramHolder);
         $this->_parser->match(')');
     }
 

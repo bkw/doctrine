@@ -60,13 +60,8 @@ class Doctrine_Query_Production_QuantifiedExpression extends Doctrine_Query_Prod
         $this->_type = strtoupper($this->_parser->lookahead['value']);
 
         $this->_parser->match('(');
-        $this->_subselect = $this->Subselect($paramHolder);
+        $this->_subselect = $this->AST('Subselect', $paramHolder);
         $this->_parser->match(')');
-    }
-
-
-    public function semantical($paramHolder)
-    {
     }
 
 

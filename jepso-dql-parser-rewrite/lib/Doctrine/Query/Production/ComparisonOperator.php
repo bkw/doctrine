@@ -74,7 +74,7 @@ class Doctrine_Query_Production_ComparisonOperator extends Doctrine_Query_Produc
             break;
 
             default:
-                $this->_parser->logError('=, <, <=, <>, >, >=, !=');
+                $this->_parser->syntaxError('=, <, <=, <>, >, >=, !=');
             break;
         }
     }

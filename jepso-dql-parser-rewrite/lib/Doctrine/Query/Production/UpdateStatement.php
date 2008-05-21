@@ -41,10 +41,10 @@ class Doctrine_Query_Production_UpdateStatement extends Doctrine_Query_Productio
     public function syntax($paramHolder)
     {
         // UpdateStatement = UpdateClause [WhereClause]
-        $this->_updateClause = $this->UpdateClause($paramHolder);
+        $this->_updateClause = $this->AST('UpdateClause', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_WHERE)) {
-            $this->_whereClause = $this->WhereClause($paramHolder);
+            $this->_whereClause = $this->AST('WhereClause', $paramHolder);
         }
     }
 

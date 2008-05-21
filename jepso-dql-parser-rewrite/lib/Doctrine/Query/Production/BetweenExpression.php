@@ -52,11 +52,11 @@ class Doctrine_Query_Production_BetweenExpression extends Doctrine_Query_Product
 
         $this->_parser->match(Doctrine_Query_Token::T_BETWEEN);
 
-        $this->_fromExpression = $this->Expression($paramHolder);
+        $this->_fromExpression = $this->AST('Expression', $paramHolder);
 
         $this->_parser->match(Doctrine_Query_Token::T_AND);
 
-        $this->_toExpression = $this->Expression($paramHolder);
+        $this->_toExpression = $this->AST('Expression', $paramHolder);
     }
 
 

@@ -50,11 +50,11 @@ class Doctrine_Query_Production_SelectClause extends Doctrine_Query_Production
             $this->_isDistinct = true;
         }
 
-        $this->_selectExpressions[] = $this->SelectExpression($paramHolder);
+        $this->_selectExpressions[] = $this->AST('SelectExpression', $paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_selectExpressions[] = $this->SelectExpression($paramHolder);
+            $this->_selectExpressions[] = $this->AST('SelectExpression', $paramHolder);
         }
     }
 

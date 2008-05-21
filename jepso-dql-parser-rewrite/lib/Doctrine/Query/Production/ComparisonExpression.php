@@ -42,11 +42,11 @@ class Doctrine_Query_Production_ComparisonExpression extends Doctrine_Query_Prod
     public function syntax($paramHolder)
     {
         // ComparisonExpression = ComparisonOperator ( QuantifiedExpression | Expression | "(" Subselect ")" )
-        $this->_operator = $this->ComparisonOperator($paramHolder);
+        $this->_operator = $this->AST('ComparisonOperator', $paramHolder);
 
         if (($this->_isSubselect = $this->_isSubselect()) === true) {
             $this->_parser->match('(');
-            $this->_expression = $this->Subselect($paramHolder);
+            $this->_expression = $this->AST('Subselect', $paramHolder);
             $this->_parser->match(')');
 
             $this->_isSubselect = true;
@@ -55,11 +55,11 @@ class Doctrine_Query_Production_ComparisonExpression extends Doctrine_Query_Prod
                 case Doctrine_Query_Token::T_ALL:
                 case Doctrine_Query_Token::T_ANY:
                 case Doctrine_Query_Token::T_SOME:
-                    $this->_expression = $this->QuantifiedExpression($paramHolder);
+                    $this->_expression = $this->AST('QuantifiedExpression', $paramHolder);
                 break;
 
                 default:
-                    $this->_expression = $this->Expression($paramHolder);
+                    $this->_expression = $this->AST('Expression', $paramHolder);
                 break;
             }
         }

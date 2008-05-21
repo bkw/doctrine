@@ -35,6 +35,6 @@ class Doctrine_Query_Production_GroupByItem extends Doctrine_Query_Production
 {
     public function syntax($paramHolder)
     {
-        return $this->PathExpression($paramHolder);
+        return $this->AST('PathExpression', $paramHolder);
     }
 }

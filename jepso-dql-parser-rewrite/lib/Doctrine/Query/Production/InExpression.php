@@ -55,22 +55,17 @@ class Doctrine_Query_Production_InExpression extends Doctrine_Query_Production
         $this->_parser->match('(');
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_SELECT)) {
-            $this->_subselect = $this->Subselect($paramHolder);
+            $this->_subselect = $this->AST('Subselect', $paramHolder);
         } else {
-            $this->_atoms[] = $this->Atom($paramHolder);
+            $this->_atoms[] = $this->AST('Atom', $paramHolder);
 
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
-                $this->_atoms[] = $this->Atom($paramHolder);
+                $this->_atoms[] = $this->AST('Atom', $paramHolder);
             }
         }
 
         $this->_parser->match(')');
-    }
-
-
-    public function semantical($paramHolder)
-    {
     }
 
 

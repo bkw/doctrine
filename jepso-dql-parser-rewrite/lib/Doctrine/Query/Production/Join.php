@@ -56,24 +56,19 @@ class Doctrine_Query_Production_Join extends Doctrine_Query_Production
 
         $this->_parser->match(Doctrine_Query_Token::T_JOIN);
 
-        $this->_rangeVariableDeclaration = $this->RangeVariableDeclaration($paramHolder);
+        $this->_rangeVariableDeclaration = $this->AST('RangeVariableDeclaration', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ON)) {
             $this->_parser->match(Doctrine_Query_Token::T_ON);
 
             $this->_whereType = 'ON';
 
-            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+            $this->_conditionalExpression = $this->AST('ConditionalExpression', $paramHolder);
         } elseif ($this->_isNextToken(Doctrine_Query_Token::T_WITH)) {
             $this->_parser->match(Doctrine_Query_Token::T_WITH);
 
-            $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+            $this->_conditionalExpression = $this->AST('ConditionalExpression', $paramHolder);
         }
-    }
-
-
-    public function semantical($paramHolder)
-    {
     }
 
 

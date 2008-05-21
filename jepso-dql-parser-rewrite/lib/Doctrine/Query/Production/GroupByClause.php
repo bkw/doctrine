@@ -41,11 +41,11 @@ class Doctrine_Query_Production_GroupByClause extends Doctrine_Query_Production
         $this->_parser->match(Doctrine_Query_Token::T_GROUP);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->_groupByItems[] = $this->GroupByItem($paramHolder);
+        $this->_groupByItems[] = $this->AST('GroupByItem', $paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_groupByItems[] = $this->GroupByItem($paramHolder);
+            $this->_groupByItems[] = $this->AST('GroupByItem', $paramHolder);
         }
     }
 

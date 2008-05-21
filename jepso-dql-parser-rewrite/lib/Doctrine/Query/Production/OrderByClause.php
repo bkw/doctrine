@@ -41,11 +41,11 @@ class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
         $this->_parser->match(Doctrine_Query_Token::T_ORDER);
         $this->_parser->match(Doctrine_Query_Token::T_BY);
 
-        $this->_orderByItems[] = $this->OrderByItem($paramHolder);
+        $this->_orderByItems[] = $this->AST('OrderByItem', $paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
-            $this->_orderByItems[] = $this->OrderByItem($paramHolder);
+            $this->_orderByItems[] = $this->AST('OrderByItem', $paramHolder);
         }
     }
 

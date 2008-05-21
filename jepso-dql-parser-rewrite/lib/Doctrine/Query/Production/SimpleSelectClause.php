@@ -49,7 +49,7 @@ class Doctrine_Query_Production_SimpleSelectClause extends Doctrine_Query_Produc
             $this->_isDistinct = true;
         }
 
-        $this->_selectExpression = $this->SelectExpression($paramHolder);
+        $this->_selectExpression = $this->AST('SelectExpression', $paramHolder);
     }
 
 

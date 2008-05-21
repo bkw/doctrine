@@ -48,13 +48,13 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         $this->_isSubselect = false;
 
         if ($this->_isPathExpressionEndingWithAsterisk()) {
-            $this->_leftExpression = $this->PathExpressionEndingWithAsterisk($paramHolder);
+            $this->_leftExpression = $this->AST('PathExpressionEndingWithAsterisk', $paramHolder);
         } elseif(($this->_isSubselect = $this->_isSubselect()) === true) {
             $this->_parser->match('(');
-            $this->_leftExpression = $this->Subselect($paramHolder);
+            $this->_leftExpression = $this->AST('Subselect', $paramHolder);
             $this->_parser->match(')');
         } else {
-            $this->_leftExpression = $this->Expression($paramHolder);
+            $this->_leftExpression = $this->AST('Expression', $paramHolder);
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_AS)) {
@@ -62,7 +62,7 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         }
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_IDENTIFIER)) {
-            $this->_identificationVariable = $this->IdentificationVariable($paramHolder);
+            $this->_identificationVariable = $this->AST('IdentificationVariable', $paramHolder);
         }
     }
 

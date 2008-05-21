@@ -54,7 +54,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
             $paramHolder->set('componentName', $this->_componentName);
 
             // Will return an identifier, with the semantical check already applied
-            $this->_componentAlias = $this->IdentificationVariable($paramHolder);
+            $this->_componentAlias = $this->AST('IdentificationVariable', $paramHolder);
 
             $paramHolder->remove('componentName');
         }
@@ -77,7 +77,7 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
                     "Cannot re-declare component '{$this->_componentName}'. Please assign an alias to it."
                 );
 
-                // [TODO] Shouldnt we return here?
+                return;
             }
         } else {
             // No queryComponent was found. We will have to build it for the first time
@@ -92,14 +92,16 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
 
             // Retrieving ClassMetadata and Mapper
             try {
-                $metadata = $conn->getMetadata($this->_componentName);
-                $mapper = $conn->getMapper($this->_componentName);
+                $classMetadata = $conn->getMetadata($this->_componentName);
 
                 // Building queryComponent
                 $queryComponent = array(
-                    'metadata'  => $metadata,
-                    'mapper'    => $mapper,
-                    'map'       => null
+                    'metadata' => $classMetadata,
+                    'mapper'   => $conn->getMapper($this->_componentName),
+                    'parent'   => null,
+                    'relation' => null,
+                    'map'      => null,
+                    'agg'      => null,
                 );
             } catch (Doctrine_Exception $e) {
                 $this->_parser->semanticalError($e->getMessage());

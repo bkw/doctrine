@@ -49,7 +49,7 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
             $this->_type = '-';
         }
 
-        $this->_primary = $this->Primary($paramHolder);
+        $this->_primary = $this->AST('Primary', $paramHolder);
 
         // Optimize depth instances in AST
         if ($this->_type === null) {
@@ -60,6 +60,6 @@ class Doctrine_Query_Production_Factor extends Doctrine_Query_Production
 
     public function buildSql()
     {
-        return (($this->_type !== null) ? $this->_type . ' ' : '') . $this->_primary->buildSql();
+        return $this->_type . ' ' . $this->_primary->buildSql();
     }
 }

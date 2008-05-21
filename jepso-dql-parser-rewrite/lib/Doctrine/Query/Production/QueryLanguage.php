@@ -38,15 +38,15 @@ class Doctrine_Query_Production_QueryLanguage extends Doctrine_Query_Production
         // QueryLanguage = SelectStatement | UpdateStatement | DeleteStatement
         switch ($this->_parser->lookahead['type']) {
             case Doctrine_Query_Token::T_SELECT:
-                return $this->SelectStatement($paramHolder);
+                return $this->AST('SelectStatement', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_UPDATE:
-                return $this->UpdateStatement($paramHolder);
+                return $this->AST('UpdateStatement', $paramHolder);
             break;
 
             case Doctrine_Query_Token::T_DELETE:
-                return $this->DeleteStatement($paramHolder);
+                return $this->AST('DeleteStatement', $paramHolder);
             break;
 
             default:

@@ -41,7 +41,7 @@ class Doctrine_Query_Production_UpdateItem extends Doctrine_Query_Production
     public function syntax($paramHolder)
     {
         // UpdateItem = PathExpression "=" (Expression | "NULL")
-        $this->_pathExpression = $this->PathExpression($paramHolder);
+        $this->_pathExpression = $this->AST('PathExpression', $paramHolder);
 
         $this->_parser->match('=');
 
@@ -49,7 +49,7 @@ class Doctrine_Query_Production_UpdateItem extends Doctrine_Query_Production
             $this->_parser->match(Doctrine_Query_Token::T_NULL);
             $this->_expression = null;
         } else {
-            $this->_expression = $this->Expression($paramHolder);
+            $this->_expression = $this->AST('Expression', $paramHolder);
         }
     }
 

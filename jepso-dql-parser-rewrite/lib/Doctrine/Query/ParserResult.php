@@ -42,7 +42,8 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
      * @var array $_tableAliasSeeds
      */
     protected $_tableAliasSeeds = array();
-    
+
+
     /**
      * @nodoc
      */
@@ -50,7 +51,8 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
     {
         $this->_data = $executor;
     }
-    
+
+
     /**
      * @nodoc
      */
@@ -58,6 +60,7 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
     {
         return $this->_data;
     }
+
 
     /**
      * Generates a table alias from given table name and associates 
@@ -80,5 +83,4 @@ class Doctrine_Query_ParserResult extends Doctrine_Query_AbstractResult
 
         return $alias;
     }
-
 }

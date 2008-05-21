@@ -39,11 +39,11 @@ class Doctrine_Query_Production_ConditionalTerm extends Doctrine_Query_Productio
     public function syntax($paramHolder)
     {
         // ConditionalTerm = ConditionalFactor {"AND" ConditionalFactor}
-        $this->_conditionalFactors[] = $this->ConditionalFactor($paramHolder);
+        $this->_conditionalFactors[] = $this->AST('ConditionalFactor', $paramHolder);
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_AND)) {
             $this->_parser->match(Doctrine_Query_Token::T_AND);
-            $this->_conditionalFactors[] = $this->ConditionalFactor($paramHolder);
+            $this->_conditionalFactors[] = $this->AST('ConditionalFactor', $paramHolder);
         }
 
         // Optimize depth instances in AST

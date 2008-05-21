@@ -47,12 +47,12 @@ class Doctrine_Query_Production_Function extends Doctrine_Query_Production
         $this->_parser->match('(');
 
         if ( ! $this->_isNextToken(')')) {
-            $this->_arguments[] = $this->Expression($paramHolder);
+            $this->_arguments[] = $this->AST('Expression', $paramHolder);
 
             while ($this->_isNextToken(',')) {
                 $this->_parser->match(',');
 
-                $this->_arguments[] = $this->Expression($paramHolder);
+                $this->_arguments[] = $this->AST('Expression', $paramHolder);
             }
         }
 

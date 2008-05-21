@@ -20,7 +20,7 @@
  */
 
 /**
- * DeleteClause = "DELETE" ["FROM"] RangeVariableDeclaration
+ * DeleteClause = "DELETE" ["FROM"] VariableDeclaration
  *
  * @package     Doctrine
  * @subpackage  Query
@@ -38,14 +38,14 @@ class Doctrine_Query_Production_DeleteClause extends Doctrine_Query_Production
 
     public function syntax($paramHolder)
     {
-        // DeleteClause = "DELETE" ["FROM"] RangeVariableDeclaration
+        // DeleteClause = "DELETE" ["FROM"] VariableDeclaration
         $this->_parser->match(Doctrine_Query_Token::T_DELETE);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_FROM)) {
             $this->_parser->match(Doctrine_Query_Token::T_FROM);
         }
 
-        $this->_variableDeclaration = $this->VariableDeclaration($paramHolder);
+        $this->_variableDeclaration = $this->AST('VariableDeclaration', $paramHolder);
     }
 
 

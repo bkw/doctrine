@@ -40,7 +40,6 @@ class Doctrine_Query_Production_LikeExpression extends Doctrine_Query_Production
     protected $_escapeString;
 
 
-
     public function syntax($paramHolder)
     {
         // LikeExpression = ["NOT"] "LIKE" Expression ["ESCAPE" string]
@@ -54,7 +53,7 @@ class Doctrine_Query_Production_LikeExpression extends Doctrine_Query_Production
 
         $this->_parser->match(Doctrine_Query_Token::T_LIKE);
 
-        $this->_expression = $this->Expression($paramHolder);
+        $this->_expression = $this->AST('Expression', $paramHolder);
 
         if ($this->_isNextToken(Doctrine_Query_Token::T_ESCAPE)) {
             $this->_parser->match(Doctrine_Query_Token::T_ESCAPE);
@@ -62,11 +61,6 @@ class Doctrine_Query_Production_LikeExpression extends Doctrine_Query_Production
 
             $this->_escapeString = $this->_parser->token['value'];
         }
-    }
-
-
-    public function semantical($paramHolder)
-    {
     }
 
 

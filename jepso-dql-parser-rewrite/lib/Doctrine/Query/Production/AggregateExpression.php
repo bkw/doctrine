@@ -68,7 +68,7 @@ class Doctrine_Query_Production_AggregateExpression extends Doctrine_Query_Produ
             $this->_isDistinct = true;
         }
 
-        $this->_expression = $this->Expression($paramHolder);
+        $this->_expression = $this->AST('Expression', $paramHolder);
 
         $this->_parser->match(')');
     }

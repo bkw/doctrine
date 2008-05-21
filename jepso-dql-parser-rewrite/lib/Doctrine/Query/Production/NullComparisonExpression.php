@@ -51,11 +51,6 @@ class Doctrine_Query_Production_NullComparisonExpression extends Doctrine_Query_
     }
 
 
-    public function semantical($paramHolder)
-    {
-    }
-
-
     public function buildSql()
     {
         return 'IS ' . (($this->_not) ? 'NOT ' : '') . 'NULL';

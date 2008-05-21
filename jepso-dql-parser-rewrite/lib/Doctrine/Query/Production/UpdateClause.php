@@ -43,16 +43,16 @@ class Doctrine_Query_Production_UpdateClause extends Doctrine_Query_Production
         // UpdateClause = "UPDATE" VariableDeclaration "SET" UpdateItem {"," UpdateItem}
         $this->_parser->match(Doctrine_Query_Token::T_UPDATE);
 
-        $this->_variableDeclaration = $this->VariableDeclaration($paramHolder);
+        $this->_variableDeclaration = $this->AST('VariableDeclaration', $paramHolder);
 
         $this->_parser->match(Doctrine_Query_Token::T_SET);
 
-        $this->_updateItems[] = $this->UpdateItem($paramHolder);
+        $this->_updateItems[] = $this->AST('UpdateItem', $paramHolder);
 
         while ($this->_isNextToken(',')) {
             $this->_parser->match(',');
 
-            $this->_updateItems[] = $this->UpdateItem($paramHolder);
+            $this->_updateItems[] = $this->AST('UpdateItem', $paramHolder);
         }
     }
 

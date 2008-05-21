@@ -39,11 +39,11 @@ class Doctrine_Query_Production_ConditionalExpression extends Doctrine_Query_Pro
     public function syntax($paramHolder)
     {
         // ConditionalExpression = ConditionalTerm {"OR" ConditionalTerm}
-        $this->_conditionalTerms[] = $this->ConditionalTerm($paramHolder);
+        $this->_conditionalTerms[] = $this->AST('ConditionalTerm', $paramHolder);
 
         while ($this->_isNextToken(Doctrine_Query_Token::T_OR)) {
             $this->_parser->match(Doctrine_Query_Token::T_OR);
-            $this->_conditionalTerms[] = $this->ConditionalTerm($paramHolder);
+            $this->_conditionalTerms[] = $this->AST('ConditionalTerm', $paramHolder);
         }
 
         // Optimize depth instances in AST

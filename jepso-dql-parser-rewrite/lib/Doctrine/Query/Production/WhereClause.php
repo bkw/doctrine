@@ -41,7 +41,7 @@ class Doctrine_Query_Production_WhereClause extends Doctrine_Query_Production
         // WhereClause = "WHERE" ConditionalExpression
         $this->_parser->match(Doctrine_Query_Token::T_WHERE);
 
-        $this->_conditionalExpression = $this->ConditionalExpression($paramHolder);
+        $this->_conditionalExpression = $this->AST('ConditionalExpression', $paramHolder);
     }
 
 

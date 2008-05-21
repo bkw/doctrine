@@ -39,7 +39,7 @@ class Doctrine_Query_Production_Term extends Doctrine_Query_Production
     public function syntax($paramHolder)
     {
         // Term = Factor {("*" | "/") Factor}
-        $this->_factors[] = $this->Factor($paramHolder);
+        $this->_factors[] = $this->AST('Factor', $paramHolder);
 
         while ($this->_isNextToken('*') || $this->_isNextToken('/')) {
             if ($this->_isNextToken('*')) {
@@ -50,7 +50,7 @@ class Doctrine_Query_Production_Term extends Doctrine_Query_Production
                 $this->_factors[] = '/';
             }
 
-            $this->_factors[] = $this->Factor($paramHolder);
+            $this->_factors[] = $this->AST('Factor', $paramHolder);
         }
 
         // Optimize depth instances in AST
