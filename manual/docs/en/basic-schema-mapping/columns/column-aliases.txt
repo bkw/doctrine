@@ -12,7 +12,7 @@ class Book extends Doctrine_Record
 }
 
 $book = new Book();
-$book->name = 'Some book';
+$book->title = 'Some book';
 $book->save();
 </code>
 
