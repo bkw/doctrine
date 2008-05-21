@@ -50,6 +50,17 @@ $pager_range = new Doctrine_Pager_Range_Sliding(
 );
 </code>
 
+Alternatively, you can use:
+
+<code type="php">
+$pager_range = $pager->getRange(
+	'Sliding',
+	array(
+		'chunk' => 5
+	)
+);
+</code>
+
 What is the advantage to use this object, instead of the {{Doctrine_Pager}}? Just one; it allows you to retrieve ranges 
 around the current page.
 Look at the example:

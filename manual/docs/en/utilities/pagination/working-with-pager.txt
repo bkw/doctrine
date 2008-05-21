@@ -98,6 +98,12 @@ $pager->getNextPage();
 // Return the previous page
 $pager->getPreviousPage();
 
+// Return the first indice of current page
+$pager->getFirstIndice();
+
+// Return the last indice of current page
+$pager->getLastIndice();
+
 // Return true if it's necessary to paginate or false if not
 $pager->haveToPaginate();
 
@@ -124,4 +130,7 @@ $pager->setCountQueryParams($params = array(), $append = false);
 
 // Return the Doctrine_Query object
 $pager->getQuery();
+
+// Return an associated Doctrine_Pager_Range_* instance
+$pager->getRange($rangeStyle, $options = array());
 </code>
