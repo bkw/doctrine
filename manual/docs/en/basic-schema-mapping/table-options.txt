@@ -68,5 +68,5 @@ MyCustomOptionRecord:
   columns:
     name: string
   attributes:
-    export: all ^ constraints
+    export: [ all, constraints ]
 </code>
