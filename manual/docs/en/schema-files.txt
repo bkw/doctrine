@@ -13,6 +13,9 @@ Doctrine offers the ability to specify schema in a short hand syntax. A lot of t
 have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its 
 defaults. Below is an example of schema taking advantage of all the shorthand features.
 
+Note: the detect_relations option will attempt to guess relationships based on column names. In the 
+example below Doctrine knows that User hasOne Contact and will automatically define the relationship.
+
 <code type="yaml">
 ---
 detect_relations: true
@@ -38,8 +41,6 @@ Here is the none short hand form of the above schema.
 
 <code type="yaml">
 ---
-detect_relations: true
-
 User:
   columns:
     username:
@@ -79,16 +80,16 @@ Contact:
       type: one
 </code>
 
+In the above example we do not define the detect_relations option, instead we manually define the 
+relationships so we have complete control over the configuration of the local and foreign key, the type 
+and alias of relationship on each end of the relationship.
+
 ++ Relationships
 
 When specifying relationships it is only necessary to specify the relationship on the end where 
 the foreign key exists. When the schema file is parsed, it inflects the relationship and builds the 
 opposite end automatically. If you specify the other end of the relationship manually, the auto 
 generation will have no effect.
-
-Doctrine will also attempt to guess the local and foreign key names based on the class involved in the 
-relationship. You will notice that all of our example schemas do not include the specific local and 
-foreign keys because it is able to guess them.
 
 +++ Detect Relations
 
@@ -136,7 +137,8 @@ Contact:
       type: string(255)
 </code>
 
-Here is an example schema:
+You can quickly detect and create the relationships between two models with the detect_relations option 
+like below.
 
 <code type="yaml">
 ---
@@ -148,14 +150,14 @@ User:
       type: integer(4)
       primary: true
       autoincrement: true
-    contact_id:
+    avatar_id:
       type: integer(4)
     username:
       type: string(255)
     password:
       type: string(255)
 
-Contact:
+Avatar:
   columns:
     id:
       type: integer(4)
@@ -163,9 +165,11 @@ Contact:
       autoincrement: true
     name:
       type: string(255)
+    image_file:
+      type: string(255)
 </code>
 
-The resulting relationships will be User hasOne Contact and Contact hasMany User.
+The resulting relationships will be User hasOne Avatar and Avatar hasMany User. 
 
 +++ One to One
 
@@ -186,6 +190,7 @@ User:
   relations:
     Contact:
       foreignType: one
+
 Contact:
   columns:
     id:
@@ -212,6 +217,7 @@ User:
       type: string(255)
     password:
       type: string(255)
+
 Phonenumber:
   columns:
     id:
@@ -243,6 +249,7 @@ User:
   attributes:
     export: all
     validate: true
+
 Group:
   tableName: group_table
   columns:
@@ -257,6 +264,7 @@ Group:
       foreignAlias: Groups
       class: User
       refClass: GroupUser
+
 GroupUser:
   columns:
     group_id:
@@ -265,15 +273,37 @@ GroupUser:
     user_id:
       type: integer(4)
       primary: true
+  relations:
+    Group:
+      foreignAlias: GroupUsers
+    User:
+      foreignAlias: GroupUsers
 </code>
+
+This creates a set of models where User hasMany Groups, Group hasMany Users, GroupUser hasOne User 
+and GroupUser hasOne Group.
 
 ++ Features & Examples
 
 +++ Connection Binding
 
+If you're not using schema files to manage your models, you will normally use this code to bind a component
+to a connection name with the following code:
+
+Create a connection with code like below:
+
 <code type="php">
-Doctrine::connection('mysql://jwage:pass@localhost/connection1', 'connection1');
+Doctrine_Manager::connection('mysql://jwage:pass@localhost/connection1', 'connection1');
 </code>
+
+Now somewhere in your Doctrine bootstrapping of Doctrine oyu would bind the model to that connection
+
+<code type="php">
+Doctrine_Manager::connection()->bindComponent('User', 'conn1');
+</code>
+
+Schema files offer the ability to bind it to a specific connection by specifying the connection parameter.
+If you do not specify the connection the model will just use the current connection instance.
 
 <code type="yaml">
 ---
@@ -293,6 +323,9 @@ User:
 </code>
 
 +++ Attributes
+
+Doctrine offers the ability to set attributes for your generated models directly in your schema files 
+similar to how you would if you were manually writing your Doctrine_Record child classes.
 
 <code type="yaml">
 ---
@@ -316,6 +349,9 @@ User:
 
 +++ Enums
 
+To use enum columns in your schema file you must specify the type as enum and specify an array of values
+for the possible enum values.
+
 <code type="yaml">
 ---
 TvListing:
@@ -334,31 +370,9 @@ TvListing:
      values: ['US', 'CA']
 </code>
 
-+++ Templates
-
-<code type="yaml">
----
-User:
-  connection: connection1
-  columns:
-    id:
-      type: integer(4)
-      primary: true
-      autoincrement: true
-    contact_id:
-      type: integer(4)
-    username:
-      type: string(255)
-    password:
-      type: string(255)
-  templates:
-    MyCustomTemplate
-      option1: value
-      option2: value
-</code>
-
 +++ ActAs
 
+You can attach behaviors to your models with the actAs option. You can specify
 <code type="yaml">
 ---
 User:
@@ -374,7 +388,11 @@ User:
       type: string(255)
     password:
       type: string(255)
+# This is an optional syntax which will just use the the defaults which are specified below
+# Since they are defaults it is not necessary to type it out
+#  actAs: [Timestampable, Sluggable]
   actAs:
+    Timestampable:
     Sluggable:
       fields: [username]
       name: slug    # defaults to 'slug'
@@ -383,6 +401,9 @@ User:
 </code>
 
 +++ Options
+
+Specify options for your tables and when Doctrine creates your tables from your models the options will be
+set on the create table statement.
 
 <code type="yaml">
 ---
