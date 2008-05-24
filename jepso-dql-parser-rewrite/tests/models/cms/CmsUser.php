@@ -1,9 +1,10 @@
 <?php
-class CmsUser extends Doctrine_Record
+class CmsUser extends Doctrine_Entity
 {
   public static function initMetadata($class) 
   {
       $class->mapColumn('id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
+      $class->mapColumn('status', 'string', 50);
       $class->mapColumn('username', 'string', 255);
       $class->mapColumn('name', 'string', 255);
       

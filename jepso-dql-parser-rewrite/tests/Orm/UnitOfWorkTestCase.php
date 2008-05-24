@@ -7,36 +7,46 @@ class Orm_UnitOfWorkTestCase extends Doctrine_OrmTestCase
     private $_user;
     
     protected function setUp() {
+        parent::setUp();
+        $em = new Doctrine_EntityManager(new Doctrine_Connection_Mock());
         $this->_user = new ForumUser();
-        $this->_unitOfWork = $this->sharedFixture['connection']->unitOfWork;
+        $this->_unitOfWork = $em->getUnitOfWork();
     }
     
     protected function tearDown() {
         $this->_user->free();
     }
     
-    public function testTransientEntityIsManaged()
+    public function testRegisterNew()
     {
-        $this->assertTrue($this->_unitOfWork->isManaged($this->_user));
-        $this->assertSame($this->_user, $this->_unitOfWork->getByOid($this->_user->getOid()));
+        $this->_user->username = 'romanb';
+        $this->_user->id = 1;
+        $this->_unitOfWork->registerNew($this->_user);
+        $this->assertFalse($this->_unitOfWork->contains($this->_user));
+        $this->assertTrue($this->_unitOfWork->isRegisteredNew($this->_user));
+        $this->assertFalse($this->_unitOfWork->isRegisteredDirty($this->_user));
+        $this->assertFalse($this->_unitOfWork->isRegisteredRemoved($this->_user));
     }
     
-    public function testDetachSingleEntity()
+    public function testRegisterDirty()
     {
-        $this->assertTrue($this->_unitOfWork->detach($this->_user));
-        try {
-            $this->_unitOfWork->getByOid($this->_user->getOid());
-            $this->fail("Entity is still managed after is has been detached.");
-        } catch (Doctrine_Connection_Exception $ex) {}
+        $this->_user->username = 'romanb';
+        $this->_user->id = 1;
+        $this->assertEquals(Doctrine_Entity::STATE_TDIRTY, $this->_user->state());
+        $this->assertFalse($this->_unitOfWork->contains($this->_user));
+        $this->_unitOfWork->registerDirty($this->_user);
+        $this->assertTrue($this->_unitOfWork->isRegisteredDirty($this->_user));
+        $this->assertFalse($this->_unitOfWork->isRegisteredNew($this->_user));
+        $this->assertFalse($this->_unitOfWork->isRegisteredRemoved($this->_user));
     }
     
-    public function testDetachAllEntities()
+    public function testRegisterRemovedOnTransientEntityIsIgnored()
     {
-        $this->assertEquals(1, $this->_unitOfWork->detachAll());
-        try {
-            $this->_unitOfWork->getByOid($this->_user->getOid());
-            $this->fail("Entity is still managed after all entities have been detached.");
-        } catch (Doctrine_Connection_Exception $ex) {}
+        $this->_user->username = 'romanb';
+        $this->_user->id = 1;
+        $this->assertFalse($this->_unitOfWork->isRegisteredRemoved($this->_user));
+        $this->_unitOfWork->registerRemoved($this->_user);
+        $this->assertFalse($this->_unitOfWork->isRegisteredRemoved($this->_user));        
     }
     
     /*public function testSavedEntityHasIdentityAndIsManaged()

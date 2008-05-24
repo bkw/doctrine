@@ -8,7 +8,10 @@ require_once 'lib/DoctrineTestInit.php';
 // Suites
 require_once 'Orm/Component/AllTests.php';
 require_once 'Orm/Query/AllTests.php';
+require_once 'Orm/Hydration/AllTests.php';
 require_once 'Orm/Ticket/AllTests.php';
+
+// Tests
 require_once 'Orm/UnitOfWorkTestCase.php';
 
 class Orm_AllTests
@@ -27,6 +30,7 @@ class Orm_AllTests
         
         $suite->addTest(Orm_Component_AllTests::suite());
         $suite->addTest(Orm_Query_AllTests::suite());
+        $suite->addTest(Orm_Hydration_AllTests::suite());
         $suite->addTest(Orm_Ticket_AllTests::suite());
 
         return $suite;

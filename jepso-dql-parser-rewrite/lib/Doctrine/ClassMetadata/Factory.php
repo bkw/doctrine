@@ -44,9 +44,9 @@ class Doctrine_ClassMetadata_Factory
      * @param $conn    The connection to use.
      * @param $driver  The metadata driver to use.
      */
-    public function __construct(Doctrine_Connection $conn, $driver)
+    public function __construct(Doctrine_EntityManager $em, $driver)
     {
-        $this->_conn = $conn;
+        $this->_conn = $em;
         $this->_driver = $driver;
     }
     
@@ -79,7 +79,7 @@ class Doctrine_ClassMetadata_Factory
         $parentClasses = array();
         $loadedParentClass = false;
         while ($parentClass = get_parent_class($parentClass)) {
-            if ($parentClass == 'Doctrine_Record') {
+            if ($parentClass == 'Doctrine_Entity') {
                 break;
             }
             if (isset($classes[$parentClass])) {
@@ -159,7 +159,7 @@ class Doctrine_ClassMetadata_Factory
         $className = $name;
         // get parent classes
         do {
-            if ($className === 'Doctrine_Record') {
+            if ($className === 'Doctrine_Entity') {
                 break;
             } else if ($className == $name) {
                 continue;

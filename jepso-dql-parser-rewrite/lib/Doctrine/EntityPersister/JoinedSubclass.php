@@ -25,26 +25,26 @@
  *
  * @author      Roman Borschel <roman@code-factory.org>
  * @package     Doctrine
- * @subpackage  DefaultStrategy
+ * @subpackage  JoinedSubclass
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @version     $Revision$
  * @link        www.phpdoctrine.org
- * @since       1.0
+ * @since       2.0
  */
-class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
+class Doctrine_EntityPersister_JoinedSubclass extends Doctrine_EntityPersister_Abstract
 {
     protected $_columnNameFieldNameMap = array();
     
     /**
      * Inserts an entity that is part of a Class Table Inheritance hierarchy.
      *
-     * @param Doctrine_Record $record   record to be inserted
+     * @param Doctrine_Entity $record   record to be inserted
      * @return boolean
      */
-    public function doInsert(Doctrine_Record $record)
+    protected function _doInsert(Doctrine_Entity $record)
     {
-        $class = $this->_mapper->getClassMetadata();
-        $conn = $this->_mapper->getConnection();
+        $class = $this->_classMetadata;
+        $conn = $this->_conn;
                     
         $dataSet = $this->_groupFieldsByDefiningClass($record);
         $component = $class->getClassName();
@@ -92,14 +92,14 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
     /**
      * Updates an entity that is part of a Class Table Inheritance hierarchy.
      *
-     * @param Doctrine_Record $record   record to be updated
+     * @param Doctrine_Entity $record   record to be updated
      * @return boolean                  whether or not the update was successful
      * @todo Move to Doctrine_Table (which will become Doctrine_Mapper).
      */
-    public function doUpdate(Doctrine_Record $record)
+    protected function _doUpdate(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
-        $classMetadata = $this->_mapper->getClassMetadata();
+        $conn = $this->_conn;
+        $classMetadata = $this->_classMetadata;
         $identifier = $this->_convertFieldToColumnNames($record->identifier(), $classMetadata);
         $dataSet = $this->_groupFieldsByDefiningClass($record);
         $component = $classMetadata->getClassName();
@@ -107,11 +107,12 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
         array_unshift($classes, $component);
 
         foreach ($record as $field => $value) {
-            if ($value instanceof Doctrine_Record) {
+            if ($value instanceof Doctrine_Entity) {
                 if ( ! $value->exists()) {
                     $value->save();
                 }
-                $record->set($field, $value->getIncremented());
+                $idValues = $value->identifier();
+                $record->set($field, $idValues[0]);
             }
         }
 
@@ -129,15 +130,15 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
      * Deletes an entity that is part of a Class Table Inheritance hierarchy.
      *
      */
-    public function doDelete(Doctrine_Record $record)
+    protected function _doDelete(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
+        $conn = $this->_conn;
         try {
-            $class = $this->_mapper->getClassMetadata();
+            $class = $this->_classMetadata;
             $conn->beginInternalTransaction();
             $this->_deleteComposites($record);
 
-            $record->state(Doctrine_Record::STATE_TDIRTY);
+            $record->state(Doctrine_Entity::STATE_TDIRTY);
 
             $identifier = $this->_convertFieldToColumnNames($record->identifier(), $class);
             
@@ -148,9 +149,9 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
                 $this->_deleteRow($parentClass->getTableName(), $identifier);
             }
             
-            $record->state(Doctrine_Record::STATE_TCLEAN);
+            $record->state(Doctrine_Entity::STATE_TCLEAN);
 
-            $this->_mapper->removeRecord($record);
+            $this->removeRecord($record); // @todo should be done in the unitofwork
             $conn->commit();
         } catch (Exception $e) {
             $conn->rollback();
@@ -171,12 +172,12 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
     public function getCustomJoins()
     {
         $customJoins = array();
-        $classMetadata = $this->_mapper->getClassMetadata();
+        $classMetadata = $this->_classMetadata;
         foreach ($classMetadata->getParentClasses() as $parentClass) {
             $customJoins[$parentClass] = 'INNER';
         }
         foreach ($classMetadata->getSubclasses() as $subClass) {
-            if ($subClass != $this->_mapper->getComponentName()) {
+            if ($subClass != $this->getComponentName()) {
                 $customJoins[$subClass] = 'LEFT';
             }
         }
@@ -195,8 +196,8 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
      */
     public function getCustomFields()
     {
-        $classMetadata = $this->_mapper->getClassMetadata();
-        $conn = $this->_mapper->getConnection();
+        $classMetadata = $this->_classMetadata;
+        $conn = $this->_conn;
         $fields = array($classMetadata->getInheritanceOption('discriminatorColumn'));
         if ($classMetadata->getSubclasses()) {
             foreach ($classMetadata->getSubclasses() as $subClass) {
@@ -216,7 +217,7 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
             return $this->_fieldNames;
         }
         
-        $fieldNames = $this->_mapper->getClassMetadata()->getFieldNames();
+        $fieldNames = $this->_classMetadata->getFieldNames();
         $this->_fieldNames = array_unique($fieldNames);
         
         return $fieldNames;
@@ -231,8 +232,8 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
             return $this->_columnNameFieldNameMap[$columnName];
         }
         
-        $classMetadata = $this->_mapper->getClassMetadata();
-        $conn = $this->_mapper->getConnection();
+        $classMetadata = $this->_classMetadata;
+        $conn = $this->_conn;
         
         if ($classMetadata->hasColumn($columnName)) {
             $this->_columnNameFieldNameMap[$columnName] = $classMetadata->getFieldName($columnName);
@@ -256,8 +257,8 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
      */
     public function getOwningClass($fieldName)
     {
-        $conn = $this->_mapper->getConnection();
-        $classMetadata = $this->_mapper->getClassMetadata();
+        $conn = $this->_conn;
+        $classMetadata = $this->_classMetadata;
         if ($classMetadata->hasField($fieldName) && ! $classMetadata->isInheritedField($fieldName)) {
             return $classMetadata;
         }
@@ -285,10 +286,10 @@ class Doctrine_Mapper_JoinedStrategy extends Doctrine_Mapper_Strategy
      *
      * @return array
      */
-    protected function _groupFieldsByDefiningClass(Doctrine_Record $record)
+    protected function _groupFieldsByDefiningClass(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
-        $classMetadata = $this->_mapper->getClassMetadata();
+        $conn = $this->_conn;
+        $classMetadata = $this->_classMetadata;
         $dataSet = array();
         $component = $classMetadata->getClassName();
         $array = $record->getPrepared();

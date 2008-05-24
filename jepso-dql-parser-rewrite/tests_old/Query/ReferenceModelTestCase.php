@@ -57,10 +57,10 @@ class Doctrine_Query_ReferenceModel_TestCase extends Doctrine_UnitTestCase {
         $category->Subcategory[1]->Subcategory[0]->name = 'Sub 2 Sub 1';
         $category->Subcategory[1]->Subcategory[1]->name = 'Sub 2 Sub 2';
 
-        $this->connection->flush();
+        $this->connection->unitOfWork->saveAll();
         $this->connection->clear();
 
-        $category = $category->getMapper()->find($category->id);
+        $category = $category->getRepository()->find($category->id);
 
         $this->assertEqual($category->name, 'Root');
         $this->assertEqual($category->Subcategory[0]->name, 'Sub 1');

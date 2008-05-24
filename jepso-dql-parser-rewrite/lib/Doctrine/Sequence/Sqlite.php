@@ -18,7 +18,7 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-Doctrine::autoload('Doctrine_Sequence');
+
 /**
  * Doctrine_Sequence_Sqlite
  *
@@ -33,7 +33,7 @@ Doctrine::autoload('Doctrine_Sequence');
 class Doctrine_Sequence_Sqlite extends Doctrine_Sequence
 {
     /**
-     * Returns the next free id of a sequence
+     * Returns the next free id of a sequence.
      *
      * @param string $seqName   name of the sequence
      * @param bool $onDemand    when true missing sequences are automatic created
@@ -43,15 +43,13 @@ class Doctrine_Sequence_Sqlite extends Doctrine_Sequence
     public function nextId($seqName, $onDemand = true)
     {
         $sequenceName = $this->conn->quoteIdentifier($this->conn->formatter->getSequenceName($seqName), true);
-        $seqcolName   = $this->conn->quoteIdentifier($this->conn->getAttribute(Doctrine::ATTR_SEQCOL_NAME), true);
+        $seqcolName = $this->conn->quoteIdentifier($this->conn->getAttribute(Doctrine::ATTR_SEQCOL_NAME), true);
 
-        $query        = 'INSERT INTO ' . $sequenceName . ' (' . $seqcolName . ') VALUES (NULL)';
+        $query = 'INSERT INTO ' . $sequenceName . ' (' . $seqcolName . ') VALUES (NULL)';
 
         try {
-
             $this->conn->exec($query);
-
-        } catch(Doctrine_Connection_Exception $e) {
+        } catch (Doctrine_Connection_Exception $e) {
             if ($onDemand && $e->getPortableCode() == Doctrine::ERR_NOSUCHTABLE) {
                 try {
                     $this->conn->export->createSequence($seqName);

@@ -20,8 +20,8 @@
  */
 
 /**
- * Doctrine_Hydrate_RecordDriver
- * Hydration strategy used for creating collections of entity objects.
+ * Doctrine_Hydrator_RecordDriver
+ * Hydration strategy used for creating graphs of entity objects.
  *
  * @package     Doctrine
  * @subpackage  Hydrate
@@ -34,13 +34,19 @@
  */
 class Doctrine_Hydrator_RecordDriver
 {
+    /** Collections initialized by the driver */
     protected $_collections = array();
-    protected $_mappers = array();
+    /** Memory for initialized relations */
+    private $_initializedRelations = array();
+    /** Null object */
     private $_nullObject;
+    /** The EntityManager */
+    private $_em;
     
-    public function __construct()
+    public function __construct(Doctrine_EntityManager $em)
     {
         $this->_nullObject = Doctrine_Null::$INSTANCE;
+        $this->_em = $em;
     }
 
     public function getElementCollection($component)
@@ -53,54 +59,32 @@ class Doctrine_Hydrator_RecordDriver
 
     public function getLastKey($coll) 
     {
-        $coll->end();
-        
-        return $coll->key();
+        // check needed because of mixed results
+        if (is_array($coll)) {
+            end($coll);
+            return key($coll);
+        } else {
+            $coll->end();
+            return $coll->key(); 
+        }
     }
     
-    public function initRelated($record, $name)
+    public function initRelatedCollection(Doctrine_Entity $entity, $name)
     {
-        return true;
-        /*
-        if ( ! is_array($record)) {
-            $record[$name];
-            return true;
+        if ( ! isset($this->_initializedRelations[$entity->getOid()][$name])) {
+            $relation = $entity->getClassMetadata()->getRelation($name);
+            $relatedClass = $relation->getTable();
+            $coll = $this->getElementCollection($relatedClass->getClassName());
+            $coll->setReference($entity, $relation);
+            $entity->rawSetReference($name, $coll);
+            $this->_initializedRelations[$entity->getOid()][$name] = true;
         }
-        return false;
-        */
     }
     
     public function registerCollection(Doctrine_Collection $coll)
     {
         $this->_collections[] = $coll;
     }
-
-    /**
-     * isIdentifiable
-     * returns whether or not a given data row is identifiable (it contains
-     * all primary key fields specified in the second argument)
-     *
-     * @param array $row
-     * @param Doctrine_Table $table
-     * @return boolean
-     */
-    /*public function isIdentifiable(array $row, Doctrine_Table $table)
-    {
-        $primaryKeys = $table->getIdentifierColumnNames();
-
-        if (is_array($primaryKeys)) {
-            foreach ($primaryKeys as $id) {
-                if ( ! isset($row[$id])) {
-                    return false;
-                }
-            }
-        } else {
-            if ( ! isset($row[$primaryKeys])) {
-                return false;
-            }
-        }
-        return true;
-    }*/
     
     public function getNullPointer() 
     {
@@ -109,51 +93,65 @@ class Doctrine_Hydrator_RecordDriver
     
     public function getElement(array $data, $className)
     {
-        $className = $this->_getClassnameToReturn($data, $className);
-        if ( ! isset($this->_mappers[$className])) {
-            $this->_mappers[$className] = Doctrine_Manager::getInstance()->getMapper($className);
-        }
-
-        $record = $this->_mappers[$className]->getRecord($data);
-
-        return $record;
+        return $this->_em->createEntity($className, $data);
+    }
+    
+    public function addRelatedIndexedElement(Doctrine_Entity $entity1, $property,
+            Doctrine_Entity $entity2, $indexField)
+    {
+        $entity1->rawGetReference($property)->add($entity2, $entity2->rawGetField($indexField));
+    }
+    
+    public function addRelatedElement(Doctrine_Entity $entity1, $property,
+            Doctrine_Entity $entity2)
+    {
+        $entity1->rawGetReference($property)->add($entity2);       
+    }
+    
+    public function setRelatedElement(Doctrine_Entity $entity1, $property, $entity2)
+    {
+        $entity1->rawSetReference($property, $entity2);
+    }
+    
+    public function isIndexKeyInUse(Doctrine_Entity $entity, $assocField, $indexField)
+    {
+        return $entity->rawGetReference($assocField)->contains($indexField);
+    }
+    
+    public function isFieldSet(Doctrine_Entity $entity, $field)
+    {
+        return $entity->contains($field);
+    }
+    
+    public function getFieldValue(Doctrine_Entity $entity, $field)
+    {
+        return $entity->rawGetField($field);
+    }
+    
+    public function getReferenceValue(Doctrine_Entity $entity, $field)
+    {
+        return $entity->rawGetReference($field);
+    }
+    
+    public function addElementToIndexedCollection($coll, $entity, $keyField)
+    {
+        $coll->add($entity, $entity->rawGetField($keyField));
+    }
+    
+    public function addElementToCollection($coll, $entity)
+    {
+        $coll->add($entity);
     }
     
     public function flush()
     {
         // take snapshots from all initialized collections
-        foreach ($this->_collections as $key => $coll) {
+        foreach ($this->_collections as $coll) {
             $coll->takeSnapshot();
         }
         $this->_collections = array();
-        $this->_mappers = array();
+        $this->_initializedRelations = array();
     }
     
-    /**
-     * Check the dataset for a discriminator column to determine the correct
-     * class to instantiate. If no discriminator column is found, the given
-     * classname will be returned.
-     *
-     * @return string The name of the class to instantiate.
-     * @todo Can be optimized performance-wise.
-     */
-    protected function _getClassnameToReturn(array $data, $className)
-    {
-        if ( ! isset($this->_mappers[$className])) {
-            $this->_mappers[$className] = Doctrine_Manager::getInstance()->getMapper($className);
-        }
-        
-        $discCol = $this->_mappers[$className]->getClassMetadata()->getInheritanceOption('discriminatorColumn');
-        if ( ! $discCol) {
-            return $className;
-        }
-        
-        $discMap = $this->_mappers[$className]->getClassMetadata()->getInheritanceOption('discriminatorMap');
-        
-        if (isset($data[$discCol], $discMap[$data[$discCol]])) {
-            return $discMap[$data[$discCol]];
-        } else {
-            return $className;
-        }
-    }
+    
 }

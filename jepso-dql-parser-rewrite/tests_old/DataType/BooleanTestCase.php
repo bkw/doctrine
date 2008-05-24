@@ -42,7 +42,7 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
         $test->is_working = false;
 
         $this->assertIdentical($test->is_working, false);
-        $this->assertEqual($test->state(), Doctrine_Record::STATE_TDIRTY);
+        $this->assertEqual($test->state(), Doctrine_Entity::STATE_TDIRTY);
         $test->save();
 
         $test->refresh();
@@ -60,7 +60,7 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
         
         $this->connection->clear();
         
-        $test = $test->getMapper()->find($test->id);
+        $test = $test->getRepository()->find($test->id);
         $this->assertIdentical($test->is_working, true);
     }
     public function testNormalQuerying() {
@@ -98,7 +98,7 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
         $this->is_working = null;
 
         $this->assertIdentical($this->is_working, null);
-        $this->assertEqual($test->state(), Doctrine_Record::STATE_TDIRTY);
+        $this->assertEqual($test->state(), Doctrine_Entity::STATE_TDIRTY);
         $test->save();
 
         $test->refresh();
@@ -108,7 +108,7 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
         $this->is_working_notnull = null;
 
         $this->assertIdentical($this->is_working_notnull, null);
-        $this->assertEqual($test->state(), Doctrine_Record::STATE_TDIRTY);
+        $this->assertEqual($test->state(), Doctrine_Entity::STATE_TDIRTY);
         $test->save();
 
         $test->refresh();

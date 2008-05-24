@@ -25,32 +25,32 @@
  *
  * @author      Roman Borschel <roman@code-factory.org>
  * @package     Doctrine
- * @subpackage  DefaultStrategy
+ * @subpackage  Abstract
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @version     $Revision$
  * @link        www.phpdoctrine.org
- * @since       1.0
+ * @since       2.0
  */
-class Doctrine_Mapper_DefaultStrategy extends Doctrine_Mapper_Strategy
+class Doctrine_EntityPersister_Standard extends Doctrine_EntityPersister_Abstract
 {
     /**
      * Deletes an entity.
      */
-    public function doDelete(Doctrine_Record $record)
+    protected function _doDelete(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
-        $metadata = $this->_mapper->getClassMetadata();
+        $conn = $this->_conn;
+        $metadata = $this->_classMetadata;
         try {
             $conn->beginInternalTransaction();
             $this->_deleteComposites($record);
 
-            $record->state(Doctrine_Record::STATE_TDIRTY);
+            $record->state(Doctrine_Entity::STATE_TDIRTY);
             
             $identifier = $this->_convertFieldToColumnNames($record->identifier(), $metadata);
             $this->_deleteRow($metadata->getTableName(), $identifier);
-            $record->state(Doctrine_Record::STATE_TCLEAN);
+            $record->state(Doctrine_Entity::STATE_TCLEAN);
 
-            $this->_mapper->removeRecord($record);
+            $this->removeRecord($record);
             $conn->commit();
         } catch (Exception $e) {
             $conn->rollback();
@@ -61,11 +61,11 @@ class Doctrine_Mapper_DefaultStrategy extends Doctrine_Mapper_Strategy
     /**
      * Inserts a single entity into the database, without any related entities.
      *
-     * @param Doctrine_Record $record   The entity to insert.
+     * @param Doctrine_Entity $record   The entity to insert.
      */
-    public function doInsert(Doctrine_Record $record)
+    protected function _doInsert(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
+        $conn = $this->_conn;
         
         $fields = $record->getPrepared();
         if (empty($fields)) {
@@ -73,8 +73,8 @@ class Doctrine_Mapper_DefaultStrategy extends Doctrine_Mapper_Strategy
         }
         
         //$class = $record->getClassMetadata();
-        $class = $this->_mapper->getClassMetadata();
-        $identifier = (array) $class->getIdentifier();
+        $class = $this->_classMetadata;
+        $identifier = $class->getIdentifier();
         $fields = $this->_convertFieldToColumnNames($fields, $class);
 
         $seq = $class->getTableOption('sequenceName');
@@ -85,8 +85,6 @@ class Doctrine_Mapper_DefaultStrategy extends Doctrine_Mapper_Strategy
             $record->assignIdentifier($id);
         }
         
-        
-        //echo $class->getTableName() . "--" . $class->getClassName() . '---' . get_class($record) . "<br/>";
         $this->_insertRow($class->getTableName(), $fields);
 
         if (empty($seq) && count($identifier) == 1 &&
@@ -110,10 +108,10 @@ class Doctrine_Mapper_DefaultStrategy extends Doctrine_Mapper_Strategy
     /**
      * Updates an entity.
      */
-    public function doUpdate(Doctrine_Record $record)
+    protected function _doUpdate(Doctrine_Entity $record)
     {
-        $conn = $this->_mapper->getConnection();
-        $classMetadata = $this->_mapper->getClassMetadata();
+        $conn = $this->_conn;
+        $classMetadata = $this->_classMetadata;
         $identifier = $this->_convertFieldToColumnNames($record->identifier(), $classMetadata);
         $data = $this->_convertFieldToColumnNames($record->getPrepared(), $classMetadata);
         $this->_updateRow($classMetadata->getTableName(), $data, $identifier);

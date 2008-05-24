@@ -65,10 +65,10 @@ class Doctrine_Validator
      * validates a given record and saves possible errors
      * in Doctrine_Validator::$stack
      *
-     * @param Doctrine_Record $record
+     * @param Doctrine_Entity $record
      * @return void
      */
-    public function validateRecord(Doctrine_Record $record)
+    public function validateRecord(Doctrine_Entity $record)
     {
         $classMetadata = $record->getTable();
         $columns   = $record->getTable()->getColumns();
@@ -83,8 +83,9 @@ class Doctrine_Validator
         foreach ($fields as $fieldName => $value) {
             if ($value === Doctrine_Null::$INSTANCE) {
                 $value = null;
-            } else if ($value instanceof Doctrine_Record) {
-                $value = $value->getIncremented();
+            } else if ($value instanceof Doctrine_Entity) {
+                $ids = $value->identifier();
+                $value = count($ids) > 0 ? array_pop($ids) : null;
             }
             
             $dataType = $classMetadata->getTypeOf($fieldName);
@@ -161,6 +162,7 @@ class Doctrine_Validator
      * @param mixed $var
      * @param string $type
      * @return boolean
+     * @deprecated No more type validations like this. There will only be validators.
      */
      public static function isValidType($var, $type)
      {

@@ -19,7 +19,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
         $us = array();
         $us[1] = new MyUser();
         $us[1]->name = "user1";
-        $this->connection->flush();
+        $this->connection->unitOfWork->saveAll();
         // OneThings
         $onethings_gs = array(
             array(6,1)
@@ -65,7 +65,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             }
         }
          */
-        $this->connection->flush();
+        $this->connection->unitOfWork->saveAll();
         $this->connection->clear();
     }
 
@@ -81,7 +81,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
     public function testOneToOneAggregateRelationFetching() {
         $coll = $this->connection->query("FROM File_Owner.Data_File WHERE File_Owner.name = 'owner1'");
         $this->assertTrue(count($coll) == 1);
-        $this->assertTrue($coll[0] instanceof Doctrine_Record);
+        $this->assertTrue($coll[0] instanceof Doctrine_Entity);
 
         $this->assertEqual($coll[0]->id, 1);
     }

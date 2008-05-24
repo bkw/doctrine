@@ -73,7 +73,7 @@ class Doctrine_CustomResultSetOrder_TestCase extends Doctrine_UnitTestCase {
         // The second category gets 1 board!
         $cat2->Boards[0] = $board4;
         
-        $this->connection->flush();
+        $this->connection->unitOfWork->saveAll();
     }
 
     /**
@@ -169,7 +169,7 @@ class Doctrine_CustomResultSetOrder_TestCase extends Doctrine_UnitTestCase {
                 case 'Third':
                     // The third has no boards as expected.
                     //print $category->Boards[0]->position;
-                    $this->assertEqual(0, $category->Boards->count());
+                    $this->assertTrue(!isset($category->Boards));
                 break;
             }
             

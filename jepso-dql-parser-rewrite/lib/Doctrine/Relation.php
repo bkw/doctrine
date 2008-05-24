@@ -154,7 +154,7 @@ abstract class Doctrine_Relation implements ArrayAccess
             }
         }
         $this->definition = $def;
-        $this->_foreignMapper = $this->getClassMetadata()->getConnection()->getMapper($def['class']);
+        $this->_foreignMapper = $this->getTable()->getConnection()->getEntityPersister($def['class']);
     }
 
     /**
@@ -257,9 +257,8 @@ abstract class Doctrine_Relation implements ArrayAccess
      */
     final public function getClassMetadata()
     {
-        return Doctrine_Manager::getInstance()
-               ->getConnectionForComponent($this->definition['class'])
-               ->getMetadata($this->definition['class']);
+        return Doctrine_EntityManager::getManager($this->definition['class'])
+               ->getClassMetadata($this->definition['class']);
     }
 
     /**
@@ -354,10 +353,10 @@ abstract class Doctrine_Relation implements ArrayAccess
      *
      * fetches a component related to given record
      *
-     * @param Doctrine_Record $record
-     * @return Doctrine_Record|Doctrine_Collection
+     * @param Doctrine_Entity $record
+     * @return Doctrine_Entity|Doctrine_Collection
      */
-    abstract public function fetchRelatedFor(Doctrine_Record $record);
+    abstract public function fetchRelatedFor(Doctrine_Entity $record);
 
     /**
      * __toString

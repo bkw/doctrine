@@ -37,7 +37,7 @@ class Doctrine_Ticket_626D_TestCase extends Doctrine_UnitTestCase
       $student1 = $this->newStudent('T626D_Student1', '07090002', 'First Student');
 
       try {
-        $student = $this->conn->getMapper('T626D_Student1')->find('07090002');
+        $student = $this->conn->getRepository('T626D_Student1')->find('07090002');
         $this->pass();
       } catch (Exception $e) {
         $this->fail($e->__toString());
@@ -46,7 +46,7 @@ class Doctrine_Ticket_626D_TestCase extends Doctrine_UnitTestCase
 }
 
 
-class T626D_Student1 extends Doctrine_Record
+class T626D_Student1 extends Doctrine_Entity
 {
   public static function initMetadata($class)
   {

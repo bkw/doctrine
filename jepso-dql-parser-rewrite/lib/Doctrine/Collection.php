@@ -18,9 +18,9 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.phpdoctrine.org>.
  */
-Doctrine::autoload('Doctrine_Access');
+
 /**
- * A Doctrine_Collection represents a collection of entities.
+ * A persistent collection of entities.
  * A collection object is strongly typed in the sense that it can only contain
  * entities of a specific type or one it's subtypes.
  *
@@ -31,9 +31,12 @@ Doctrine::autoload('Doctrine_Access');
  * @since       1.0
  * @version     $Revision$
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @todo Rename to EntityCollection
  */
 class Doctrine_Collection extends Doctrine_Access implements Countable, IteratorAggregate, Serializable
 {
+    protected $_entityBaseType;
+    
     /**
      * An array containing the records of this collection.
      *
@@ -58,7 +61,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     /**
      * This record this collection is attached to, if any.
      * 
-     * @var Doctrine_Record
+     * @var Doctrine_Entity
      */
     protected $reference;
 
@@ -101,10 +104,11 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * @param string $keyColumn                The field name that will be used as the key
      *                                         in the collection.
      */
-    public function __construct($mapper, $keyField = null)
+    public function __construct($entityBaseType, $keyField = null)
     {
-        if (is_string($mapper)) {
-            $mapper = Doctrine_Manager::getInstance()->getMapper($mapper);
+        if (is_string($entityBaseType)) {
+            $this->_entityBaseType = $entityBaseType;
+            $mapper = Doctrine_EntityManager::getManager($entityBaseType)->getEntityPersister($entityBaseType);
         }
         $this->_mapper = $mapper;
 
@@ -204,16 +208,16 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function unserialize($serialized)
     {
-        $manager = Doctrine_Manager::getInstance();
-        $connection = $manager->getCurrentConnection();
-
+        $manager = Doctrine_EntityManager::getManager();
+        $connection = $manager->getConnection();
+        
         $array = unserialize($serialized);
 
         foreach ($array as $name => $values) {
             $this->$name = $values;
         }
 
-        $this->_mapper = $connection->getMapper($this->_mapper);
+        $this->_mapper = $manager->getEntityPersister($this->_entityBaseType);
 
         $keyColumn = isset($array['keyField']) ? $array['keyField'] : null;
         if ($keyColumn === null) {
@@ -308,7 +312,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      *
      * @return void
      */
-    public function setReference(Doctrine_Record $record, Doctrine_Relation $relation)
+    public function setReference(Doctrine_Entity $record, Doctrine_Relation $relation)
     {
         $this->reference = $record;
         $this->relation  = $relation;
@@ -368,7 +372,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     /**
      *
      */
-    public function search(Doctrine_Record $record)
+    public function search(Doctrine_Entity $record)
     {
         return array_search($record, $this->data, true);
     }
@@ -388,7 +392,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * Collection also maps referential information to newly created records
      *
      * @param mixed $key                    the key of the element
-     * @return Doctrine_Record              return a specified record
+     * @return Doctrine_Entity              return a specified record
      */
     public function get($key)
     {
@@ -449,7 +453,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
                 }
             } else {
                 // @todo does not take composite keys into account
-                $list[] = $record->getIncremented();
+                $ids = $record->identifier();
+                $list[] = count($ids) > 0 ? array_pop($ids) : null;
             }
         }
         
@@ -480,15 +485,15 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     /**
      * set
      * @param integer $key
-     * @param Doctrine_Record $record
+     * @param Doctrine_Entity $record
      * @return void
-     * @internal Can't type-hint the second parameter to Doctrine_Record because we need
+     * @internal Can't type-hint the second parameter to Doctrine_Entity because we need
      *           to adhere to the Doctrine_Access::set() signature.
      */
     public function set($key, $record)
     {
-        if ( ! $record instanceOf Doctrine_Record) {
-            throw new Doctrine_Collection_Exception('Value variable in set is not an instance of Doctrine_Record');
+        if ( ! $record instanceOf Doctrine_Entity) {
+            throw new Doctrine_Collection_Exception('Value variable in set is not an instance of Doctrine_Entity');
         }
 
         if (isset($this->referenceField)) {
@@ -499,14 +504,15 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
     /**
      * adds a record to collection
-     * @param Doctrine_Record $record              record to be added
+     * @param Doctrine_Entity $record              record to be added
      * @param string $key                          optional key for the record
      * @return boolean
      */
     public function add($record, $key = null)
     {
-        if ( ! $record instanceof Doctrine_Record) {
-            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Record.');
+        /** @TODO Use raw getters/setters */
+        if ( ! $record instanceof Doctrine_Entity) {
+            throw new Doctrine_Record_Exception('Value variable in set is not an instance of Doctrine_Entity.');
         }
 
         if (isset($this->referenceField)) {
@@ -564,7 +570,9 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
         if ( ! isset($name)) {
             foreach ($this->data as $record) {
-                $value = $record->getIncremented();
+                // FIXME: composite key support
+                $ids = $record->identifier();
+                $value = count($ids) > 0 ? array_pop($ids) : null;
                 if ($value !== null) {
                     $list[] = $value;
                 }
@@ -583,7 +591,8 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             }
         } else {
             foreach ($this->data as $record) {
-                $value = $record->getIncremented();
+                $ids = $record->identifier();
+                $value = count($ids) > 0 ? array_pop($ids) : null;
                 if ($value !== null) {
                     $list[] = $value;
                 }
