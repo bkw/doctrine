@@ -59,7 +59,8 @@ class Doctrine_Query_Production_OrderByClause extends Doctrine_Query_Production
                 $str .= ', ';
             }
 
-            $str .= $this->orderByItems[$i]->buildSql();
+            $str .= ( $this->_orderByItems[$i] instanceof Doctrine_Query_Production ) ?
+                $this->_orderByItems[$i]->buildSql() : $this->_orderByItems[$i];
         }
 
         return $str;

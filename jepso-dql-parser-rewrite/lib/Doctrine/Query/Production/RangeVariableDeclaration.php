@@ -93,10 +93,10 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             // No queryComponent was found. We will have to build it for the first time
             if (count($this->_identifiers) > 1) {
                 // We are in a multiple identifier declaration; we are dealing with relations here
-                $this->semanticalWithMultipleIdentifier();
+                $this->_semanticalWithMultipleIdentifier();
             } else {
                 // We are in a single identifier declaration; our identifier is the class name
-                $this->semanticalWithSingleIdentifier();
+                $this->_semanticalWithSingleIdentifier();
             }
         }
 
@@ -104,7 +104,13 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
     }
 
 
-    private function semanticalWithSingleIdentifier()
+    public function buildSql()
+    {
+        return '';
+    }
+
+
+    private function _semanticalWithSingleIdentifier()
     {
         $parserResult = $this->_parser->getParserResult();
 
@@ -150,7 +156,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
     }
 
 
-    private function semanticalWithMultipleIdentifier()
+    private function _semanticalWithMultipleIdentifier()
     {
         $parserResult = $this->_parser->getParserResult();
 

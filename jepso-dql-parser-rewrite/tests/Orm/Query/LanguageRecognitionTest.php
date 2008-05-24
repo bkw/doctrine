@@ -45,6 +45,11 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
         $this->assertValidDql('SELECT u.* FROM CmsUser u');
     }
 
+    public function testInvalidSelectSingleComponentWithAsterisk()
+    {
+        $this->assertValidDql('SELECT p.* FROM CmsUser u');
+    }
+
     public function testSelectSingleComponentWithMultipleColumns()
     {
         $this->assertValidDql('SELECT u.name, u.username FROM CmsUser u');
@@ -337,5 +342,4 @@ class Orm_Query_LanguageRecognitionTest extends Doctrine_OrmTestCase
     {
         $this->assertValidDql("SELECT u.id FROM CmsUser u WHERE u.name LIKE 'z|%' ESCAPE '|'");
     }
-
 }

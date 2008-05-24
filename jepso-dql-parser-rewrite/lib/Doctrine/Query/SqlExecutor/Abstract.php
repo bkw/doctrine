@@ -32,12 +32,18 @@
  */
 abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
 {
+    // [TODO] Remove me later!
     public $AST;
+
     protected $_sqlStatements;
-    
+
     public function __construct(Doctrine_Query_Production $AST)
-    {$this->AST = $AST;}
-    
+    {
+        // [TODO] Remove me later!
+        $this->AST = $AST;
+    }
+
+
     /**
      * Gets the SQL statements that are executed by the executor.
      *
@@ -47,7 +53,8 @@ abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
     {
         return $this->_sqlStatements;
     }
-    
+
+
     /**
      * Executes all sql statements.
      *
@@ -55,7 +62,8 @@ abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
      * @param array $params  The parameters.
      */
     abstract public function execute(Doctrine_Connection $conn, array $params);
-    
+
+
     /**
      * Factory method.
      * Creates an appropriate sql executor for the given AST.
@@ -67,7 +75,7 @@ abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
     {
         $isDeleteStatement = $AST instanceof Doctrine_Query_Production_DeleteStatement;
         $isUpdateStatement = $AST instanceof Doctrine_Query_Production_UpdateStatement;
-        
+
         if ($isUpdateStatement || $isDeleteStatement) {
             // TODO: Inspect the $AST and create the proper executor like so (pseudo-code):
             /*
@@ -84,7 +92,8 @@ abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
             return new Doctrine_Query_SqlExecutor_SingleSelect($AST);
         }
     }
-    
+
+
     /**
      * Serializes the sql statements of the executor.
      *
@@ -94,7 +103,8 @@ abstract class Doctrine_Query_SqlExecutor_Abstract implements Serializable
     {
         return serialize($this->_sqlStatements);
     }
-    
+
+
     /**
      * Reconstructs the executor with it's sql statements.
      */

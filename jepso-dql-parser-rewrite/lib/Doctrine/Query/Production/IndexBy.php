@@ -61,20 +61,40 @@ class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
 
         try {
             $queryComponent = $parserResult->getQueryComponent($this->_componentAlias);
-            $metadata = $queryComponent['metadata'];
+            $classMetadata = $queryComponent['metadata'];
         } catch (Doctrine_Exception $e) {
             $this->_parser->semanticalError($e->getMessage());
 
             return;
         }
 
-        if ($metadata instanceof Doctrine_ClassMetadata && ! $metadata->hasField($this->_fieldName)) {
+        if ($classMetadata instanceof Doctrine_ClassMetadata && ! $classMetadata->hasField($this->_fieldName)) {
             $this->_parser->semanticalError(
                 "Cannot use key mapping. Field '" . $this->_fieldName . "' " . 
-                "does not exist in component '" . $metadata->getClassName() . "'.",
+                "does not exist in component '" . $classMetadata->getClassName() . "'.",
                 $this->_parser->token
             );
         }
+
+        // The INDEXBY field must be either the (primary && not part of composite pk) || (unique && notnull)
+        $columnMapping = $classMetadata->getColumnMapping($this->_fieldName);
+
+        if ( ! $classMetadata->isIdentifier($field) && ! $classMetadata->isUniqueField($field) && ! $classMetadata->isNotNull($field)) {
+            $this->_parser->semanticalError(
+                "Field '" . $this->_fieldName . "' of component  '" . $classMetadata->getClassName() .
+                "' must be unique and notnull to be used as index.",
+                $this->_parser->token
+            );
+        }
+
+        if ($classMetadata->isIdentifier($field) && $classMetadata->isIdentifierComposite()) {
+            $this->_parser->semanticalError(
+                "Field '" . $this->_fieldName . "' of component  '" . $classMetadata->getClassName() .
+                "' must be primary and not part of a composite primary key to be used as index.",
+                $this->_parser->token
+            );
+        }
+
 
         $queryComponent['map'] = $this->_fieldName;
         $parserResult->setQueryComponent($this->_componentAlias, $queryComponent);
@@ -82,5 +102,7 @@ class Doctrine_Query_Production_IndexBy extends Doctrine_Query_Production
 
 
     public function buildSql()
-    {}
+    {
+        return '';
+    }
 }

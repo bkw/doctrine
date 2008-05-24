@@ -87,8 +87,8 @@ class Doctrine_Query_Production_SelectStatement extends Doctrine_Query_Productio
 
     public function buildSql()
     {
-        return ''; $str = $this->_selectClause->buildSql() . ' ' . $this->_fromClause->buildSql()
-             . (($this->_whereClause !== null) ? ' ' . $this->_whereClause->buildSql() : '')
+        return $this->_selectClause->buildSql() . ' ' . $this->_fromClause->buildSql()
+             . (($this->_whereClause !== null) ? ' ' . $this->_whereClause->buildSql() : ' WHERE 1 = 1')
              . (($this->_groupByClause !== null) ? ' ' . $this->_groupByClause->buildSql() : '')
              . (($this->_havingClause !== null) ? ' ' . $this->_havingClause->buildSql() : '')
              . (($this->_orderByClause !== null) ? ' ' . $this->_orderByClause->buildSql() : '');

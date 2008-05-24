@@ -40,6 +40,8 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
 
     protected $_identificationVariable;
 
+    private $__columnAliasInTable;
+
 
     public function syntax($paramHolder)
     {
@@ -74,9 +76,13 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         // its existance.
 	if ( $this->_leftExpression instanceof PathExpressionEndingWithAsterisk && $this->_identificationVariable !== null ) {
 		$this->_parser->semanticalError(
-                    "Cannot assign an identification variable to a path expression with asterisk."
+                    "Cannot assign an identification variable to a path expression with asterisk (ie. foo.bar.* AS foobaz)."
                 );
 	}
+
+        // We need to add scalar in queryComponent the item alias if identificationvariable is set.
+        echo "SelectExpression:\n";
+        echo get_class($this->_leftExpression) . "\n";
 
 	// The check for duplicate IdentificationVariable was already done
     }
@@ -84,8 +90,8 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
 
     public function buildSql()
     {
-        return $this->_leftExpression->buildSql()
-             . (($this->_identificationVariable) ? ' AS ' . $this->_identificationVariable->buildSql(): '');
+        return $this->_leftExpression->buildSql() . ' AS '
+             . (($this->_identificationVariable !== null) ? $this->_identificationVariable : '');
     }
 
 

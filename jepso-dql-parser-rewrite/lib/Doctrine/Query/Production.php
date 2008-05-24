@@ -88,7 +88,8 @@ abstract class Doctrine_Query_Production
     {
         $AST = $this->_getProduction($AstName);
 
-        //echo "Processing class: " . $AstName . " params: \n" . var_export($paramHolder, true) . "\n";
+        //echo "Processing class: " . get_class($AST) . "...\n";
+        //echo "Params: " . var_export($paramHolder, true) . "\n";
 
         // Syntax check
         if ( ! $paramHolder->has('syntaxCheck') || $paramHolder->get('syntaxCheck') === true) {
@@ -97,6 +98,8 @@ abstract class Doctrine_Query_Production
             $return = $AST->syntax($paramHolder);
 
             if ($return !== null) {
+                //echo "Returning AST class: " . (is_object($return) ? get_class($return) : $return) . "...\n";
+
                 return $return;
             }
         }
@@ -108,9 +111,13 @@ abstract class Doctrine_Query_Production
             $return = $AST->semantical($paramHolder);
 
             if ($return !== null) {
+                //echo "Returning AST class: " . (is_object($return) ? get_class($return) : $return) . "...\n";
+
                 return $return;
             }
         }
+
+        //echo "Returning AST class: " . get_class($AST) . "...\n";
 
         return $AST;
     }

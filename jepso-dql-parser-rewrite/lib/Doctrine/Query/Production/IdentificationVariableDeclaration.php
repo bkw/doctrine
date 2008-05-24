@@ -70,6 +70,26 @@ class Doctrine_Query_Production_IdentificationVariableDeclaration extends Doctri
 
     public function buildSql()
     {
-        return '';
+        // We need to bring the queryComponent and get things from there.
+        $parserResult = $this->_parser->getParserResult();
+        $queryComponent = $parserResult->getQueryComponent($this->_rangeVariableDeclaration);
+
+        // Retrieving connection
+        $conn = $this->_parser->getSqlBuilder()->getConnection();
+        $manager = Doctrine_Manager::getInstance();
+
+        if ($manager->hasConnectionForComponent($queryComponent['metadata']->getClassName())) {
+            $conn = $manager->getConnectionForComponent($queryComponent['metadata']->getClassName());
+        }
+
+        $str = $conn->quoteIdentifier($queryComponent['metadata']->getTableName()) . ' '
+             . $conn->quoteIdentifier($parserResult->getTableAliasFromComponentAlias($this->_rangeVariableDeclaration));
+
+        for ($i = 0, $l = count($this->_relations); $i < $l; $i++) {
+            $str .= $this->_relations[$i]['join']->buildSql() . ' '
+                  . ((isset($this->_relations[$i]['indexby'])) ? $this->_relations[$i]['indexby']->buildSql() . ' ' : '');
+        }
+
+        return $str;
     }
 }
