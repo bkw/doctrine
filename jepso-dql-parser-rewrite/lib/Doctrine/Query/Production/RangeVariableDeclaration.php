@@ -116,22 +116,17 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 
         // Get the connection for the component
         $conn = $this->_parser->getSqlBuilder()->getConnection();
-        $manager = Doctrine_Manager::getInstance();
+        $manager = Doctrine_EntityManager::getManager();
         $componentName = $this->_identifiers[0];
-
-        // Check for a possible connection for this component
-        if ($manager->hasConnectionForComponent($componentName)) {
-            $conn = $manager->getConnectionForComponent($componentName);
-        }
 
         // Retrieving ClassMetadata and Mapper
         try {
-            $classMetadata = $conn->getClassMetadata($componentName);
+            $classMetadata = $manager->getClassMetadata($componentName);
 
             // Building queryComponent
             $queryComponent = array(
                 'metadata' => $classMetadata,
-                'mapper'   => $conn->getMapper($componentName),
+                'mapper'   => $manager->getEntityPersister($componentName),
                 'parent'   => null,
                 'relation' => null,
                 'map'      => null,
@@ -162,7 +157,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 
         // Get the connection for the component
         $conn = $this->_parser->getSqlBuilder()->getConnection();
-        $manager = Doctrine_Manager::getInstance();
+        $manager = Doctrine_EntityManager::getManager();
 
         // Retrieve the base component
         try {
@@ -170,10 +165,6 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
             $classMetadata = $queryComponent['metadata'];
             $className = $classMetadata->getClassName();
             $parent = $path = $this->_identifiers[0];
-
-            if ($manager->hasConnectionForComponent($className)) {
-                $conn = $manager->getConnectionForComponent($className);
-            }
         } catch (Doctrine_Exception $e) {
             $this->_parser->semanticalError($e->getMessage());
 
@@ -218,7 +209,7 @@ class Doctrine_Query_Production_RangeVariableDeclaration extends Doctrine_Query_
 
                     $queryComponent = array(
                         'metadata' => $classMetadata,
-                        'mapper'   => $conn->getMapper($relation->getForeignComponentName()),
+                        'mapper'   => $manager->getEntityPersister($relation->getForeignComponentName()),
                         'parent'   => $parent,
                         'relation' => $relation,
                         'map'      => null,

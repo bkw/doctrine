@@ -84,20 +84,16 @@ class Doctrine_Query_Production_VariableDeclaration extends Doctrine_Query_Produ
 
             // Get the connection for the component
             $conn = $this->_parser->getSqlBuilder()->getConnection();
-            $manager = Doctrine_Manager::getInstance();
-
-            if ($manager->hasConnectionForComponent($this->_componentName)) {
-                $conn = $manager->getConnectionForComponent($this->_componentName);
-            }
+            $manager = Doctrine_EntityManager::getManager();
 
             // Retrieving ClassMetadata and Mapper
             try {
-                $classMetadata = $conn->getMetadata($this->_componentName);
+                $classMetadata = $manager->getMetadata($this->_componentName);
 
                 // Building queryComponent
                 $queryComponent = array(
                     'metadata' => $classMetadata,
-                    'mapper'   => $conn->getMapper($this->_componentName),
+                    'mapper'   => $manager->getEntityPersister($this->_componentName),
                     'parent'   => null,
                     'relation' => null,
                     'map'      => null,

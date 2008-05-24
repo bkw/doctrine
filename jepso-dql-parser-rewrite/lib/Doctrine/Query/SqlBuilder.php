@@ -45,7 +45,7 @@ abstract class Doctrine_Query_SqlBuilder
     public static function fromConnection(Doctrine_Connection $connection = null)
     {
         if ($connection === null) {
-            $connection = Doctrine_Manager::getInstance()->getCurrentConnection();
+            $connection = Doctrine_EntityManager::getManager()->getConnection();
         }
 
         $className = "Doctrine_Query_SqlBuilder_" . $connection->getDriverName();

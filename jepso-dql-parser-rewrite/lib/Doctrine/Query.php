@@ -98,7 +98,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
         $this->setConnection($conn);
 
         if ($hydrator === null) {
-            $hydrator = new Doctrine_Hydrator();
+            $hydrator = new Doctrine_Hydrator(Doctrine_EntityManager::getManager());
         }
 
         $this->_hydrator = $hydrator;
@@ -139,7 +139,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract
     public function setConnection(Doctrine_Connection $conn = null)
     {
         if ($conn === null) {
-            $conn = Doctrine_Manager::getInstance()->getCurrentConnection();
+            $conn = Doctrine_EntityManager::getManager()->getConnection();
         }
 
         $this->_connection = $conn;

@@ -236,6 +236,18 @@ abstract class Doctrine_Relation implements ArrayAccess
     {
         return $this->definition['relName'];
     }
+    
+    /**
+     * getTable
+     * returns the foreign table object
+     *
+     * @return object Doctrine_Table
+     */
+    final public function getTable()
+    {
+        return Doctrine_EntityManager::getManager($this->definition['class'])
+               ->getClassMetadata($this->definition['class']);
+    }
 
     /**
      * getType
