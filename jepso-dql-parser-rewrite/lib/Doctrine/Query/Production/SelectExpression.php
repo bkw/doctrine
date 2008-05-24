@@ -40,7 +40,7 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
 
     protected $_identificationVariable;
 
-    private $__columnAliasInTable;
+    private $__columnAliasInSql;
 
 
     public function syntax($paramHolder)
@@ -74,17 +74,34 @@ class Doctrine_Query_Production_SelectExpression extends Doctrine_Query_Producti
         // Here we inspect for duplicate IdentificationVariable, and if the
         // left expression needs the identification variable. If yes, check
         // its existance.
-	if ( $this->_leftExpression instanceof PathExpressionEndingWithAsterisk && $this->_identificationVariable !== null ) {
-		$this->_parser->semanticalError(
-                    "Cannot assign an identification variable to a path expression with asterisk (ie. foo.bar.* AS foobaz)."
-                );
-	}
+        if ($this->_leftExpression instanceof Doctrine_Query_Production_PathExpressionEndingWithAsterisk && $this->_identificationVariable !== null) {
+            $this->_parser->semanticalError(
+                "Cannot assign an identification variable to a path expression with asterisk (ie. foo.bar.* AS foobaz)."
+            );
+        }
+
+        if ($this->_identificationVariable !== null) {
+            if ($this->_leftExpression instanceof Doctrine_Query_Production_PathExpression) {
+                // We bring the queryComponent from the class instance
+                // $queryComponent = $this->_leftExpression->getQueryComponent();
+            } else {
+                // We bring the default queryComponent
+                // $queryComponent = $parserResult->getQueryComponent(null);
+            }
+
+            $idx = count($queryComponent['scalar']);
+            $this->__columnAliasInSql .= '__' . $idx;
+
+            $queryComponent['scalar'][$idx] = $this->_identificationVariable;
+
+            //$parserResult->setQueryComponent($componentAlias, $queryComponent);
+        }
 
         // We need to add scalar in queryComponent the item alias if identificationvariable is set.
         echo "SelectExpression:\n";
         echo get_class($this->_leftExpression) . "\n";
 
-	// The check for duplicate IdentificationVariable was already done
+        // The check for duplicate IdentificationVariable was already done
     }
 
 
