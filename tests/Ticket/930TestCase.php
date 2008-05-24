@@ -34,7 +34,7 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
   /**
    * prepareData
    */
-	
+
     public function prepareData()
     {
 	    $oPerson = new T930_Person;
@@ -46,29 +46,29 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
 	    $oPerson->JobPositions[0]->Category->code = '1234';
 	    $oPerson->JobPositions[0]->Category->Translation['fr']->name = 'Développeur Web';
 	    $oPerson->JobPositions[0]->Category->Translation['en']->name = 'Webdeveloper';
-      
+
 	    $oPerson->JobPositions[1]->name = 'Webmaster';
       $oPerson->JobPositions[1]->Category->code = '1234';
       $oPerson->JobPositions[1]->Category->Translation['fr']->name = 'Webmaster';
       $oPerson->JobPositions[1]->Category->Translation['en']->name = 'Webmaster';
       $oPerson->save();
-      
+
       $oPerson = new T930_Person;
       $oPerson->name = 'Jonathan';
       $oPerson->Country->code = 'us';
       $oPerson->Country->Translation['fr']->name   = 'Etats Unis';
       $oPerson->Country->Translation['fr']->people = 'Américains';
       $oPerson->Country->Translation['en']->name   = 'United states';
-      $oPerson->Country->Translation['fr']->people = 'Americans';      
-      
+      $oPerson->Country->Translation['fr']->people = 'Americans';
+
 	    $oPerson->save();
 
     }
-    
+
     /**
      * prepareTables
      */
-    
+
     public function prepareTables()
     {
     	$this->tables = array();
@@ -76,15 +76,15 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
     	$this->tables[] = 'T930_Country';
     	$this->tables[] = 'T930_JobPosition';
     	$this->tables[] = 'T930_JobCategory';
-    	
+
     	parent :: prepareTables();
     }
-	
-    
+
+
     /**
      * Test the existence expected indexes
      */
-    
+
     public function testTicket()
     {
         try {
@@ -100,9 +100,9 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
           //->where('P.name = ?', 'Jonathan')
           ->fetchArray();
         } catch (Exception $e) {
-          $this->fail($e->geMessage());
+          $this->fail($e->getMessage());
         }
-        
+
         $this->assertTrue(isset($r[0]['Country']['Translation']['fr']['name']));
     }
 }
@@ -124,7 +124,7 @@ class T930_Person extends Doctrine_Record
       'foreign' => 'id',
       'onDelete' => 'CASCADE'
       ));
-    
+
     $this->hasMany('T930_JobPosition as JobPositions', array(
       'local' => 'id',
       'foreign' => 'person_id',
@@ -151,7 +151,7 @@ class T930_Country extends Doctrine_Record
       'foreign' => 'country_id',
       'onDelete' => 'CASCADE'
       ));
-      
+
     $this->actAs('I18n', array('fields' => array('name', 'people')));
   }
 }
@@ -176,7 +176,7 @@ class T930_JobPosition extends Doctrine_Record
       'foreign' => 'id',
       'onDelete' => 'CASCADE'
       ));
-      
+
     $this->hasOne('T930_JobCategory as Category', array(
       'local' => 'job_category_id',
       'foreign' => 'id',
@@ -202,11 +202,7 @@ class T930_JobCategory extends Doctrine_Record
       'foreign' => 'job_category_id',
       'onDelete' => 'CASCADE'
       ));
-      
+
     $this->actAs('I18n', array('fields' => array('name')));
   }
 }
-
-
-
-
