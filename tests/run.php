@@ -208,6 +208,7 @@ $behaviors->addTestCase(new Doctrine_Hook_TestCase());
 $behaviors->addTestCase(new Doctrine_I18n_TestCase());
 $behaviors->addTestCase(new Doctrine_Sluggable_TestCase());
 $behaviors->addTestCase(new Doctrine_Record_Generator_TestCase());
+$behaviors->addTestCase(new Doctrine_SoftDelete_TestCase());
 $test->addTestCase($behaviors);
 
 // Validator Testing

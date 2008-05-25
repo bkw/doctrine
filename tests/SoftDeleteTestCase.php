@@ -20,54 +20,40 @@
  */
 
 /**
- * Doctrine_Template_Versionable
- *
- * Add revisioning/audit log to your models
+ * Doctrine_SoftDelete_TestCase
  *
  * @package     Doctrine
- * @subpackage  Template
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @category    Object Relational Mapping
  * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
- * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  */
-class Doctrine_Template_Versionable extends Doctrine_Template
+class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase 
 {
-    /**
-     * __construct
-     *
-     * @param string $array 
-     * @return void
-     */
-    public function __construct(array $options = array())
+    public function prepareTables()
     {
-        $this->_plugin = new Doctrine_AuditLog($options);
+        $this->tables[] = 'SoftDeleteTest';
+        parent::prepareTables();
     }
 
-    /**
-     * Setup the Versionable behavior for the template
-     *
-     * @return void
-     */
-    public function setUp()
+    public function testDoctrineRecordDeleteSetsFlag()
     {
-        if ($this->_plugin->getOption('auditLog')) {
-            $this->_plugin->initialize($this->_table);
-        }
-
-        $this->hasColumn('version', 'integer', 8);
-
-        $this->addListener(new Doctrine_AuditLog_Listener($this->_plugin));
+        $test = new SoftDeleteTest();
+        $test->name = 'test';
+        $test->something = 'test';
+        $test->save();
+        $test->delete();
+        $this->assertTrue($test->deleted);
+        $test->free();
     }
 
-    /**
-     * Get plugin for Versionable template
-     *
-     * @return void
-     */
-    public function getAuditLog()
+    public function testDoctrineQueryIsFilteredWithDeleteFlagCondition()
     {
-        return $this->_plugin;
+        $test = Doctrine_Query::create()
+                    ->from('SoftDeleteTest s')
+                    ->fetchOne();
+        $this->assertFalse($test);
     }
 }
