@@ -77,15 +77,29 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
     
     public function getElement(array $data, $component)
     {
+        $parentTable =  Doctrine::getTable($component);
         $component = $this->_getClassNameToReturn($data, $component);
         if ( ! isset($this->_tables[$component])) {
             $this->_tables[$component] = Doctrine::getTable($component);
             $this->_tables[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
         }
 
+
+        $componentTable = $this->_tables[$component];
+
+        foreach($parentTable->getJoinedInheritanceMapChildren() as $child)
+        {
+            if(in_array($child, $componentTable->getOption('joinedParents')) || $child == $componentTable->getComponentName()) {
+                if(isset($data[$child])) {
+                    $data = array_merge($data, $data[$child]);
+                }
+            }
+            if(isset($data[$child])) {
+                unset($data[$child]);
+            }
+        }
         $this->_tables[$component]->setData($data);
         $record = $this->_tables[$component]->getRecord();
-
         return $record;
     }
     
@@ -122,6 +136,15 @@ class Doctrine_Hydrator_RecordDriver extends Doctrine_Locator_Injectable
         if ( ! isset($this->_tables[$component])) {
             $this->_tables[$component] = Doctrine::getTable($component);
             $this->_tables[$component]->setAttribute(Doctrine::ATTR_LOAD_REFERENCES, false);
+        }
+
+        if (($joinedClasses = $this->_tables[$component]->getOption('joinedInheritanceMap'))) {
+            foreach($joinedClasses as $class=>$conditions) {
+                list($key, $value) = each($conditions);
+                if (isset($data[$key]) && $data[$key] == $value) {
+                    return $class;
+                } 
+            }
         }
         
         if ( ! ($subclasses = $this->_tables[$component]->getOption('subclasses'))) {

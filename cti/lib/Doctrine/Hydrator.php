@@ -319,10 +319,16 @@ class Doctrine_Hydrator extends Doctrine_Hydrator_Abstract
             }
 
             if ($cache[$key]['isSimpleType']) {
-                $rowData[$dqlAlias][$fieldName] = $value;
+                $fieldValue = $value;
             } else {
-                $rowData[$dqlAlias][$fieldName] = $table->prepareValue(
-                        $fieldName, $value, $cache[$key]['type']);
+                $fieldValue = $table->prepareValue($fieldName, $value, $cache[$key]['type']);
+            }
+
+            if(isset($map['joinedParentComponentAlias'])) {
+                $rowData[$map['joinedParentComponentAlias']][$table->getComponentName()][$fieldName] = $fieldValue;
+            }
+            else {
+                $rowData[$dqlAlias][$fieldName] = $fieldValue;
             }
 
             if ( ! isset($nonemptyComponents[$dqlAlias]) && $value !== null) {

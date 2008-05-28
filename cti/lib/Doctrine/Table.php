@@ -292,6 +292,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         } else {
             $class = new ReflectionClass($class);
         }
+        
+        $this->_options['ownedColumns'] = $this->getFieldNames();
+        
 
         $this->_options['joinedParents'] = array();
 
@@ -306,6 +309,10 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 continue;
             }
             $parentTable = $this->_conn->getTable($parent);
+
+            if($parentTable->getOption('joinedInheritanceMap')) {
+                $this->setOption('joinedInheritanceMap', $parentTable->getOption('joinedInheritanceMap'));
+            }
 
             $found = false;
             $parentColumns = $parentTable->getColumns();
@@ -338,8 +345,14 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
 
             break;
         }
-
-        $this->_options['joinedParents'] = array_values(array_unique($this->_options['joinedParents']));
+        //get right ordering (needed in UnitOfWork)
+        $joinedParents = array();
+        foreach($this->_options['parents'] as $parent) {
+            if(in_array($parent, $this->_options['joinedParents'])) {
+                $joinedParents[] = $parent;
+            }
+        }
+        $this->_options['joinedParents'] = $joinedParents;
 
         $this->_options['declaringClass'] = $class;
 
@@ -451,6 +464,12 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 $this->_identifierType = Doctrine::IDENTIFIER_COMPOSITE;
         }
     }
+
+    public function getOwnedColumns()
+    {
+        return $this->_options['ownedColumns'];
+    }
+
 
     /**
      * Gets the owner of a column.
@@ -1415,6 +1434,26 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
 
         return $record;
     }
+
+  public function getJoinedInheritanceMapChildren()
+    {
+        if($joinedMap = $this->getOption('joinedInheritanceMap')) {
+            $subclasses = array_keys($joinedMap);
+            $subchildren = array();
+            foreach($subclasses as $subclass) {
+                $subclassTable = $this->_conn->getTable($subclass);
+                $subclassParents = $subclassTable->getOption('joinedParents');
+                $subchildren = array_merge($subchildren, $subclassParents);
+                $subchildren[] = $subclass;
+            }
+            $subchildren = array_diff($subchildren, $this->getOptions('joinedParents'));
+            $subchildren = array_unique($subchildren);
+            return $subchildren;
+        }
+        return array();
+    }
+
+
 
     /**
      * Get the classname to return. Most often this is just the options['name']

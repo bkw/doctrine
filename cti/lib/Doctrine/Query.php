@@ -522,9 +522,17 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $fields = $this->_pendingFields[$componentAlias];
 
+        $childFields = array();
         // check for wildcards
         if (in_array('*', $fields)) {
             $fields = $table->getFieldNames();
+            if($children = $table->getJoinedInheritanceMapChildren()) {
+                foreach($children as $child) {
+                    $childTable = $this->_conn->getTable($child);
+                    $ownedColumns =  $childTable->getOwnedColumns();
+                    $childFields[$child] = $ownedColumns;
+                }
+            }            
         } else {
             // only auto-add the primary key fields if this query object is not
             // a subquery of another query object
@@ -550,6 +558,19 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                 $sql[] = $this->_conn->quoteIdentifier($tableAlias . '.' . $columnName)
                        . ' AS '
                        . $this->_conn->quoteIdentifier($tableAlias . '__' . $columnName);
+            }
+        }
+        foreach($childFields as $childTableName=>$childColumns)
+        {
+            foreach($childColumns as $fieldName)
+            {
+                $columnName = $table->getColumnName($fieldName);
+                $child = $this->_conn->getTable($childTableName);
+                $columnName = $child->getColumnName($fieldName);
+                $childAlias = $this->getTableAlias($componentAlias . '.' . $child->getComponentName());
+                $sql[] = $this->_conn->quoteIdentifier($childAlias . '.' . $columnName)
+                    . ' AS '
+                    . $this->_conn->quoteIdentifier($childAlias . '__' . $columnName);
             }
         }
 
@@ -1711,11 +1732,11 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $this->_tableAliasMap[$tableAlias] = $componentAlias;
 
+        $this->_queryComponents[$componentAlias] = array('table' => $table, 'map' => null);
+        
         $queryPart .= $this->buildInheritanceJoinSql($name, $componentAlias);
 
         $this->_sqlParts['from'][] = $queryPart;
-
-        $this->_queryComponents[$componentAlias] = array('table' => $table, 'map' => null);
 
         return $table;
     }
@@ -1747,7 +1768,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             // get the short alias for the parent table
             $parentTableAlias = $this->getTableAlias($parentAlias, $parentTable->getTableName());
 
-            $queryPart .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($parentTable->getTableName())
+            $queryPart .= ' INNER JOIN ' . $this->_conn->quoteIdentifier($parentTable->getTableName())
                         . ' ' . $this->_conn->quoteIdentifier($parentTableAlias) . ' ON ';
 
             //Doctrine::dump($table->getIdentifier());
@@ -1761,6 +1782,31 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             }
         }
 
+        if($subchildren = $table->getJoinedInheritanceMapChildren()) {
+            foreach($subchildren as $subchild) {
+                $subchildTable = $this->_conn->getTable($subchild);
+
+                $subchildAlias = $componentAlias . '.' . $subchild;
+
+                // get the short alias for the parent table
+                $subchildTableAlias = $this->getTableAlias($subchildAlias, $subchildTable->getTableName());
+
+                $queryPart .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($subchildTable->getTableName())
+                    . ' ' . $this->_conn->quoteIdentifier($subchildTableAlias) . ' ON ';
+
+                $this->_queryComponents[$subchildAlias] = array('table' => $subchildTable, 'map' => null, 'joinedParentComponentAlias' => $componentAlias);
+                //Doctrine::dump($table->getIdentifier());
+                foreach ((array) $table->getIdentifier() as $identifier) {
+                    $column = $table->getColumnName($identifier);
+
+                    $queryPart .= $this->_conn->quoteIdentifier($tableAlias) 
+                        . '.' . $this->_conn->quoteIdentifier($column)
+                        . ' = ' . $this->_conn->quoteIdentifier($subchildTableAlias)
+                        . '.' . $this->_conn->quoteIdentifier($column);
+                }
+
+            }
+        } 
         return $queryPart;
     }
 

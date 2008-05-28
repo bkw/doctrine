@@ -1196,7 +1196,19 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                     $a[$field] = $this->_data[$field];
             }
         }
-        $map = $this->_table->inheritanceMap;
+        
+        $map = $this->_table->joinedInheritanceMap;
+        if($map != null) {
+            if(isset($map[get_class($this)])) {
+                $map = $map[get_class($this)];
+            }
+            else {
+                $map = array();
+            }
+        }
+        else {
+            $map = $this->_table->inheritanceMap;
+        }
         foreach ($map as $k => $v) {
             $old = $this->get($k, false);
 
