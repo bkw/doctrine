@@ -1,3 +1,91 @@
+0.11.0-RC3
+----------
+    * [r4325] Updating changelog for 0.11.0-RC2
+    * [r4330] Fixing pgsql md5 expression
+    * [r4331] Removing unused methods getComponentAlias() and setComponentAlias(). Feature is nice but not implemented fully and will be done for 2.0
+    * [r4332] Consolidated Doctrine_Manager::getInstance()->getTable() and Doctrine_Manager::table() methods in to one method. Doctrine::getTable() for 1.0 is the authoritative method.
+    * [r4333] Added option for generating accessors.
+    * [r4334] Fixed #1015. The dql parser is currently case-sensitive. you need to use WITH in the join.
+    * [r4335] Adding trim calls.
+    * [r4336] Object hydration now properly initializes collections.
+    * [r4337] Added a type hint.
+    * [r4340] converted all unix newlines to PHP_EOL (was already being used in some places, caused inconsistent newline SVN errors for windows users)
+    * [r4341] Fixed #540.
+    * [r4343] Fixed #1023. Thanks for ticket & patch.
+    * [r4345] added exception handling to PDO init in connect() to avoid uncaught PDOException/convert to Doctrine_Exception
+    * [r4346] Fixing issue where custom setter for data fixtures is only called for relations and not fields too. Changed to call custom setter if it is defined on the fixture Doctrine_Record.
+    * [r4347] fixes #936 - Fixes issue with nested behaviors
+    * [r4348] fixes #917 - Fixes hydration issue
+    * [r4349] Added coverage for ticket #832
+    * [r4350] Added coverage for r1022
+    * [r4351] fixes #1009 - Adding limit(1) to query in Doctrine_Table::find()
+    * [r4352] fixes #1011
+    * [r4353] fixes #980
+    * [r4354] Fixes.
+    * [r4355] Cleanup.
+    * [r4356] fixes #997
+    * [r4357] Tabs to spaces and trimmed trailing whitespace.
+    * [r4358] Fixed issue with exportClassesSql() being called on wrong connection.
+    * [r4359] Reverted patch for #917. Need more information.
+    * [r4360] fixes #1024
+    * [r4361] fix for http://trac.symfony-project.com/ticket/2670
+    * [r4362] Adjustments to Oracle limit/offset emulation to make it look exactly like in Zend_Db.
+    * [r4363] fixing issue when username or password were null - resulting in them being turned into an empty string
+    * [r4366] Fixed #917.
+    * [r4367] fixes #1042
+    * [r4368] fixes #1030
+    * [r4369] Fixing comment indention.
+    * [r4370] fixes #1036
+    * [r4371] fixes #1048
+    * [r4372] Fixed #1039. bruno.p.reis: please take a look at the changeset and verify that the generated SQL is correct. We can't test against a real oracle db yet.
+    * [r4373] Formatting.
+    * [r4377] fixes #977
+    * [r4378] fixes #1047
+    * [r4379] fixes #1051
+    * [r4381] fixes #1026
+    * [r4382] fixes #1013
+    * [r4383] fixes #1044
+    * [r4384] fixes #1050
+    * [r4385] Documentation for nested behaviors.
+    * [r4386] fixes #1058
+    * [r4387] fixes #1028
+    * [r4388] Fix to spacing.
+    * [r4389] fixes #1057
+    * [r4390] fixes #1010
+    * [r4391] fixes #930
+    * [r4393] fixes #1060
+    * [r4394] fixes #1059
+    * [r4395] Fixes issue with multiple behaviors
+    * [r4396] Reverted patch for #930. Added test case into suite. Passes. Fixed #930.
+    * [r4398] Enhancements in Doctrine_Pager. Added three methods: getFirstIndice, getLastIndice and getRange. Updated documentation to explain these new methods.
+    * [r4399] typo
+    * [r4400] typo
+    * [r4401] branches/0.11: changed Doctrine_Collection->getKeyColumn() to return the correct var (fixes #1076)
+    * [r4404] - implement support for callbacks/listeners on DQL select, update and delete statements - update the SoftDelete template to use this new feature refs #1055
+    * [r4405] - temporarily revert r4403, some tests required messing with preQuery() (refs #1055)
+    * [r4406] fixes #1069
+    * [r4407] Added support for comments on fields for mysql.
+    * [r4408] started refactoring Doctrine_Query::load()
+    * [r4409] fixes #1071
+    * [r4410] fixes #1064
+    * [r4411] fixes #1065
+    * [r4412] fixes #1054
+    * [r4413] A little addition to schema files.
+    * [r4414] - typo fix
+    * [r4415] Fixed #930.
+    * [r4432] - WS fixes ahead of commiting ticket #1055
+    * [r4433] - add support for calling pre/postDQL*() methods via preQuery()/postQuery (fixes #1055)
+    * [r4438] Adding docs about using free() to free resources
+    * [r4439] Cleanup, standards, documentation, etc.
+    * [r4440] Adding documentation for DQL hook methods.
+    * [r4441] Cleanup.
+    * [r4442] Docs
+    * [r4443] Cleanup.
+    * [r4446] filtering out invalid models.
+    * [r4448] - parameter params is an array for execute()
+    * [r4449] - fixed the way the placeholder parameters are set in find() (#1083)
+    * [r4450] - do not allow null's in the deleted column by default (#1083)
+
 0.11.0-RC2
 ----------
     * [r4282] Updating package.xml for 0.11
