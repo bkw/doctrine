@@ -139,16 +139,18 @@ $table = Doctrine::getTable("User");
 // find by primary key
 
 $user = $table->find(2);
-if($user !== false)
+if ($user !== false)
     print $user->name;
 
 // get all users
-foreach($table->findAll() as $user) {
+$users = $table->findAll();
+foreach($users as $user) {
     print $user->name;
 }
 
 // finding by dql
-foreach($table->findByDql("name LIKE '%John%'") as $user) {
+$users = $table->findByDql("name LIKE '%John%'");
+foreach($users as $user) {
     print $user->created;
 }
 
@@ -158,7 +160,7 @@ $users = $table->findByAge(10); // find users with age of 10
 
 // finding objects with DQL
 
-$users = Doctrine_Query::execute()->from('User u')->where("u.name LIKE '%John%'");
+$users = Doctrine_Query::create()->from('User u')->where("u.name LIKE '%John%'")->execute();
 </code>
 
 +++ Updating records
