@@ -229,10 +229,11 @@ be applied to the record.
 
 <code type="php">
 $user = Doctrine_Query::create()
-    ->from('User')
-    ->leftJoin('Groups')
-    ->where('id = ?')
-    ->fetchOne(array(1));
+    ->select('u.*, g.*')
+    ->from('User u')
+    ->leftJoin('u.Groups g')
+    ->where('id = ?', 1)
+    ->fetchOne();
 
 // Display this object on a cool javascript form that allows you to:
 
@@ -244,10 +245,11 @@ unset($arrayUser['Group'][1]); // even remove a relation
 // submit the form and on the next script use the same query to retrieve the record
 
 $user = Doctrine_Query::create()
-    ->from('User')
-    ->leftJoin('Groups')
-    ->where('id = ?')
-    ->fetchOne(array(1));
+    ->select('u.*, g.*')
+    ->from('User u')
+    ->leftJoin('u.Groups g')
+    ->where('id = ?', 1)
+    ->fetchOne();
 
 // sanitize the form input an get the data
 
