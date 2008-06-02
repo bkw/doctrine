@@ -289,6 +289,8 @@ $inheritance->addTestCase(new Doctrine_CtiColumnAggregationInheritance_TestCase(
 $inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
 $inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
 $inheritance->addTestCase(new Doctrine_NewClassTableInheritance_TestCase());
+$inheritance->addTestCase(new Doctrine_CTITreeStructure_TestCase());
+$inheritance->addTestCase(new Doctrine_CTII18n_TestCase());
 $inheritance->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
 $test->addTestCase($inheritance);
 
