@@ -385,10 +385,11 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                     $table = $this->_conn->getTable($root);
 
                     $this->_identifier = $table->getIdentifier();
-
+                    
                     $this->_identifierType = ($table->getIdentifierType() !== Doctrine::IDENTIFIER_AUTOINC)
                                             ? $table->getIdentifierType() : Doctrine::IDENTIFIER_NATURAL;
-
+                    
+                    $ids = $this->_identifier;
                     // add all inherited primary keys
                     foreach ((array) $this->_identifier as $id) {
                         $definition = $table->getDefinitionOf($id);
@@ -403,6 +404,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                         $this->setColumn($fullName, $definition['type'], $definition['length'],
                                 $definition, true);
                     }
+                    $this->_identifier = $ids;
                 } else {
                     $definition = array('type' => 'integer',
                                         'length' => 20,

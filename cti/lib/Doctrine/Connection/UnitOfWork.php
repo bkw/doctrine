@@ -767,7 +767,10 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
         foreach ($classes as $k => $parent) {
             if ($k === 0) {
                 $rootRecord = new $parent();
-                $rootRecord->merge($dataSet[$parent]);
+                if (isset($dataSet[$parent]))
+                {
+                    $rootRecord->merge($dataSet[$parent]);
+                }
                 $this->processSingleInsert($rootRecord);
                 $record->assignIdentifier($rootRecord->identifier());
             } else {
