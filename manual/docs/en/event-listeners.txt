@@ -217,17 +217,14 @@ Here is a list of all available listener methods:
 || preUpdate(Doctrine_Event $event) || Doctrine_Record::save() when the record state is DIRTY ||
 || preDqlUpdate(Doctrine_Event $event) || Doctrine_Query::create()->update('User')->set('name', '?', 'jwage')->execute() ||
 || postUpdate(Doctrine_Event $event) || Doctrine_Record::save() when the record state is DIRTY ||
-|| postDqlUpdate(Doctrine_Event $event) || Doctrine_Query::create()->update('User')->set('name', '?', 'jwage')->execute() ||
 || preInsert(Doctrine_Event $event) || Doctrine_Record::save() when the record state is TDIRTY ||
 || postInsert(Doctrine_Event $event) || Doctrine_Record::save() when the record state is TDIRTY ||
 || preDelete(Doctrine_Event $event) || Doctrine_Record::delete() ||
 || preDqlDelete(Doctrine_Event $event) || Doctrine_Query::create()->delete()->from('User')->execute() ||
 || postDelete(Doctrine_Event $event) || Doctrine_Record::delete() ||
-|| postDqlDelete(Doctrine_Event $event) || Doctrine_Query::create()->delete()->from('User')->execute() ||
 || preValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 || postValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 || preDqlSelect(Doctrine_Event $event) || Doctrine_Query::create()->from('User u')->execute() ||
-|| postDqlSelect(Doctrine_Event $event) || Doctrine_Query::create()->from('User u')->execute() ||
 
 Just like with connection listeners there are three ways of defining a record listener: by extending 
 Doctrine_Record_Listener, by implement Doctrine_Record_Listener_Interface or by implementing Doctrine_Overloadable. 
@@ -312,17 +309,14 @@ class MyRecord extends Doctrine_Record
 || preUpdate(Doctrine_Event $event) || Doctrine_Record::save() when the record state is DIRTY ||
 || preDqlUpdate(Doctrine_Event $event) || Doctrine_Query::create()->update('User')->set('name', '?', 'jwage')->execute() ||
 || postUpdate(Doctrine_Event $event) || Doctrine_Record::save() when the record state is DIRTY ||
-|| postDqlUpdate(Doctrine_Event $event) || Doctrine_Query::create()->update('User')->set('name', '?', 'jwage')->execute() ||
 || preInsert(Doctrine_Event $event) || Doctrine_Record::save() when the record state is TDIRTY ||
 || postInsert(Doctrine_Event $event) || Doctrine_Record::save() when the record state is TDIRTY ||
 || preDelete(Doctrine_Event $event) || Doctrine_Record::delete() ||
 || preDqlDelete(Doctrine_Event $event) || Doctrine_Query::create()->delete()->from('User')->execute() ||
 || postDelete(Doctrine_Event $event) || Doctrine_Record::delete() ||
-|| postDqlDelete(Doctrine_Event $event) || Doctrine_Query::create()->delete()->from('User')->execute() ||
 || preValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 || postValidate(Doctrine_Event $event) || Doctrine_Validator::validate() ||
 || preDqlSelect(Doctrine_Event $event) || Doctrine_Query::create()->from('User u')->execute() ||
-|| postDqlSelect(Doctrine_Event $event) || Doctrine_Query::create()->from('User u')->execute() ||
 
 Example 1. Using insert and update hooks
 <code type="php">
