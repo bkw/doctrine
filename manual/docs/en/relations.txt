@@ -13,6 +13,7 @@ second argument is an array consisting of relation options. The option array con
 * **owningSide**, (optional) set to boolean true to indicate the owning side of the relation. The owning side is the side that owns the foreign key. There can only be one owning side in an association between two classes. Note that this option is required if Doctrine can't guess the owning side or it's guess is wrong. An example where this is the case is when both 'local' and 'foreign' are part of the identifier (primary key). It never hurts to specify the owning side in this way.', 
 * **onDelete**, (optional) the onDelete integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
 * **onUpdate**, (optional) the onUpdate integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
+* **override**, (optional) the override option will override the relation definition if one already exists with the same name. This is useful in cases where you have child classes using inheritance which redefine a relations information for the child class.
 
 So lets take our first example, say we have two classes Forum_Board and Forum_Thread. Here Forum_Board has many 
 Forum_Threads, hence their relation is one-to-many. We don't want to write Forum_ when accessing relations, so we 
