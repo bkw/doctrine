@@ -13,6 +13,7 @@ $test = new DoctrineTest();
 // Ticket Tests
 // If you write a ticket testcase add it to the bottom of the list, with the ticket number in it
 $tickets = new GroupTest('Tickets Tests', 'tickets');
+/*
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_381_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_384_TestCase());
@@ -45,7 +46,6 @@ $tickets->addTestCase(new Doctrine_Ticket_966_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_969_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_941_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_930_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_1099_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_NewTicket_TestCase());
 
 // Only uncomment the following ticket if you want to check free() performance!
@@ -71,8 +71,12 @@ $tickets->addTestCase(new Doctrine_Ticket_982_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_987_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1015_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1028_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_1071_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1044_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1071_TestCase());
+*/
+$tickets->addTestCase(new Doctrine_Ticket_1072_TestCase());
+
+//$tickets->addTestCase(new Doctrine_Ticket_1099_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
