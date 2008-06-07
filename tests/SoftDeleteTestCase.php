@@ -51,9 +51,17 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
 
     public function testDoctrineQueryIsFilteredWithDeleteFlagCondition()
     {
-        $test = Doctrine_Query::create()
+        $q = Doctrine_Query::create()
                     ->from('SoftDeleteTest s')
-                    ->fetchOne();
+                    ->where('s.name = ?', array('test'));
+
+        $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_test s WHERE s.name = ? AND s.deleted = ?');
+        $params = $q->getParams();
+        $this->assertEqual(count($params), 2);
+        $this->assertEqual($params[0], 'test');
+        $this->assertEqual($params[1], false);
+
+        $test = $q->fetchOne();
         $this->assertFalse($test);
     }
 }
