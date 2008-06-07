@@ -45,6 +45,12 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         $user->Phonenumber[0]->phonenumber = '555 123';
         $user->Phonenumber[1]->phonenumber = '555 448';
         $user->save();
+        
+        # Create an existing group
+        $group = new Group();
+        $group->name = 'Group One';
+        $group->save();
+        $this->previous_group = $group['id'];
     }
 
     public function testSynchronizeRecord()
@@ -59,17 +65,28 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
 
         // delete a Phonenumber
         array_pop($userArray['Phonenumber']);
+        
+        // add group
+        $userArray['Group'][]['name'] = 'New Group'; # This is a n-m relationship
+        // add a group which exists
+        $userArray['Group'][1]['id'] = $this->previous_group; # This is a n-m relationship where the group was made in prepareData
 
         $user->synchronizeWithArray($userArray);
         $this->assertEqual($user->Phonenumber->count(), 1);
         $this->assertEqual($user->Phonenumber[0]->phonenumber, '555 321');
+        $this->assertEqual($user->Group[0]->name, 'New Group');
+        $this->assertEqual($user->Group[1]->name, 'Group One');
 
         // change Email
         $userArray['Email']['address'] = 'johndow@mail.com';
         $user->synchronizeWithArray($userArray);
         $this->assertEqual($user->Email->address, 'johndow@mail.com');
-
-        $user->save();
+    
+        try {
+          $user->save();
+        } catch (Exception $e ) {
+          $this->fail("Failed saving with " . $e->getMessage());
+        }
     }
 
     public function testSynchronizeAfterSaveRecord()
@@ -78,6 +95,8 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Phonenumber->count(), 1);
         $this->assertEqual($user->Phonenumber[0]->phonenumber, '555 321');
         $this->assertEqual($user->Email->address, 'johndow@mail.com');
+        $this->assertEqual($user->Group[0]->name, 'New Group');
+        $this->assertEqual($user->Group[1]->name, 'Group One');
     }
 
     public function testSynchronizeAddRecord()
