@@ -87,7 +87,7 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
       ->leftJoin('C.Translation T WITH T.lang = ?', 'fr')
       ->fetchArray();
     } catch (Exception $e) {
-      $this->fail($e->geMessage());
+      $this->fail($e->getMessage());
     }
     $this->assertEqual($queryCountBefore + 1, $this->conn->count());
     $this->assertTrue(isset($r[0]['JobPositions'][0]['Category']['Translation']['fr']['name']));
