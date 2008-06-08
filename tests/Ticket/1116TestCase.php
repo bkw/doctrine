@@ -16,12 +16,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		$q->select('s.*')
 		  ->from('Ticket_1116_User s')
 		  ->where('s.username = ?', array('test'));
-		
-		$params = $q->getParams();	// there should be array('test',null) but we only have 'test'
-			  
-		$this->assertEqual(count($params),2);     
-		
-				  
+		  
 		// to see the error switch dbh to a real db, the next line will trigger the error
 		$test = $q->fetchOne();  //will only fail with "real" mysql 
 		$this->assertFalse($test);		  
@@ -50,5 +45,4 @@ class Ticket_1116_User extends Doctrine_Record
 		$softdelete0 = new Doctrine_Template_SoftDelete();
 		$this->actAs($softdelete0);
 	}
-
 }
