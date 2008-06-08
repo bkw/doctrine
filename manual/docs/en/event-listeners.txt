@@ -565,7 +565,14 @@ class User extends Doctrine_Record
 }
 </code>
 
-Now when you interact with the User model it will take in to account the deleted flag
+In order for these dql callbacks to be checked, you must explicitly turn them on. Because this adds a small
+amount of overhead for each query, we have it off by default. You can turn it on with the following attribute:
+
+<code type="php">
+Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+</code>
+
+Now when you interact with the User model it will take in to account the deleted flag.
 
 <code type="php">
 // Delete user with object
