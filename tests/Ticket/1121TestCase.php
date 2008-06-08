@@ -43,28 +43,14 @@ class Doctrine_Ticket_1121_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine_Query::create()
                 ->from('Ticket_1121_User u')
-                ->leftJoin('u.CustomProfileAlias p');
+                // UserProfile has SoftDelete behavior but because it is aliased as Profile, it tries to 
+                // call the dql callbacks for the query on a class named Profile instead of UserProfile
+                // Code responsible for this is in Doctrine_Query_Abstract::_preQuery()
+                ->leftJoin('u.Profile p');
 
-        try {
-            $q->execute();
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
-        }
-        
-    }
-}
-
-spl_autoload_register(array('Ticket_1121_Autoloader', 'autoload'));
-
-class Ticket_1121_Autoloader
-{
-    public static function autoload($className)
-    {
-        // You will see the above query is parsing the from parts of the query
-        if ($className == 'CustomProfileAlias' || $className == 'CustomUserAlias') {
-            throw new Exception('DQL callbacks being called for CustomProfileAlias and CustomUserAlias. These are the relationship aliases, not the class name in this case');
-        }
+        // The condition and params for UserProfile SoftDelete and are not added properly
+        $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.username AS t__username, t.password AS t__password, t.profile_id AS t__profile_id, t.deleted AS t__deleted, t2.id AS t2__id, t2.name AS t2__name, t2.about AS t2__about, t2.deleted AS t2__deleted FROM ticket_1121__user t LEFT JOIN ticket_1121__profile t2 ON t.profile_id = t2.id WHERE t.deleted = ? AND t2.deleted = ?');
+        $this->assertEqual(count($q->getParams()), 2);
     }
 }
 
@@ -79,7 +65,8 @@ class Ticket_1121_User extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Ticket_1121_Profile as CustomProfileAlias', array('local'   => 'profile_id',
+        $this->actAs('SoftDelete');
+        $this->hasOne('Ticket_1121_Profile as Profile', array('local'   => 'profile_id',
                                                               'foreign' => 'id'));
     }
 }
@@ -90,24 +77,12 @@ class Ticket_1121_Profile extends Doctrine_Record
     {
         $this->hasColumn('name', 'string', 255);
         $this->hasColumn('about', 'string', 2000);
-        $this->hasColumn('active', 'integer');
-        $this->addListener(new Ticket_1121_Profile_Listener());
     }
 
     public function setUp()
     {
-        $this->hasOne('Ticket_1121_User as CustomUserAlias', array('local'   => 'id',
+        $this->actAs('SoftDelete');
+        $this->hasOne('Ticket_1121_User as User', array('local'   => 'id',
                                                         'foreign' => 'profile_id'));
-    }
-}
-
-class Ticket_1121_Profile_Listener extends Doctrine_Record_Listener
-{
-    public function preDqlSelect(Doctrine_Event $event)
-    {
-        $params = $event->getParams();
-        $field = $params['alias'] . '.active';
-
-        $event->getQuery()->addWhere($field . ' = ?', 1);
     }
 }
