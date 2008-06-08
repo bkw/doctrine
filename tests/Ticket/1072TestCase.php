@@ -36,23 +36,35 @@ class Doctrine_Ticket_1072_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
         
         // If I access this relation...
+        
         if ($bt->T1072PaymentDetail) {
         }
         
         // (additional check: value must still be NULL not an object)
-        $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
+        // [romanb]: This is expected behavior currently. Accessing a related record will create
+        // a new one if there is none yet. This makes it possible to use syntax like:
+        // $record = new Record();
+        // $record->Related->name = 'foo'; // will implicitly create a new Related
+        // In addition the foreign key field is set to a reference to the new record (ugh..).
+        // No way to change this behavior at the moment for BC reasons.
+        $this->assertEqual(gettype($bt->payment_detail_id), 'object');
         
         // ...save...
+        // [romanb]: Related T1072PaymentDetail will not be saved because its not modified
+        // (isModified() == false)
         $bt->save();
         
         try {
             // ...and access the relation column it will throw
             // an exception here but it shouldn't.
+            // [romanb]: This has been fixed now. $bt->payment_detail_id will be an empty
+            // object as before.
             if ($bt->payment_detail_id) {
             }
             
             // (additional check: value must still be NULL not an object)
-            $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
+            // [romanb]: See above. This is an empty object now, same as before.
+            $this->assertEqual(gettype($bt->payment_detail_id), 'object');
             
             $this->pass();
         } catch (Doctrine_Record_Exception $e) {
