@@ -52,7 +52,9 @@ class Doctrine_Ticket_1113_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Record_Exception $e) {
             $this->fail($e->getMessage());
         }
+
         $reopend = Doctrine::getTable('VIH_Model_Course_Registration')->findOneById($registrar->id);
+
         try {
             $reopend->Subjects[] = $subject1;
         } catch (Doctrine_Record_Exception $e) {
@@ -139,7 +141,7 @@ class VIH_Model_Course_Registration extends Doctrine_Record
         $this->hasOne('VIH_Model_Course as Course', array('local'   => 'kursus_id',
                                                           'foreign' => 'id'));
 
-        $this->hasOne('VIH_Model_Subject as Subjects', array('refClass' => 'VIH_Model_Course_Registration_Subject',
+        $this->hasMany('VIH_Model_Subject as Subjects', array('refClass' => 'VIH_Model_Course_Registration_Subject',
                                                              'local'    => 'registration_id',
                                                              'foreign'  => 'subject_id'));
     }
@@ -174,15 +176,6 @@ class VIH_Model_Course_SubjectGroup_Subject extends Doctrine_Record
     {
         $this->hasColumn('subject_group_id', 'integer', null, array('primary' => true));
         $this->hasColumn('subject_id', 'integer', null, array('primary' => true));
-    }
-
-    public function setUp()
-    {
-        $this->hasOne('VIH_Model_Course_SubjectGroup as SubjectGroup', array('local'   => 'subject_group_id',
-                                                                             'foreign' => 'id'));
-
-        $this->hasOne('VIH_Model_Subject as Subject', array('local'   => 'subject_id',
-                                                            'foreign' => 'id'));
     }
 }
 
