@@ -53,7 +53,7 @@ class Doctrine_Ticket_927_TestCase extends Doctrine_UnitTestCase
       try {
           // simple query with deep relations
           $q->update('Email')
-              ->set('address', 'new@doctrine.org')
+              ->set('address', '?', 'new@doctrine.org')
               ->where('address = ?', 'david.stendardi@adenclassifieds.com')
               ->execute();
       } catch (Exception $e) {
