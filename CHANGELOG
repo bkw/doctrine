@@ -1,3 +1,54 @@
+0.11.0-RC4
+----------
+     * [r4459] Updating changelogs for 0.11.0-RC3
+     * [r4460] Fixed #1099.
+     * [r4467] added params to getSql so that it wraps getSqlQuery fully and not just somewhat
+     * [r4468] quick fix to an un-aliased query, to prevent confusion as raised by a beginner in #doctrine
+     * [r4469] dql examples: corrected syntax error, fixed poor practice on foreach
+     * [r4471] fixes #1088
+     * [r4472] fixes #1044 again - Added override option for relationship options to override the relation if it already exists
+     * [r4473] Adding new test cases.
+     * [r4474] Uncommenting tests.
+     * [r4475] fixes #1080
+     * [r4476] fixes #1105
+     * [r4477] Fixed two memory-leaks caused by not freeing internally created query objects. Issue & patch provided by Stefan Klug through the dev-mailinglist.
+     * [r4478] Removing postDql*() hooks as their are no use cases for them. Fixing issue with dql query hooks where they were being triggered multiple times.
+     * [r4479] Added coverage for 1113
+     * [r4480] Added more coverage
+     * [r4481] Adding some ignores for us Eclipse based users
+     * [r4482] * Updating the Synchronize Test case for ticket #1078
+	  * Adding a test case to cover the FromArray functionality
+	  * Adding a failing test for ticket #1117
+     * [r4483] Fixed #1104.
+     * [r4485] Added 1116 test case
+     * [r4486] updating test, removing unneeded fail
+     * [r4487] Fixed #1072. Please read through my comments in the testcase to see what has been fixed, what not and for what reasons.
+     * [r4488] Fixes 1116. Actually it is a PHP bug that was only solved in 6 march 2008. So only possible release to have this fixed is using PHP 5.2.6. Please refer to
+	  http://bugs.php.net/bug.php?id=40417 for more explanation. I updated the test case to be sure we are correctly passing things to MySQL. Updated Query and QueryAbstract to use getParams as
+	  they should. Also, getParams only displays the correct number of params after preQuery event. SoftDelete binds new values only after processing DQL (which is done calling getSql()), so
+	  getParams only has the right values after it.
+     * [r4489] Added failing test case for ticket #1049
+     * [r4490] Coverage for 1121
+     * [r4491] fixes #1116
+     * [r4492] Coverage for #1121
+     * [r4493] Fixed #1049. Updated wrong method name in ticket 930.
+     * [r4494] Fixed #1115. getInvoker() now returns the table class of component.
+     * [r4495] Updated failing test in JoinTestCase. It was wrong defined
+     * [r4496] fixes #1121
+     * [r4497] Documenting attribute for enabling dql callbacks.
+     * [r4498] Fixes #1113. You have a problem with your model. M:N relations should never map both sides with hasOne.
+     * [r4499] Fixes #1113. You have another problem with your model. M:N relations should never map both sides with hasOne and also they should be mapped in both directions to work correctly.
+     * [r4500] Fixed data import when contains numeric values that exceed the maximum int/float PHP values.
+     * [r4501] is_int and is_float are unpredictable with huge numeric values. Used is_numeric which handled well my tests.
+     * [r4502] fixes #1044
+     * [r4503] fixes #1075
+     * [r4504] Updating usage.
+     * [r4505] Adding a test case for ticket #1106 . I cannot get it to fail.
+     * [r4506] Removed.
+     * [r4507] fixes #1080 again :)
+     * [r4508] fixes #1122
+     * [r4509] Fixed issue with joins using IN as condition. Added test case to cover this issue
+
 0.11.0-RC3
 ----------
     * [r4325] Updating changelog for 0.11.0-RC2

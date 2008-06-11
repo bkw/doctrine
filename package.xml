@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-04-21</date>
- <time>12:52:41</time>
+ <date>2008-06-10</date>
+ <time>23:58:44</time>
  <version>
   <release>0.11.0</release>
   <api>0.11.0</api>
@@ -213,27 +213,6 @@ requiring needless code duplication.</description>
       </dir> <!-- /lib/Doctrine/Locking/Manager -->
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Locking -->
-     <dir name="Log">
-      <dir name="Filter">
-       <file name="Interface.php" role="php" />
-       <file name="Message.php" role="php" />
-       <file name="Priority.php" role="php" />
-       <file name="Suppress.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Filter -->
-      <dir name="Formatter">
-       <file name="Interface.php" role="php" />
-       <file name="Simple.php" role="php" />
-       <file name="Xml.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Formatter -->
-      <dir name="Writer">
-       <file name="Abstract.php" role="php" />
-       <file name="Db.php" role="php" />
-       <file name="Mock.php" role="php" />
-       <file name="Null.php" role="php" />
-       <file name="Stream.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Log/Writer -->
-      <file name="Exception.php" role="php" />
-     </dir> <!-- /lib/Doctrine/Log -->
      <dir name="Manager">
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Manager -->
@@ -503,7 +482,6 @@ requiring needless code duplication.</description>
      <file name="IntegrityMapper.php" role="php" />
      <file name="Lib.php" role="php" />
      <file name="Locator.php" role="php" />
-     <file name="Log.php" role="php" />
      <file name="Manager.php" role="php" />
      <file name="Migration.php" role="php" />
      <file name="Node.php" role="php" />
@@ -608,6 +586,7 @@ requiring needless code duplication.</description>
        <file name="bundle-your-class-files.txt" role="php" />
        <file name="compile.txt" role="php" />
        <file name="fetch-only-what-you-need.txt" role="php" />
+       <file name="free-objects.txt" role="php" />
        <file name="introduction.txt" role="php" />
        <file name="other-tips.txt" role="php" />
        <file name="use-a-bytecode-cache.txt" role="php" />
@@ -1018,6 +997,7 @@ requiring needless code duplication.</description>
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Expression -->
     <dir name="Hydrate">
+     <file name="CollectionInitializationTestCase.php" role="test" />
      <file name="FetchModeTestCase.php" role="test" />
     </dir> <!-- /tests/Hydrate -->
     <dir name="Import">
@@ -1028,6 +1008,7 @@ requiring needless code duplication.</description>
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
      <file name="PgsqlTestCase.php" role="test" />
+     <file name="PluginHierarchyTestCase.php" role="test" />
      <file name="SchemaTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Import -->
@@ -1123,6 +1104,7 @@ requiring needless code duplication.</description>
      <file name="Group.php" role="test" />
      <file name="GroupUser.php" role="test" />
      <file name="GzipTest.php" role="test" />
+     <file name="I18nRelationTest.php" role="test" />
      <file name="I18nTest.php" role="test" />
      <file name="InheritanceDeal.php" role="test" />
      <file name="InheritanceDealUser.php" role="test" />
@@ -1277,6 +1259,7 @@ requiring needless code duplication.</description>
     <dir name="Record">
      <file name="CascadingDeleteTestCase.php" role="test" />
      <file name="FilterTestCase.php" role="test" />
+     <file name="FromArrayTestCase.php" role="test" />
      <file name="GeneratorTestCase.php" role="test" />
      <file name="HookTestCase.php" role="test" />
      <file name="InheritanceTestCase.php" role="test" />
@@ -1345,21 +1328,39 @@ requiring needless code duplication.</description>
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
      <file name="786TestCase.php" role="test" />
+     <file name="832TestCase.php" role="test" />
      <file name="838TestCase.php" role="test" />
      <file name="867TestCase.php" role="test" />
      <file name="876TestCase.php" role="test" />
      <file name="889TestCase.php" role="test" />
+     <file name="894TestCase.php" role="test" />
      <file name="904TestCase.php" role="test" />
      <file name="912TestCase.php" role="test" />
      <file name="915TestCase.php" role="test" />
      <file name="923TestCase.php" role="test" />
      <file name="927TestCase.php" role="test" />
      <file name="929TestCase.php" role="test" />
+     <file name="930TestCase.php" role="test" />
      <file name="932TestCase.php" role="test" />
      <file name="935TestCase.php" role="test" />
+     <file name="941TestCase.php" role="test" />
+     <file name="950TestCase.php" role="test" />
      <file name="963TestCase.php" role="test" />
      <file name="966TestCase.php" role="test" />
      <file name="969TestCase.php" role="test" />
+     <file name="982TestCase.php" role="test" />
+     <file name="987TestCase.php" role="test" />
+     <file name="1015TestCase.php" role="test" />
+     <file name="1028TestCase.php" role="test" />
+     <file name="1044TestCase.php" role="test" />
+     <file name="1071TestCase.php" role="test" />
+     <file name="1072TestCase.php" role="test" />
+     <file name="1099TestCase.php" role="test" />
+     <file name="1106TestCase.php" role="test" />
+     <file name="1113TestCase.php" role="test" />
+     <file name="1116TestCase.php" role="test" />
+     <file name="1121TestCase.php" role="test" />
+     <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
@@ -1430,6 +1431,7 @@ requiring needless code duplication.</description>
     <file name="SearchTestCase.php" role="test" />
     <file name="SequenceTestCase.php" role="test" />
     <file name="SluggableTestCase.php" role="test" />
+    <file name="SoftDeleteTestCase.php" role="test" />
     <file name="TableTestCase.php" role="test" />
     <file name="template.tpl" role="test" />
     <file name="TemplateTestCase.php" role="test" />
@@ -1750,7 +1752,7 @@ requiring needless code duplication.</description>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2008-04-21</date>
+   <date>2008-06-10</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
