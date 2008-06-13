@@ -775,6 +775,99 @@ final class Doctrine
     }
 
     /**
+     * generateArrayFromSchema
+     *
+     * Generates array from schema files
+     *
+     * @param string $schema Directory or schema file
+     * @param string $format Format of schema
+     * @return array
+     */
+    public static function generateArrayFromSchema($schema, $format)
+    {
+        $array = array();
+        $parser = Doctrine_Parser::getParser($format);
+
+        foreach ((array) $schema AS $s) {
+            if (is_file($s)) {
+                $array = array_merge($array, $parser->loadData($s));
+            } else if (is_dir($s)) {
+                $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($s),
+                                                      RecursiveIteratorIterator::LEAVES_ONLY);
+
+                foreach ($it as $file) {
+                    $e = explode('.', $file->getFileName());
+                    if (end($e) === $format) {
+                        $array = array_merge($array, $parser->loadData($file->getPathName()));
+                    }
+                }
+            } else {
+              $array = array_merge($array, $parser->loadData($s));
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * generateYamlFromXml
+     *
+     * Generates yaml schema to specified directory from xml schema files
+     *
+     * @param string $yamlPath Directory or yaml file
+     * @param string $xmlPath Directory or xml file
+     * @return void
+     */
+    public static function generateYamlFromXml($yamlPath, $xmlPath, $options = array())
+    {
+        $array = Doctrine::generateArrayFromSchema($xmlPath, 'xml');
+
+        if (is_dir($yamlPath)) {
+            $yamlPath = $yamlPath . DIRECTORY_SEPARATOR . 'schema.yml';
+        }
+
+        return Doctrine_Parser::dump($array, 'yml', $yamlPath);
+    }
+
+    /**
+     * generateXmlFromYaml
+     *
+     * Generates xml schema to specified directory from xml schema files
+     *
+     * @param string $xmlPath Directory or xml file
+     * @param string $yamlPath Directory or yaml file
+     * @return void
+     */
+    public static function generateXmlFromYaml($xmlPath, $yamlPath, $options = array())
+    {
+        $array = Doctrine::generateArrayFromSchema($yamlPath, 'yml');
+
+        if (is_dir($xmlPath)) {
+            $xmlPath = $xmlPath . DIRECTORY_SEPARATOR . 'schema.xml';
+        }    
+
+        return Doctrine_Parser::dump($array, 'xml', $xmlPath);
+    }
+
+    /**
+	 * generateModelsFromXml
+	 *
+	 * Generates models to specified directory from xml schema files
+	 *
+	 * @param string $xmlPath Path to your xml schema files
+	 * @param string $directory Directory to generate your models in
+	 * @param array  $options Array of options to pass to the schema importer
+	 * @return void
+	 */
+    public static function generateModelsFromXml($xmlPath, $directory, $options = array())
+    {
+        $import = new Doctrine_Import_Schema();
+        $import->setOptions($options);
+
+        return $import->importSchema($xmlPath, 'xml', $directory);
+    }
+
+    /**
      * Creates database tables for the models in the specified directory
      *
      * @param string $directory Directory containing your models

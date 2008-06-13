@@ -69,6 +69,9 @@ class Doctrine_Parser_Xml extends Doctrine_Parser
                 $node = $xml->addChild($key);
 
                 $this->arrayToXml($value, $rootNodeName, $node);
+            } elseif (is_int($key)) {
+
+                $xml->addChild($value, 'true');
             } else {
                 $value = htmlentities($value);
 
