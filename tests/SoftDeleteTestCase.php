@@ -64,4 +64,22 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
         $test = $q->fetchOne();
         $this->assertFalse($test);
     }
+
+    public function testTicket1132()
+    {
+        $test = new SoftDeleteTest();
+        $test->name = 'test1';
+        $test->something = 'test2';
+        $test->save();
+
+        $q = Doctrine_Query::create()
+                ->from('SoftDeleteTest s')
+                ->addWhere('s.name = ?')
+                ->addWhere('s.something = ?');
+
+        $results = $q->execute(array('test1', 'test2'));
+        $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_test s WHERE s.name = ? AND s.something = ? AND s.deleted = ?');
+        $this->assertEqual($q->getParams(array('test1', 'test2')), array('test1', 'test2', false));
+        $this->assertEqual($results->count(), 1);
+    }
 }
