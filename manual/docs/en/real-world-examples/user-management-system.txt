@@ -91,7 +91,7 @@ Role:
     name: string(255)
   relations:
     Permissions:
-      class: Permissions
+      class: Permission
       refClass: RolePermission
       foreignAlias: Roles
 
