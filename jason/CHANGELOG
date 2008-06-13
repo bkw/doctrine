@@ -1,0 +1,1156 @@
+0.11.0-RC3
+----------
+    * [r4325] Updating changelog for 0.11.0-RC2
+    * [r4330] Fixing pgsql md5 expression
+    * [r4331] Removing unused methods getComponentAlias() and setComponentAlias(). Feature is nice but not implemented fully and will be done for 2.0
+    * [r4332] Consolidated Doctrine_Manager::getInstance()->getTable() and Doctrine_Manager::table() methods in to one method. Doctrine::getTable() for 1.0 is the authoritative method.
+    * [r4333] Added option for generating accessors.
+    * [r4334] Fixed #1015. The dql parser is currently case-sensitive. you need to use WITH in the join.
+    * [r4335] Adding trim calls.
+    * [r4336] Object hydration now properly initializes collections.
+    * [r4337] Added a type hint.
+    * [r4340] converted all unix newlines to PHP_EOL (was already being used in some places, caused inconsistent newline SVN errors for windows users)
+    * [r4341] Fixed #540.
+    * [r4343] Fixed #1023. Thanks for ticket & patch.
+    * [r4345] added exception handling to PDO init in connect() to avoid uncaught PDOException/convert to Doctrine_Exception
+    * [r4346] Fixing issue where custom setter for data fixtures is only called for relations and not fields too. Changed to call custom setter if it is defined on the fixture Doctrine_Record.
+    * [r4347] fixes #936 - Fixes issue with nested behaviors
+    * [r4348] fixes #917 - Fixes hydration issue
+    * [r4349] Added coverage for ticket #832
+    * [r4350] Added coverage for r1022
+    * [r4351] fixes #1009 - Adding limit(1) to query in Doctrine_Table::find()
+    * [r4352] fixes #1011
+    * [r4353] fixes #980
+    * [r4354] Fixes.
+    * [r4355] Cleanup.
+    * [r4356] fixes #997
+    * [r4357] Tabs to spaces and trimmed trailing whitespace.
+    * [r4358] Fixed issue with exportClassesSql() being called on wrong connection.
+    * [r4359] Reverted patch for #917. Need more information.
+    * [r4360] fixes #1024
+    * [r4361] fix for http://trac.symfony-project.com/ticket/2670
+    * [r4362] Adjustments to Oracle limit/offset emulation to make it look exactly like in Zend_Db.
+    * [r4363] fixing issue when username or password were null - resulting in them being turned into an empty string
+    * [r4366] Fixed #917.
+    * [r4367] fixes #1042
+    * [r4368] fixes #1030
+    * [r4369] Fixing comment indention.
+    * [r4370] fixes #1036
+    * [r4371] fixes #1048
+    * [r4372] Fixed #1039. bruno.p.reis: please take a look at the changeset and verify that the generated SQL is correct. We can't test against a real oracle db yet.
+    * [r4373] Formatting.
+    * [r4377] fixes #977
+    * [r4378] fixes #1047
+    * [r4379] fixes #1051
+    * [r4381] fixes #1026
+    * [r4382] fixes #1013
+    * [r4383] fixes #1044
+    * [r4384] fixes #1050
+    * [r4385] Documentation for nested behaviors.
+    * [r4386] fixes #1058
+    * [r4387] fixes #1028
+    * [r4388] Fix to spacing.
+    * [r4389] fixes #1057
+    * [r4390] fixes #1010
+    * [r4391] fixes #930
+    * [r4393] fixes #1060
+    * [r4394] fixes #1059
+    * [r4395] Fixes issue with multiple behaviors
+    * [r4396] Reverted patch for #930. Added test case into suite. Passes. Fixed #930.
+    * [r4398] Enhancements in Doctrine_Pager. Added three methods: getFirstIndice, getLastIndice and getRange. Updated documentation to explain these new methods.
+    * [r4399] typo
+    * [r4400] typo
+    * [r4401] branches/0.11: changed Doctrine_Collection->getKeyColumn() to return the correct var (fixes #1076)
+    * [r4404] - implement support for callbacks/listeners on DQL select, update and delete statements - update the SoftDelete template to use this new feature refs #1055
+    * [r4405] - temporarily revert r4403, some tests required messing with preQuery() (refs #1055)
+    * [r4406] fixes #1069
+    * [r4407] Added support for comments on fields for mysql.
+    * [r4408] started refactoring Doctrine_Query::load()
+    * [r4409] fixes #1071
+    * [r4410] fixes #1064
+    * [r4411] fixes #1065
+    * [r4412] fixes #1054
+    * [r4413] A little addition to schema files.
+    * [r4414] - typo fix
+    * [r4415] Fixed #930.
+    * [r4432] - WS fixes ahead of commiting ticket #1055
+    * [r4433] - add support for calling pre/postDQL*() methods via preQuery()/postQuery (fixes #1055)
+    * [r4438] Adding docs about using free() to free resources
+    * [r4439] Cleanup, standards, documentation, etc.
+    * [r4440] Adding documentation for DQL hook methods.
+    * [r4441] Cleanup.
+    * [r4442] Docs
+    * [r4443] Cleanup.
+    * [r4446] filtering out invalid models.
+    * [r4448] - parameter params is an array for execute()
+    * [r4449] - fixed the way the placeholder parameters are set in find() (#1083)
+    * [r4450] - do not allow null's in the deleted column by default (#1083)
+
+0.11.0-RC2
+----------
+    * [r4282] Updating package.xml for 0.11
+    * [r4283] fixes #974
+    * [r4284] Updated documentation.
+    * [r4285] Fixed error messagge in _getImportedObject() to be accurate and more complete.
+    * [r4286] Fixed delete() so it returns true as it did before.
+    * [r4287] Stricter condition
+    * [r4288] Added as testcase for #894. No success in reproducing the issue so far.
+    * [r4289] Fixed issue with column aggregation keyField
+    * [r4290] Fixing notice in Tree.php using subclasses option when it is not present.
+    * [r4291] added coverage for ticket #950
+    * [r4292] Fixed test so it fails
+    * [r4293] Fixed a bug in the new application-level cascading deletes.
+    * [r4294] Changed the deletion to simply ignore transient objects in general. This is a much better behavior (in fact this is how it used to be in the past).
+    * [r4296] Fixed #982.
+    * [r4297] Fixing test case and bug with Doctrine::initializeModels()
+    * [r4298] fixes #992
+    * [r4299] fixes #634
+    * [r4300] Cleanup
+    * [r4301] Removing deprecated alias methods.
+    * [r4302] Covered for ticket #987
+    * [r4303] fixes #987
+    * [r4304] Fixed type.
+    * [r4305] each record's errorstack is now initialized lazily to save some memory.
+    * [r4306] Documentation cleanup
+    * [r4307] Removing log component. Not needed for 1.0. Will reimplement for 2.0
+    * [r4308] Fix to allow aliases in schema files.
+    * [r4309] Fixed test to fail properly.
+    * [r4310] fixes #986
+    * [r4311] fixes #1001
+    * [r4312] fixes #1001 again
+    * [r4313] fixes #889
+    * [r4314] fixes #991
+    * [r4315] Updating documentation for modifiedFields()
+    * [r4316] fixed issue with order in which actAs() tries to find the template for the behavior causing all registered autoloaders to be called every single time.
+    * [r4317] Added attribute for singularizing when importing from existing databases. On by default but can be turned off at the manager or connection level.
+    * [r4318] fixes #994
+    * [r4319] Fixed #963. Since it is impossible for Doctrine to determine where the foreign key resides we added a new option that can be used in such scenarios to help Doctrine: owningSide => true. Please refer to the ticket testcase and the introduction of chapter 4, Relations, for the usage.
+    * [r4320] Removed getSize()
+    * [r4321] fixes #983
+    * [r4322] fixes #1002
+    * [r4323] Updating changelog to be current and accurate.
+
+0.11.0-RC1
+----------
+    * [r4153] Updated test.
+    * [r4154] Fixed test case so it passes. Ticket is invalid.
+    * [r4156] Added merge method. Fixes #926
+    * [r4157] Adding test case for ticket #574
+    * [r4158] Cleaning.
+    * [r4159] Lots of updates to the manual. Adding yaml examples, enforcing 80 character column limit, removing old and outdated syntax across entire manual.
+    * [r4160] Added my first project tutorial to manual.
+    * [r4161] Initial entry.
+    * [r4164] Cleanup.
+    * [r4165] example code was broken if you try to increment a field with a decimal number, fixed so example works with decimal addition as well
+    * [r4166] Updated facade documentation.
+    * [r4167] Removed outdated comment.
+    * [r4168] Fixed #932.
+    * [r4169] Added testcase for 932.
+    * [r4170] Added testcase for 932.
+    * [r4171] Improved testcase for 932.
+    * [r4172] added a testcase for trac bug: 935
+    * [r4174] Fixed #935.
+    * [r4177] Added more coverage for dql updates.
+    * [r4178] Added failing test case for #927
+    * [r4179] Formatting.
+    * [r4180] fixes #922
+    * [r4181] Adding coverage for ticket #889
+    * [r4182] added coverage for ticket #384
+    * [r4184] Fixed #929. Ticket: 929
+    * [r4185] Added coverage for ticket #734
+    * [r4189] Added coverage for copying queries and for removing dql query parts.
+    * [r4190] fixes #734 - Added removeDqlQueryPart() method.
+    * [r4191] Added more examples for facade.
+    * [r4192] fixes #938
+    * [r4193] Removed class table inheritance from documentation.
+    * [r4194] Changing default inheritance to concrete from class table since 1.0 will not support class table inheritance.
+    * [r4195] Adding coverage for ticket #239
+    * [r4196] fixes #921
+    * [r4197] Added coverage for Doctrine_Record::replace()
+    * [r4198] Tabs to spaces.
+    * [r4202] Removed.
+    * [r4203] Re-factored validation system to allow for validation of single fields/columns and to allow the retrievale of the validator objects used for the failed custom validators.
+    * [r4204] see #926
+    * [r4205] fixed #940
+    * [r4208] Fixed wrong variable condition order in fromArray() method
+    * [r4210] creating 0.11 branch
+    * [r4211] Added app-level cascading deletes.
+    * [r4212] Fixed typo and small improvement to buildFlushTree() to avoid unnecessary work.
+    * [r4217] Fixed #825. ATTR_QUERY_CACHE_LIFESPAN and ATTR_RESULT_CACHE_LIFESPAN are now properly recognized. Fixed some issues in the cache drivers, too. Re-enabled object result caching, however, the limitation that object references to related objects are not reconstructed remains.
+    * [r4218] Hydration performance improvement on joined resultsets. Some minor tweaks.
+    * [r4220] Perf. improvement on hydrating joined resultsets, part 2.
+    * [r4224] Fixed #966.
+    * [r4226] Added missing testcase.
+    * [r4228] Fixed #969.
+    * [r4231] fixes #970
+    * [r4232] fixes #946
+    * [r4233] fixes #967 - Added new attribute to offer the functionality while maintaining BC.
+    * [r4234] Missing doc block
+    * [r4235] fixes #773
+    * [r4236] fixes #961
+    * [r4237] fixes #960
+    * [r4238] fixes #959
+    * [r4239] fixes #588
+    * [r4240] fixes #962
+    * [r4241] fixes #953 Added ability to update slugs with canUpdate flag.
+    * [r4242] fixes #738
+    * [r4243] fixes #629
+    * [r4244] Formatting.
+    * [r4245] Added coverage for ticket #963
+    * [r4246] fixes #965
+    * [r4247] fixes #955
+    * [r4248] fixes #942
+    * [r4249] fixes #933
+    * [r4250] fixes #951
+    * [r4251] fixes #943
+    * [r4252] fixes #616
+    * [r4253] fixes #968
+    * [r4254] fixes #958
+    * [r4255] fixes #956
+    * [r4256] fixes #708
+    * [r4257] fixes #446
+    * [r4258] fixes #448
+    * [r4259] fixes #15
+    * [r4260] fixes #612
+    * [r4261] Initial entry of SoftDelete behavior.
+    * [r4262] fixes #972
+    * [r4263] Little hardening patch for the dql parser. Fixed #475. Exception will be thrown if no field from the root class is selected. An exception will also be thrown if the parent join of a nested fetch join is not a fetch join itself.
+    * [r4264] Fixed #878. Result caching will only work on SELECT queries now. Result caching can again be used with object hydration but the limitation that object relationships are not serialized/deserialized remains in place.
+    * [r4265] fixes #584
+    * [r4266] Fixing unexpected exceptions to reveal other failing test cases.
+    * [r4267] More test fixes.
+    * [r4268] Incorrect model generation.
+    * [r4269] Enhanced test.
+    * [r4270] Added testcase for #941 for reference.
+    * [r4271] fixes #948
+    * [r4272] fixes #823
+    * [r4273] fixes #949
+    * [r4274] fixes #739
+    * [r4275] Updated package.xml for 0.11
+    * [r4278] Turned off child table generation and autoloading off by default for performance boost.
+    * [r4280] Updating sluggable documentation.
+
+0.10.4
+------
+    * [r4027] Fixes issue where default => 0 is not included in the column definition options.
+    * [r4028] improving exception when attempting to get connetion when there is none
+    * [r4029] Updated tests. Cleaned up some stuff. Uncommented tests and added failing test cases to fix.
+    * [r4030] More updates to tests.
+    * [r4031] Made it so it will remove tmp files.
+    * [r4032] More ensuring that all tmp files are cleaned up after running tests.
+    * [r4033] Fixes from commented tests. Updating models to use updated syntax.
+    * [r4034] Moved .dist files to normal name since .dist is not required.
+    * [r4035] Added failing test for aggregate with comma in it in the groupby
+    * [r4036] fixes #833 - also cleaned up and added doc blocks for all adapter module code.
+    * [r4037] fixes #839
+    * [r4038] fixes #840
+    * [r4039] added test case for ticket #849
+    * [r4040] Added new model
+    * [r4041] fixes #879
+    * [r4042] fixes #872 - How does informix handle identifier quoting if it does at all?
+    * [r4044] Added new failing test for parseDsn()
+    * [r4045] Ported validator refactorings partly from trunk.
+    * [r4046] removed wrong patch
+    * [r4047] lazy relation loading fix
+    * [r4048] Updated test case
+    * [r4049] fixed #882
+    * [r4050] Fixed #883
+    * [r4054] added xslt stylesheet to generate changelogs with svn log
+    * [r4057] Fixed #873
+    * [r4059] Added 'equal' to valid relation elements
+    * [r4060] fixes #893
+    * [r4061] fixes #839 again :) whoops
+    * [r4062] fixes #886
+    * [r4063] Refactoring adapter information.
+    * [r4064] Added ignore.
+    * [r4065] Misc. work on tests
+    * [r4066] fixes #900
+    * [r4067] Initial entry
+    * [r4068] fixes #844
+    * [r4069] fixes #852
+    * [r4070] Fixed #859
+    * [r4072] Formatting.
+    * [r4073] Initial entry.
+    * [r4074] fixes #837
+    * [r4075] fixes #837 - added tests to cover this
+    * [r4076] fixes #874
+    * [r4077] Removing ending new line.
+    * [r4078] fixes #869
+    * [r4079] Some data fixtures coverage.
+    * [r4080] I18n data fixtures exporting test.
+    * [r4081] I18n import coverage.
+    * [r4082] Fixing tests.
+    * [r4083] Wrapped in try/catch
+    * [r4084] Fixed comment.
+    * [r4085] Fixed #899.
+    * [r4086] Fixed #728. Searched & fixed for all occurences. If we missed one, please reopen this ticket with a new error report.
+    * [r4087] Fixed #749.
+    * [r4089] Fixed #838. After reviewing the testcase, i've come to the conclusion that the desired use is invalid because it would basically allow having 2 root nodes in the tree (even if its temporarily) and would therefore allow an invalid state / corrupt tree. I modified the testcase to reflect how it *could* be done, but that only works well when the old root does not yet have any children. There are several solutions though: You can use a multi-root setup, in which case the desired action would be absolutely lega. Or you can use a single-root tree, but have the real root as a dummy root that never changes and have a second node as the only child which is your root then. And there may be even more options, depending on your particular use-case.
+    * [r4090] Fixes #801
+    * [r4091] Added testing for nested set
+    * [r4092] Adding free() calls when importing and exporting
+    * [r4093] fixes #855
+    * [r4094] fixes #868
+    * [r4095] fixes #902 added 'format' to the valid column name array Ticket: 902
+    * [r4096] fixing test case for #741
+    * [r4097] fixes #864
+    * [r4098] fixes #849
+    * [r4099] Added coverage for cti with pk other than id
+    * [r4100] Changed behavior of Sluggable back to what it was. Will not set slug if it already has a value. Broke 0.10 BC.
+    * [r4102] Test case for ticket #904
+    * [r4103] Wrapped in try catch
+    * [r4104] Fixed pessimistic locking.
+    * [r4105] Fixed invalid test case.
+    * [r4106] fixed failing test case.
+    * [r4107] Added m2m with composite pk coverage.
+    * [r4108] Added m2m data fixtures loading test.
+    * [r4109] Fixed issue. free() broke the data fixtures and tests did catch it. Updated tests to cover this functionality.
+    * [r4110] Fixed sluggable so it always calls urlize on the value.
+    * [r4112] Updated coverage.
+    * [r4113] New coverage.
+    * [r4114] Small refactorings.
+    * [r4115] Small refactorings.
+    * [r4116] Updated sluggable syntax
+    * [r4118] Fixed #912. Many thanks for the ticket & patch!
+    * [r4120] branches/0.10: tweaked is_dir() check in Doctrine::loadModels()
+    * [r4121] Fixed #906.
+    * [r4123] Fixed spacing issue causing some failing test cases.
+    * [r4124] fixes #915
+    * [r4125] Fixing tests and adding coverage for ticket #915
+    * [r4126] Code formatting
+    * [r4127] Undoing changes. Broke tests somehow.
+    * [r4128] fixes #784
+    * [r4129] fixes #916
+    * [r4130] Adds support for sequence in schema.
+    * [r4131] Removed. Will reintroduce in 2.0
+    * [r4132] Added fixed to the list of things to skip when getting column validators.
+    * [r4133] Added missing validation keys for column definitions.
+    * [r4134] fixes #865
+    * [r4135] Updated test to use correct syntax. Still fails. Will address in another commit.
+    * [r4136] fixes #867
+    * [r4137] Removed isIdentifier() check, it causes sql syntax errors if the only column that exists on the table is a primary key. Note: Need to discuss this with romanb
+    * [r4138] Added coverage for ticket #867
+    * [r4139] Changed wording.
+    * [r4143] Added isIdentifierAutoincrement() and cleaned up some stuff.
+    * [r4144] Removed trailing white spaces.
+    * [r4146] Fixed incorrect test case.
+    * [r4147] Added coverage for exception throwing on invalid fixture elements.
+    * [r4148] TestCase for ticket 923
+    * [r4149] Moved models folder inside of tests.
+    * [r4150] Fixed path error after moving models.
+    * [r4151] Updating versions for 0.10.4
+
+0.10.3
+------
+    * [r3921] A little work to the manual.
+    * [r3922] Expaned schema files chapter with more examples. Documented all the new features.
+    * [r3923] Enhancing migrations and schema files chapters.
+    * [r3926] index name typo
+    * [r3927] fixes #711 - Added mysql bit column type support.
+    * [r3928] fixes #451
+    * [r3929] fixes #820
+    * [r3930] Fixed #786.
+    * [r3935] fixes #830
+    * [r3936] fixes #829 fixes #707
+    * [r3937] fixes #631
+    * [r3944] fixes #836
+    * [r3945] A few cosmetic fixes. Fixed test cases.
+    * [r3946] Removed duplicate.
+    * [r3947] fixes #821
+    * [r3948] Added description.
+    * [r3949] fixes #827
+    * [r3950] fixes #814
+    * [r3951] fixes #672
+    * [r3952] Changed model loading from require_once to require.
+    * [r3953] Added autoload when getting table for component to ensure the model is present and loaded before this happens.
+    * [r3954] Documentation and clean up.
+    * [r3955] fixes #843
+    * [r3956] Fixed incorrect test case.
+    * [r3957] Added some functions which were in 0.9 to maintain BC.
+    * [r3958] Removed end new line.
+    * [r3959] Added hack/fix to getColumnName() to fix situations where an array is passed to it
+    * [r3960] fixes #683
+    * [r3961] fixes #796 fixes #797
+    * [r3962] Added more documentation to schema files for inheritance usage.
+    * [r3963] Fix #845 (typo)
+    * [r3964] Added better examples for sluggable.
+    * [r3965] Fixed issue with options not existing in Schema.php. A few minor other changes.
+    * [r3966] fixes #835
+    * [r3967] fixes #848
+    * [r3968] A few more create/drop db fixes.
+    * [r3969] More fixes to drop/create db functionality.
+    * [r3970] fixes #846
+    * [r3975] fixed #691 fixes #750
+    * [r3976] Fixed findByXXX and findOneByXXX calls when fieldName has any uppercase char. Fixes #826
+    * [r3977] Added test case and updated code attempted to fix #826. It is fixed now.
+    * [r3978] Fixed #862. This was a documentation issue. The described functionality is no longer available.
+    * [r3979] Added MySQL error code 1451 'ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails' in Connection_Mysql_Exception. Fixes #856.
+    * [r3980] Added ticket 710 test case. Fixes #710, because it is invalid.
+    * [r3981] Added test case for ticket #486.
+    * [r3982] fixed typo
+    * [r3983] fixes #486
+    * [r3984] Formatting.
+    * [r3985] Removed.
+    * [r3986] Added better exception throwing for when you try and generate yaml from db and your db doesn't produce any models.
+    * [r3987] Fixed issue with tmp connection not being torn down when exception is thrown during attempting to drop the db.
+    * [r3988] Slightly enhanced local/foreign key guessing on relationships.
+    * [r3989] fixes #853
+    * [r3990] fixes #860
+    * [r3991] Fixed Doctrine_Pager::getResultsInPage() as reported by Matt Marcum through email.
+    * [r3992] Made it so model builder will load model path to the loaded models array after writing it.
+    * [r3993] fixes #854
+    * [r3994] Added schema validation to help with using incorrect key names for schema elements.
+    * [r3995] Fixed typo.
+    * [r3996] Removed finder as it is not used/needed.
+    * [r3997] Fixed inconsistancy in api.
+    * [r3998] Added more to validation of schema files.
+    * [r3999] Fixed test case.
+    * [r4000] Allowing setup customization in every inheritance type.
+    * [r4001] removed documentation about compound unique constraints. currently not supported.
+    * [r4004] fixes #875
+    * [r4005] Fix to create/drop db.
+    * [r4006] Adding TestCase for #876
+    * [r4007] Docs and enhanced test case.
+    * [r4008] Added documentation for geographical template.
+    * [r4009] More docs for geographical.
+    * [r4010] Added documentation for nesting plugins.
+    * [r4011] Updated documentation and fixed formatting issue.
+    * [r4012] Formatting.
+    * [r4013] Updating plugin docs.
+    * [r4014] More documentation of plugins.
+    * [r4017] Updating version for 0.10.3
+    * [r4018] Initial entry of behavior folder/name space.
+    * [r4021] Removed exception handling here, it needs to be moved to deeper in to the core for protecting against generating a definition for a table with the same name multiple times.
+    * [r4022] Adding size for BC.
+    * [r4023] BC change.
+    * [r4024] Documentation.
+    * [r4025] Removed Taggable, since it is not implemented and won't be for 1.0
+
+0.10.2
+------
+    * [r3815] Added setOption() function.
+    * [r3820] pre/post Up/Down methods
+    * [r3826] Patched a class table inheritance validation bug
+    * [r3830] Fixed bug with params for dql query task.
+    * [r3834] Fixed conservative model loading to actually be conservative. filterInvalidModels was causing classes to be loaded in both cases.
+    * [r3836] Second parameter support in Doctrine_Pager::setCountQuery and added new method: Doctrine_Pager::getResultsInPage(), which returns the numbers of itens in current page
+    * [r3837] Updates in Getting Started manual chapter (fixes #794)
+    * [r3839] Fixed bug introduced by fixing the conservative model loading in r3834
+    * [r3844] Reversed r3839. Broke tests.
+    * [r3847] Fixes to model loading across the board. Breakage occurred after conservative model loading was fixed to actually be conservative.
+    * [r3848] fixes #438 in 0.10 branch. Related to #438
+    * [r3849] Fixed incorrect test case and issue with DQL params.
+    * [r3850] fixes #762
+    * [r3851] fixes #759
+    * [r3852] fixes #770
+    * [r3853] fixes #769
+    * [r3854] fixes #762 again
+    * [r3855] Added contains() method from 0.9
+    * [r3856] Fixed issue with FROM parameters not being included in the count() query.
+    * [r3857] Added test for count() to make sure r3856 remains fixed.
+    * [r3861] added setTableName to 4.3.1 example since it will not run out of the box without identifier quoting
+    * [r3870] Pager updates and cosmetics
+    * [r3871] Fixed method getNextPage that was always returning the last page in all branches
+    * [r3872] Updated pagination chapter in manual (0.10 and trunk). Merged r3870 in trunk
+    * [r3873] Small cosmetics in pagination chapter (0.10 and trunk)
+    * [r3874] Split of methods in _parseTemplate in 0.10 and trunk
+    * [r3875] Updated manual pages and changed documentation naming convention (from process to parse) to follow the API
+    * [r3876] Merged r3868 in 0.10 and trunk
+    * [r3877] Merged r3869 in 0.9 and 0.10 branches
+    * [r3878] Added Doctrine_Pager_Range::isInRange, which checks if a given page is in the range
+    * [r3879] Added Doctrine_Record::free() from trunk that can help with controlling memory usage and improved the hydration for large result sets by reducing the number of getTypeOf() calls.
+    * [r3880] Finally found and removed the 'f' char in tests
+    * [r3881] I love nice output. Updated formatting of test cases
+    * [r3884] Changed all references from phpdoctrine.com to phpdoctrine.org
+    * [r3885] fixes #774
+    * [r3886] fixes #770
+    * [r3887] fixes #804
+    * [r3888] Small refactorings and new tests for model loading(aggressive and conservative) and model generation with inheritance.
+    * [r3889] fixes #627 #791 This also fixes an issue where the class tables do not extend the correct class when dealing with inheritance. Also new tests to cover this functionality.
+    * [r3891] Removed faulty code.
+    * [r3892] Fixes bug when updating a sub class using class table inheritance.
+    * [r3895] Added float8 support in pgsql. Fixes #808
+    * [r3896] Adjusted quoteIdentifier in update and delete when executing a SQL query (also fixes #807)
+    * [r3897] Added imbricated query support in whereIn method (fixes #782)
+    * [r3901] Removed support to imbricated query added yesterday (which fixed ticket #782). The same thing could be easily achieved without need of Doctrine support, as mentioned in comments. Dev team decided to drop this support for now, but are considering for 1.0
+    * [r3904] fixes #799
+    * [r3905] fixes #798
+    * [r3906] fixes #771
+    * [r3907] Added free( = false) support in Doctrine_Record and Doctrine_Collection (0.10 branch)
+    * [r3909] Added argument documentation of methods Doctrine_Export::alterTable and alterTableSql (fixes #432)
+    * [r3910] fixes #803
+    * [r3911] Styling and documentation fixes.
+    * [r3912] fixes #358
+    * [r3913] fixes #818
+    * [r3914] fixes #646
+    * [r3915] fixes #800
+    * [r3916] Disabled mysql migration test case since it will always fail in this test suite.
+    * [r3917] fixes #629
+    * [r3918] Updating versions.
+    * [r3919] Fixing packages again.
+
+0.10.1
+------
+    * [r4229] Fixed #969.
+    * [r4227] added failing test case for trac ticket# 969
+    * [r4223] Fixed #966.
+    * [r4208] Fixed wrong variable condition order in fromArray() method
+    * [r4205] fixed #940
+    * [r4204] see #926
+    * [r4203] Re-factored validation system to allow for validation of single fields/columns and to allow the retrievale of the validator objects used for the failed custom validators.
+    * [r4202] Removed.
+    * [r4198] Tabs to spaces.
+    * [r4197] Added coverage for Doctrine_Record::replace()
+    * [r4196] fixes #921
+    * [r4195] Adding coverage for ticket #239
+    * [r4194] Changing default inheritance to concrete from class table since 1.0 will not support class table inheritance.
+    * [r4193] Removed class table inheritance from documentation.
+    * [r4192] fixes #938
+    * [r4191] Added more examples for facade.
+    * [r4190] fixes #734 - Added removeDqlQueryPart() method.
+    * [r4189] Added coverage for copying queries and for removing dql query parts.
+    * [r4185] Added coverage for ticket #734
+    * [r4184] Fixed #929. Ticket: 929
+    * [r4182] added coverage for ticket #384
+    * [r4181] Adding coverage for ticket #889
+    * [r4180] fixes #922
+    * [r4179] Formatting.
+    * [r4178] Added failing test case for #927
+    * [r4177] Added more coverage for dql updates.
+    * [r4174] Fixed #935.
+    * [r4172] added a testcase for trac bug: 935
+    * [r4171] Improved testcase for 932.
+    * [r4170] Added testcase for 932.
+    * [r4169] Added testcase for 932.
+    * [r4168] Fixed #932.
+    * [r4167] Removed outdated comment.
+    * [r4166] Updated facade documentation.
+    * [r4165] example code was broken if you try to increment a field with a decimal number, fixed so example works with decimal addition as well
+    * [r4164] Cleanup.
+    * [r4161] Initial entry.
+    * [r4160] Added my first project tutorial to manual.
+    * [r4159] Lots of updates to the manual. Adding yaml examples, enforcing 80 character column limit, removing old and outdated syntax across entire manual.
+    * [r4158] Cleaning.
+    * [r4157] Adding test case for ticket #574
+    * [r4156] Added merge method. Fixes #926
+    * [r4154] Fixed test case so it passes. Ticket is invalid.
+    * [r4153] Updated test.
+    * [r4151] Updating versions for 0.10.4
+    * [r4150] Fixed path error after moving models.
+    * [r4149] Moved models folder inside of tests.
+    * [r4148] TestCase for ticket 923
+    * [r4147] Added coverage for exception throwing on invalid fixture elements.
+    * [r4146] Fixed incorrect test case.
+    * [r4144] Removed trailing white spaces.
+    * [r4143] Added isIdentifierAutoincrement() and cleaned up some stuff.
+    * [r4139] Changed wording.
+    * [r4138] Added coverage for ticket #867
+    * [r4137] Removed isIdentifier() check, it causes sql syntax errors if the only column that exists on the table is a primary key. Note: Need to discuss this with romanb
+    * [r4136] fixes #867
+    * [r4135] Updated test to use correct syntax. Still fails. Will address in another commit.
+    * [r4134] fixes #865
+    * [r4133] Added missing validation keys for column definitions.
+    * [r4132] Added fixed to the list of things to skip when getting column validators.
+    * [r4131] Removed. Will reintroduce in 2.0
+    * [r4130] Adds support for sequence in schema.
+    * [r4129] fixes #916
+    * [r4128] fixes #784
+    * [r4127] Undoing changes. Broke tests somehow.
+    * [r4126] Code formatting
+    * [r4125] Fixing tests and adding coverage for ticket #915
+    * [r4124] fixes #915
+    * [r4123] Fixed spacing issue causing some failing test cases.
+    * [r4121] Fixed #906.
+    * [r4120] branches/0.10: tweaked is_dir() check in Doctrine::loadModels()
+    * [r4118] Fixed #912. Many thanks for the ticket & patch!
+    * [r4116] Updated sluggable syntax
+    * [r4115] Small refactorings.
+    * [r4114] Small refactorings.
+    * [r4113] New coverage.
+    * [r4112] Updated coverage.
+    * [r4110] Fixed sluggable so it always calls urlize on the value.
+    * [r4109] Fixed issue. free() broke the data fixtures and tests did catch it. Updated tests to cover this functionality.
+    * [r4108] Added m2m data fixtures loading test.
+    * [r4107] Added m2m with composite pk coverage.
+    * [r4106] fixed failing test case.
+    * [r4105] Fixed invalid test case.
+    * [r4104] Fixed pessimistic locking.
+    * [r4103] Wrapped in try catch
+    * [r4102] Test case for ticket #904
+    * [r4100] Changed behavior of Sluggable back to what it was. Will not set slug if it already has a value. Broke 0.10 BC.
+    * [r4099] Added coverage for cti with pk other than id
+    * [r4098] fixes #849
+    * [r4097] fixes #864
+    * [r4096] fixing test case for #741
+    * [r4095] fixes #902 added 'format' to the valid column name array Ticket: 902
+    * [r4094] fixes #868
+    * [r4093] fixes #855
+    * [r4092] Adding free() calls when importing and exporting
+    * [r4091] Added testing for nested set
+    * [r4090] Fixes #801
+    * [r4089] Fixed #838. After reviewing the testcase, i've come to the conclusion that the desired use is invalid because it would basically allow having 2 root nodes in the tree (even if its temporarily) and would therefore allow an invalid state / corrupt tree. I modified the testcase to reflect how it *could* be done, but that only works well when the old root does not yet have any children. There are several solutions though: You can use a multi-root setup, in which case the desired action would be absolutely lega. Or you can use a single-root tree, but have the real root as a dummy root that never changes and have a second node as the only child which is your root then. And there may be even more options, depending on your particular use-case.
+    * [r4087] Fixed #749.
+    * [r4086] Fixed #728. Searched & fixed for all occurences. If we missed one, please reopen this ticket with a new error report.
+    * [r4085] Fixed #899.
+    * [r4084] Fixed comment.
+    * [r4083] Wrapped in try/catch
+    * [r4082] Fixing tests.
+    * [r4081] I18n import coverage.
+    * [r4080] I18n data fixtures exporting test.
+    * [r4079] Some data fixtures coverage.
+    * [r4078] fixes #869
+    * [r4077] Removing ending new line.
+    * [r4076] fixes #874
+    * [r4075] fixes #837 - added tests to cover this
+    * [r4074] fixes #837
+    * [r4073] Initial entry.
+    * [r4072] Formatting.
+    * [r4070] Fixed #859
+    * [r4069] fixes #852
+    * [r4068] fixes #844
+    * [r4067] Initial entry
+    * [r4066] fixes #900
+    * [r4065] Misc. work on tests
+    * [r4064] Added ignore.
+    * [r4063] Refactoring adapter information.
+    * [r4062] fixes #886
+    * [r4061] fixes #839 again :) whoops
+    * [r4060] fixes #893
+    * [r4059] Added 'equal' to valid relation elements
+    * [r4057] Fixed #873
+    * [r4054] added xslt stylesheet to generate changelogs with svn log
+    * [r4050] Fixed #883
+    * [r4049] fixed #882
+    * [r4048] Updated test case
+    * [r4047] lazy relation loading fix
+    * [r4046] removed wrong patch
+    * [r4045] Ported validator refactorings partly from trunk.
+    * [r4044] Added new failing test for parseDsn()
+    * [r4042] fixes #872 - How does informix handle identifier quoting if it does at all?
+    * [r4041] fixes #879
+    * [r4040] Added new model
+    * [r4039] added test case for ticket #849
+    * [r4038] fixes #840
+    * [r4037] fixes #839
+    * [r4036] fixes #833 - also cleaned up and added doc blocks for all adapter module code.
+    * [r4035] Added failing test for aggregate with comma in it in the groupby
+    * [r4034] Moved .dist files to normal name since .dist is not required.
+    * [r4033] Fixes from commented tests. Updating models to use updated syntax.
+    * [r4032] More ensuring that all tmp files are cleaned up after running tests.
+    * [r4031] Made it so it will remove tmp files.
+    * [r4030] More updates to tests.
+    * [r4029] Updated tests. Cleaned up some stuff. Uncommented tests and added failing test cases to fix.
+    * [r4028] improving exception when attempting to get connetion when there is none
+    * [r4027] Fixes issue where default => 0 is not included in the column definition options.
+    * [r4025] Removed Taggable, since it is not implemented and won't be for 1.0
+    * [r4024] Documentation.
+    * [r4023] BC change.
+    * [r4022] Adding size for BC.
+    * [r4021] Removed exception handling here, it needs to be moved to deeper in to the core for protecting against generating a definition for a table with the same name multiple times.
+    * [r4018] Initial entry of behavior folder/name space.
+    * [r4017] Updating version for 0.10.3
+    * [r4014] More documentation of plugins.
+    * [r4013] Updating plugin docs.
+    * [r4012] Formatting.
+    * [r4011] Updated documentation and fixed formatting issue.
+    * [r4010] Added documentation for nesting plugins.
+    * [r4009] More docs for geographical.
+    * [r4008] Added documentation for geographical template.
+    * [r4007] Docs and enhanced test case.
+    * [r4006] Adding TestCase for #876
+    * [r4005] Fix to create/drop db.
+    * [r4004] fixes #875
+    * [r4001] removed documentation about compound unique constraints. currently not supported.
+    * [r4000] Allowing setup customization in every inheritance type.
+    * [r3999] Fixed test case.
+    * [r3998] Added more to validation of schema files.
+    * [r3997] Fixed inconsistancy in api.
+    * [r3996] Removed finder as it is not used/needed.
+    * [r3995] Fixed typo.
+    * [r3994] Added schema validation to help with using incorrect key names for schema elements.
+    * [r3993] fixes #854
+    * [r3992] Made it so model builder will load model path to the loaded models array after writing it.
+    * [r3991] Fixed Doctrine_Pager::getResultsInPage() as reported by Matt Marcum through email.
+    * [r3990] fixes #860
+    * [r3989] fixes #853
+    * [r3988] Slightly enhanced local/foreign key guessing on relationships.
+    * [r3987] Fixed issue with tmp connection not being torn down when exception is thrown during attempting to drop the db.
+    * [r3986] Added better exception throwing for when you try and generate yaml from db and your db doesn't produce any models.
+    * [r3985] Removed.
+    * [r3984] Formatting.
+    * [r3983] fixes #486
+    * [r3982] fixed typo
+    * [r3981] Added test case for ticket #486.
+    * [r3980] Added ticket 710 test case. Fixes #710, because it is invalid.
+    * [r3979] Added MySQL error code 1451 'ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails' in Connection_Mysql_Exception. Fixes #856.
+    * [r3978] Fixed #862. This was a documentation issue. The described functionality is no longer available.
+    * [r3977] Added test case and updated code attempted to fix #826. It is fixed now.
+    * [r3976] Fixed findByXXX and findOneByXXX calls when fieldName has any uppercase char. Fixes #826
+    * [r3975] fixed #691 fixes #750
+    * [r3970] fixes #846
+    * [r3969] More fixes to drop/create db functionality.
+    * [r3968] A few more create/drop db fixes.
+    * [r3967] fixes #848
+    * [r3966] fixes #835
+    * [r3965] Fixed issue with options not existing in Schema.php. A few minor other changes.
+    * [r3964] Added better examples for sluggable.
+    * [r3963] Fix #845 (typo)
+    * [r3962] Added more documentation to schema files for inheritance usage.
+    * [r3961] fixes #796 fixes #797
+    * [r3960] fixes #683
+    * [r3959] Added hack/fix to getColumnName() to fix situations where an array is passed to it
+    * [r3958] Removed end new line.
+    * [r3957] Added some functions which were in 0.9 to maintain BC.
+    * [r3956] Fixed incorrect test case.
+    * [r3955] fixes #843
+    * [r3954] Documentation and clean up.
+    * [r3953] Added autoload when getting table for component to ensure the model is present and loaded before this happens.
+    * [r3952] Changed model loading from require_once to require.
+    * [r3951] fixes #672
+    * [r3950] fixes #814
+    * [r3949] fixes #827
+    * [r3948] Added description.
+    * [r3947] fixes #821
+    * [r3946] Removed duplicate.
+    * [r3945] A few cosmetic fixes. Fixed test cases.
+    * [r3944] fixes #836
+    * [r3937] fixes #631
+    * [r3936] fixes #829 fixes #707
+    * [r3935] fixes #830
+    * [r3930] Fixed #786.
+    * [r3929] fixes #820
+    * [r3928] fixes #451
+    * [r3927] fixes #711 - Added mysql bit column type support.
+    * [r3926] index name typo
+    * [r3923] Enhancing migrations and schema files chapters.
+    * [r3922] Expaned schema files chapter with more examples. Documented all the new features.
+    * [r3921] A little work to the manual.
+    * [r3919] Fixing packages again.
+    * [r3918] Updating versions.
+    * [r3917] fixes #629
+    * [r3916] Disabled mysql migration test case since it will always fail in this test suite.
+    * [r3915] fixes #800
+    * [r3914] fixes #646
+    * [r3913] fixes #818
+    * [r3912] fixes #358
+    * [r3911] Styling and documentation fixes.
+    * [r3910] fixes #803
+    * [r3909] Added argument documentation of methods Doctrine_Export::alterTable and alterTableSql (fixes #432)
+    * [r3907] Added free( = false) support in Doctrine_Record and Doctrine_Collection (0.10 branch)
+    * [r3906] fixes #771
+    * [r3905] fixes #798
+    * [r3904] fixes #799
+    * [r3901] Removed support to imbricated query added yesterday (which fixed ticket #782). The same thing could be easily achieved without need of Doctrine support, as mentioned in comments. Dev team decided to drop this support for now, but are considering for 1.0
+    * [r3897] Added imbricated query support in whereIn method (fixes #782)
+    * [r3896] Adjusted quoteIdentifier in update and delete when executing a SQL query (also fixes #807)
+    * [r3895] Added float8 support in pgsql. Fixes #808
+    * [r3892] Fixes bug when updating a sub class using class table inheritance.
+    * [r3891] Removed faulty code.
+    * [r3889] fixes #627 #791 This also fixes an issue where the class tables do not extend the correct class when dealing with inheritance. Also new tests to cover this functionality.
+    * [r3888] Small refactorings and new tests for model loading(aggressive and conservative) and model generation with inheritance.
+    * [r3887] fixes #804
+    * [r3886] fixes #770
+    * [r3885] fixes #774
+    * [r3884] Changed all references from phpdoctrine.com to phpdoctrine.org
+    * [r3881] I love nice output. Updated formatting of test cases
+    * [r3880] Finally found and removed the 'f' char in tests
+    * [r3879] Added Doctrine_Record::free() from trunk that can help with controlling memory usage and improved the hydration for large result sets by reducing the number of getTypeOf() calls.
+    * [r3878] Added Doctrine_Pager_Range::isInRange, which checks if a given page is in the range
+    * [r3877] Merged r3869 in 0.9 and 0.10 branches
+    * [r3876] Merged r3868 in 0.10 and trunk
+    * [r3875] Updated manual pages and changed documentation naming convention (from process to parse) to follow the API
+    * [r3874] Split of methods in _parseTemplate in 0.10 and trunk
+    * [r3873] Small cosmetics in pagination chapter (0.10 and trunk)
+    * [r3872] Updated pagination chapter in manual (0.10 and trunk). Merged r3870 in trunk
+    * [r3871] Fixed method getNextPage that was always returning the last page in all branches
+    * [r3870] Pager updates and cosmetics
+    * [r3861] added setTableName to 4.3.1 example since it will not run out of the box without identifier quoting
+    * [r3857] Added test for count() to make sure r3856 remains fixed.
+    * [r3856] Fixed issue with FROM parameters not being included in the count() query.
+    * [r3855] Added contains() method from 0.9
+    * [r3854] fixes #762 again
+    * [r3853] fixes #769
+    * [r3852] fixes #770
+    * [r3851] fixes #759
+    * [r3850] fixes #762
+    * [r3849] Fixed incorrect test case and issue with DQL params.
+    * [r3848] fixes #438 in 0.10 branch. Related to #438
+    * [r3847] Fixes to model loading across the board. Breakage occurred after conservative model loading was fixed to actually be conservative.
+    * [r3844] Reversed r3839. Broke tests.
+    * [r3839] Fixed bug introduced by fixing the conservative model loading in r3834
+    * [r3837] Updates in Getting Started manual chapter (fixes #794)
+    * [r3836] Second parameter support in Doctrine_Pager::setCountQuery and added new method: Doctrine_Pager::getResultsInPage(), which returns the numbers of itens in current page
+    * [r3834] Fixed conservative model loading to actually be conservative. filterInvalidModels was causing classes to be loaded in both cases.
+    * [r3830] Fixed bug with params for dql query task.
+    * [r3826] Patched a class table inheritance validation bug
+    * [r3820] pre/post Up/Down methods
+    * [r3815] Added setOption() function.
+    * [r3804] Updated package information for 0.9.1 and 0.10.1 releases.
+
+0.10.0
+-----
+    * [r3815] Added setOption() function.
+    * [r3820] pre/post Up/Down methods
+    * [r3826] Patched a class table inheritance validation bug
+    * [r3830] Fixed bug with params for dql query task.
+    * [r3834] Fixed conservative model loading to actually be conservative. filterInvalidModels was causing classes to be loaded in both cases.
+    * [r3836] Second parameter support in Doctrine_Pager::setCountQuery and added new method: Doctrine_Pager::getResultsInPage(), which returns the numbers of itens in current page
+    * [r3837] Updates in Getting Started manual chapter (fixes #794)
+    * [r3839] Fixed bug introduced by fixing the conservative model loading in r3834
+    * [r3844] Reversed r3839. Broke tests.
+    * [r3847] Fixes to model loading across the board. Breakage occurred after conservative model loading was fixed to actually be conservative.
+    * [r3848] fixes #438 in 0.10 branch. Related to #438
+    * [r3849] Fixed incorrect test case and issue with DQL params.
+    * [r3850] fixes #762
+    * [r3851] fixes #759
+    * [r3852] fixes #770
+    * [r3853] fixes #769
+    * [r3854] fixes #762 again
+    * [r3855] Added contains() method from 0.9
+    * [r3856] Fixed issue with FROM parameters not being included in the count() query.
+    * [r3857] Added test for count() to make sure r3856 remains fixed.
+    * [r3861] added setTableName to 4.3.1 example since it will not run out of the box without identifier quoting
+    * [r3870] Pager updates and cosmetics
+    * [r3871] Fixed method getNextPage that was always returning the last page in all branches
+    * [r3872] Updated pagination chapter in manual (0.10 and trunk). Merged r3870 in trunk
+    * [r3873] Small cosmetics in pagination chapter (0.10 and trunk)
+    * [r3874] Split of methods in _parseTemplate in 0.10 and trunk
+    * [r3875] Updated manual pages and changed documentation naming convention (from process to parse) to follow the API
+    * [r3876] Merged r3868 in 0.10 and trunk
+    * [r3877] Merged r3869 in 0.9 and 0.10 branches
+    * [r3878] Added Doctrine_Pager_Range::isInRange, which checks if a given page is in the range
+    * [r3879] Added Doctrine_Record::free() from trunk that can help with controlling memory usage and improved the hydration for large result sets by reducing the number of getTypeOf() calls.
+    * [r3880] Finally found and removed the 'f' char in tests
+    * [r3881] I love nice output. Updated formatting of test cases
+    * [r3884] Changed all references from phpdoctrine.com to phpdoctrine.org
+    * [r3885] fixes #774
+    * [r3886] fixes #770
+    * [r3887] fixes #804
+    * [r3888] Small refactorings and new tests for model loading(aggressive and conservative) and model generation with inheritance.
+    * [r3889] fixes #627 #791 This also fixes an issue where the class tables do not extend the correct class when dealing with inheritance. Also new tests to cover this functionality.
+    * [r3891] Removed faulty code.
+    * [r3892] Fixes bug when updating a sub class using class table inheritance.
+    * [r3895] Added float8 support in pgsql. Fixes #808
+    * [r3896] Adjusted quoteIdentifier in update and delete when executing a SQL query (also fixes #807)
+    * [r3897] Added imbricated query support in whereIn method (fixes #782)
+    * [r3901] Removed support to imbricated query added yesterday (which fixed ticket #782). The same thing could be easily achieved without need of Doctrine support, as mentioned in comments. Dev team decided to drop this support for now, but are considering for 1.0
+    * [r3904] fixes #799
+    * [r3905] fixes #798
+    * [r3906] fixes #771
+    * [r3907] Added free( = false) support in Doctrine_Record and Doctrine_Collection (0.10 branch)
+    * [r3909] Added argument documentation of methods Doctrine_Export::alterTable and alterTableSql (fixes #432)
+    * [r3910] fixes #803
+    * [r3911] Styling and documentation fixes.
+    * [r3912] fixes #358
+    * [r3913] fixes #818
+    * [r3914] fixes #646
+    * [r3915] fixes #800
+    * [r3916] Disabled mysql migration test case since it will always fail in this test suite.
+    * [r3917] fixes #629
+    * [r3918] Updating versions.
+    * [r3919] Fixing packages again.
+    * [r3921] A little work to the manual.
+    * [r3922] Expaned schema files chapter with more examples. Documented all the new features.
+    * [r3923] Enhancing migrations and schema files chapters.
+    * [r3926] index name typo
+    * [r3927] fixes #711 - Added mysql bit column type support.
+    * [r3928] fixes #451
+    * [r3929] fixes #820
+    * [r3930] Fixed #786.
+    * [r3935] fixes #830
+    * [r3936] fixes #829 fixes #707
+    * [r3937] fixes #631
+    * [r3944] fixes #836
+    * [r3945] A few cosmetic fixes. Fixed test cases.
+    * [r3946] Removed duplicate.
+    * [r3947] fixes #821
+    * [r3948] Added description.
+    * [r3949] fixes #827
+    * [r3950] fixes #814
+    * [r3951] fixes #672
+    * [r3952] Changed model loading from require_once to require.
+    * [r3953] Added autoload when getting table for component to ensure the model is present and loaded before this happens.
+    * [r3954] Documentation and clean up.
+    * [r3955] fixes #843
+    * [r3956] Fixed incorrect test case.
+    * [r3957] Added some functions which were in 0.9 to maintain BC.
+    * [r3958] Removed end new line.
+    * [r3959] Added hack/fix to getColumnName() to fix situations where an array is passed to it
+    * [r3960] fixes #683
+    * [r3961] fixes #796 fixes #797
+    * [r3962] Added more documentation to schema files for inheritance usage.
+    * [r3963] Fix #845 (typo)
+    * [r3964] Added better examples for sluggable.
+    * [r3965] Fixed issue with options not existing in Schema.php. A few minor other changes.
+    * [r3966] fixes #835
+    * [r3967] fixes #848
+    * [r3968] A few more create/drop db fixes.
+    * [r3969] More fixes to drop/create db functionality.
+    * [r3970] fixes #846
+    * [r3975] fixed #691 fixes #750
+    * [r3976] Fixed findByXXX and findOneByXXX calls when fieldName has any uppercase char. Fixes #826
+    * [r3977] Added test case and updated code attempted to fix #826. It is fixed now.
+    * [r3978] Fixed #862. This was a documentation issue. The described functionality is no longer available.
+    * [r3979] Added MySQL error code 1451 'ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails' in Connection_Mysql_Exception. Fixes #856.
+    * [r3980] Added ticket 710 test case. Fixes #710, because it is invalid.
+    * [r3981] Added test case for ticket #486.
+    * [r3982] fixed typo
+    * [r3983] fixes #486
+    * [r3984] Formatting.
+    * [r3985] Removed.
+    * [r3986] Added better exception throwing for when you try and generate yaml from db and your db doesn't produce any models.
+    * [r3987] Fixed issue with tmp connection not being torn down when exception is thrown during attempting to drop the db.
+    * [r3988] Slightly enhanced local/foreign key guessing on relationships.
+    * [r3989] fixes #853
+    * [r3990] fixes #860
+    * [r3991] Fixed Doctrine_Pager::getResultsInPage() as reported by Matt Marcum through email.
+    * [r3992] Made it so model builder will load model path to the loaded models array after writing it.
+    * [r3993] fixes #854
+    * [r3994] Added schema validation to help with using incorrect key names for schema elements.
+    * [r3995] Fixed typo.
+    * [r3996] Removed finder as it is not used/needed.
+    * [r3997] Fixed inconsistancy in api.
+    * [r3998] Added more to validation of schema files.
+    * [r3999] Fixed test case.
+    * [r4000] Allowing setup customization in every inheritance type.
+    * [r4001] removed documentation about compound unique constraints. currently not supported.
+    * [r4004] fixes #875
+    * [r4005] Fix to create/drop db.
+    * [r4006] Adding TestCase for #876
+    * [r4007] Docs and enhanced test case.
+    * [r4008] Added documentation for geographical template.
+    * [r4009] More docs for geographical.
+    * [r4010] Added documentation for nesting plugins.
+    * [r4011] Updated documentation and fixed formatting issue.
+    * [r4012] Formatting.
+    * [r4013] Updating plugin docs.
+    * [r4014] More documentation of plugins.
+    * [r4017] Updating version for 0.10.3
+    * [r4018] Initial entry of behavior folder/name space.
+    * [r4021] Removed exception handling here, it needs to be moved to deeper in to the core for protecting against generating a definition for a table with the same name multiple times.
+    * [r4022] Adding size for BC.
+    * [r4023] BC change.
+    * [r4024] Documentation.
+    * [r4025] Removed Taggable, since it is not implemented and won't be for 1.0
+    * [r4027] Fixes issue where default => 0 is not included in the column definition options.
+    * [r4028] improving exception when attempting to get connetion when there is none
+    * [r4029] Updated tests. Cleaned up some stuff. Uncommented tests and added failing test cases to fix.
+    * [r4030] More updates to tests.
+    * [r4031] Made it so it will remove tmp files.
+    * [r4032] More ensuring that all tmp files are cleaned up after running tests.
+    * [r4033] Fixes from commented tests. Updating models to use updated syntax.
+    * [r4034] Moved .dist files to normal name since .dist is not required.
+    * [r4035] Added failing test for aggregate with comma in it in the groupby
+    * [r4036] fixes #833 - also cleaned up and added doc blocks for all adapter module code.
+    * [r4037] fixes #839
+    * [r4038] fixes #840
+    * [r4039] added test case for ticket #849
+    * [r4040] Added new model
+    * [r4041] fixes #879
+    * [r4042] fixes #872 - How does informix handle identifier quoting if it does at all?
+    * [r4044] Added new failing test for parseDsn()
+    * [r4045] Ported validator refactorings partly from trunk.
+    * [r4046] removed wrong patch
+    * [r4047] lazy relation loading fix
+    * [r4048] Updated test case
+    * [r4049] fixed #882
+    * [r4050] Fixed #883
+    * [r4054] added xslt stylesheet to generate changelogs with svn log
+    * [r4057] Fixed #873
+    * [r4059] Added 'equal' to valid relation elements
+    * [r4060] fixes #893
+    * [r4061] fixes #839 again :) whoops
+    * [r4062] fixes #886
+    * [r4063] Refactoring adapter information.
+    * [r4064] Added ignore.
+    * [r4065] Misc. work on tests
+    * [r4066] fixes #900
+    * [r4067] Initial entry
+    * [r4068] fixes #844
+    * [r4069] fixes #852
+    * [r4070] Fixed #859
+    * [r4072] Formatting.
+    * [r4073] Initial entry.
+    * [r4074] fixes #837
+    * [r4075] fixes #837 - added tests to cover this
+    * [r4076] fixes #874
+    * [r4077] Removing ending new line.
+    * [r4078] fixes #869
+    * [r4079] Some data fixtures coverage.
+    * [r4080] I18n data fixtures exporting test.
+    * [r4081] I18n import coverage.
+    * [r4082] Fixing tests.
+    * [r4083] Wrapped in try/catch
+    * [r4084] Fixed comment.
+    * [r4085] Fixed #899.
+    * [r4086] Fixed #728. Searched & fixed for all occurences. If we missed one, please reopen this ticket with a new error report.
+    * [r4087] Fixed #749.
+    * [r4089] Fixed #838. After reviewing the testcase, i've come to the conclusion that the desired use is invalid because it would basically allow having 2 root nodes in the tree (even if its temporarily) and would therefore allow an invalid state / corrupt tree. I modified the testcase to reflect how it *could* be done, but that only works well when the old root does not yet have any children. There are several solutions though: You can use a multi-root setup, in which case the desired action would be absolutely lega. Or you can use a single-root tree, but have the real root as a dummy root that never changes and have a second node as the only child which is your root then. And there may be even more options, depending on your particular use-case.
+    * [r4090] Fixes #801
+    * [r4091] Added testing for nested set
+    * [r4092] Adding free() calls when importing and exporting
+    * [r4093] fixes #855
+    * [r4094] fixes #868
+    * [r4095] fixes #902 added 'format' to the valid column name array Ticket: 902
+    * [r4096] fixing test case for #741
+    * [r4097] fixes #864
+    * [r4098] fixes #849
+    * [r4099] Added coverage for cti with pk other than id
+    * [r4100] Changed behavior of Sluggable back to what it was. Will not set slug if it already has a value. Broke 0.10 BC.
+    * [r4102] Test case for ticket #904
+    * [r4103] Wrapped in try catch
+    * [r4104] Fixed pessimistic locking.
+    * [r4105] Fixed invalid test case.
+    * [r4106] fixed failing test case.
+    * [r4107] Added m2m with composite pk coverage.
+    * [r4108] Added m2m data fixtures loading test.
+    * [r4109] Fixed issue. free() broke the data fixtures and tests did catch it. Updated tests to cover this functionality.
+    * [r4110] Fixed sluggable so it always calls urlize on the value.
+    * [r4112] Updated coverage.
+    * [r4113] New coverage.
+    * [r4114] Small refactorings.
+    * [r4115] Small refactorings.
+    * [r4116] Updated sluggable syntax
+    * [r4118] Fixed #912. Many thanks for the ticket & patch!
+    * [r4120] branches/0.10: tweaked is_dir() check in Doctrine::loadModels()
+    * [r4121] Fixed #906.
+    * [r4123] Fixed spacing issue causing some failing test cases.
+    * [r4124] fixes #915
+    * [r4125] Fixing tests and adding coverage for ticket #915
+    * [r4126] Code formatting
+    * [r4127] Undoing changes. Broke tests somehow.
+    * [r4128] fixes #784
+    * [r4129] fixes #916
+    * [r4130] Adds support for sequence in schema.
+    * [r4131] Removed. Will reintroduce in 2.0
+    * [r4132] Added fixed to the list of things to skip when getting column validators.
+    * [r4133] Added missing validation keys for column definitions.
+    * [r4134] fixes #865
+    * [r4135] Updated test to use correct syntax. Still fails. Will address in another commit.
+    * [r4136] fixes #867
+    * [r4137] Removed isIdentifier() check, it causes sql syntax errors if the only column that exists on the table is a primary key. Note: Need to discuss this with romanb
+    * [r4138] Added coverage for ticket #867
+    * [r4139] Changed wording.
+    * [r4143] Added isIdentifierAutoincrement() and cleaned up some stuff.
+    * [r4144] Removed trailing white spaces.
+    * [r4146] Fixed incorrect test case.
+    * [r4147] Added coverage for exception throwing on invalid fixture elements.
+    * [r4148] TestCase for ticket 923
+    * [r4149] Moved models folder inside of tests.
+    * [r4150] Fixed path error after moving models.
+    * [r4151] Updating versions for 0.10.4
+    * [r4153] Updated test.
+    * [r4154] Fixed test case so it passes. Ticket is invalid.
+    * [r4156] Added merge method. Fixes #926
+    * [r4157] Adding test case for ticket #574
+    * [r4158] Cleaning.
+    * [r4159] Lots of updates to the manual. Adding yaml examples, enforcing 80 character column limit, removing old and outdated syntax across entire manual.
+    * [r4160] Added my first project tutorial to manual.
+    * [r4161] Initial entry.
+    * [r4164] Cleanup.
+    * [r4165] example code was broken if you try to increment a field with a decimal number, fixed so example works with decimal addition as well
+    * [r4166] Updated facade documentation.
+    * [r4167] Removed outdated comment.
+    * [r4168] Fixed #932.
+    * [r4169] Added testcase for 932.
+    * [r4170] Added testcase for 932.
+    * [r4171] Improved testcase for 932.
+    * [r4172] added a testcase for trac bug: 935
+    * [r4174] Fixed #935.
+    * [r4177] Added more coverage for dql updates.
+    * [r4178] Added failing test case for #927
+    * [r4179] Formatting.
+    * [r4180] fixes #922
+    * [r4181] Adding coverage for ticket #889
+    * [r4182] added coverage for ticket #384
+    * [r4184] Fixed #929. Ticket: 929
+    * [r4185] Added coverage for ticket #734
+    * [r4189] Added coverage for copying queries and for removing dql query parts.
+    * [r4190] fixes #734 - Added removeDqlQueryPart() method.
+    * [r4191] Added more examples for facade.
+    * [r4192] fixes #938
+    * [r4193] Removed class table inheritance from documentation.
+    * [r4194] Changing default inheritance to concrete from class table since 1.0 will not support class table inheritance.
+    * [r4195] Adding coverage for ticket #239
+    * [r4196] fixes #921
+    * [r4197] Added coverage for Doctrine_Record::replace()
+    * [r4198] Tabs to spaces.
+    * [r4202] Removed.
+    * [r4203] Re-factored validation system to allow for validation of single fields/columns and to allow the retrievale of the validator objects used for the failed custom validators.
+    * [r4204] see #926
+    * [r4205] fixed #940
+    * [r4208] Fixed wrong variable condition order in fromArray() method
+    * [r4223] Fixed #966.
+    * [r4227] added failing test case for trac ticket# 969
+    * [r4229] Fixed #969.
+
+0.9.1
+-----
+    * [r3529] Fixed count bug in Doctrine_Pager that was wrong counting the total of results found. Added 3 new methods: Doctrine_Pager::getExecuted (checks if the Pager was already executed), Doctrine_Pager_Layout::execute (handy access to execute Pager query without having to access Doctrine_Pager instance) and Doctrine_Pager_Layout::processPage (processes the template of a given page and returns the parsed string)
+    * [r3534] backporting whereNotIn from trunk
+    * [r3536] Added a fix in toArray method to prevent mapped Doctrine_Record values to be displayed fully
+    * [r3538] Added different counter query support for Doctrine_Pager. Now it can use 2 different queries to paginate items. Added 4 new methods: setCountQuery, getCountQuery, setCountQueryParams and getCountQueryParams. If not defined a counter Doctrine_Query, the collector one is used. If no params were defined to be used in counter query, the ones passed by execute method are used
+    * [r3539] Fixed wrong call to _setExecuted in Pager
+    * [r3540] Fixed _adjustOffset in order to get it working after previous change in Pager
+    * [r3541] setting default templatse for the payer layout
+    * [r3542] Removed initial definition of setSelectedTemplate in Doctrine_Pager_layout in all branches. If no selected template is defined, the default assigned template is used. This prevent possible issue where the user defines default but not selected template (will use the defined one in class, what is wrong)
+    * [r3546] Fixed a bug where the hydration mode HYDRATE_NONE was not recognized when set through setHydrationMode
+    * [r3550] #740: fixed issue with hydrate when given an array containing null values. Previously, if you loaded a record from the database, then something changed that record in the database, and you loaded the same record again in the same script, any values that had been changed to null in the database would not be updated in the reloaded object.
+    * [r3554] Added Doctrine::HYDRATE_NONE example to "Fetch Only What You Need" subchapter of the "Improving performanc" chapter.
+    * [r3555] adding a currently un ticketed test case
+    * [r3556] updating unnamed test case
+    * [r3557] refs #741
+    * [r3558] refs #741 - updating the names of the model classes
+    * [r3561] Fix for situation where subclasses is not an array.
+    * [r3562] Added contains() method for checking whether an arbitrary piece of dql exists.
+    * [r3580] fixes #613
+    * [r3601] Fixed a bug in Doctrine_Node_nestedSet::getPath().
+    * [r3610] Merged 3586 into .9 branch.
+    * [r3623] Changed versions in Doctrine.php for branches.
+    * [r3625] Updated package
+    * [r3629] #749: added test case to demonstrate issue with column aggregation inheritance in 0.9 branch.
+    * [r3630] #749: fixed issue with hydrating rows of a result set when column aggregation inheritence is involved.
+    * [r3631] #749: fixed a problem with r3630: subclass inheritance map in parseData is now properly maintained for each alias.
+    * [r3639] improved exception message
+    * [r3641] fix to whereIn to prevent invalid SQL being generated when no params are passed
+    * [r3642] test showing that using count() with enums does not work.
+    * [r3646] a previous commit of mine broke method chaining
+    * [r3671] Added commit #3652 into 0.9 branch
+    * [r3672] Added changeset #3624 into 0.9 and 0.10 branches
+    * [r3673] Merged changeset #3621 into 0.9 and 0.10 branches. Fixed ws in trunk
+    * [r3674] Merged changeset #3609 and #3599 into 0.9 and 0.10 branches
+    * [r3675] Merged changeset #3593 into 0.9 and 0.10 branches
+    * [r3676] Merged changeset #3592 into 0.9 and 0.10 branches
+    * [r3677] Merged changeset #3590 into 0.9 and 0.10 branches (since we cannot change the API, I created a wrapper to the method name). No changes in tests and I also didnt drop the ownsOne and ownsMany support
+    * [r3678] Merged changeset #3589 into 0.9 and 0.10 branches
+    * [r3679] Merged changeset #3588 into 0.9 and 0.10 branches. Fixed ws in trunk
+    * [r3680] Merged changeset #3579 into 0.9 and 0.10 branches. This change does not break any test case, but it changes the behavior of Sluggable in both branches. TODO is to test this change in real life.
+    * [r3681] Merged changeset #3578 into 0.9 and 0.10 branches
+    * [r3682] Merged changeset #3577 into 0.9 and 0.10 branches
+    * [r3686] more descriptive exception message
+    * [r3687] fix to i18n template
+    * [r3688] fixing previous commits poor coding standards
+    * [r3691] - MFT (merge from trunk)
+    * [r3696] Ticket: 766,767
+    * [r3723] fixes #732 - yes, it's a nasty hack, but we have a new parser on the way
+    * [r3735] Fixed package.xml dependency.
+    * [r3736] Another package fix.
+    * [r3745] Added jwage as lead maintainer to allow pear packaging.
+    * [r3748] Updated.
+    * [r3749] Fixes to package.xml
+    * [r3751] Merged r3567 into 0.9 and 0.10 branches
+    * [r3753] Merged r3549 into 0.9 and 0.10 branches
+    * [r3757] relaxed a comparison in the hydrator. caused buggy behavior.
+    * [r3758] append multiple fields instead of setting to last value
+    * [r3764] Updated package from PEAR_PackageFileManager2
+    * [r3769] convertBoolean method was not working correctly for Pgsql, when integer value 0|1 was used as value for boolean type columns instead of true|false. (e.g. sfGuardDoctrinePlugin will use it in schema.yml) Added boolean columns to Export/PgsqlTestCase.php to check default attributes for columns.
+    * [r3774] Added new failing test case for ticket #786
+    * [r3782] Applied patch provided by ticket #788 in 0.9, 0.10 and trunk
+    * [r3783] Added NOT operator recognition in DQL (fixes #496)
+    * [r3785] Fix to allow sequences work in MySQL (fixes #702) in 0.9 branch
+    * [r3786] Removed is_numeric() check when array is passed to convertBoolean method.
+    * [r3787] Merging r3565 to 0.9 branch.
+    * [r3789] Small fix convertion of enum (fixes #788)
+    * [r3797] Added model loading to default sandbox configuration.
+    * [r3800] Merged new failing test case from 0.10
+    * [r3804] Updated package information for 0.9.1 and 0.10.1 releases.
