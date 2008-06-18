@@ -4,7 +4,7 @@ ini_set('max_execution_time', 900);
 ini_set('date.timezone', 'GMT+0');
 
 require_once(dirname(__FILE__) . '/DoctrineTest.php');
-require_once dirname(__FILE__) . '/../lib/Doctrine.php';
+require_once((defined('DOCTRINE_DIR') ? DOCTRINE_DIR : dirname(__FILE__) . '/../lib/') .'Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 spl_autoload_register(array('DoctrineTest','autoload'));
 
@@ -88,7 +88,7 @@ $driver = new GroupTest('Driver Tests', 'driver');
 $driver->addTestCase(new Doctrine_Connection_Pgsql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
-$driver->addTestCase(new Doctrine_Connection_Mssql_TestCase()); 
+$driver->addTestCase(new Doctrine_Connection_Mssql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mysql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Firebird_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Informix_TestCase());
