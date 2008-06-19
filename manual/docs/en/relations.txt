@@ -379,12 +379,10 @@ User:
   columns:
     name: string(30)
   relations:
-    Groups:
-      class: Group
+    Group:
       refClass: GroupUser
       local: user_id
       foreign: group_id
-      foreignAlias: Users
 
 Group:
   tableName: my_group
