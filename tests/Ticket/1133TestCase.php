@@ -50,9 +50,29 @@ class Doctrine_Ticket_1133_TestCase extends Doctrine_UnitTestCase
                 ->from('Ticket_1133_Foo f')
                 ->innerJoin('f.Bar b ON b.id = ?', $foo->Bar->id)
                 ->addWhere('f.name = ?', 'test');
-        
+
         $this->assertEqual($q->count(), 1);
     }
+
+    public function testTest2()
+    {
+        $foo = new Ticket_1133_Foo();
+        $foo->name = 'test';
+        $foo->Bar->name = 'test2';
+        $foo->save();
+
+        $q = Doctrine_Query::create()
+                ->from('Ticket_1133_Foo f')
+                ->innerJoin('f.Bar b')
+                ->addWhere('b.name = ?', 'test2')
+                ->limit(1)
+                ->offset(1);
+        echo $q->getSqlQuery() . '<br />';
+        echo $q->getCountQuery() . '<br />';
+
+        $this->assertEqual($q->count(), $q->execute()->count());
+    }
+
 }
 
 class Ticket_1133_Foo extends Doctrine_Record
