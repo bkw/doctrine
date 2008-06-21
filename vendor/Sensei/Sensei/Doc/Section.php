@@ -393,8 +393,8 @@ class Sensei_Doc_Section implements Countable
      */
     public static function convertNameToPath($name)
     {
-        $patterns = array('/\s/', '/[^a-z0-9-]/');
-        $replacements = array('-', '');
+        $patterns = '/\s/';
+        $replacements = '-';
             
         return preg_replace($patterns, $replacements, strtolower($name)); 
     }
