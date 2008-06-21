@@ -2,7 +2,7 @@ Doctrine offers the ability to generate models from existing databases, or from 
 generating models from an existing database in the [doc getting-started:working-with-existing-databases :index :name] 
 section.
  
-Here is a simple example of how to generate your models from yaml schema files.
+Here is a simple example of how to generate your models from YAML schema files.
 
 Create a schema_files/user.yml and place the following yaml in the file
 <code type="yaml">
@@ -12,8 +12,7 @@ User:
     username: string(255)
     password: string(255)
 </code>
-
-Now we need can use a little script to generate the Doctrine_Record definition.
+Now we can use a little script to generate the Doctrine_Record definition.
 <code type="php">
 require_once('/path/to/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
