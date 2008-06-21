@@ -1,27 +1,27 @@
-+ クイックスタート
-+ 接続の管理
-+ 基本的なスキーマのマッピング
-+ 関係 (Relations)
-+ スキーマファイル
-+ ユーティリティ
-+ オブジェクトの操作
-+ コンポーネントの概要
-+ 階層的なデータ
-+ コンフィグレーション
-+ データフィクスチャ
-+ DQL (Doctrine クエリ言語)
-+ ネイティブ SQL
-+ トランザクション
-+ キャッシュ
-+ イベントリスナ
-+ クラステンプレート
-+ プラグイン
-+ ファイルパーサー
-+ 移行 (Migration)
-+ 検索
-+ データベースの抽象化
-+ パフォーマンスの改善
-+ テクノロジー
-+ 例外や注意 (Exceptions and warnings)
-+ 現実的な例
-+ コーディング規約
++ Getting started
++ Connection management
++ Basic schema mapping
++ Relations
++ Schema Files
++ Utilities
++ Working with objects
++ Component overview
++ Hierarchical data
++ Configuration
++ Data fixtures
++ DQL (Doctrine Query Language)
++ Native SQL
++ Transactions
++ Caching
++ Event listeners
++ Class templates
++ Plugins
++ File parser
++ Migration
++ Searching
++ Database abstraction
++ Improving Performance
++ Technology
++ Exceptions and warnings
++ Real world examples
++ Coding standards
