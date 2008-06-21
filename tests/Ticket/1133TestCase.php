@@ -67,8 +67,6 @@ class Doctrine_Ticket_1133_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('b.name = ?', 'test2')
                 ->limit(1)
                 ->offset(1);
-        echo $q->getSqlQuery() . '<br />';
-        echo $q->getCountQuery() . '<br />';
 
         $this->assertEqual($q->count(), $q->execute()->count());
     }
