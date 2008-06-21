@@ -354,6 +354,29 @@ $sql = Doctrine::generateSqlFromModels();
 
 ++ モデルの生成
 
+Doctrineは既存のデータベースやYAMLスキーマファイルからからモデルを生成することができます。既存のデータベースからモデルを生成する方法は [doc getting-started:既存のデータベースと連携する :index :name] の節で紹介しました。
+
+以下がYAMLスキーマファイルからモデルを生成している例です：
+
+schema_files/user.yml ファイルを作り、以下のyamlを記述します
+<code type="yaml">
+---
+User:
+  columns:
+    username: string(255)
+    password: string(255)
+</code>
+
+そしてDoctrine_Recordの定義を生成する小さなスクリプトを使います
+<code type="php">
+require_once('/path/to/Doctrine.php');
+spl_autoload_register(array('Doctrine', 'autoload'));
+
+Doctrine::generateModelsFromYaml('/path/to/schema_files/', '/path/to/generate/models');
+</code>
+
+そして models/User.php と models/generated/BaseUser.php ファイルが保存されます。User.phpにカスタムコードを入れるためのもので、一度だけ生成されます。そしてBaseUser.phpはgenerateModelsFromYaml() が呼ばれる度に生成されます。
+
 ++ Auto loading models
 ++ Command line interface
 ++ My first project tutorial
