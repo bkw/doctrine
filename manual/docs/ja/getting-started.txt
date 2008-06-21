@@ -377,6 +377,373 @@ Doctrine::generateModelsFromYaml('/path/to/schema_files/', '/path/to/generate/mo
 
 そして models/User.php と models/generated/BaseUser.php ファイルが保存されます。User.phpにカスタムコードを入れるためのもので、一度だけ生成されます。そしてBaseUser.phpはgenerateModelsFromYaml() が呼ばれる度に生成されます。
 
-++ Auto loading models
-++ Command line interface
-++ My first project tutorial
+++ 自動的にモデルをロードする
+
+Doctrineには２種類のモデルをロードする方法があります。コンサバティブな(怠けた)ローディングとアグレッシブなローディングです。コンサバティブローディングはPHPファイルを最初は必要としませんが、その代わりクラスの名前にパスの名前をキャッシュしてパスの名前がspl_autoload_register(array('Doctrine', 'autoload'))で登録したDoctrine::autoload() によって使われます。以下が両方のタイプのモデルローディングの例です
+
++++ コンサバティブ
+
+コンサバティブモデルローディングは公開環境に最適なモデルローディング法です。このやり方ではモデルローディングが実行されたときでは無く、すべてのモデルが何もしなくてもロードされます。
+
+コンサバティブモデルローディングでは一つのファイルに必ず一つだけクラスが入っている必要があり、ファイル名をクラス名と同じにする必要があります。例えば、Userクラスがある場合ファイル名もUser.phpにする必要があります。
+
+以下がコンサバティブローディングを使った基本的なDoctrineの実装です
+
+<code type="php">
+//Doctrineベースクラスをロード
+require_once('path-to-doctrine/lib/Doctrine.php');
+
+//autoloaderを登録
+spl_autoload_register(array('Doctrine', 'autoload'));
+
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+Doctrine::loadModels('/path/to/models'); // これで.phpを指定する必要なし
+
+$user = new User(); // これでDoctrine::autoload()が起動され、ファイルがインクルードされ、Userクラスが扱えるようになります
+</code>
+
++++ アグレッシブ
+
+アグレッシブモデルローディングはデフォルトのローディング法でとてもシンプルです。この方法では.php 拡張子のついたすべてのファイルを探し、見つかった全てのファイルをインクルードします。Doctrineはクラス継承を扱わないため、モデルが別のモデルを継承している場合はうまくモデルをインクルードできないので全ての依存関係を正常に保つのには注意が必要です。
+
+アグレッシブモデルローディングを使うことで、一つのファイル内に複数のクラスを持たせることができ、ファイル名とクラス名を一致させる必要はありません。
+
+アグレッシブモデルローディングの欠点リクエスト毎に全てのphpファイルがインクルードされてしまうことなので、モデルの数が増えてきた場合コンサバティブモデルローディングを使うことをお勧めします。
+
+以下がアグレッシブモデルローディングを使ったDoctrineの実装です
+
+<code type="php">
+//ベースDoctrineクラスをインクルード
+require_once('path-to-doctrine/lib/Doctrine.php');
+
+//autoloaderの登録
+spl_autoload_register(array('Doctrine', 'autoload'));
+
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive');
+Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
+
+$user = new User(); // これでDoctrine::autoload()が起動され、ファイルがインクルードされ、Userクラスが扱えるようになります
+</code>
+
+++ コマンドラインインターフェース
+
+コマンドラインインターフェースはDoctrineで最もよく使われるタスクをコマンドラインから実行できるようにしたものです。コマンドラインインターフェースについての詳細は [doc utilities:command-line-interface :index :name] の節にあります。
+
+++ 一番最初のプロジェクトのチュートリアル
+
++++ はじめに
+
+このチュートリアルでは機能満載のPHP Doctrine ORMを使ってあなたの一番最初のプロジェクトを作ってみます。このチュートリアルではすぐに使えるDoctrine sandboxパッケージを使います。またwebブラウザー、PHPとPDO + Sqliteが必要です。
+
++++ ダウンロード
+
+まず始めるにあたり最新のDoctrine sandboxパッケージをダウンロードします：http://www.phpdoctrine.org/download 次にダウンロードしたファイルを展開すると Doctrine-x.x.x-Sandbox というディレクトリが作られるはずです。このディレクトリにはDoctrineを使ったwebアプリケーションの簡単な例が入っています。
+
++++ パッケージの中身
+
+ファイルやディレクトリの構造は以下の様になっているはずです
+<code>
+$ cd Doctrine-0.10.1-Sandbox
+$ ls
+config.php	doctrine	index.php	migrations	schema
+data		doctrine.php	lib		models
+</code>
+
+このsandboxは設定をする必要はなく、sqlデータベースで使うことができるようになっています。以下が各ファイルの説明と目的です
+
+* doctrine - コマンドラインインターフェース実行のためのシェルスクリプト。./doctrine で実行してコマンド一覧を見るか、./doctrine help として各コマンドの詳細をみてください
+* doctrine.php - Doctrineのコマンドラインインターフェースを実装しているphpスクリプト。上のDoctrineシェルスクリプトでインクルードされる
+* index.php - webアプリケーションの為のフロントwebコントローラー
+* migrations - migrationクラスの為のフォルダ
+* schema - スキーマファイルのフォルダ
+* models - モデルファイルのフォルダ
+* lib - Doctrineコアライブラリファイルのフォルダ
+
+
++++ CLI(クライアントプログラム)の実行
+
+Doctrineのシェルスクリプトをコマンドラインから実行すると以下の様なアウトプットがでるはずです：
+
+<code>
+$ ./doctrine 
+Doctrine Command Line Interface
+
+./doctrine build-all
+./doctrine build-all-load
+./doctrine build-all-reload
+./doctrine compile
+./doctrine create-db
+./doctrine create-tables
+./doctrine dql
+./doctrine drop-db
+./doctrine dump-data
+./doctrine generate-migration
+./doctrine generate-migrations-db
+./doctrine generate-migrations-models
+./doctrine generate-models-db
+./doctrine generate-models-yaml
+./doctrine generate-sql
+./doctrine generate-yaml-db
+./doctrine generate-yaml-models
+./doctrine load-data
+./doctrine load-dummy-data
+./doctrine migrate
+./doctrine rebuild-db
+</code>
+
++++ スキーマの定義
+
+以下がサンプルyamlスキーマファイルです。yamlファイルは schemas/schema.yml に保存します。このコマンドラインインターフェースはschemasフォルダ内にある全ての *.yml ファイルを探します。
+
+
+<code type="yaml">
+---
+User:
+  columns:
+    id:
+      primary: true
+      autoincrement: true
+      type: integer(4)
+    username: string(255)
+    password: string(255)
+  relations:
+    Groups:
+      class: Group
+      refClass: UserGroup
+      foreignAlias: Users
+
+Group:
+  tableName: groups
+  columns:
+    id:
+      primary: true
+      autoincrement: true
+      type: integer(4)
+    name: string(255)
+
+UserGroup:
+  columns:
+    user_id: integer(4)
+    group_id: integer(4)
+  relations:
+    User:
+      onDelete: CASCADE
+    Group:
+      onDelete: CASCADE
+</code>
+
++++ データフィクスチャのテスト
+
+以下がサンプルのデータフィクスチャのファイルになります。このファイルを data/fixtures/data.yml 以下に保存します。コマンドラインインターフェースは data/fixtures にある全ての *.yml ファイルを探します。
+
+<code type="yaml">
+---
+User:
+  zyne:
+    username: zYne-
+    password: changeme
+    Groups: [founder, lead, documentation]
+  jwage:
+    username: jwage
+    password: changeme
+    Groups: [lead, documentation]
+
+Group:
+  founder:
+    name: Founder
+  lead:
+    name: Lead
+  documentation:
+    name: Documentation
+</code>
+
++++ 全てのビルド
+
+これでスキーマファイルとデータフィクスチャが用意できたので、全てのビルドを行いモデルを使うことができるようになります。以下のコマンドを実行すると models フォルダにモデルが生成されます。
+
+<code>
+$ ./doctrine build-all-reload
+build-all-reload - Are you sure you wish to drop your databases? (y/n)
+y
+build-all-reload - Successfully dropped database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.10/tools/sandbox/sandbox.db"
+build-all-reload - Generated models successfully from YAML schema
+build-all-reload - Successfully created database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.10/tools/sandbox/sandbox.db"
+build-all-reload - Created tables successfully
+build-all-reload - Data was successfully loaded
+</code>
+
+models フォルダを見ると modelクラスが生成されているのが確認できるはずです。これで index.php にコードを書いてDoctrineを使ってみることができるようになりました。index.php の中に以下の様なシンプルなテストを書いてみてください。
+
++++ テストの実行
+
+<code type="php">
+$query = new Doctrine_Query();
+$query->from('User u, u.Groups g');
+
+$users = $query->execute();
+
+echo '<pre>';
+print_r($users->toArray(true));
+</code>
+
+print_r() が以下のデータの出力を行うはずです。このデータは data/fixtures の中に置いたyamlファイルから保存されたデータだということが分かるはずです。フィクスチャの中にデータを追加して、build-all-reloadをもう一度走らせデータベースを再初期化することも可能です。
+
+
+<code>
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [username] => zYne-
+            [password] => changeme
+            [Groups] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 1
+                            [name] => Founder
+                        )
+
+                    [1] => Array
+                        (
+                            [id] => 2
+                            [name] => Lead
+                        )
+
+                    [2] => Array
+                        (
+                            [id] => 3
+                            [name] => Documentation
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [username] => jwage
+            [password] => changeme
+            [Groups] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 2
+                            [name] => Lead
+                        )
+
+                    [1] => Array
+                        (
+                            [id] => 3
+                            [name] => Documentation
+                        )
+
+                )
+
+        )
+
+)
+</code>
+
+またdqlコマンドライン機能を使ってDQLクエリをデータベースに対して実行することも可能です。以下の様に使われます。
+
+<code>
+jwage:sandbox jwage$ ./doctrine dql "FROM User u, u.Groups g"
+dql - executing: "FROM User u, u.Groups g" ()
+dql - - 
+dql -   id: 1
+dql -   username: zYne-
+dql -   password: changeme
+dql -   Groups: 
+dql -     - 
+dql -       id: 1
+dql -       name: Founder
+dql -     - 
+dql -       id: 2
+dql -       name: Lead
+dql -     - 
+dql -       id: 3
+dql -       name: Documentation
+dql - - 
+dql -   id: 2
+dql -   username: jwage
+dql -   password: changeme
+dql -   Groups: 
+dql -     - 
+dql -       id: 2
+dql -       name: Lead
+dql -     - 
+dql -       id: 3
+dql -       name: Documentation
+</code>
+
++++ ユーザーCRUD
+
+これでDoctrineを使ってとっても単純なユーザーとパスワードを扱う実装をやってみることができるようになりました。以下のコードをindex.php内に置いてブラウザーから読み込んでください。簡単なアプリケーションが実行できます。
+
+<code type="php">
+require_once('config.php');
+
+Doctrine::loadModels('models');
+
+$module = isset($_REQUEST['module']) ? $_REQUEST['module']:'users';
+$action = isset($_REQUEST['action']) ? $_REQUEST['action']:'list';
+
+if ($module == 'users') {
+    $userId = isset($_REQUEST['id']) && $_REQUEST['id'] > 0 ? $_REQUEST['id']:null;
+    $userTable = Doctrine::getTable('User');
+
+    if ($userId === null) {
+        $user = new User();
+    } else {
+        $user = $userTable->find($userId);
+    }
+    
+    switch ($action) {
+        case 'edit':
+        case 'add':
+            echo '<form action="index.php?module=users&action=save" method="POST">
+                  <fieldset>
+                    <legend>User</legend>
+                    <input type="hidden" name="id" value="' . $user->id . '" />
+                    <label for="username">Username</label> <input type="text" name="user[username]" value="' . $user->username . '" />
+                    <label for="password">Password</label> <input type="text" name="user[password]" value="' . $user->password . '" />
+                    <input type="submit" name="save" value="Save" />
+                  </fieldset
+                  </form>';
+            break;
+        case 'save':
+            $user->merge($_REQUEST['user']);
+            $user->save();
+        
+            header('location: index.php?module=users&action=edit&id=' . $user->id);
+            break;
+        case 'delete':
+            $user->delete();
+            
+            header('location: index.php?module=users&action=list');
+            break;
+        default:
+            $query = new Doctrine_Query();
+            $query->from('User u')
+                  ->orderby('u.username');
+            
+            $users = $query->execute();
+            
+            echo '<ul>';
+            foreach ($users as $user) {
+                echo '<li><a href="index.php?module=users&action=edit&id=' . $user->id . '">' . $user->username . '</a> &nbsp; <a href="index.php?module=users&action=delete&id=' . $user->id . '">[X]</a></li>';
+            }
+            echo '</ul>';
+    }
+
+    echo '<ul>
+            <li><a href="index.php?module=users&action=add">Add</a></li>
+            <li><a href="index.php?module=users&action=list">List</a></li>
+          </ul>';
+} else {
+    throw new Exception('Invalid module');
+}
+</code>
