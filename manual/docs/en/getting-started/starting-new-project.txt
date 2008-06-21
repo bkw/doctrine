@@ -49,7 +49,7 @@ You can generate the php code from the yaml with the following code.
 Doctrine::generateModelsFromYaml('/path/to/user.yml', '/path/to/generate/models);
 </code>
 
-Have a look in /path/to/generate/models/ and /path/to/generate/models/generated. You will see User.php and BaseUser.class.php.
+Have a look in /path/to/generate/models/ and /path/to/generate/models/generated. You will see User.php and BaseUser.php.
 User.php is for you to add your own custom functionality, and BaseUser.php is the code which is automatically regenerated 
 from the YAML schema file above each time.
 
