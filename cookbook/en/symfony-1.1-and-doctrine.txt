@@ -1,5 +1,7 @@
 So, you want to give Doctrine a try with symfony 1.1 eh? First we will need to setup a new symfony 1.1 project and install the sfDoctrinePlugin for 1.1. Execute the following commands below and continue reading:
 
+++ Setup
+
 <code>
 $ mkdir symfony1.1Doctrine
 $ cd symfony1.1Doctrine
@@ -42,6 +44,8 @@ First, `sfDoctrinePlugin` currently requires that at least one application be se
 $ php symfony generate:app frontend
 </code>
 
+++ Setup Database
+
 Now lets setup our database configuration in `config/databases.yml`. Open the file in your favorite editor and place the YAML below inside. For this test we are simply using a SQLite database. Doctrine is able to create the SQLite database at the `config/doctrine.db` path for you which we will do once we setup our schema and some data fixtures.
 
 <code type="yml">
@@ -51,6 +55,8 @@ all:
     param:
       dsn:    sqlite:///<?php echo dirname(__FILE__); ?>/doctrine.db
 </code>
+
+++ Setup Schema
 
 Now that we have our database configured, lets define our YAML schema files in `config/doctrine/schema.yml`. In this example we are setting up a simple `BlogPost` model which `hasMany` `Tags`.
 
@@ -106,6 +112,8 @@ Tag:
     name: php
 </code>
 
+++ Build Database
+
 Ok, now for the fun stuff. We have our schema, and we have some data fixtures, so lets run one single Doctrine command and create your database, generate your models, create tables and load the data fixtures.
 
 <code>
@@ -151,6 +159,8 @@ $ php symfony doctrine:dql frontend "FROM BlogPost p, p.Tags t"
 </code>
 
 Now, lets do a little explaining of the data that was returned. As you can see the models have a created_at, updated_at and slug column which were not defined in the schema files. These columns are added by the behaviors attached to the schema information under the actAs setting. The `created_at` and `updated_at` column are automatically set `onInsert` and `onUpdate`, and the slug column is a url friendly string that is created from the value of the name column. Doctrine has a few behaviors that are included in core such as `Sluggable` and `Timestampable`, but the behavior system is built to allow anyone to easily write behaviors for their models to re-use over and over.
+
+++ Admin Generators
 
 Now we have our data model all setup and populated with some test fixtures so lets generate an admin generator to manage the blog posts and tags.
 
@@ -200,6 +210,8 @@ generator:
 Now refresh the blog post list and you will see it is cleaned up a little bit. Edit a blog post by clicking the edit icon or the title  and you can see below you can check the tags associated to the blog post.
 
 All of the features you get in Propel work 99% the same way with Doctrine, so it should be fairly easy to get the hang of if you are coming from propel. sfDoctrinePlugin implements all the same functionality as sfPropelPlugin as well as several additional features which sfPropelPlugin is not capable of. Below you can find some more information on the major features that Doctrine supports:
+
+++ Helpful Links
 
 * Behaviors - http://www.phpdoctrine.org/documentation/manual/0_11?chapter=plugins - Easily create reusable behaviors for your Doctrine models.
 * Migrations - http://www.phpdoctrine.org/documentation/manual/0_11?chapter=migration - Deploy database schema changes to your production environment through a programmatic interface.
