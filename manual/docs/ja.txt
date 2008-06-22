@@ -9,7 +9,7 @@
 + Hierarchical data
 + Configuration
 + Data fixtures
-+ DQL (Doctrine Query Language)
++ DQL Doctrine Query Language
 + Native SQL
 + Transactions
 + Caching
