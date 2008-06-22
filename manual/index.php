@@ -136,6 +136,9 @@ class Cache
     }
 }
 
+$wiki = Text_Wiki::singleton('Doc');
+$wiki->setFormatConf('Xhtml', 'translate', HTML_SPECIALCHARS);
+
 // Temporary directory used by cache and LaTeX to Pdf conversion
 $tempDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'tmp';
 
@@ -161,7 +164,7 @@ $toc = $cache->fetch('toc');
 
 // If table of contents was not cached, parse it from documentation files
 if ( ! $toc instanceof Sensei_Doc_Toc) {
-    $toc = new Sensei_Doc_Toc('docs/en.txt');
+    $toc = new Sensei_Doc_Toc('docs/ja.txt');
     $cache->save($toc, 'toc');
 }
     
