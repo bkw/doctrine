@@ -1,4 +1,4 @@
-The best way to learn about Doctrine is to read about it in the manual. Here are some important links.
+This tutorial will get you started using Doctrine with Code Igniter
 
 ++ Download Doctrine
 
