@@ -320,8 +320,8 @@ $user->Emails->count(); // --> 2
 
 <code type="php">
 $user = Doctrine_Query::create()
-    ->from('User')
-    ->leftJoin('Groups')
+    ->from('User u')
+    ->leftJoin('u.Groups')
     ->where('id = ?')
     ->fetchOne(array(1));
 
@@ -335,8 +335,8 @@ unset($arrayUser['Group'][1]); // リレーションも削除する
 // フォームを投稿して次のスクリプトでレコードを取得する同じクエリを使用する
 
 $user = Doctrine_Query::create()
-    ->from('User')
-    ->leftJoin('Groups')
+    ->from('User u')
+    ->leftJoin('u.Groups')
     ->where('id = ?')
     ->fetchOne(array(1));
 

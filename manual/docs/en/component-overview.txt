@@ -213,14 +213,14 @@ original query.
 
 <code type="php">
 $user = Doctrine_Query::create()
-    ->from('User')
-    ->leftJoin('Groups')
+    ->from('User u')
+    ->leftJoin('u.Groups')
     ->where('id = ?')
     ->fetchOne(array(1));
 
 $group = Doctrine_Query::create()
-    ->from('Group')
-    ->leftJoin('Users')
+    ->from('Group g')
+    ->leftJoin('g.Users')
     ->where('id = ?')
     ->fetchOne(array(1));
 
