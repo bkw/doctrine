@@ -150,6 +150,303 @@ record hydration when you need to change the fetched data.
 
 The constant O(n) performance of the hydration algorithm is ensured by a smart identifier caching solution.
 
++++ Sample Queries
+
+All of the below queries were executed with the following schema and data fixtures:
+
+Schema
+
+<code type="yaml">
+---
+User:
+  actAs:
+    Timestampable:
+    Sluggable:
+      fields: [username]
+  columns:
+    email_address: string(255)
+    username: string(255)
+    password: string(255)
+  relations:
+    Groups:
+      class: Group
+      refClass: UserGroup
+      foreignAlias: Users
+
+Phonenumber:
+  actAs: [Timestampable]
+  columns:
+    user_id: integer
+    phone: string(255)
+    primary_num:
+      type: boolean
+      default: false
+  relations:
+    User:
+      foreignAlias: Phonenumbers
+
+Group:
+  # required to renamed to groups because group is a reserved word in mysql
+  tableName: groups
+  columns:
+    name: string(255)
+
+UserGroup:
+  columns:
+    user_id: integer
+    group_id: integer
+</code>
+
+Data fixtures
+
+<code type="yaml">
+---
+User:
+  User_1:
+    username: jwage
+    password: changeme
+    Phonenumbers:
+      Phonenumber_1:
+        phone: 6155139185
+        primary_num: true
+      Phonenumber_2:
+        phone: 6153137679
+    Groups: [Group_1]
+
+Group:
+  Group_1:
+    name: Group 1
+  Group_2:
+    name: Group 2
+</code>
+
+Count number of records for a relationship
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
+        ->from('User u')
+        ->leftJoin('u.Phonenumbers p')
+        ->groupBy('u.id');
+
+$users = $q->fetchArray();
+
+echo $users[0]['Phonenumbers'][0]['num_phonenumbers'];
+</code>
+
+Simple WHERE with one parameter value
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('u.username = ?', 'jwage');
+$users = $q->fetchArray();
+</code>
+
+Multiple WHERE with multiple parameters values
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('u.is_active = ? AND u.is_online = ?', array(1, 1));
+$users = $q->fetchArray();
+
+// You can also optionally use the addWhere() to add to the existing where parts
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('u.is_active = ?', 1)
+        ->addWhere('u.is_online = ?', 1);
+$users = $q->fetchArray();
+</code>
+
+Using whereIn() convenience method
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->whereIn('u.id', array(1, 2, 3))
+$users = $q->fetchArray();
+
+// This is the same as above
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('u.id IN (1, 2, 3)');
+$users = $q->fetchArray();
+</code>
+
+Using DBMS function in your WHERE
+
+<code type="php">
+$userEncryptedKey = 'a157a558ac00449c92294c7fab684ae0';
+$q = Doctrine_Query::create()
+      ->from('User u')
+      ->where("MD5(CONCAT(u.username, 'secret_user_key')) = ?", $userEncryptedKey);
+$user = $q->fetchOne();
+
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('LOWER(u.username) = LOWER(?)', 'jwage');
+$user = $q->fetchOne();
+
+</code>
+
+Limiting resultsets using aggregate functions
+
+<code type="php">
+// Users with more than 1 phonenumber
+$q = Doctrine_Query::create()
+        ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
+        ->from('User u')
+        ->leftJoin('u.Phonenumbers p')
+        ->having('num_phonenumbers > 1')
+        ->groupBy('u.id');
+$users = $q->fetchArray();
+</code>
+
+Join only primary phonenumbers using WITH
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->leftJoin('u.Phonenumbers p WITH p.primary_num = ?', true);
+$users = $q->fetchArray();
+</code>
+
+Selecting certain columns for optimization
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->select('u.username, p.phone')
+        ->from('User u')
+        ->leftJoin('u.Phonenumbers p');
+$users = $q->fetchArray();
+</code>
+
+Using wildcards to select all columns
+
+<code type="php">
+// Select all User columns but only the phone phonenumber column
+$q = Doctrine_Query::create()
+        ->select('u.*, p.phone')
+        ->from('User u')
+        ->leftJoin('u.Phonenumbers p');
+$users = $q->fetchArray();
+</code>
+
+Perform DQL delete with simple WHERE
+
+<code type="php">
+// Delete phonenumbers for user id = 5
+$deleted = Doctrine_Query::create()
+           ->delete()
+           ->from('Phonenumber')
+           ->addWhere('user_id = 5')
+           ->execute();
+</code>
+
+Perfom simple DQL update for a column
+
+<code type="php">
+// Set user id = 1 to active
+Doctrine_Query::create()
+    ->update('User u')
+    ->set('u.is_active', '?', true)
+    ->where('u.id = ?', 1)
+    ->execute();
+</code>
+
+Perform DQL update with dbms functions
+
+<code type="php">
+// Make all usernames lowercase
+Doctrine_Query::create()
+  ->update('User u')
+  ->set('u.username', 'LOWER(u.username)')
+  ->execute();
+</code>
+
+Using mysql LIKE to search for records
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->where('u.username LIKE ?', '%jwage%');
+$users = $q->fetchArray();
+</code>
+
+Use the INDEXBY keyword to hydrate the data where the key of record entry is the name of the column you 
+assign
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u INDEXBY u.username');
+
+$users = $q->fetchArray();
+print_r($users['jwage']); // Will print the user with the username of jwage
+</code>
+
+Using positional and named parameters
+
+<code type="php">
+// Positional parameters
+$q = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.username = ?', array('Arnold'));
+$users = $q->fetchArray();
+
+// Named parameters
+$q = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.username = :username', array(':username' => 'Arnold'));
+$users = $q->fetchArray();
+</code>
+
+Using subqueries in your WHERE
+
+<code type="php">
+// Find uers not in group named Group 2
+$q = Doctrine_Query::create()
+          ->from('User u')
+          ->where('u.id NOT IN (SELECT u.id FROM User u2 INNER JOIN u2.Groups g WHERE g.name = ?)', 'Group 2');
+$users = $q->fetchArray();
+
+// You can accomplish this without subqueries like the 2 below
+// This is similar as above
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->innerJoin('u.Groups g WITH g.name != ?', 'Group 2')
+$users = $q->fetchArray();
+
+// or this
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->leftJoin('u.Groups g')
+        ->where('g.name != ?', 'Group 2');
+</code>
+
+Doctrine has many different ways you can execute queries and retrieve the data. Below is a list of all 
+the different ways you can execute queries.
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u');
+
+// Array hydration
+$users = $q->fetchArray();                                         // Fetch the results as a hydrated array
+$users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);            // This is the same as above
+$users = $q->setHydrationMode(Doctrine::HYDRATE_ARRAY)->execute(); // So is this
+
+// No hydration
+$users = $q->execute(array(), Doctrine::HYDRATE_NONE);             // Execute the query with plain PDO and no hydration
+$users = $q->setHydrationMode(Doctrine::HYDRATE_NONE)->execute();  // This is the same as above
+
+// Fetch one
+$user = $q->fetchOne();
+
+// Fetch all and get the first from collection
+$user = $q->execute()->getFirst();
+</code>
+
 +++ Field lazy-loading
 
 Whenever you fetch an object that has not all of its fields loaded from database then the state of this object is called 
