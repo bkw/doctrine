@@ -82,4 +82,22 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getParams(array('test1', 'test2')), array('test1', 'test2', false));
         $this->assertEqual($results->count(), 1);
     }
+
+    // Test Doctrine_Query::count() applies dql hooks
+    public function testTicket1170()
+    {
+        $orig = Doctrine_Manager::getInstance()->getAttribute('use_dql_callbacks');
+
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+
+        $q = Doctrine_Query::create()
+                ->from('SoftDeleteTest s')
+                ->addWhere('s.name = ?', 'test1')
+                ->addWhere('s.something = ?', 'test2');
+
+        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(DISTINCT s.name) AS num_results FROM soft_delete_test s WHERE s.name = ? AND s.something = ? AND s.deleted = ? GROUP BY s.name');
+        $this->assertEqual($q->count(), 0);
+
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', $orig);
+    }
 }
