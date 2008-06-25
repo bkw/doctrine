@@ -12,7 +12,7 @@ style task system.
 
 ++ Setting up your database
 
-First thing we need to do is define your database and create it. Edit config/databases.yml and setup your sqlite3 database. Copy and 
+First thing we need to do is define your database and create it. Edit config/databases.yml and setup your mysql database. Copy and 
 paste the yaml below in to the file.
 
 <code type="yaml">
