@@ -49,10 +49,6 @@ class Doctrine_Ticket_1175_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         $u = $q->from('gUser u')->leftJoin('u.Images i')->leftJoin('u.Files f')->where('u.id = ?',array(1))->fetchOne();
         $this->assertEqual(count($u->Images),2);
-        echo $q->getSql()."\n";
-        
-        $images = Doctrine_Query::create()->from('gImage g')->execute(array(),Doctrine::FETCH_ARRAY);
-        print_r($images);
     }
 }
 
