@@ -58,7 +58,7 @@ $users = Doctrine_Query::create()
 
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.id > ? AND u.name LIKE ?", array(50, 'A%'))
+          ->where('u.id > ? AND u.name LIKE ?', array(50, 'A%'))
           ->execute();
 
 // NAMED PARAMETERS:
@@ -70,7 +70,7 @@ $users = Doctrine_Query::create()
 
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.id > :id AND u.name LIKE :name", array(':id' => 50, ':name' => 'A%'))
+          ->where('u.id > :id AND u.name LIKE :name', array(':id' => 50, ':name' => 'A%'))
           ->execute();
 </code>
 
