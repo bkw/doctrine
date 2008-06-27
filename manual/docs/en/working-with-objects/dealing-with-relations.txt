@@ -210,11 +210,11 @@ $user->Phonenumber->count(); // 1
 ++++ Testing the existance of a relation
 <code type="php">
 $obj = new Model();
-if(isset($obj->Relation())) { // returns false
+if(isset($obj->Relation)) { // returns false
         ...
 }
 $obj->Relation = new Relation();
-if(isset($obj->Relation())) { // returns true
+if(isset($obj->Relation)) { // returns true
         ...
 }
 </code>
