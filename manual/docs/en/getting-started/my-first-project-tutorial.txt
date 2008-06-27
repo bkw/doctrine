@@ -12,7 +12,7 @@ example implementation of a Doctrine based web application.
 +++ Package Contents
 The files/directory structure should look like the following
 <code>
-$ cd Doctrine-0.10.1-Sandbox
+$ cd Doctrine-0.11.0-Sandbox
 $ ls
 config.php	doctrine	index.php	migrations	schema
 data		doctrine.php	lib		models
@@ -137,9 +137,9 @@ models . Run the command below and your models will be generated in the models f
 $ ./doctrine build-all-reload
 build-all-reload - Are you sure you wish to drop your databases? (y/n)
 y
-build-all-reload - Successfully dropped database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.10/tools/sandbox/sandbox.db"
+build-all-reload - Successfully dropped database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.11/tools/sandbox/sandbox.db"
 build-all-reload - Generated models successfully from YAML schema
-build-all-reload - Successfully created database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.10/tools/sandbox/sandbox.db"
+build-all-reload - Successfully created database for connection "sandbox" at path "/Users/jwage/Sites/doctrine/branches/0.11/tools/sandbox/sandbox.db"
 build-all-reload - Created tables successfully
 build-all-reload - Data was successfully loaded
 </code>

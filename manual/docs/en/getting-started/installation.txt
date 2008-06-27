@@ -27,15 +27,15 @@ can be downloaded from here http://www.phpdoctrine.org/download
 
 +++ SVN 
 
-The installation of doctrine via SVN is very easy. Just get the latest revision of Doctrine from http://svn.phpdoctrine.org/branches/0.10.
+The installation of doctrine via SVN is very easy. Just get the latest revision of Doctrine from http://svn.phpdoctrine.org/branches/0.11.
 
 In order to check out Doctrine in the current directory using the **svn** command line tool use the following code:
 
 <code type="bash">
-svn co http://svn.phpdoctrine.org/branches/0.10 .
+svn co http://svn.phpdoctrine.org/branches/0.11 .
 </code>
 
-If you do not have a SVN client, chose one from the list below. Find the **Checkout** option and enter svn.phpdoctrine.org/branches/0.10 in the **path** or **repository url** parameter. There is no need for a username 
+If you do not have a SVN client, chose one from the list below. Find the **Checkout** option and enter svn.phpdoctrine.org/branches/0.11 in the **path** or **repository url** parameter. There is no need for a username 
 or password to check out Doctrine. 
 
 * [http://tortoisesvn.tigris.org/ TortoiseSVN] a Windows application that  integrates into Windows Explorer
@@ -62,7 +62,7 @@ svn pe svn:externals /path/to/project
 You have to put the following line in the editor and save the changes.
 
 <code>
-doctrine http://svn.phpdoctrine.org/branches/0.10
+doctrine http://svn.phpdoctrine.org/tags/0.11.0
 </code>
 
 Afterwards you can download doctrine with
@@ -76,7 +76,7 @@ svn update
 You can install Doctrine via PEAR with the following command:
 
 <code type="bash"> 
-pear install http://pear.phpdoctrine.org/Doctrine-0.10.2
+pear install http://pear.phpdoctrine.org/Doctrine-0.11.0
 </code>
 
 +++ Zip-package
@@ -87,5 +87,5 @@ Simply unzip it to your project directory with your favorite zip tool.
 Under Linux you can extract the .tgz package with the following command line instruction:
 
 <code type="bash"> 
-tar xzf Doctrine-0.10.1.tgz
+tar xzf Doctrine-0.11.0.tgz
 </code>
