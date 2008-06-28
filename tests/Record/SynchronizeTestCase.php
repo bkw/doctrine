@@ -69,7 +69,7 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         // add group
         $userArray['Group'][]['name'] = 'New Group'; # This is a n-m relationship
         // add a group which exists
-        $userArray['Group'][1]['id'] = $this->previous_group; # This is a n-m relationship where the group was made in prepareData
+        $userArray['Group'][1]['identifier'] = $this->previous_group; # This is a n-m relationship where the group was made in prepareData
 
         $user->synchronizeWithArray($userArray);
         $this->assertEqual($user->Phonenumber->count(), 1);

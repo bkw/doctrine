@@ -291,7 +291,6 @@ $record->addTestCase(new Doctrine_Record_ZeroValues_TestCase());
 $record->addTestCase(new Doctrine_Record_SaveBlankRecord_TestCase());
 $record->addTestCase(new Doctrine_Record_Inheritance_TestCase());
 $record->addTestCase(new Doctrine_Record_Synchronize_TestCase());
-$record->addTestCase(new Doctrine_Record_Generator_TestCase());
 $record->addTestCase(new Doctrine_Record_FromArray_TestCase());
 $test->addTestCase($record);
 
