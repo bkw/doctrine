@@ -493,24 +493,6 @@ Group:
     type: simple
 </code>
 
-Class table inheritance. Read about more about [doc relations:inheritance:class-table-inheritance :index :name]
-
-<code type="yaml">
----
-Entity:
-  columns:
-    name: string(255)
-
-User:
-  inheritance:
-    extends: Entity
-    type: class_table
-  columns:
-    username: string(255)
-    password: string(255)
-    age: integer(2)
-</code>
-
 Concrete inheritance. Read about more about [doc relations:inheritance:concrete-inheritance :index :name]
 
 <code type="yaml">
