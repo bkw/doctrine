@@ -60,10 +60,11 @@ class Doctrine_Ticket_1175_TestCase extends Doctrine_UnitTestCase
      
         $u = $q->fetchOne(); 
         $this->assertTrue( is_object($u) );
-        if(is_object($u))
+        if (is_object($u)) {
             $this->assertEqual(count($u->Images),2);
-        else
+        } else {
             $this->fail();
+        }
     }
 }
 
