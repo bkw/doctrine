@@ -234,6 +234,19 @@ $users = $q->fetchArray();
 echo $users[0]['Phonenumbers'][0]['num_phonenumbers'];
 </code>
 
+Retrieve Users and the Groups they belong to
+
+<code type="php">
+$q = Doctrine_Query::create()
+        ->from('User u')
+        ->leftJoin('u.Groups g');
+$users = $q->fetchArray();
+
+foreach ($users[0]['Groups'] as $group) {
+    echo $group['name'];
+}
+</code>
+
 Simple WHERE with one parameter value
 
 <code type="php">
