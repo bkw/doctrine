@@ -68,9 +68,9 @@ class Doctrine_Ticket_1133_TestCase extends Doctrine_UnitTestCase
                 ->limit(1)
                 ->offset(1);
 
-        $this->assertEqual($q->count(), $q->execute()->count());
+        $this->assertEqual($q->count(), 2);
+        $this->assertEqual($q->execute()->count(), 1);
     }
-
 }
 
 class Ticket_1133_Foo extends Doctrine_Record
