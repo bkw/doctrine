@@ -1,4 +1,5 @@
-++ 序文
+++ はじめに
+
 この章と節ではDoctrineで基本的なスキーママッピングを行う方法を説明します。この章の概念に慣れると次の方法がわかります:
 
 1. レコードクラスに対するカラムを定義する
@@ -8,12 +9,15 @@
 
 Doctrineの範囲内ですべてのカラムマッピングはDoctrine_RecordのhasColumn()メソッドを通して行われます。 hasColumnは4つの引数を取ります:
 
-# **カラム名**   カラム名とオプションのエイリアスを指定する文字列です。これはすべてのカラムに対して必要です。から無名に対してエイリアスを指定したい場合、'[columnName] as [columnAlias]'フォーマットを使用する必要があります。
+# **カラム名**   カラム名とオプションのエイリアスを指定する文字列です。これはすべてのカラムに対して必要です。カラム名に対してエイリアスを指定したい場合、'[columnName] as [columnAlias]'のフォーマットを使います。
+
 # **カラムタイプ**   カラムタイプを指定する文字列です。カラムタイプのセクションをご覧下さい。
+
 # **カラムの長さ**  カラムの長さを指定する整数です。カラムタイプの中には与えられたポータルタイプだけでなく与えられた長さにも依存するものがあります。例えば、長さ1000を持つ文字列のタイプはmysql上ではネイティブのタイプのTEXTに変換されます。
+
 # **カラムの制約とバリデータ** 与えられたカラムに適用される制約とバリデータを指定する配列です。
 
-バリデータ/カラムの制約とカラム長さフィールドはオプションであることに注意して下さい。長さは長さの引数に対して**null**を使用して省略されることがあります、これによってdoctrineはデフォルトの長さを使用できるようになり、バリデーションもしくはカラム制約に対して4番目の引数が許可されます。
+バリデータ/カラムの制約とカラム長さフィールドはオプションであることに注意して下さい。長さは長さの引数に対して **null** を使用して省略されることがあります、これによってdoctrineはデフォルトの長さを使用できるようになり、バリデーションもしくはカラム制約に対して4番目の引数が許可されます。
 
 最初の例に取り組んでみましょう。次の定義は'emails'テーブルを参照するEmailクラスを定義します。Emailクラスは2つのカラムid(一つはオートインクリメントの主キーのカラム)と名前がaddressである文字列カラムを持ちます。
 
@@ -36,7 +40,22 @@ class Email extends Doctrine_Record {
 }
 </code>
 
+YAMLスキーマファイルでモデルを定義した場合は以下の様になります。
+
+<code type="yaml">
+---
+Email:
+  tableName: emails
+  columns:
+    address:
+      type: string(200)
+      notblank: true
+      email: true
+</code>
+
+
 ではこのクラスに対するエクスポートスクリプトを作成してみましょう:
+
 
 <code type="php">
 require_once('Email.php');
@@ -53,29 +72,30 @@ $conn    = $manager->openConnection('mysql://user:pass@localhost/test');
 $conn->export->exportClasses(array('Email'));
 </code>
 
-スクリプトは次のSQLを実行します(ここではデータベースバックエンドとしてMySQLを使用しています):
+
+このスクリプトは次のSQLを実行します(ここではデータベースバックエンドとしてMySQLを使用しています):
 
 <code>
-CREATE TABLE emails (id INT NOT NULL AUTO_INCREMENT, address VARCHAR(200) NOT NULL)
+CREATE TABLE emails (id BIGINT AUTO_INCREMENT, address VARCHAR(200), PRIMARY KEY(id)) ENGINE = INNODB;
 </code>
 
-
 ++ テーブルとクラスの命名
+
 Doctrineはレコードクラス名からテーブル名を自動的に作成します。このため、次のルールを使用してレコード名を名付けることが推奨されます:
 
 * {{CamelCase}}ネーミングを使う
 * アンダースコアは許可されます
 * 最初の文字は大文字でなければなりません
-* クラス名は次のものの一つにはできません(これらのキーワードはDQL APIで保存されます): 
- * {{ALL}}, {{AND}}, {{ANY}}, {{AS}}, {{ASC}}, {{AVG}}, {{BETWEEN}}, {{BIT_LENGTH}}, {{BY}}, {{CHARACTER_LENGTH}}, {{CHAR_LENGTH}}, {{COUNT}}, {{CURRENT_DATE}}, {{CURRENT_TIME}}, {{CURRENT_TIMESTAMP}}, {{DELETE}}, {{DESC}}, {{DISTINCT}}, {{EMPTY}}, {{EXISTS}}, {{FALSE}}, {{FETCH}}, {{FROM}}, {{GROUP}}, {{HAVING}}, {{IN}}, {{INDEXBY}}, {{INNER}}, {{IS}}, {{JOIN}}, {{LEFT}}, {{LIKE}}, {{LOWER}}, {{MAX}}, {{MEMBER}}, {{MIN}}, {{MOD}}, {{NEW}}, {{NOT}}, {{NULL}}, {{OBJECT}}, {{OF}}, {{OR}}, {{ORDER}}, {{OUTER}}, {{POSITION}}, {{SELECT}}, {{SOME}}, {{SUM}}, {{TRIM}}, {{TRUE}}, {{UNKNOWN}}, {{UPDATE}}, {{UPPER}} and {{WHERE}}.
+* クラス名は次のものの一つにはできません(これらのキーワードはDQL APIで保存されます):
+* {{ALL}}, {{AND}}, {{ANY}}, {{AS}}, {{ASC}}, {{AVG}}, {{BETWEEN}}, {{BIT_LENGTH}}, {{BY}}, {{CHARACTER_LENGTH}}, {{CHAR_LENGTH}}, {{COUNT}}, {{CURRENT_DATE}}, {{CURRENT_TIME}}, {{CURRENT_TIMESTAMP}}, {{DELETE}}, {{DESC}}, {{DISTINCT}}, {{EMPTY}}, {{EXISTS}}, {{FALSE}}, {{FETCH}}, {{FROM}}, {{GROUP}}, {{HAVING}}, {{IN}}, {{INDEXBY}}, {{INNER}}, {{IS}}, {{JOIN}}, {{LEFT}}, {{LIKE}}, {{LOWER}}, {{MAX}}, {{MEMBER}}, {{MIN}}, {{MOD}}, {{NEW}}, {{NOT}}, {{NULL}}, {{OBJECT}},  {{OF}}, {{OR}}, {{ORDER}}, {{OUTER}}, {{POSITION}}, {{SELECT}}, {{SOME}}, {{SUM}}, {{TRIM}}, {{TRUE}}, {{UNKNOWN}}, {{UPDATE}}, {{UPPER}} and {{WHERE}}.
 
 **例:** {{My_PerfectClass}}
 
 異なるネーミングスキーマを使用する場合、{{setTableDefinition()}}メソッドの{{setTableName()}}メソッドを使用してこれをオーバーライドできます。
 
-
 ++ テーブルオプション
-Doctrineは様々なテーブルオプションを提供します。すべてのテーブルオプションは{{Doctrine_Record::option($optionName, $value)}}を通して設定できます。
+
+Doctrineは様々なテーブルオプションを提供します。すべてのテーブルオプションは {{Doctrine_Record::option($optionName, $value)}} を通して設定できます。
 
 例えば、MySQLを使用していてINNODBテーブルを使用したい場合次のように行われます:
 
@@ -91,7 +111,16 @@ class MyInnoDbRecord extends Doctrine_Record
 }
 </code> 
 
-次の例において照合順序と文字セットオプションを設定します:
+<code type="yaml">
+---
+MyInnoDbRecord:
+  columns:
+    name: string
+  options:
+    type: INNODB
+</code>
+
+次の例ではコレート(照合順序)と文字セットのオプションを設定します：
 
 <code type="php">
 class MyCustomOptionRecord extends Doctrine_Record
@@ -104,6 +133,23 @@ class MyCustomOptionRecord extends Doctrine_Record
         $this->option('charset', 'utf8');
     }
 }
+</code>
+
+<code type="yaml">
+---
+MyCustomOptionRecord:
+  columns:
+    name: string
+  options:
+    collate: utf8_unicode_ci
+    charset: utf8
+</code>
+
+一部のデータベース(Firebird, MySql, PostgreSQLなど)では文字セットオプションを設定するだけではDoctrine
+が正しいデータを返さないことがあります。これらのデータベースではデータベース接続の際にsetCahtset関数を使うことをお勧めします。
+
+<code type="php">
+Doctrine_Manager::connection($name)->setCharset("utf8");
 </code>
 
 Doctrineは特定のモデルに対して外部キーを停止する能力を提供します。
@@ -121,7 +167,9 @@ class MyCustomOptionRecord extends Doctrine_Record
 </code>
 
 ++ カラム
+
 +++ カラムの命名
+
 データベースの互換性に関する一つの問題は多くのデータベースが返されたクエリの結果セットの振る舞いに関して多くのデータベースが異なることです。MySQLはフィールド名を変更しないままにします、このことは、"SELECT myField FROM ..."形式のクエリを発行する場合、結果セットは'myField'フィールドを含むことを意味します。
 
 残念ながら、これはMySQLと他のいくつかのデータベースが行う単なる方法です。例えばPostgresはすべてのフィールド名を小文字で返し、Oracleはすべてのフィールド名を大文字で返します。"だから何？Doctrineを使っているときにこれが何に影響するの？"、とあなたは質問するかもしれません。幸いにも、この問題に悩む必要はまったくありません。
