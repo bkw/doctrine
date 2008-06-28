@@ -133,6 +133,7 @@ $test->addTestCase($sequence);
 
 // Export Tests (not yet fully tested)
 $export = new GroupTest('Export Tests', 'export');
+$export->addTestCase(new Doctrine_Export_CheckConstraint_TestCase());
 $export->addTestCase(new Doctrine_Export_Firebird_TestCase());
 $export->addTestCase(new Doctrine_Export_Informix_TestCase());
 $export->addTestCase(new Doctrine_Export_TestCase());
