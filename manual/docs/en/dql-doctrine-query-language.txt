@@ -41,7 +41,7 @@ $r->add('User/byName', 'FROM User u WHERE u.name = ?');
 $user = new User();
 
 // find the user named Jack Daniels
-$user = $user->findOne('byName', array('Jack Daniels'));
+$user = $user->findOneByName('Jack Daniels');
 
 // find all users
 $users = $user->find('all');
