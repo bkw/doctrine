@@ -292,19 +292,21 @@ class User extends Doctrine_Record
     
     public function setUp()
     {
-        $this->actAs('Timestampable', array('created' =>  array('name'          => 'created_at',    // Name of created column
-                                                                'type'          => 'timestamp',     // Doctrine column data type
-                                                                'options'       => array(),         // Array of options for column
-                                                                'format'        => 'Y-m-d H:i:s',   // Format of date used with PHP date() function(default)
-                                                                'disabled'      => false,           // Disable the created column(default)
-                                                                'expression'    => 'NOW()'),        // Update column with database expression(default=false)
-                                            'updated' =>  array('name'          => 'updated_at',    // Name of updated column(default)
-                                                                'type'          => 'timestamp',     // Doctrine column data type(default)
-                                                                'options'       => array(),         // Array of options for column(default)
-                                                                'format'        => 'Y-m-d H:i:s',   // Format of date used with PHP date() function(default)
-                                                                'disabled'      => false,           // Disable the updated column(default)
-                                                                'expression'    => 'NOW()',         // Use a database expression to set column(default=false)
-                                                                'onInsert'      => true)));         // Whether or not to set column onInsert(default)
+        $options = array('created' =>  array('name'          => 'created_at',    // Name of created column
+                                             'type'          => 'timestamp',     // Doctrine column data type
+                                             'options'       => array(),         // Array of options for column
+                                             'format'        => 'Y-m-d H:i:s',   // Format of date used with PHP date() function(default)
+                                             'disabled'      => false,           // Disable the created column(default)
+                                             'expression'    => 'NOW()'),        // Update column with database expression(default=false)
+                         'updated' =>  array('name'          => 'updated_at',    // Name of updated column(default)
+                                             'type'          => 'timestamp',     // Doctrine column data type(default)
+                                             'options'       => array(),         // Array of options for column(default)
+                                             'format'        => 'Y-m-d H:i:s',   // Format of date used with PHP date() function(default)
+                                             'disabled'      => false,           // Disable the updated column(default)
+                                             'expression'    => 'NOW()',         // Use a database expression to set column(default=false)
+                                             'onInsert'      => true));          // Whether or not to set column onInsert(default)
+
+        $this->actAs('Timestampable', $options);
     }
 }
 </code>
