@@ -244,4 +244,16 @@ class Doctrine_Query_Join_TestCase extends Doctrine_UnitTestCase
             $this->pass();
         }
     }
+
+    public function testFetchOneAppliesALimit()
+    {
+        $q   = new Doctrine_Query();
+        $obj = $q->from('Group g')->fetchOne();
+        $this->assertEqual($q->getSqlQuery(),'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 1) LIMIT 1');       
+
+       $q    = new Doctrine_Query();
+       $obj  = $q->from('Group g')->leftJoin('g.User u')->fetchOne();
+       $this->assertEqual($q->getSqlQuery(),'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, e2.id AS e2__id, e2.name AS e2__name, e2.loginname AS e2__loginname, e2.password AS e2__password, e2.type AS e2__type, e2.created AS e2__created, e2.updated AS e2__updated, e2.email_id AS e2__email_id FROM entity e LEFT JOIN groupuser g ON e.id = g.group_id LEFT JOIN entity e2 ON e2.id = g.user_id WHERE e.id IN (SELECT DISTINCT e3.id FROM entity e3 LEFT JOIN groupuser g2 ON e3.id = g2.group_id LEFT JOIN entity e4 ON e4.id = g2.user_id WHERE (e3.type = 1 AND (e4.type = 0 OR e4.type IS NULL)) LIMIT 1) AND (e.type = 1 AND (e2.type = 0 OR e2.type IS NULL))');
+
+   }
 }

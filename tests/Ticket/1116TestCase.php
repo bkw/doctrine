@@ -27,7 +27,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		$params = $q->getParams();
 		$this->assertEqual(count($params), 2); // now we have array('test',null) very strange ..... 
 
-		$this->assertEqual($sql, "SELECT u.id AS u__id, u.username AS u__username, u.deleted AS u__deleted FROM user u WHERE u.username = ? AND u.deleted = ?");
+		$this->assertEqual($sql, "SELECT u.id AS u__id, u.username AS u__username, u.deleted AS u__deleted FROM user u WHERE u.username = ? AND u.deleted = ? LIMIT 1");
 		$this->assertEqual($params, array('test', false));
 
 		//now also this works! (always works witch mock only fails with mysql)
