@@ -79,9 +79,14 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
 
         // change Email
         $userArray['Email']['address'] = 'johndow@mail.com';
-        $user->synchronizeWithArray($userArray);
+        try {
+          $user->synchronizeWithArray($userArray);
+        } catch (Exception $e) {
+          $this->fail($e->getMessage());
+        }
+
         $this->assertEqual($user->Email->address, 'johndow@mail.com');
-    
+
         try {
           $user->save();
         } catch (Exception $e ) {
@@ -91,7 +96,7 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
 
     public function testSynchronizeAfterSaveRecord()
     {
-        $user = Doctrine_Query::create()->from('User u, u.Email, u.Phonenumber')->fetchOne();
+        $user = Doctrine_Query::create()->from('User u, u.Group g, u.Email e, u.Phonenumber p')->fetchOne();
         $this->assertEqual($user->Phonenumber->count(), 1);
         $this->assertEqual($user->Phonenumber[0]->phonenumber, '555 321');
         $this->assertEqual($user->Email->address, 'johndow@mail.com');
@@ -104,7 +109,6 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         $user = Doctrine_Query::create()->from('User u, u.Email, u.Phonenumber')->fetchOne();
         $userArray = $user->toArray(true);
         $userArray['Phonenumber'][] = array('phonenumber' => '333 238');
-
 
         $user->synchronizeWithArray($userArray);
         
