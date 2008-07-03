@@ -25,11 +25,16 @@ class Doctrine_Ticket_1205_TestCase extends Doctrine_UnitTestCase
     
     public function testTicket()
     {
-        // Each Address has 1 User
-        $q = new Doctrine_Query();
-        $addresses = $q->from('Ticket1205TestAddress a')->innerjoin('a.User u')->execute(array(), Doctrine::FETCH_ARRAY);
-        
-        $this->assertEqual($addresses[0]['User']['full_name'], 'Slick Rick');
+        try {
+          // Each Address has 1 User
+          $q = Doctrine_Query::create()
+                ->from('Ticket1205TestAddress a')
+                ->innerjoin('a.User u')
+                ->execute(array(), Doctrine::FETCH_ARRAY);
+          $this->fail();
+        } catch (Exception $e) {
+          $this->pass();
+        }
     }
 }
 
@@ -37,9 +42,7 @@ class Ticket1205HydrationListener extends Doctrine_Record_Listener
 {
     public function postHydrate(Doctrine_Event $event)
     {
-        $data = $event->data;
-        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
-      	$event->data = $data;
+        throw new Exception('This is called so we are successfull!');
     }
 }
 
@@ -55,8 +58,8 @@ class Ticket1205TestUser extends Doctrine_Record
   public function setUp()
   {
     $this->addListener(new Ticket1205HydrationListener());
-    $this->hasMany('Ticket1205TestAddress as Addresses', array('local' => 'id',
-                                                  'foreign' => 'user_id'));
+    $this->hasMany('Ticket1205TestAddress as Addresses', array('local'   => 'id',
+                                                               'foreign' => 'user_id'));
   }
 }
 
@@ -71,7 +74,7 @@ class Ticket1205TestAddress extends Doctrine_Record
 
   public function setUp()
   {    
-    $this->hasOne('Ticket1205TestUser as User', array('local' => 'user_id',
-                                'foreign' => 'id'));
+    $this->hasOne('Ticket1205TestUser as User', array('local'   => 'user_id',
+                                                      'foreign' => 'id'));
   }
 }
