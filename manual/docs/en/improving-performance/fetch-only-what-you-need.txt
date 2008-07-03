@@ -12,7 +12,7 @@ not only means unnecessary network traffic but also means that Doctrine has to p
 used. I'm pretty sure you all know why
 <code>
 SELECT * FROM ... 
-</code> is bad in any application and this is also true when using Doctine. In fact it's even worse when using Doctrine 
+</code> is bad in any application and this is also true when using Doctrine. In fact it's even worse when using Doctrine 
 because populating objects with data that is not needed is a waste of time.
 
 Another important rule that belongs in this category is: **Only fetch objects when you really need them**. Until recently 

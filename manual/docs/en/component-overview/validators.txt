@@ -101,7 +101,7 @@ in the rest of your application.
 Whenever a record is going to be saved to the persistent data store (i.e. through calling {{$record->save()}}) the full 
 validation procedure is executed. If errors occur during that process an exception of the type 
 {{Doctrine_Validator_Exception}} will be thrown. You can catch that exception and analyze the errors by using the 
-instance method {{Doctine_Validator_Exception::getInvalidRecords()}}. This method returns an ordinary array with 
+instance method {{Doctrine_Validator_Exception::getInvalidRecords()}}. This method returns an ordinary array with 
 references to all records that did not pass validation. You can then further explore the errors of each record by 
 analyzing the error stack of each record. The error stack of a record can be obtained with the instance method 
 {{Doctrine_Record::getErrorStack()}}. Each error stack is an instance of the class {{Doctrine_Validator_ErrorStack}}. 

@@ -58,7 +58,7 @@ svn pe svn:externals /path/to/project
 doctrine http://svn.phpdoctrine.org/branches/0.10
 </code>
 
-その後にDoctineをダウンロードします
+その後にDoctrineをダウンロードします
 
 <code>
 doctrine http://svn.phpdoctrine.org/branches/0.10
