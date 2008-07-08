@@ -422,7 +422,7 @@ User:
 
 The above syntax will generated a base class as follows.
 
-<code type="php>
+<code type="php">
 <?php
 
 class BaseUser extends Doctrine_Record
@@ -435,7 +435,7 @@ class BaseUser extends Doctrine_Record
        $this->addListener(new MyCustomListener());
    }
 }
-</php>
+</code>
 
 +++ Options
 
