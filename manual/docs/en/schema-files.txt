@@ -400,6 +400,43 @@ User:
       length: 255   # defaults to null. clob doesn't require a length
 </code>
 
++++ Listeners
+
+If you have a listener you'd like attached to a model, you can specify them directly in the yml as well.
+<code type="yaml">
+---
+User:
+  listeners: [ MyCustomListener ]
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    contact_id:
+      type: integer(4)
+    username:
+      type: string(255)
+    password:
+      type: string(255)
+</code>
+
+The above syntax will generated a base class as follows.
+
+<code type="php>
+<?php
+
+class BaseUser extends Doctrine_Record
+{
+   ...
+   
+   public setUp()
+   {
+       ...
+       $this->addListener(new MyCustomListener());
+   }
+}
+</php>
+
 +++ Options
 
 Specify options for your tables and when Doctrine creates your tables from your models the options will be
