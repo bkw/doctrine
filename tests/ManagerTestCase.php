@@ -146,7 +146,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
 
         if ($OS == 'WIN') {
             // Grab the Windows's directory
-            $TMP_DIR = str_replace('\\', '/', $_SERVER['WINDIR']);
+            $WIN_DIR = str_replace('\\', '/', $_SERVER['WINDIR']);
 
             $this->conn1_database = $WIN_DIR . "/Temp/doctrine1.db";
             $this->conn2_database = $WIN_DIR . "/Temp/doctrine2.db";
