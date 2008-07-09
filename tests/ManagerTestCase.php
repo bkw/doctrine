@@ -141,23 +141,37 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
     
     public function testCreateDatabases()
     {
-        $this->conn1 = Doctrine_Manager::connection('sqlite:////tmp/doctrine1.db', 'doctrine1');
-        $this->conn2 = Doctrine_Manager::connection('sqlite:////tmp/doctrine2.db', 'doctrine2');
+        // We need to know if we're under Windows or *NIX
+        $OS = strtoupper(substr(PHP_OS, 0,3));
+
+        if ($OS == 'WIN') {
+            // Grab the Windows's directory
+            $TMP_DIR = str_replace('\\', '/', $_SERVER['WINDIR']);
+
+            $this->conn1_database = $WIN_DIR . "/Temp/doctrine1.db";
+            $this->conn2_database = $WIN_DIR . "/Temp/doctrine2.db";
+        } else {
+            $this->conn1_database = "/tmp/doctrine1.db";
+            $this->conn2_database = "/tmp/doctrine2.db";
+        }
+
+        $this->conn1 = Doctrine_Manager::connection('sqlite:///' . $this->conn1_database, 'doctrine1');
+        $this->conn2 = Doctrine_Manager::connection('sqlite:///' . $this->conn2_database, 'doctrine2');
         
         $result1 = $this->conn1->createDatabase();
-        $this->assertEqual($result1, 'Successfully created database for connection "doctrine1" at path "/tmp/doctrine1.db"');
+        $this->assertEqual($result1, 'Successfully created database for connection "doctrine1" at path "'.$this->conn1_database.'"');
         
         $result2 = $this->conn2->createDatabase();
-        $this->assertEqual($result2, 'Successfully created database for connection "doctrine2" at path "/tmp/doctrine2.db"');
+        $this->assertEqual($result2, 'Successfully created database for connection "doctrine2" at path "'.$this->conn2_database.'"');
     }
     
     public function testDropDatabases()
     {
         $result1 = $this->conn1->dropDatabase();
-        $this->assertEqual($result1, 'Successfully dropped database for connection "doctrine1" at path "/tmp/doctrine1.db"');
+        $this->assertEqual($result1, 'Successfully dropped database for connection "doctrine1" at path "'.$this->conn1_database.'"');
         
         $result2 = $this->conn2->dropDatabase();
-        $this->assertEqual($result2, 'Successfully dropped database for connection "doctrine2" at path "/tmp/doctrine2.db"');
+        $this->assertEqual($result2, 'Successfully dropped database for connection "doctrine2" at path "'.$this->conn2_database.'"');
     }
     
     public function testConnectionInformationDecoded()
