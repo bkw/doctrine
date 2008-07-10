@@ -228,7 +228,8 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
         // temporarily remove the relation to fake a non-existant one
         $board = $this->connection->query("FROM QueryTest_Board b WHERE b.name = ?", array('Testboard'))->getFirst();
         $lastEntryId = $board->lastEntryId;
-        $board->lastEntryId = 0;
+        $board->lastEntryId = null;
+        $board->lastEntry = null;
         $board->save();
         
         $query = new Doctrine_Query($this->connection);
@@ -248,7 +249,6 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
 
             // get the board for inspection
             $tmpBoard = $categories[0]['boards'][0];
-            
             $this->assertTrue( ! isset($tmpBoard['lastEntry']));
 
         } catch (Doctrine_Exception $e) {

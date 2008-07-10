@@ -11,7 +11,7 @@ class QueryTest_Board extends Doctrine_Record
         $this->hasColumn('name as name', 'string', 100,
                 array('notnull', 'unique'));
         $this->hasColumn('lastEntryId as lastEntryId', 'integer', 4,
-                array('default' => 0, 'notnull'));
+                array('default' => 0));
         $this->hasColumn('position as position', 'integer', 4,
                 array('default' => 0, 'notnull'));
     }
