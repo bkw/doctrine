@@ -37,13 +37,20 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = "RelA";
         $this->tables[] = "RelB";
         $this->tables[] = "RelC";
+        $this->tables[] = "RelD";
         parent::prepareTables();
     }
 
     public function prepareData() 
     {
+        // first branch of the 'object hierarchy'
+        $d1 = new RelD();
+        $d1->name = "d 1";
+        $d1->save();
+
         $c1 = new RelC();
         $c1->name = "c 1";
+        $c1->rel_d_id = $d1->id;
         $c1->save();
 
         $b1 = new RelB();
@@ -56,20 +63,26 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $a1->rel_b_id = $b1->id;
         $a1->save();
 
+        // second branch, contains only top level
         /* uncomment this to make it work
         $b2 = new RelB();
         $b2->name = "b 2";
         $b2->save();
         */
-
         $a2 = new RelA();
         $a2->name = "a 2";
         // uncomment this, too
         // $a2->rel_b_id = $b2->id;
         $a2->save();
 
+        // third branch, full depth again
+        $d3 = new RelD();
+        $d3->name = "d 3";
+        $d3->save();
+
         $c3 = new RelC();
         $c3->name = "c 3";
+        $c3->rel_d_id = $d3->id;
         $c3->save();
 
         $b3 = new RelB();
@@ -83,7 +96,7 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $a3->save();
     }
 
-    public function testHydrationSkippingRelationIfNotSetOnSibling()
+    public function testHydrationSkippingRelationIfNotSetOnSiblingDepth3()
     {
         $q = new Doctrine_Query();
         $q->from('RelA a');
@@ -98,6 +111,26 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual('a 1', $res->getFirst()->get('name'));
         $this->assertTrue($res->getFirst()->get('b')->exists());
         $this->assertTrue($res->getFirst()->get('b')->get('c')->exists());
+        
+    }
+
+    public function testHydrationSkippingRelationIfNotSetOnSiblingDepth4()
+    {
+        $q = new Doctrine_Query();
+        $q->from('RelA a');
+        $q->leftJoin('a.b ab');
+        $q->leftJoin('ab.c abc');
+        $q->leftJoin('abc.d abcd');
+        $q->orderBy('a.id ASC');
+        $res = $q->execute(/*array(), Doctrine::HYDRATE_ARRAY*/);
+        //$res = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        
+        //var_dump($res/*->toArray(true)*/);
+        
+        $this->assertEqual('a 1', $res->getFirst()->get('name'));
+        $this->assertTrue($res->getFirst()->get('b')->exists());
+        $this->assertTrue($res->getFirst()->get('b')->get('c')->exists());
+        $this->assertTrue($res->getFirst()->get('b')->get('c')->get('d')->exists());
         
     }
     
@@ -135,6 +168,20 @@ class RelC extends Doctrine_Record {
 
   public function setTableDefinition() {
     $this->setTableName('rel_c');
+    $this->hasColumn('name', 'string', 25, array());
+    $this->hasColumn('rel_d_id', 'integer', 10, array());
+  }
+
+  public function setUp() {
+    $this->HasOne('RelD as d', array('local' => 'rel_d_id', 'foreign' => 'id'));
+  }
+
+}
+
+class RelD extends Doctrine_Record {
+
+  public function setTableDefinition() {
+    $this->setTableName('rel_d');
     $this->hasColumn('name', 'string', 25, array());
   }
 
