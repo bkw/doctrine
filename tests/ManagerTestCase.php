@@ -77,6 +77,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "port" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "dbname");
             $this->assertEqual($expectedMysqlDsn, $res);
         } catch (Exception $e) {
@@ -94,6 +95,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "port" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "/full/unix/path/to/file.db");
               
             $res = $manager->parseDsn($sqlite);
@@ -113,6 +115,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "pass" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "c:/full/windows/path/to/file.db");
             $res = $manager->parseDsn($sqlitewin);
             $this->assertEqual($expectedDsn, $res);
@@ -131,6 +134,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "pass" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => 'D:/full/windows/path/to/file.db');
             $res = $manager->parseDsn($sqlitewin2);
             $this->assertEqual($expectedDsn, $res);
