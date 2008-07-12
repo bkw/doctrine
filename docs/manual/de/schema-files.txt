@@ -540,23 +540,6 @@ Group:
     description: string(255)
 </code>
 
-+++ Generate Accessors
-
-When the generate_accessors: true option is present in a schema file, it will generate propel orm style 
-get and set accessors in the Base model definition. For example setFieldName() and getFieldName() would 
-then be possible in your models.
-
-Example:
-<code type="yaml">
----
-generate_accessors: true
-
-User:
-  columns:
-    username:
-      type: string(255)
-</code>
-
 +++ Column Aliases
 
 If you want the ability alias a column name as something other than the column name in the database 
@@ -607,7 +590,6 @@ options
 package
 inheritance
 detect_relations
-generate_accessors
 
 <code type="yaml">
 ---
@@ -617,7 +599,6 @@ options:
   type: INNODB
 package: User
 detect_relations: true
-generate_accessors: true
 
 User:
   columns:
