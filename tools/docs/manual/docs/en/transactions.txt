@@ -1,7 +1,0 @@
-++ Introduction
-++ Nesting
-++ Savepoints
-++ Locking strategies
-++ Lock modes
-++ Isolation levels
-++ Deadlocks
