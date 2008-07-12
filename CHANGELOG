@@ -1,3 +1,112 @@
+0.11.1
+------
+     * [r4553] Releasing 0.11.0
+     * [r4554] Documentation and removing functions which were added but never used anywhere.
+     * [r4555] Documentation.
+     * [r4556] Enhanced code to clean column definitions properly when importing records from another source.
+     * [r4557] fixes #625 - Implementing generating relationships from existing databases for MySQL.
+     * [r4558] Adding failing query for 0.11.0 regression in JoinCondition.php
+     * [r4559] Fixing Doctrine_Connection::connection() so that blank passwords get passed to PDO as an emptry string. Some dbms drivers error when the passed password is of php type null.
+     * [r4560] Fix for ( XXX ) in joins. Issue reported when using IN ( SUBSELECT ), but issue cound be reachable using SQL: and enum too.
+     * [r4561] adding coverage for #1170
+     * [r4562] Added documentation for #1170
+     * [r4563] Removing setAttribute('use_dql_callbacks', true) from contructor as it is useless here. It is required that dql callbacks be manually enabled in order to use SoftDelete or the dql
+	  callbacks.
+     * [r4564] Fixed mistake.
+     * [r4565] Fixed typos in listing .407
+     * [r4566] created new test case
+	  Ticket: 1175
+     * [r4567] Get rid of some forgotten echos
+	  Ticket: 1175
+     * [r4568] Test case clean up a bit more, no PHP_NOTICE thrown.
+	  Ticket: 1175
+     * [r4569] fixes #1176
+     * [r4570] make this really fail.
+	  Ticket: 1175
+     * [r4571] fixes #1163
+     * [r4572] fixes #1175
+     * [r4573] Fixed Doctrine_Record::preDql*() hooks to accept an event just the same as all the other listeners do. This was simply an oversight/mistake in consistancy of the event listener api.
+     * [r4574] Fixing test case.
+     * [r4575] fixed broken test
+     * [r4576] Fixes setSubClasses() to include children from all levels.
+     * [r4577] Moving Working with Objects to an earlier chapter.
+     * [r4578] fixes #1179
+     * [r4579] Fixing coding standards.
+     * [r4580] fixes #1078 fixes #1117
+     * [r4581] Fixing invalid test case.
+     * [r4582] fixes #1177
+     * [r4583] Added coverage for #952
+     * [r4584] Updating #950 coverage.
+     * [r4585] Making test fail.
+     * [r4586] fixes #950
+     * [r4587] fixes #1040
+     * [r4588] worked on it half way
+     * [r4589] fixes #1180
+     * [r4590] Fixing generation of setUp() to be cleaner, changed to not generate when it has no contents, and calling parent::setUp() only when necessary.
+     * [r4591] Fixing spacing of generated code.
+     * [r4592] Allowing use of foreignClass in schema files.
+     * [r4593] Fixing issue where parent::setUp() is called for class_table inheritance
+     * [r4594] Added coverage for 1123 and fixed error in test case model and test.
+     * [r4595] fixes #1124
+     * [r4596] fixes #1149
+     * [r4597] fixes #1136
+     * [r4598] fixes #1142
+     * [r4599] fixes #1086
+     * [r4600] fixes #1138
+     * [r4601] fixes #1145
+     * [r4602] Updating options for Timestampable
+     * [r4603] Fixing so it is more readable.
+     * [r4604] eol correction for model generation with templates and children
+     * [r4605] Fixed incorrect usage
+     * [r4610] Reverting a change which combined fromArray() and synchronizeWithArray()
+     * [r4611] fixes #1182
+     * [r4612] fixes #1194
+     * [r4613] Adding code formatting to migrations the same way it is in the record builder.
+     * [r4614] fixes #1151
+     * [r4615] fixes #1184
+     * [r4616] fixes #1189
+     * [r4617] fixes #1185
+     * [r4619] - copied to start the german translation
+     * [r4620] - german index copied
+     * [r4621] - the (wannabe) german cookbook
+     * [r4622] - german version copied
+     * [r4623] Fixed any type which had doctrine spelled as doctine.
+	  Fixed ticket #1201
+     * [r4624] Fixing uncaught exception
+     * [r4625] * Added Test for Ticket #1205
+     * [r4626] * Added Test for Ticket #1205
+     * [r4627] Changed how testing for functionality.
+     * [r4629] Adding test coverage for #1215
+     * [r4630] Adding test coverage for #1206
+     * [r4631] fixes #1206
+     * [r4632] fixes #1024
+     * [r4633] Adding coverage for #1192
+     * [r4634] fixes #1192
+     * [r4635] Adding coverage for #1160
+     * [r4636] fixes #1160
+     * [r4637] Allow listeners to be specified from the schema.
+     * [r4638] fixes #1215
+     * [r4639] Cleaning.
+     * [r4640] Adding coverage for #1211
+     * [r4641] fixes #1211
+     * [r4642] adding test coverage for #1213
+     * [r4643] document the added yml 'listeners' record option
+     * [r4644] fix two typos
+     * [r4645] Fixed #1209 and added coverage to it. Added new methods: Doctrine_Connection->quoteMultipleIdentifier and Doctrine_Formatter->quoteMultipleIdentifier.
+     * [r4646] Fixed #925.
+     * [r4647] Wrong typo. I fixed the issue and then thought in something else and changed var name. Updated again to fix it.
+     * [r4649] Fixed #1228. Thanks for the report and testcase.
+     * [r4650] Updated run.php
+     * [r4651] reopened ticket #1228, test still fails on deeper hierarchy
+     * [r4652] Fixed #1228. Thanks again. I hope its solved now.
+     * [r4654] Fixed #1235
+     * [r4656] Fixes #1231. Added possibility to hydrate tree as array, through $treeTable->fetchTree($options, $hydrationMode);
+     * [r4657] Fixes 1225. The provided patch does not work, I made my own. Still need some more code to complete 488.
+     * [r4658] Fixes 1197. Thanks for the patch! =)
+     * [r4659] Fixes 1031. Added unix socket support to PDO connection
+     * [r4660] Fixes 1237. Thanks for the patch!
+     * [r4661] Fixes 1205. That was the same issue to 1237. Commented it on source.
+
 0.11.0
 ------
      * [r4459] Updating changelogs for 0.11.0-RC3
