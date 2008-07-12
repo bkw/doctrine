@@ -14,8 +14,7 @@
 + Transactions
 + Caching
 + Event listeners
-+ Class templates
-+ Plugins
++ Behaviors
 + File parser
 + Migration
 + Searching
