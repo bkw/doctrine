@@ -1,9 +1,9 @@
 <?php
 error_reporting(E_ALL);
 
-$includePath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lib' . PATH_SEPARATOR
-             . dirname(__FILE__) . DIRECTORY_SEPARATOR . 'lib' . PATH_SEPARATOR
-             . dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'vendor';
+$includePath = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'lib' . PATH_SEPARATOR
+             . dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'lib' . PATH_SEPARATOR
+             . dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'vendor';
 
 set_include_path($includePath);
 
@@ -164,7 +164,7 @@ $toc = $cache->fetch('toc');
 
 // If table of contents was not cached, parse it from documentation files
 if ( ! $toc instanceof Sensei_Doc_Toc) {
-    $toc = new Sensei_Doc_Toc('docs/ja.txt');
+    $toc = new Sensei_Doc_Toc(dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'manual' . DIRECTORY_SEPARATOR . 'en.txt');
     $cache->save($toc, 'toc');
 }
     
