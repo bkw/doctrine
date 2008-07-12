@@ -38,13 +38,13 @@ $r = Doctrine_Manager::getInstance()->getQueryRegistry();
 $r->add('User/all', 'FROM User u');
 $r->add('User/byName', 'FROM User u WHERE u.name = ?');
 
-$user = new User();
+$userTable = Doctrine::getTable('User');
 
 // find the user named Jack Daniels
-$user = $user->findOneByName('Jack Daniels');
+$user = $userTable->findOneByName('Jack Daniels');
 
 // find all users
-$users = $user->find('all');
+$users = $userTable->find('all');
 </code>
 
 ++ BNF
