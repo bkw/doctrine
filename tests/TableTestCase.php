@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -106,7 +106,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $fk = $this->objTable->getRelation("Email");
         $this->assertTrue($fk instanceof Doctrine_Relation_LocalKey);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
-        $this->assertTrue($fk->getType() == Doctrine_Relation::ONE_AGGREGATE);
+        $this->assertTrue($fk->getType() == Doctrine_Relation::ONE_COMPOSITE);
         $this->assertTrue($fk->getLocal() == "email_id");
         $this->assertTrue($fk->getForeign() == $fk->getTable()->getIdentifier());
 
@@ -215,6 +215,13 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
     public function testFindByDql() 
     {
         $users = $this->objTable->findByDql("name LIKE '%Arnold%'");
+        $this->assertEqual($users->count(), 1);
+        $this->assertTrue($users instanceof Doctrine_Collection);
+    }
+
+    public function testFindByXXX() 
+    {
+        $users = $this->objTable->findByName('zYne');
         $this->assertEqual($users->count(), 1);
         $this->assertTrue($users instanceof Doctrine_Collection);
     }

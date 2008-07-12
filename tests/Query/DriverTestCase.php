@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -99,6 +99,36 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u')->limit(5)->offset(2);
 
-        $this->assertEqual($q->getSql(), 'SELECT * FROM (SELECT a.*, ROWNUM dctrn_rownum FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a WHERE ROWNUM <= 7) WHERE dctrn_rownum >= 3');
+        $this->assertEqual($q->getSql(), 'SELECT b.* FROM (SELECT a.*, ROWNUM AS doctrine_rownum FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a ) b WHERE doctrine_rownum BETWEEN 3 AND 7');
     }
+    
+    public function testLimitOffsetLimitSubqueriesForOracle()
+    {
+        $this->dbh = new Doctrine_Adapter_Mock('oracle');
+        $conn = $this->manager->openConnection($this->dbh);
+        $q = new Doctrine_Query($conn);
+        $q->from('User u')->innerJoin('u.Phonenumber p')->limit(5)->offset(2);
+        
+        $correctSql = "SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, "
+                            . "e.password AS e__password, e.type AS e__type, e.created AS e__created, "
+                            . "e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, "
+                            . "p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id "
+                    . "FROM entity e "
+                    . "INNER JOIN phonenumber p ON e.id = p.entity_id "
+                    . "WHERE e.id IN ("
+                        . "SELECT b.id FROM ("
+                            . "SELECT a.*, ROWNUM AS doctrine_rownum "
+                            . "FROM ("
+                                . "SELECT DISTINCT e2.id "
+                                . "FROM entity e2 "
+                                . "INNER JOIN phonenumber p2 ON e2.id = p2.entity_id "
+                                . "WHERE (e2.type = 0)"
+                            . ") a"
+                        . " ) b "
+                        . "WHERE doctrine_rownum BETWEEN 3 AND 7"
+                    . ") AND (e.type = 0)";
+        
+        $this->assertEqual($q->getSql(), $correctSql);
+    }
+    
 }

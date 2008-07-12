@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -86,7 +86,7 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($type, array('type' => array('blob', 'clob'),
                                         'length' => null, 
-                                        'unsigned' => null, 
+                                        'unsigned' => null,
                                         'fixed' => null));
     }
     public function testGetPortableDeclarationSupportsNativeTimestampTypes()
@@ -187,6 +187,13 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
                                         'unsigned' => null, 
                                         'fixed' => null));
 
+        $type = $this->dataDict->getPortableDeclaration(array('type' => 'interval'));
+
+        $this->assertEqual($type, array('type' => array('string'),
+                                        'length' => null,
+                                        'unsigned' => null,
+                                        'fixed' => false));
+
         $type = $this->dataDict->getPortableDeclaration(array('type' => 'varchar', 'length' => 1));
 
         $this->assertEqual($type, array('type' => array('string', 'boolean'),
@@ -274,7 +281,7 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'float', 'length' => 20, 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'FLOAT8');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'FLOAT');
     }
     public function testGetNativeDefinitionSupportsBooleanType()
     {

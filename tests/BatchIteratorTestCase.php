@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,13 +26,13 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
 class Doctrine_BatchIterator_TestCase extends Doctrine_UnitTestCase {
     public function prepareTables() {
-        $this->tables = array("Entity", "User", "Group", "Address", "Email", "Phonenumber");
+        $this->tables = array("EntityAddress", "Entity", "User", "Group", "Address", "Email", "Phonenumber");
         parent::prepareTables();
     }
 
@@ -68,12 +68,12 @@ class Doctrine_BatchIterator_TestCase extends Doctrine_UnitTestCase {
 
         $user->save();
         
-        $user = $user->getTable()->find($user->obtainIdentifier());
+        $user = $user->getTable()->find($user->id);
         $this->assertEqual($user->name, "tester");
         $this->assertEqual($user->Address[0]->address, "street 1");
         $this->assertEqual($user->Address[1]->address, "street 2");
         
-        $user = $user->getTable()->find($user->obtainIdentifier());
+        $user = $user->getTable()->find($user->id);
         $a = array();
         foreach($user->Address as $address) {
             $a[] = $address->address;
@@ -83,5 +83,4 @@ class Doctrine_BatchIterator_TestCase extends Doctrine_UnitTestCase {
 
         $user = $graph->query("FROM User");
     }
-
 }

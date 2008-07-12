@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -101,7 +101,82 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         //Doctrine::dump($q->getCachedForm(array('foo' => 'bar')));
         $this->assertEqual($q->parseClause("CONCAT('u.name', u.name)"), "CONCAT('u.name', e.name)");
     }
+    
+    public function testCountMaintainsParams()
+    {
+        $q = new Doctrine_Query();
+        $q->from('User u');
+        $q->leftJoin('u.Phonenumber p');
+        $q->where('u.name = ?', 'zYne');
+
+        $this->assertEqual($q->count(), $q->execute()->count());
+    }
+
+    public function testCountWithGroupBy()
+    {
+        $q = new Doctrine_Query();
+        $q->from('User u');
+        $q->leftJoin('u.Phonenumber p');
+        $q->groupBy('p.entity_id');
+
+        $this->assertEqual($q->count(), $q->execute()->count());
+    }
+
+    // ticket #821
+    public function testQueryCopyClone()
+    {
+        $query = new Doctrine_Query();
+        $query->select('u.*')->from('User u');
+        $sql = $query->getSql();
+        
+        $data = $query->execute();
+        $query2 = $query->copy();
+        
+        $this->assertTrue($sql, $query2->getSql());
+        
+        $query2->limit(0);
+        $query2->offset(0);
+        $query2->select('COUNT(u.id) as nb');
+        
+        $this->assertTrue($query2->getSql(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
+    }
+    
+    public function testNullAggregateIsSet()
+    {
+        $user = new User();
+        $user->name = 'jon';
+        $user->loginname = 'jwage';
+        $user->Phonenumber[0]->phonenumber = new Doctrine_Expression('NULL');
+        $user->save();
+        $id = $user->id;
+        $user->free();
+
+        $query = Doctrine_Query::create()
+                    ->select('u.*, p.*, SUM(p.phonenumber) summ')
+                    ->from('User u')
+                    ->leftJoin('u.Phonenumber p')
+                    ->where('u.id = ?', $id);
+
+        $users = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertTrue(isset($users[0]['Phonenumber'][0]) && array_key_exists('summ', $users[0]['Phonenumber'][0]));
+    }
+
+    public function testQueryWithNoSelectFromRootTableThrowsException()
+    {
+        try {
+            $users = Doctrine_Query::create()
+                        ->select('p.*')
+                        ->from('User u')
+                        ->leftJoin('u.Phonenumber p')
+                        ->execute();
+            $this->fail();
+        } catch (Doctrine_Query_Exception $e) {
+            $this->pass();
+        }
+    }
 }
+
 class MyQuery extends Doctrine_Query
 {
     public function preQuery()

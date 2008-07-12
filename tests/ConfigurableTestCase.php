@@ -1,6 +1,4 @@
 <?php
-require_once("UnitTestCase.php");
-
 class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
     public function prepareTables() { }
     public function prepareData() { }
@@ -14,14 +12,18 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT), '%s_seq');
     }
     public function testSetIndexNameFormatAttribute() {
+        $original = $this->manager->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT);
         $this->manager->setAttribute(Doctrine::ATTR_IDXNAME_FORMAT, '%_index');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT), '%_index');
+        $this->manager->setAttribute(Doctrine::ATTR_IDXNAME_FORMAT, $original);
     }
     public function testSetSequenceNameFormatAttribute() {
+        $original = $this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT);
         $this->manager->setAttribute(Doctrine::ATTR_SEQNAME_FORMAT, '%_sequence');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT), '%_sequence');
+        $this->manager->setAttribute(Doctrine::ATTR_SEQNAME_FORMAT, $original);
     }
     public function testExceptionIsThrownWhenSettingIndexNameFormatAttributeAtTableLevel() {
         try {
@@ -40,28 +42,34 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         }
     }
     public function testSettingFieldCaseIsSuccesfulWithZero() {
+        $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, 0);
             $this->pass();
         } catch(Doctrine_Exception $e) {
             $this->fail();
         }
+        $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
     public function testSettingFieldCaseIsSuccesfulWithCaseConstants() {
+        $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, CASE_LOWER);
             $this->pass();
         } catch(Doctrine_Exception $e) {
             $this->fail();
         }
+        $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
     public function testSettingFieldCaseIsSuccesfulWithCaseConstants2() {
+        $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, CASE_UPPER);
             $this->pass();
         } catch(Doctrine_Exception $e) {
             $this->fail();
         }
+        $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
     public function testExceptionIsThrownWhenSettingFieldCaseToNotZeroOneOrTwo() {
         try {
@@ -86,30 +94,23 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         $this->manager->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER), true);
-                $this->manager->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->manager->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
     public function testDefaultSequenceColumnNameAttributeValueIsId() {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME), 'id');
     }
     public function testSequenceColumnNameAttributeAcceptsStrings() {
+        $original = $this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME);
         $this->manager->setAttribute(Doctrine::ATTR_SEQCOL_NAME, 'sequence');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME), 'sequence');
+        $this->manager->setAttribute(Doctrine::ATTR_SEQCOL_NAME, $original);
     }
     public function testValidatorAttributeAcceptsBooleans() {
-        $this->manager->setAttribute(Doctrine::ATTR_VLD, true);
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, true);
         
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_VLD), true);
-    }
-    public function testAutoLengthValidationAttributeAcceptsBooleans() {
-        $this->manager->setAttribute(Doctrine::ATTR_AUTO_LENGTH_VLD, true);
-        
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_AUTO_LENGTH_VLD), true);
-    }
-    public function testAutoTypeValidationAttributeAcceptsBooleans() {
-        $this->manager->setAttribute(Doctrine::ATTR_AUTO_TYPE_VLD, true);
-        
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_AUTO_TYPE_VLD), true);
+        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_VALIDATE), true);
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, false);
     }
     public function testDefaultPortabilityAttributeValueIsAll() {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), Doctrine::PORTABILITY_ALL);
@@ -119,16 +120,20 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), 
                            Doctrine::PORTABILITY_RTRIM | Doctrine::PORTABILITY_FIX_CASE);
+        $this->manager->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
     }
     public function testDefaultListenerIsDoctrineEventListener() {
         $this->assertTrue($this->manager->getAttribute(Doctrine::ATTR_LISTENER) instanceof Doctrine_EventListener);                                                                     
     }
     public function testListenerAttributeAcceptsEventListenerObjects() {
-        $this->manager->setAttribute(Doctrine::ATTR_LISTENER, new Doctrine_EventListener_Debugger());
+        $original = $this->manager->getAttribute(Doctrine::ATTR_LISTENER);
+        $this->manager->setAttribute(Doctrine::ATTR_LISTENER, new Doctrine_EventListener());
 
-        $this->assertTrue($this->manager->getAttribute(Doctrine::ATTR_LISTENER) instanceof Doctrine_EventListener_Debugger);
+        $this->assertTrue($this->manager->getAttribute(Doctrine::ATTR_LISTENER) instanceof Doctrine_EventListener);
+        $this->manager->setAttribute(Doctrine::ATTR_LISTENER, $original);
     }
     public function testCollectionKeyAttributeAcceptsValidColumnName() {
+        $original = $this->connection->getTable('User')->getAttribute(Doctrine::ATTR_COLL_KEY);
         try {
             $this->connection->getTable('User')->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
             
@@ -136,6 +141,7 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         } catch(Exception $e) {
             $this->fail();
         }
+        $this->connection->getTable('User')->setAttribute(Doctrine::ATTR_COLL_KEY, $original);
     }
     public function testSettingInvalidColumnNameToCollectionKeyAttributeThrowsException() {
         try {
@@ -154,62 +160,6 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         } catch(Exception $e) {
             $this->pass();
         }
-    }
-    public function testSetAttribute() {
-        $table = $this->connection->getTable("User");
-        /**
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE_TTL,100);
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_CACHE_TTL),100);
-
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE_SIZE,1);
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_CACHE_SIZE),1);
-
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE_DIR,"%ROOT%".DIRECTORY_SEPARATOR."cache");
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_CACHE_DIR),$this->manager->getRoot().DIRECTORY_SEPARATOR."cache");
-        */
-        $this->manager->setAttribute(Doctrine::ATTR_FETCHMODE,Doctrine::FETCH_LAZY);
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_FETCHMODE),Doctrine::FETCH_LAZY);
-
-        $this->manager->setAttribute(Doctrine::ATTR_BATCH_SIZE, 5);
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_BATCH_SIZE),5);
-
-        $this->manager->setAttribute(Doctrine::ATTR_LOCKMODE, Doctrine::LOCK_PESSIMISTIC);
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_LOCKMODE), Doctrine::LOCK_PESSIMISTIC);
-
-        // test invalid arguments
-        /**
-        try {
-            $this->manager->setAttribute(Doctrine::ATTR_CACHE_TTL,-12);
-        } catch(Exception $e) {
-            $this->assertTrue($e instanceof Exception);
-        }
-        try {
-            $this->manager->setAttribute(Doctrine::ATTR_CACHE_SIZE,-12);
-        } catch(Exception $e) {
-            $this->assertTrue($e instanceof Exception);
-        }
-        try {
-            $this->manager->setAttribute(Doctrine::ATTR_BATCH_SIZE,-12);
-        } catch(Exception $e) {
-            $this->assertTrue($e instanceof Exception);
-        }
-        */
-        try {
-            $this->connection->beginTransaction();
-            $this->manager->setAttribute(Doctrine::ATTR_LOCKMODE, Doctrine::LOCK_OPTIMISTIC);
-        } catch(Exception $e) {
-            $this->assertTrue($e instanceof Exception);
-            $this->connection->commit();
-        }
-
-        try {
-            $this->connection->beginTransaction();
-            $this->connection->setAttribute(Doctrine::ATTR_LOCKMODE, Doctrine::LOCK_PESSIMISTIC);
-        } catch(Exception $e) {
-            $this->assertTrue($e instanceof Exception);
-            $this->connection->commit();
-        }
-
     }
     public function testGetAttributes() {
         $this->assertTrue(is_array($this->manager->getAttributes()));

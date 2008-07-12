@@ -49,7 +49,8 @@ class GroupTest extends UnitTestCase
                 $testCase->run();
             } catch(Exception $e) {
                 $this->_failed += 1;
-                $this->_messages[] = 'Unexpected exception thrown with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine();
+                $this->_messages[] = 'Unexpected exception thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();;
+                
             }
             $this->_passed += $testCase->getPassCount();
             $this->_failed += $testCase->getFailCount();

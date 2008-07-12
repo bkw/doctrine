@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -37,16 +37,22 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
     
     public function testYmlImport()
     {
+        $path = dirname(__FILE__) . '/import_builder_test';
+        
         $import = new Doctrine_Import_Schema();
-        $import->importSchema('schema.yml', 'yml', 'classes');
+        $import->importSchema('schema.yml', 'yml', $path);
         
-        if ( ! file_exists('classes/User.php')) {
+        if ( ! file_exists($path . '/SchemaTestUser.php')) {
             $this->fail();
         }
         
-        if ( ! file_exists('classes/Profile.php')) {
+        if ( ! file_exists($path . '/SchemaTestProfile.php')) {
             $this->fail();
         }
+
+        $this->assertEqual(Doctrine::getTable('AliasTest')->getFieldName('test_col'), 'test_col_alias');
+
+        Doctrine_Lib::removeDirectories($path);
     }
     
     public function testBuildSchema()
@@ -54,7 +60,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $schema = new Doctrine_Import_Schema();
         $array = $schema->buildSchema('schema.yml', 'yml');
         
-        $model = $array['User'];
+        $model = $array['SchemaTestUser'];
 
         $this->assertTrue(array_key_exists('connection', $model));
         $this->assertTrue(array_key_exists('className', $model));
@@ -67,6 +73,10 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(array_key_exists('actAs', $model) && is_array($model['actAs']));
         $this->assertTrue(array_key_exists('options', $model) && is_array($model['options']));
         $this->assertTrue(array_key_exists('package', $model));
+        $this->assertTrue(array_key_exists('inheritance', $model) && is_array($model['inheritance']));
+        $this->assertTrue(array_key_exists('detect_relations', $model) && is_bool($model['detect_relations']));
+        $this->assertTrue(array_key_exists('generate_accessors', $model) && is_bool($model['generate_accessors']));
+        $this->assertEqual($array['AliasTest']['columns']['test_col']['name'], 'test_col as test_col_alias');
     }
     
     public function testSchemaRelationshipCompletion()
@@ -75,10 +85,8 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $this->schema = $this->buildSchema->buildSchema('schema.yml', 'yml');
         
         foreach ($this->schema as $name => $properties) {
-            $relations = $this->buildSchema->getRelations($properties);
-            
-            foreach ($relations as $alias => $relation) {
-                if (!$this->_verifyMultiDirectionalRelationship($name, $alias, $relation)) {
+            foreach ($properties['relations'] as $alias => $relation) {
+                if ( ! $this->_verifyMultiDirectionalRelationship($name, $alias, $relation)) {
                     $this->fail();
                     
                     return false;
@@ -94,7 +102,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
         $foreignClass = $relation['class'];
         $foreignAlias = isset($relation['foreignAlias']) ? $relation['foreignAlias']:$class;
         
-        $foreignClassRelations = $this->buildSchema->getRelations($this->schema[$foreignClass]);
+        $foreignClassRelations = $this->schema[$foreignClass]['relations'];
         
         // Check to see if the foreign class has the opposite end defined for the class/foreignAlias
         if (isset($foreignClassRelations[$foreignAlias])) {

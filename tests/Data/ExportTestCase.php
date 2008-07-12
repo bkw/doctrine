@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,10 +26,44 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
 class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase 
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'I18nTest';
+        parent::prepareTables();
+    }
+
+    public function testI18nExport()
+    {
+        try {
+            $i = new I18nTest();
+            $i->assignIdentifier(500);
+            $i->Translation['en']->title = 'english test';
+            $i->Translation['fr']->title = 'french test';
+            $i->save();
+
+            $data = new Doctrine_Data();
+            $data->exportData('test.yml', 'yml', array('I18nTest'));
+
+            $array = Doctrine_Parser::load('test.yml', 'yml');
+
+            $this->assertTrue( ! empty($array));
+
+            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['en']['title']));
+            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['fr']['title']));
+            
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        if (file_exists('test.yml')) {
+            unlink('test.yml');
+        }
+    }
 }

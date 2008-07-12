@@ -16,7 +16,7 @@
 <td class="normal">/*
 </td></tr>
 <tr><td>3</td>
-<td class="normal">&nbsp;*&nbsp;&nbsp;$Id:&nbsp;Association.php&nbsp;3209&nbsp;2007-11-24&nbsp;18:11:09Z&nbsp;romanb&nbsp;$
+<td class="normal">&nbsp;*&nbsp;&nbsp;$Id:&nbsp;Association.php&nbsp;4045&nbsp;2008-03-19&nbsp;14:30:21Z&nbsp;romanb&nbsp;$
 </td></tr>
 <tr><td>4</td>
 <td class="normal">&nbsp;*
@@ -64,7 +64,7 @@
 <td class="normal">&nbsp;*&nbsp;and&nbsp;is&nbsp;licensed&nbsp;under&nbsp;the&nbsp;LGPL.&nbsp;For&nbsp;more&nbsp;information,&nbsp;see
 </td></tr>
 <tr><td>19</td>
-<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.com&gt;.
+<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.org&gt;.
 </td></tr>
 <tr><td>20</td>
 <td class="normal">&nbsp;*/
@@ -100,13 +100,13 @@
 <td class="normal">&nbsp;*&nbsp;@license&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.opensource.org/licenses/lgpl-license.php&nbsp;LGPL
 </td></tr>
 <tr><td>31</td>
-<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.com
+<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.org
 </td></tr>
 <tr><td>32</td>
 <td class="normal">&nbsp;*&nbsp;@since&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0
 </td></tr>
 <tr><td>33</td>
-<td class="normal">&nbsp;*&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision:&nbsp;3209&nbsp;$
+<td class="normal">&nbsp;*&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision:&nbsp;4045&nbsp;$
 </td></tr>
 <tr><td>34</td>
 <td class="normal">&nbsp;*&nbsp;@author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Konsta&nbsp;Vesterinen&nbsp;&lt;kvesteri@cc.hut.fi&gt;
@@ -214,22 +214,22 @@
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
 </td></tr>
 <tr><td>69</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;collection&quot;:
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;collection&quot;:
 </td></tr>
 <tr><td>70</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sub&nbsp;&nbsp;=&nbsp;substr(str_repeat(&quot;?,&nbsp;&quot;,&nbsp;$count),0,-2);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sub&nbsp;&nbsp;=&nbsp;substr(str_repeat(&quot;?,&nbsp;&quot;,&nbsp;$count),0,-2);
 </td></tr>
 <tr><td>71</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$dql&nbsp;&nbsp;=&nbsp;'FROM&nbsp;'&nbsp;.&nbsp;$component&nbsp;.&nbsp;'.'&nbsp;.&nbsp;$this-&gt;getTable()-&gt;getComponentName();
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$dql&nbsp;&nbsp;=&nbsp;'FROM&nbsp;'&nbsp;.&nbsp;$component&nbsp;.&nbsp;'.'&nbsp;.&nbsp;$this-&gt;getTable()-&gt;getComponentName();
 </td></tr>
 <tr><td>72</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$dql&nbsp;.=&nbsp;'&nbsp;WHERE&nbsp;'&nbsp;.&nbsp;$component&nbsp;.&nbsp;'.'&nbsp;.&nbsp;$this-&gt;definition['local']&nbsp;.&nbsp;'&nbsp;IN&nbsp;('&nbsp;.&nbsp;$sub&nbsp;.&nbsp;')';
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$dql&nbsp;.=&nbsp;'&nbsp;WHERE&nbsp;'&nbsp;.&nbsp;$component&nbsp;.&nbsp;'.'&nbsp;.&nbsp;$this-&gt;definition['local']&nbsp;.&nbsp;'&nbsp;IN&nbsp;('&nbsp;.&nbsp;$sub&nbsp;.&nbsp;')';
 </td></tr>
 <tr><td>73</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
 </td></tr>
 <tr><td>74</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>75</td>
 <td class="normal">
@@ -286,7 +286,7 @@
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
 </td></tr>
 <tr><td>93</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$coll&nbsp;=&nbsp;Doctrine_Query::create()-&gt;query($this-&gt;getRelationDql(1),&nbsp;array($id));
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$coll&nbsp;=&nbsp;$this-&gt;getTable()-&gt;getConnection()-&gt;query($this-&gt;getRelationDql(1),&nbsp;array($id));
 </td></tr>
 <tr><td>94</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}

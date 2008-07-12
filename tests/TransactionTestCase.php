@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -121,27 +121,21 @@ class Doctrine_Transaction_TestCase extends Doctrine_UnitTestCase
     public function testReleaseSavepointIsOnlyImplementedAtDriverLevel()
     {
         try {
-            $this->transaction->setTransactionLevel(1);
-
             $this->transaction->commit('savepoint');
             $this->fail();
-        } catch(Doctrine_Transaction_Exception $e) {
+        } catch (Doctrine_Transaction_Exception $e) {
             $this->pass();
         }
-        $this->transaction->setTransactionLevel(0);
     }
 
     public function testRollbackSavepointIsOnlyImplementedAtDriverLevel() 
     {
         try {
-            $this->transaction->setTransactionLevel(1);
-
             $this->transaction->rollback('savepoint');
             $this->fail();
         } catch(Doctrine_Transaction_Exception $e) {
             $this->pass();
         }    
-        $this->transaction->setTransactionLevel(0);
     }
 
     public function testSetIsolationIsOnlyImplementedAtDriverLevel() 
@@ -168,20 +162,70 @@ class Doctrine_Transaction_TestCase extends Doctrine_UnitTestCase
     {
         $this->assertEqual($this->transaction->getTransactionLevel(), 0);
     }
+    
+    public function testSubsequentTransactionsAfterRollback()
+    {
+        try {
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            throw new Exception();
+        } catch (Exception $e) {
+            $this->transaction->rollback();
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+            $this->transaction->commit();
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+            $this->assertEqual(0, $this->transaction->getInternalTransactionLevel());
+        }
+        
+        $i = 0;
+        while ($i < 5) {
+            $this->assertEqual(0, $this->transaction->getTransactionLevel());
+    		$this->transaction->beginTransaction();
+            $this->assertEqual(1, $this->transaction->getTransactionLevel());
+    		try {
+    		    if ($i == 0) {
+    		        throw new Exception();
+    		    }                
+    		    $this->transaction->commit();
+    		}
+    		catch (Exception $e) {
+    			$this->transaction->rollback();
+                $this->assertEqual(0, $this->transaction->getTransactionLevel());
+    		}
+    		++$i;
+    	}
+    }
 
     public function testGetStateReturnsStateConstant() 
     {
         $this->assertEqual($this->transaction->getState(), Doctrine_Transaction::STATE_SLEEP);                                                      
     }
 
-    public function testCommittingNotActiveTransactionReturnsFalse()
+    public function testCommittingWithNoActiveTransactionThrowsException()
     {
-        $this->assertEqual($this->transaction->commit(), false);
+        try {
+            $this->transaction->commit();
+            $this->fail();
+        } catch (Doctrine_Transaction_Exception $e) {
+            $this->pass();
+        }
     }
 
     public function testExceptionIsThrownWhenUsingRollbackOnNotActiveTransaction() 
     {
-        $this->assertEqual($this->transaction->rollback(), false);
+        try {
+            $this->transaction->rollback();
+            $this->fail();
+        } catch (Doctrine_Transaction_Exception $e) {
+            $this->pass();
+        }
     }
 
     public function testBeginTransactionStartsNewTransaction() 
@@ -214,7 +258,7 @@ class Doctrine_Transaction_TestCase extends Doctrine_UnitTestCase
             $phonenumber->set('entity_id', $user->get('id'));
             $phonenumber->set('phonenumber', '123 123');
             $phonenumber->save();
-            
+
             $conn->commit();    
         } catch (Exception $e) {
             $conn->rollback();

@@ -64,7 +64,7 @@
 <td class="normal">&nbsp;*&nbsp;and&nbsp;is&nbsp;licensed&nbsp;under&nbsp;the&nbsp;LGPL.&nbsp;For&nbsp;more&nbsp;information,&nbsp;see
 </td></tr>
 <tr><td>19</td>
-<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.com&gt;.
+<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.org&gt;.
 </td></tr>
 <tr><td>20</td>
 <td class="normal">&nbsp;*/
@@ -94,7 +94,7 @@
 <td class="normal">&nbsp;*&nbsp;@license&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.opensource.org/licenses/lgpl-license.php&nbsp;LGPL
 </td></tr>
 <tr><td>29</td>
-<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.com
+<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.org
 </td></tr>
 <tr><td>30</td>
 <td class="normal">&nbsp;*&nbsp;@since&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0
@@ -727,10 +727,10 @@
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$result;
 </td></tr>
 <tr><td>240</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(PDOException&nbsp;$e)&nbsp;{
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(PDOException&nbsp;$e)&nbsp;{
 </td></tr>
 <tr><td>241</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(Doctrine_Adapter_Exception&nbsp;$e)&nbsp;{
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(Doctrine_Adapter_Exception&nbsp;$e)&nbsp;{
 </td></tr>
 <tr><td>242</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
@@ -739,13 +739,13 @@
 <td class="normal">
 </td></tr>
 <tr><td>244</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_conn-&gt;rethrowException($e,&nbsp;$this);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;_conn-&gt;rethrowException($e,&nbsp;$this);
 </td></tr>
 <tr><td>245</td>
 <td class="normal">
 </td></tr>
 <tr><td>246</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;false;
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;false;
 </td></tr>
 <tr><td>247</td>
 <td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}

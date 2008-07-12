@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -58,6 +58,12 @@ class Doctrine_Expression_TestCase extends Doctrine_UnitTestCase
     {
         $e = new Doctrine_Expression("SUBSTRING(CONCAT('some', 'one'), 0, 3)");
         $this->assertEqual($e->getSql(), "SUBSTR(CONCAT('some', 'one'), 0, 3)");
+    }
+
+    public function testExpressionParserSupportsParensInClauses()
+    {
+        $e = new Doctrine_Expression("CONCAT('(some)', '(one)')");
+        $this->assertEqual($e->getSql(), "CONCAT('(some)', '(one)')");
     }
 }
 

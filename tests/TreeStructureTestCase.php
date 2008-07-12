@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -103,16 +103,15 @@ class Doctrine_TreeStructure_TestCase extends Doctrine_UnitTestCase
         $o4->name = 'o4';
         $o4->save();
 
-        $o1->Children;
         $this->assertFalse(isset($o1->Parent));
+        $this->assertTrue(isset($o2->Parent));
+        $this->assertTrue($o2->Parent === $o1);
+        $this->assertFalse(isset($o4->Parent));
+      
         $this->assertTrue(count($o1->Children) == 2);
         $this->assertTrue(count($o1->get('Children')) == 2);
 
-        $this->assertTrue(isset($o2->Parent));
-        $this->assertTrue($o2->Parent === $o1);
-
         $this->assertTrue(count($o4->Children) == 0);
-        $this->assertFalse(isset($o4->Parent));
     }
     public function testTreeStructureFetchingWorksWithDql()
     {

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -94,12 +94,31 @@ class Doctrine_I18n_TestCase extends Doctrine_UnitTestCase
 
     }
 
+
+    public function testUpdatingI18nItems()
+    {
+        $i = Doctrine_Query::create()->query('FROM I18nTest')->getFirst();
+
+        $i->Translation['EN']->name = 'updated name';
+        $i->Translation['EN']->title = 'updated title';
+
+        $i->Translation->save();
+
+        $this->conn->clear();
+
+        $t = Doctrine_Query::create()->from('I18nTestTranslation')->fetchOne();
+
+        $this->assertEqual($t->name, 'updated name');
+        $this->assertEqual($t->title, 'updated title');
+    }
+
+
     public function testDataFetching()
     {
         $i = Doctrine_Query::create()->from('I18nTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
 
-        $this->assertEqual($i['Translation']['EN']['name'], 'some name');
-        $this->assertEqual($i['Translation']['EN']['title'], 'some title');
+        $this->assertEqual($i['Translation']['EN']['name'], 'updated name');
+        $this->assertEqual($i['Translation']['EN']['title'], 'updated title');
         $this->assertEqual($i['Translation']['EN']['lang'], 'EN');
 
         $this->assertEqual($i['Translation']['FI']['name'], 'joku nimi');

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -85,8 +85,8 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getSql(), "SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)");
 
         $users = $q->execute();
-        
-        $this->assertEqual($users->count(), 1);
+
+        $this->assertEqual(count($users), 1);
 
         $this->assertEqual($users[0]->state(), Doctrine_Record::STATE_TCLEAN);
     }
@@ -145,9 +145,9 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->select('MAX(u.name)')->from('User u')->leftJoin('u.Phonenumber p')->groupby('u.id');
+        $q->select('MAX(u.name), u.*, p.*')->from('User u')->leftJoin('u.Phonenumber p')->groupby('u.id');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX(e.name) AS e__0 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
+        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id, MAX(e.name) AS e__0 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
         $users = $q->execute();
 
         $this->assertEqual($users->count(), 4);
@@ -163,6 +163,19 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[0]->Phonenumber[0]->max, 3);
         $this->assertEqual($users[0]->Phonenumber[0]->count, 3);
     }
+    
+    public function testAggregateValueMappingSupportsMultipleValues2()
+    {
+        $q = new Doctrine_Query();
+
+        $q->select('COUNT(u.id) count, MAX(p.id) max')->from('User u')->innerJoin('u.Phonenumber p')->groupby('u.id');
+
+        $users = $q->execute();
+
+        $this->assertEqual($users[0]['Phonenumber'][0]['max'], 3);
+        $this->assertEqual($users[0]['count'], 3);
+    }
+    
     public function testAggregateValueMappingSupportsInnerJoins()
     {
         $q = new Doctrine_Query();
@@ -180,39 +193,37 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
     public function testAggregateFunctionParser()
     {
         $q = new Doctrine_Query();
-        $func = $q->parseAggregateFunction('SUM(i.price)');
-    
-        $this->assertEqual($func, 'SUM(i.price)');
+        $q->select('SUM(i.price)')->from('QueryTest_Item i');
+
+        $this->assertEqual($q->getSql(), 'SELECT SUM(q.price) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser2()
     {
         $q = new Doctrine_Query();
-        $func = $q->parseAggregateFunction('SUM(i.price * i.quantity)');
-    
-        $this->assertEqual($func, 'SUM(i.price * i.quantity)');
+        $q->select('SUM(i.price * i.quantity)')->from('QueryTest_Item i');
+
+        $this->assertEqual($q->getSql(), 'SELECT SUM(q.price * q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser3()
     {
         $q = new Doctrine_Query();
-        $func = $q->parseAggregateFunction('MOD(i.price, i.quantity)');
+        $q->select('MOD(i.price, i.quantity)')->from('QueryTest_Item i');
 
-        $this->assertEqual($func, 'MOD(i.price, i.quantity)');
+        $this->assertEqual($q->getSql(), 'SELECT MOD(q.price, q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParser4()
     {
         $q = new Doctrine_Query();
-        $func = $q->parseAggregateFunction('CONCAT(i.price, i.quantity)');
+        $q->select('CONCAT(i.price, i.quantity)')->from('QueryTest_Item i');
 
-        $this->assertEqual($func, 'CONCAT(i.price, i.quantity)');
+        $this->assertEqual($q->getSql(), 'SELECT CONCAT(q.price, q.quantity) AS q__0 FROM query_test__item q');
     }
     public function testAggregateFunctionParsingSupportsMultipleComponentReferences()
     {
         $q = new Doctrine_Query();
         $q->select('SUM(i.price * i.quantity)')
           ->from('QueryTest_Item i');
-          
+
         $this->assertEqual($q->getQuery(), "SELECT SUM(q.price * q.quantity) AS q__0 FROM query_test__item q");
     }
-
-
 }

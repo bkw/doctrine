@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -50,5 +50,24 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
 
         // Make sure the current version is 0
         $this->assertEqual($migration->getCurrentVersion(), 0);
+    }
+    
+    public function testMigrationClassNameInflected()
+    {
+        $tests = array('test-class-Name',
+                       'test_class_name',
+                       'TestClassName',
+                       'test:class:name',
+                       'test(class)name',
+                       'test*class*name',
+                       'test class name',
+                       'test&class&name');
+
+        $builder = new Doctrine_Migration_Builder();
+
+        foreach ($tests as $test) {
+            $code = $builder->generateMigrationClass($test);
+            $this->assertTrue(strpos($code, 'TestClassName'));
+        }
     }
 }

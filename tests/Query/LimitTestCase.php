@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -28,7 +28,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -205,13 +205,15 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->from('User.Group')->limit(5);
-
+        
         $users = $q->execute();
 
         $this->assertEqual($users->count(), 5);
         
         $user = $this->objTable->find(5);
+        
         $user->Group[1]->name = "Tough guys inc.";
+        
         $user->Group[2]->name = "Terminators";
         
         $user2 = $this->objTable->find(4);
@@ -224,20 +226,17 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($user->Group), 3);
 
         $this->connection->flush();
-
+        
         $this->assertEqual($user->Group[0]->name, "Action Actors");
         $this->assertEqual(count($user->Group), 3);
-
-
-
+        
         $q = new Doctrine_Query();
-        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);
-
-
+        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);       
+             
         $users = $q->execute(array($user->Group[1]->id));
-
+        
         $this->assertEqual($users->count(), 3);
-
+        
         $this->connection->clear();
         $q = new Doctrine_Query();
         $q->from('User')->where('User.Group.id = ?')->orderby('User.id DESC');
@@ -257,7 +256,7 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($users->count(), 3);
 
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id WHERE e2.name = ? AND (e.type = 0 AND (e2.type = 1 OR e2.type IS NULL)) ORDER BY e.id DESC LIMIT 5");
+        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE e2.name = ? AND (e.type = 0) ORDER BY e.id DESC LIMIT 5");
         $this->manager->setAttribute(Doctrine::ATTR_QUERY_LIMIT, Doctrine::LIMIT_RECORDS);
     }
 

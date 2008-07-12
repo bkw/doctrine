@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -49,6 +49,7 @@ class Doctrine_Parser_TestCase extends Doctrine_UnitTestCase
         $array = Doctrine_Parser::load('test.yml', 'yml');
         
         $this->assertEqual($array, array('test' => 'good job', 'test2' => true, array('testing' => false)));
+        unlink('test.yml');
     }
     
     public function testParserSupportsEmbeddingPhpSyntax()
@@ -73,6 +74,7 @@ w00t: not now
         $parser->doDump('test', 'test.yml');
         
         $this->assertEqual('test', file_get_contents('test.yml'));
+        unlink('test.yml');
     }
     
     public function testParserReturningLoadedData()

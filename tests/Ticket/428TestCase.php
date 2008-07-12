@@ -7,12 +7,14 @@
  * @author      Tamcy <7am.online@gmail.com>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
 class Doctrine_Ticket_428_TestCase extends Doctrine_UnitTestCase
 {
+    private $_albums;
+    
     public function prepareData()
     {
     }
@@ -30,10 +32,15 @@ class Doctrine_Ticket_428_TestCase extends Doctrine_UnitTestCase
         $albums[0]->Song[3]->title = 'Michelle';
         $albums->save();
         $this->assertEqual(count($albums[0]->Song), 4);
+        $this->_albums = $albums;
     }
 
     public function testAggregateValueMappingSupportsLeftJoins() 
     {
+        foreach ($this->_albums as $album) {
+            $album->clearRelated();
+        }
+        
         $q = new Doctrine_Query();
 
         $q->select('a.name, COUNT(s.id) count')->from('Album a')->leftJoin('a.Song s')->groupby('a.id');

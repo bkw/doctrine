@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,29 +26,23 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
 class Doctrine_Export_Sqlite_TestCase extends Doctrine_UnitTestCase 
 {
-    public function testCreateDatabaseDoesNotExecuteSql() 
+    public function testCreateDatabaseDoesNotExecuteSqlAndCreatesSqliteFile()
     {
-        try {
-            $this->export->createDatabase('db');
-            $this->fail();
-        } catch(Doctrine_Export_Exception $e) {
-            $this->pass();
-        }
+        $this->export->createDatabase('sqlite.db');
+      
+        $this->assertTrue(file_exists('sqlite.db'));
     }
-    public function testDropDatabaseDoesNotExecuteSql() 
+    public function testDropDatabaseDoesNotExecuteSqlAndDeletesSqliteFile()
     {
-        try {
-            $this->export->dropDatabase('db');
-            $this->fail();
-        } catch(Doctrine_Export_Exception $e) {
-            $this->pass();
-        }
+        $this->export->dropDatabase('sqlite.db');
+
+        $this->assertFalse(file_exists('sqlite.db'));
     }
     public function testCreateTableSupportsAutoincPks() 
     {

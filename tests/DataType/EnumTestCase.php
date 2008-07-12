@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -46,7 +46,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         $test->status = 'open';
         $this->assertEqual($test->status, 'open');
         $test->save();
-
+        
         try {
             $query = new Doctrine_Query($this->connection);
             $ret = $query->query("FROM EnumTest WHERE EnumTest.status = 'open'");
@@ -55,8 +55,59 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
           $this->fail();
         }
     }
+    
+    public function testUpdate()
+    {
+        $test = new EnumTest2();
+        $test->status = 'open';
+        $this->assertEqual($test->status, 'open');
+        $test->save();
 
+        $test_update = Doctrine::getTable('EnumTest2')->find(1);
+        $test_update->status = 'verified';
+        $this->assertEqual($test_update->status, 'verified');
+        $test_update->save();
+    }
 
+    public function testDqlUpdate()
+    {
+        $query = new Doctrine_Query($this->connection);
+        $query->update('EnumTest2 u')
+            ->set('u.status', '?', 'verified');
+
+        $this->assertEqual($query->getSql(), 'UPDATE enum_test2 SET status = ?');   
+
+        $query->execute();
+
+        try {
+            $query = new Doctrine_Query($this->connection);
+            $ret = $query->query("FROM EnumTest2 WHERE EnumTest2.status = 'verified'");
+            $this->assertEqual(count($ret), 1);
+        } catch (Exception $e) {
+            $this->fail();
+        }
+    }
+    
+    public function testParameterConversionInCount() 
+    {
+        try {
+            $query = new Doctrine_Query($this->connection);
+            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = 'open'")
+              ->count();
+            $this->assertEqual($ret, 1);
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
+        try {
+            $query = new Doctrine_Query($this->connection);
+            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = ?")
+              ->count(array('open'));
+            $this->assertEqual($ret, 1);
+        } catch (Exception $e) {
+            $this->fail();
+        }
+    }
 
     public function testInAndNotIn() 
     {
@@ -164,7 +215,8 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         }
     }
 
-    public function testEnumFetchArray() {
+    public function testEnumFetchArray()
+    {
         $q = new Doctrine_Query();
         $q->select('e.*')
           ->from('EnumTest e')
@@ -178,12 +230,11 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
 
     public function testLiteralEnumValueConversionSupportsJoins()
     {
-
         $q = new Doctrine_Query($this->connection);
         $q->addSelect('e.*')
           ->addSelect('e3.*')
           ->from('EnumTest e')
-          ->leftjoin('e.Enum3 e3')
+          ->leftJoin('e.Enum3 e3')
           ->where("e.status = 'verified'")
           ->execute();
 

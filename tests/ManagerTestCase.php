@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -51,22 +51,17 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
     }
     public function testClassifyTableize() {
         $name = "Forum_Category";
-        $this->assertEqual(Doctrine::tableize($name), "forum__category");
-        $this->assertEqual(Doctrine::classify(Doctrine::tableize($name)), $name);
+        $this->assertEqual(Doctrine_Inflector::tableize($name), "forum__category");
+        $this->assertEqual(Doctrine_Inflector::classify(Doctrine_Inflector::tableize($name)), $name);
         
         
     }
     public function testDsnParser()
     {
         $mysql = 'mysql://user:pass@localhost/dbname';
-        
-        // This is what is specified in the manul
-        // I think it should be this for parse_url() to work
-        // sqlite://full/unix/path/to/file.db
-        // It expects only // since it thinks it is parsing a url
-        // The problem after that is that the dns is not valid when being passed to PDO
-        $sqlite = 'sqlite:///full/unix/path/to/file.db';
-        $sqlitewin = 'sqlite://c:/full/windows/path/to/file.db';
+        $sqlite = 'sqlite:////full/unix/path/to/file.db';
+        $sqlitewin = 'sqlite:///c:/full/windows/path/to/file.db';
+        $sqlitewin2 = 'sqlite:///D:\full\windows\path\to\file.db';
         
         $manager = Doctrine_Manager::getInstance();
         
@@ -82,6 +77,7 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
                 "port" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "dbname");
             $this->assertEqual($expectedMysqlDsn, $res);
         } catch (Exception $e) {
@@ -91,14 +87,15 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         try {
             $expectedDsn = array(
                 "scheme" => "sqlite",
-                "host" => null,
-                "user" => null,
-                "pass" => null,
+                "host" => NULL,
+                "user" => NULL,
+                "pass" => NULL,
                 "path" => "/full/unix/path/to/file.db",
                 "dsn" => "sqlite:/full/unix/path/to/file.db",
                 "port" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "/full/unix/path/to/file.db");
               
             $res = $manager->parseDsn($sqlite);
@@ -110,20 +107,87 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         try {
              $expectedDsn = array(
                 "scheme" => "sqlite",
-                "host" => null,
+                "host" => NULL,
                 "path" => "c:/full/windows/path/to/file.db",
                 "dsn" => "sqlite:c:/full/windows/path/to/file.db",
                 "port" => NULL,
-                "user" => null,
-                "pass" => null,
+                "user" => NULL,
+                "pass" => NULL,
                 "query" => NULL, 
                 "fragment" => NULL,
+                "unix_socket" => NULL,
                 "database" => "c:/full/windows/path/to/file.db");
             $res = $manager->parseDsn($sqlitewin);
             $this->assertEqual($expectedDsn, $res);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
+
+        try {
+             $expectedDsn = array(
+                "scheme" => "sqlite",
+                "host" => NULL,
+                "path" => 'D:/full/windows/path/to/file.db',
+                "dsn" => 'sqlite:D:/full/windows/path/to/file.db',
+                "port" => NULL,
+                "user" => NULL,
+                "pass" => NULL,
+                "query" => NULL, 
+                "fragment" => NULL,
+                "unix_socket" => NULL,
+                "database" => 'D:/full/windows/path/to/file.db');
+            $res = $manager->parseDsn($sqlitewin2);
+            $this->assertEqual($expectedDsn, $res);
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+    }
+    
+    public function testCreateDatabases()
+    {
+        // We need to know if we're under Windows or *NIX
+        $OS = strtoupper(substr(PHP_OS, 0,3));
+
+        if ($OS == 'WIN') {
+            // Grab the Windows's directory
+            $WIN_DIR = str_replace('\\', '/', $_SERVER['WINDIR']);
+
+            $this->conn1_database = $WIN_DIR . "/Temp/doctrine1.db";
+            $this->conn2_database = $WIN_DIR . "/Temp/doctrine2.db";
+        } else {
+            $this->conn1_database = "/tmp/doctrine1.db";
+            $this->conn2_database = "/tmp/doctrine2.db";
+        }
+
+        $this->conn1 = Doctrine_Manager::connection('sqlite:///' . $this->conn1_database, 'doctrine1');
+        $this->conn2 = Doctrine_Manager::connection('sqlite:///' . $this->conn2_database, 'doctrine2');
+        
+        $result1 = $this->conn1->createDatabase();
+        $this->assertEqual($result1, 'Successfully created database for connection "doctrine1" at path "'.$this->conn1_database.'"');
+        
+        $result2 = $this->conn2->createDatabase();
+        $this->assertEqual($result2, 'Successfully created database for connection "doctrine2" at path "'.$this->conn2_database.'"');
+    }
+    
+    public function testDropDatabases()
+    {
+        $result1 = $this->conn1->dropDatabase();
+        $this->assertEqual($result1, 'Successfully dropped database for connection "doctrine1" at path "'.$this->conn1_database.'"');
+        
+        $result2 = $this->conn2->dropDatabase();
+        $this->assertEqual($result2, 'Successfully dropped database for connection "doctrine2" at path "'.$this->conn2_database.'"');
+    }
+    
+    public function testConnectionInformationDecoded()
+    {
+      $dsn = 'mysql://' . urlencode('test/t') . ':' . urlencode('p@ssword') . '@localhost/' . urlencode('db/name');
+
+      $conn = Doctrine_Manager::connection($dsn);
+      $options = $conn->getOptions();
+
+      $this->assertEqual($options['username'], 'test/t');
+      $this->assertEqual($options['password'], 'p@ssword');
+      $this->assertEqual($options['dsn'], 'mysql:host=localhost;dbname=db/name');
     }
     public function prepareData() { }
     public function prepareTables() { }

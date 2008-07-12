@@ -3,6 +3,7 @@
 class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
     public function prepareData() { }
     public function prepareTables() {
+        $this->tables = array('JC1', 'JC2', 'JC3', 'RTC1', 'RTC2', 'M2MTest', 'M2MTest2');
         parent::prepareTables();
     }
 
@@ -32,13 +33,6 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         
         try {
             $rel = $component->getTable()->getRelation('M2MTest2');
-            $this->pass();
-        } catch(Doctrine_Exception $e) {
-            $this->fail();
-        }
-        $this->assertEqual($rel->getForeign(), 'oid');
-        try {
-            $rel = $component->getTable()->getRelation('RTC4');
             $this->pass();
         } catch(Doctrine_Exception $e) {
             $this->fail();
@@ -124,11 +118,11 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $component->RTC1[1]->name = '2';
         $component->name = '2';
         
-        $count = $this->dbh->count();
+        $count = $this->connection->count();
 
         $component->save();
 
-        $this->assertEqual($this->dbh->count(), ($count + 5));
+        $this->assertEqual($this->connection->count(), ($count + 5));
         
         $this->assertEqual($component->RTC1->count(), 2);
         
@@ -141,11 +135,11 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $component->RTC2[0]->name = '1';
         $component->RTC2[1]->name = '2';
 
-        $count = $this->dbh->count();
+        $count = $this->connection->count();
 
         $component->save();
 
-        $this->assertEqual($this->dbh->count(), ($count + 4));
+        $this->assertEqual($this->connection->count(), ($count + 4));
 
         $this->assertEqual($component->RTC2->count(), 2);
 
@@ -162,11 +156,11 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $component->RTC2[1]->name = '2';
         $component->name = '2';
         
-        $count = $this->dbh->count();
+        $count = $this->connection->count();
 
         $component->save();
 
-        $this->assertEqual($this->dbh->count(), ($count + 5));
+        $this->assertEqual($this->connection->count(), ($count + 5));
         
         $this->assertEqual($component->RTC2->count(), 2);
         
@@ -179,11 +173,11 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
         $component->RTC1[0]->name = '1';
         $component->RTC1[1]->name = '2';
 
-        $count = $this->dbh->count();
+        $count = $this->connection->count();
 
         $component->save();
 
-        $this->assertEqual($this->dbh->count(), ($count + 4));
+        $this->assertEqual($this->connection->count(), ($count + 3));
         
         $this->assertEqual($component->RTC1->count(), 2);
         

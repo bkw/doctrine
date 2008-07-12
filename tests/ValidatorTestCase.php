@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -29,7 +29,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -43,6 +43,9 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'ValidatorTest_ClientModel';
         $this->tables[] = 'ValidatorTest_ClientToAddressModel';
         $this->tables[] = 'ValidatorTest_AddressModel';
+        $this->tables[] = 'BooleanTest';
+        $this->tables[] = 'Log_Entry';
+        $this->tables[] = 'Log_Status';
         parent::prepareTables();
     }
 
@@ -112,6 +115,19 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(Doctrine_Validator::isValidType($var, 'object'));
     }
 
+    /*public function testDecimalType()
+    {
+        $validDecimals = array('99.22', 99999.3);
+        foreach ($validDecimals as $value) {
+            $this->assertTrue(Doctrine_Validator::isValidType($value, 'decimal'));
+        }
+        
+        $invalidDecimals = array('decimal', '99999999', '99999999.3', '0.0002', 0.001);
+        foreach ($invalidDecimals as $value) {
+            $this->assertFalse(Doctrine_Validator::isValidType($value, 'decimal'));
+        }
+        
+    }*/
 
     public function testValidate2() 
     {
@@ -139,6 +155,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
 
     public function testValidate() 
     {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
         $user = $this->connection->getTable('User')->find(4);
 
         $set = array('password' => 'this is an example of too long password',
@@ -171,6 +188,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $stack = $email->errorStack();
 
         $this->assertTrue(in_array('unique', $stack['address']));
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 
     /**
@@ -365,7 +383,6 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $e) {
             $this->pass();
         }
-        $r->delete(); // clean up
         
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
@@ -382,6 +399,10 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $dve) {
             $s = $dve->getInvalidRecords();
             $this->assertEqual(1, count($dve->getInvalidRecords()));
+            $invalids = $dve->getInvalidRecords();
+            //var_dump($invalids[0]->getErrorStack());
+            //echo "<br/><br/>";
+            //var_dump($invalids[1]->getErrorStack());
             $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();
 
             $this->assertTrue(in_array('notnull', $stack['address1']));
@@ -396,5 +417,85 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
+    
+    public function testSaveInTransactionThrowsValidatorException()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        try {
+            $this->conn->beginTransaction();
+            $client = new ValidatorTest_ClientModel();
+            $client->short_name = 'test';
+            $client->ValidatorTest_AddressModel[0]->state = 'az';
+            $client->save();
+            $this->fail();
+            $this->conn->commit();
+        } catch (Doctrine_Validator_Exception $dve) {
+            $s = $dve->getInvalidRecords();
+            $this->assertEqual(1, count($dve->getInvalidRecords()));
+            $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();
 
+            $this->assertTrue(in_array('notnull', $stack['address1']));
+            $this->assertTrue(in_array('notblank', $stack['address1']));
+            $this->assertTrue(in_array('notnull', $stack['address2']));
+            $this->assertTrue(in_array('notnull', $stack['city']));
+            $this->assertTrue(in_array('notblank', $stack['city']));
+            $this->assertTrue(in_array('usstate', $stack['state']));
+            $this->assertTrue(in_array('notnull', $stack['zip']));
+            $this->assertTrue(in_array('notblank', $stack['zip']));
+        } 
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
+
+    public function testSetBooleanWithNumericZeroOrOne()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+
+        $test = new BooleanTest();
+        $test->is_working = '1';
+        $test->save();
+
+        $test = new BooleanTest();
+        $test->is_working = '0';
+        $test->save();
+
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
+
+    public function testNoValidationOnExpressions()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+
+        try {
+            $entry = new Log_Entry();
+            $entry->stamp = new Doctrine_Expression('NOW()');
+            $entry->save();
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
+    
+    public function testValidationIsTriggeredOnFlush()
+    {
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $this->conn->clear();
+
+        $r = new ValidatorTest_Person();
+        $r->identifier = '5678';
+        $r->save();
+
+        $r = new ValidatorTest_Person();
+        $r->identifier = 5678;
+        try {
+            $this->conn->flush();
+            $this->fail("No validator exception thrown on unique validation, triggered by flush().");
+        } catch (Doctrine_Validator_Exception $e) {
+            $this->pass();
+        }
+        
+        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+    }
 }
+

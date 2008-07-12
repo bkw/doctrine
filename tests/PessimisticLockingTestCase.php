@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,11 +26,12 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
+class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase
+{
     private $lockingManager;
 
     /**
@@ -38,7 +39,8 @@ class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
      *
      * Creates a locking manager and a test record to work with.
      */
-    public function testInitData() {
+    public function testInitData()
+    {
         $this->lockingManager = new Doctrine_Locking_Manager_Pessimistic($this->connection);
         
         // Create sample data to test on
@@ -47,13 +49,20 @@ class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
         $entry1->topic  = 'I love donuts!';
         $entry1->save();
     }
+    
+    public function prepareTables()
+    {
+        $this->tables = array('Forum_Entry', 'Entity', 'Phonenumber', 'Email', 'Groupuser');
+        parent::prepareTables();
+    }
 
     /**
      * Tests the basic locking mechanism
      * 
      * Currently tested: successful lock, failed lock, release lock 
      */
-    public function testLock() {
+    public function testLock()
+    {
         $entries = $this->connection->query("FROM Forum_Entry WHERE Forum_Entry.author = 'Bart Simpson'");
         
         // Test successful lock
@@ -73,7 +82,8 @@ class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
      * Tests the release mechanism of aged locks
      * This test implicitly tests getLock().
      */
-    public function testReleaseAgedLocks() {
+    public function testReleaseAgedLocks()
+    {
         $entries = $this->connection->query("FROM Forum_Entry WHERE Forum_Entry.author = 'Bart Simpson'");
         $this->lockingManager->getLock($entries[0], 'romanb');
         $released = $this->lockingManager->releaseAgedLocks(-1); // age -1 seconds => release all
@@ -103,10 +113,10 @@ class Doctrine_PessimisticLocking_TestCase extends Doctrine_UnitTestCase {
      *
      * @param Doctrine_Record $lockedRecord
      */
-    public function testGetLockOwner() {
+    public function testGetLockOwner()
+    {
         $entries = $this->connection->query("FROM Forum_Entry WHERE Forum_Entry.author = 'Bart Simpson'");
         $gotLock = $this->lockingManager->getLock($entries[0], 'romanb');
         $this->assertEqual('romanb', $this->lockingManager->getLockOwner($entries[0]));
     }
 }
-

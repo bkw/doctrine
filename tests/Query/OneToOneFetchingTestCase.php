@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -228,7 +228,8 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
         // temporarily remove the relation to fake a non-existant one
         $board = $this->connection->query("FROM QueryTest_Board b WHERE b.name = ?", array('Testboard'))->getFirst();
         $lastEntryId = $board->lastEntryId;
-        $board->lastEntryId = 0;
+        $board->lastEntryId = null;
+        $board->lastEntry = null;
         $board->save();
         
         $query = new Doctrine_Query($this->connection);
@@ -248,7 +249,6 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
 
             // get the board for inspection
             $tmpBoard = $categories[0]['boards'][0];
-            
             $this->assertTrue( ! isset($tmpBoard['lastEntry']));
 
         } catch (Doctrine_Exception $e) {

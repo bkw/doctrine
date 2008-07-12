@@ -64,7 +64,7 @@
 <td class="normal">&nbsp;*&nbsp;and&nbsp;is&nbsp;licensed&nbsp;under&nbsp;the&nbsp;LGPL.&nbsp;For&nbsp;more&nbsp;information,&nbsp;see
 </td></tr>
 <tr><td>19</td>
-<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.com&gt;.
+<td class="normal">&nbsp;*&nbsp;&lt;http://www.phpdoctrine.org&gt;.
 </td></tr>
 <tr><td>20</td>
 <td class="normal">&nbsp;*/
@@ -91,7 +91,7 @@
 <td class="normal">&nbsp;*&nbsp;@license&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.opensource.org/licenses/lgpl-license.php&nbsp;LGPL
 </td></tr>
 <tr><td>28</td>
-<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.com
+<td class="normal">&nbsp;*&nbsp;@link&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.phpdoctrine.org
 </td></tr>
 <tr><td>29</td>
 <td class="normal">&nbsp;*&nbsp;@since&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.0
@@ -490,249 +490,258 @@
 <td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$input&nbsp;=&nbsp;serialize($input);
 </td></tr>
 <tr><td>161</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'string':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'date':
 </td></tr>
 <tr><td>162</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'char':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'time':
 </td></tr>
 <tr><td>163</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'varchar':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'timestamp':
 </td></tr>
 <tr><td>164</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'text':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'string':
 </td></tr>
 <tr><td>165</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'gzip':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'char':
 </td></tr>
 <tr><td>166</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'blob':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'varchar':
 </td></tr>
 <tr><td>167</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'clob':
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'text':
 </td></tr>
 <tr><td>168</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;conn-&gt;connect();
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'gzip':
 </td></tr>
 <tr><td>169</td>
-<td class="normal">
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'blob':
 </td></tr>
 <tr><td>170</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$this-&gt;conn-&gt;getDbh()-&gt;quote($input);
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;'clob':
 </td></tr>
 <tr><td>171</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;conn-&gt;connect();
 </td></tr>
 <tr><td>172</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="normal">
 </td></tr>
 <tr><td>173</td>
-<td class="normal">
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$this-&gt;conn-&gt;getDbh()-&gt;quote($input);
 </td></tr>
 <tr><td>174</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>175</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Removes&nbsp;any&nbsp;formatting&nbsp;in&nbsp;an&nbsp;sequence&nbsp;name&nbsp;using&nbsp;the&nbsp;'seqname_format'&nbsp;option
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>176</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+<td class="normal">
 </td></tr>
 <tr><td>177</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$sqn&nbsp;string&nbsp;that&nbsp;containts&nbsp;name&nbsp;of&nbsp;a&nbsp;potential&nbsp;sequence
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
 </td></tr>
 <tr><td>178</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;name&nbsp;of&nbsp;the&nbsp;sequence&nbsp;with&nbsp;possible&nbsp;formatting&nbsp;removed
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Removes&nbsp;any&nbsp;formatting&nbsp;in&nbsp;an&nbsp;sequence&nbsp;name&nbsp;using&nbsp;the&nbsp;'seqname_format'&nbsp;option
 </td></tr>
 <tr><td>179</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 </td></tr>
 <tr><td>180</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;fixSequenceName($sqn)
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$sqn&nbsp;string&nbsp;that&nbsp;containts&nbsp;name&nbsp;of&nbsp;a&nbsp;potential&nbsp;sequence
 </td></tr>
 <tr><td>181</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;name&nbsp;of&nbsp;the&nbsp;sequence&nbsp;with&nbsp;possible&nbsp;formatting&nbsp;removed
 </td></tr>
 <tr><td>182</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$seqPattern&nbsp;=&nbsp;'/^'.preg_replace('/%s/',&nbsp;'([a-z0-9_]+)',&nbsp;&nbsp;$this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_SEQNAME_FORMAT)).'$/i';
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
 </td></tr>
 <tr><td>183</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$seqName&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;preg_replace($seqPattern,&nbsp;'\\1',&nbsp;$sqn);
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;fixSequenceName($sqn)
 </td></tr>
 <tr><td>184</td>
-<td class="normal">
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
 <tr><td>185</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;($seqName&nbsp;&amp;&amp;&nbsp;!&nbsp;strcasecmp($sqn,&nbsp;$this-&gt;getSequenceName($seqName)))&nbsp;{
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$seqPattern&nbsp;=&nbsp;'/^'.preg_replace('/%s/',&nbsp;'([a-z0-9_]+)',&nbsp;&nbsp;$this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_SEQNAME_FORMAT)).'$/i';
 </td></tr>
 <tr><td>186</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$seqName;
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$seqName&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;preg_replace($seqPattern,&nbsp;'\\1',&nbsp;$sqn);
 </td></tr>
 <tr><td>187</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="normal">
 </td></tr>
 <tr><td>188</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$sqn;
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;($seqName&nbsp;&amp;&amp;&nbsp;!&nbsp;strcasecmp($sqn,&nbsp;$this-&gt;getSequenceName($seqName)))&nbsp;{
 </td></tr>
 <tr><td>189</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$seqName;
 </td></tr>
 <tr><td>190</td>
-<td class="normal">
-</td></tr>
-<tr><td>191</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
-</td></tr>
-<tr><td>192</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Removes&nbsp;any&nbsp;formatting&nbsp;in&nbsp;an&nbsp;index&nbsp;name&nbsp;using&nbsp;the&nbsp;'idxname_format'&nbsp;option
-</td></tr>
-<tr><td>193</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
-</td></tr>
-<tr><td>194</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$idx&nbsp;string&nbsp;that&nbsp;containts&nbsp;name&nbsp;of&nbsp;anl&nbsp;index
-</td></tr>
-<tr><td>195</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;name&nbsp;of&nbsp;the&nbsp;index&nbsp;with&nbsp;possible&nbsp;formatting&nbsp;removed
-</td></tr>
-<tr><td>196</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
-</td></tr>
-<tr><td>197</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;fixIndexName($idx)
-</td></tr>
-<tr><td>198</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
-</td></tr>
-<tr><td>199</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$indexPattern&nbsp;&nbsp;&nbsp;=&nbsp;'/^'.preg_replace('/%s/',&nbsp;'([a-z0-9_]+)',&nbsp;$this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_IDXNAME_FORMAT)).'$/i';
-</td></tr>
-<tr><td>200</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$indexName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;preg_replace($indexPattern,&nbsp;'\\1',&nbsp;$idx);
-</td></tr>
-<tr><td>201</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;($indexName&nbsp;&amp;&amp;&nbsp;!&nbsp;strcasecmp($idx,&nbsp;$this-&gt;getIndexName($indexName)))&nbsp;{
-</td></tr>
-<tr><td>202</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$indexName;
-</td></tr>
-<tr><td>203</td>
 <td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
+<tr><td>191</td>
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$sqn;
+</td></tr>
+<tr><td>192</td>
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
+</td></tr>
+<tr><td>193</td>
+<td class="normal">
+</td></tr>
+<tr><td>194</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+</td></tr>
+<tr><td>195</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Removes&nbsp;any&nbsp;formatting&nbsp;in&nbsp;an&nbsp;index&nbsp;name&nbsp;using&nbsp;the&nbsp;'idxname_format'&nbsp;option
+</td></tr>
+<tr><td>196</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+</td></tr>
+<tr><td>197</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;$idx&nbsp;string&nbsp;that&nbsp;containts&nbsp;name&nbsp;of&nbsp;anl&nbsp;index
+</td></tr>
+<tr><td>198</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;name&nbsp;of&nbsp;the&nbsp;index&nbsp;with&nbsp;possible&nbsp;formatting&nbsp;removed
+</td></tr>
+<tr><td>199</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+</td></tr>
+<tr><td>200</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;fixIndexName($idx)
+</td></tr>
+<tr><td>201</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
+</td></tr>
+<tr><td>202</td>
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$indexPattern&nbsp;&nbsp;&nbsp;=&nbsp;'/^'.preg_replace('/%s/',&nbsp;'([a-z0-9_]+)',&nbsp;$this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_IDXNAME_FORMAT)).'$/i';
+</td></tr>
+<tr><td>203</td>
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$indexName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;preg_replace($indexPattern,&nbsp;'\\1',&nbsp;$idx);
+</td></tr>
 <tr><td>204</td>
-<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$idx;
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;($indexName&nbsp;&amp;&amp;&nbsp;!&nbsp;strcasecmp($idx,&nbsp;$this-&gt;getIndexName($indexName)))&nbsp;{
 </td></tr>
 <tr><td>205</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$indexName;
 </td></tr>
 <tr><td>206</td>
-<td class="normal">
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>207</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+<td class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$idx;
 </td></tr>
 <tr><td>208</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;sequence&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;sequence&nbsp;name
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>209</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+<td class="normal">
 </td></tr>
 <tr><td>210</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;sequence
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
 </td></tr>
 <tr><td>211</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;sequence&nbsp;name
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;sequence&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;sequence&nbsp;name
 </td></tr>
 <tr><td>212</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 </td></tr>
 <tr><td>213</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getSequenceName($sqn)
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;sequence
 </td></tr>
 <tr><td>214</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;sequence&nbsp;name
 </td></tr>
 <tr><td>215</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_SEQNAME_FORMAT),
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
 </td></tr>
 <tr><td>216</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace('/[^a-z0-9_\$.]/i',&nbsp;'_',&nbsp;$sqn));
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getSequenceName($sqn)
 </td></tr>
 <tr><td>217</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
 <tr><td>218</td>
-<td class="normal">
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_SEQNAME_FORMAT),
 </td></tr>
 <tr><td>219</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace('/[^a-z0-9_\$.]/i',&nbsp;'_',&nbsp;$sqn));
 </td></tr>
 <tr><td>220</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;index&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;index&nbsp;name
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
 <tr><td>221</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
-</td></tr>
-<tr><td>222</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;index
-</td></tr>
-<tr><td>223</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;index&nbsp;name
-</td></tr>
-<tr><td>224</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
-</td></tr>
-<tr><td>225</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getIndexName($idx)
-</td></tr>
-<tr><td>226</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
-</td></tr>
-<tr><td>227</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_IDXNAME_FORMAT),
-</td></tr>
-<tr><td>228</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace('/[^a-z0-9_\$]/i',&nbsp;'_',&nbsp;$idx));
-</td></tr>
-<tr><td>229</td>
-<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
-</td></tr>
-<tr><td>230</td>
 <td class="normal">
 </td></tr>
-<tr><td>231</td>
+<tr><td>222</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
 </td></tr>
-<tr><td>232</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;table&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;table&nbsp;name
+<tr><td>223</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;index&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;index&nbsp;name
 </td></tr>
-<tr><td>233</td>
+<tr><td>224</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 </td></tr>
-<tr><td>234</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;table
+<tr><td>225</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;index
 </td></tr>
-<tr><td>235</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;table&nbsp;name
+<tr><td>226</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;index&nbsp;name
 </td></tr>
-<tr><td>236</td>
+<tr><td>227</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
 </td></tr>
-<tr><td>237</td>
-<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getTableName($table)
+<tr><td>228</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getIndexName($idx)
 </td></tr>
-<tr><td>238</td>
+<tr><td>229</td>
 <td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
 </td></tr>
-<tr><td>239</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_TBLNAME_FORMAT),
+<tr><td>230</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_IDXNAME_FORMAT),
 </td></tr>
-<tr><td>240</td>
-<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace('/[^a-z0-9_\$]/i',&nbsp;'_',&nbsp;$table));
+<tr><td>231</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace('/[^a-z0-9_\$]/i',&nbsp;'_',&nbsp;$idx));
 </td></tr>
-<tr><td>241</td>
+<tr><td>232</td>
 <td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
 </td></tr>
+<tr><td>233</td>
+<td class="normal">
+</td></tr>
+<tr><td>234</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;/**
+</td></tr>
+<tr><td>235</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;adds&nbsp;table&nbsp;name&nbsp;formatting&nbsp;to&nbsp;a&nbsp;table&nbsp;name
+</td></tr>
+<tr><td>236</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+</td></tr>
+<tr><td>237</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;of&nbsp;the&nbsp;table
+</td></tr>
+<tr><td>238</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string&nbsp;&nbsp;&nbsp;formatted&nbsp;table&nbsp;name
+</td></tr>
+<tr><td>239</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+</td></tr>
+<tr><td>240</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;getTableName($table)
+</td></tr>
+<tr><td>241</td>
+<td class="normal">&nbsp;&nbsp;&nbsp;&nbsp;{
+</td></tr>
 <tr><td>242</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sprintf($this-&gt;conn-&gt;getAttribute(Doctrine::ATTR_TBLNAME_FORMAT),
+</td></tr>
+<tr><td>243</td>
+<td class="covered">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$table);
+</td></tr>
+<tr><td>244</td>
+<td class="orange">&nbsp;&nbsp;&nbsp;&nbsp;}
+</td></tr>
+<tr><td>245</td>
 <td class="normal">}
 </td></tr>
 </table></body></html>

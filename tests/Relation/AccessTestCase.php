@@ -1,6 +1,7 @@
 <?php
 class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
     public function prepareData() {
+        $this->conn->clear();
         $o1 = new File_Owner();
         $o1->name = "owner1";
         $o2 = new File_Owner();
@@ -70,7 +71,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
     }
 
     public function prepareTables() {
-        $this->tables += array("MyUser",
+        $this->tables = array("Data_File", "File_Owner","MyUser",
             "MyOneThing",
             "MyUserOneThing",
             "MyOtherThing",
@@ -106,12 +107,9 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual('owner1', $check2->get('name'));
 
         $this->assertTrue(isset($owner1->Data_File));
-        $this->assertFalse(isset($owner2->Data_File));
-        $this->assertEqual(1, $check->get('id'));
-        $this->assertEqual(1, $owner1->get('id'));
+        $this->assertFalse(isset($owner2->Data_File));;
+        $this->assertIdentical($check, $owner1);
         $this->assertEqual($owner1->get('id'), $check->get('id'));
-        $this->assertEqual(2, $owner2->get('id'));
-
     }
 
     public function testAccessOneToOneFromLocalSide() {
@@ -133,11 +131,8 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
 
         $this->assertTrue(isset($file1->File_Owner));
         $this->assertFalse(isset($file2->File_Owner));
-        $this->assertEqual(4, $check->get('id'));
-        $this->assertEqual(4, $file1->get('id'));
+        $this->assertIdentical($check, $file1);
         $this->assertEqual($file1->get('id'), $check->get('id'));
-        $this->assertEqual(1, $file2->get('id'));
-
     }
 
     public function testMultipleLeftJoinBranches() {
@@ -160,11 +155,11 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             $check2[$one->one_thing_id][$one->id] = $one;
         }
 
-        $query = "FROM MyUser,
-            MyUser.MyOneThing,
-            MyUser.MyOneThing.MyUserOneThing,
-            MyUser.MyOtherThing,
-            MyUser.MyOtherThing.MyUserOtherThing";
+        $query = "FROM MyUser a1,
+            a1.MyOneThing a2,
+            a2.MyUserOneThing a3,
+            a1.MyOtherThing a4,
+            a4.MyUserOtherThing a5";
         $users = $this->connection->query($query);
         foreach($users as $u) {
             $this->assertEqual($u->MyOtherThing->count(), 6, "incorrect count of MyOtherThing");
@@ -186,11 +181,11 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             }
         }
 
-        $query = "FROM MyUser,
-            MyUser.MyOtherThing,
-            MyUser.MyOtherThing.MyUserOtherThing,
-            MyUser.MyOneThing,
-            MyUser.MyOneThing.MyUserOneThing";
+        $query = "FROM MyUser a1,
+            a1.MyOtherThing a2,
+            a2.MyUserOtherThing a3,
+            a1.MyOneThing a4,
+            a4.MyUserOneThing a5";
         $users = $this->connection->query($query);
         foreach($users as $u) {
             $this->assertEqual($u->MyOneThing->count(), 6, "incorrect count of MyOneThing");

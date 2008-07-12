@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -29,7 +29,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -51,9 +51,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT MAX(u.id), MIN(u.name) FROM User u');
+        $q->parseQuery('SELECT u.id, MAX(u.id), MIN(u.name) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
+        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
 
         $q->execute();
     }
@@ -96,7 +96,16 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p')->limit(5);
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e"."id" = "p"."entity_id" WHERE ("e"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
+        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e2"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e2"."id" = "p2"."entity_id" WHERE ("e2"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
+    }
+    
+    public function testCountQuerySupportsIdentifierQuoting()
+    {
+        $q = new Doctrine_Query();
+
+        $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p');
+        
+        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(DISTINCT "e"."id") AS num_results FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."type" = 0 GROUP BY "e"."id"');
 
         $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }

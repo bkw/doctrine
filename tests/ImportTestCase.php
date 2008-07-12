@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.com>.
+ * <http://www.phpdoctrine.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.com
+ * @link        www.phpdoctrine.org
  * @since       1.0
  * @version     $Revision$
  */
@@ -43,10 +43,42 @@ class Doctrine_Import_TestCase extends Doctrine_UnitTestCase
 
         $this->dbh->exec('CREATE TABLE import_test_user (id INTEGER PRIMARY KEY, name TEXT)');
 
-        $this->conn = Doctrine_Manager::connection($this->dbh);
+        $this->conn = Doctrine_Manager::connection($this->dbh, 'tmp123');
 
-        $this->conn->import->import('Import/_files');
-        
+        $this->conn->import->importSchema('Import/_files', array('tmp123'));
+
         $this->assertTrue(file_exists('Import/_files/ImportTestUser.php'));
+        $this->assertTrue(file_exists('Import/_files/generated/BaseImportTestUser.php'));
+        Doctrine_Lib::removeDirectories('Import/_files');
+    }
+
+    public function testImportSingularizeOn()
+    {
+        $this->dbh = new PDO('sqlite::memory:');
+
+        $this->dbh->exec('CREATE TABLE imports_tests_users (id INTEGER PRIMARY KEY, name TEXT)');
+
+        $this->conn = Doctrine_Manager::connection($this->dbh, 'tmp1234');
+        $this->conn->setAttribute(Doctrine::ATTR_SINGULARIZE_IMPORT, true);
+        $this->conn->import->importSchema('Import/_files', array('tmp1234'));
+
+        $this->assertTrue(file_exists('Import/_files/ImportTestUser.php'));
+        $this->assertTrue(file_exists('Import/_files/generated/BaseImportTestUser.php'));
+        Doctrine_Lib::removeDirectories('Import/_files');
+    }
+
+    public function testImportSingularizeOff()
+    {
+        $this->dbh = new PDO('sqlite::memory:');
+
+        $this->dbh->exec('CREATE TABLE imports_tests_users (id INTEGER PRIMARY KEY, name TEXT)');
+
+        $this->conn = Doctrine_Manager::connection($this->dbh, 'tmp1235');
+        $this->conn->setAttribute(Doctrine::ATTR_SINGULARIZE_IMPORT, false);
+        $this->conn->import->importSchema('Import/_files', array('tmp1235'));
+
+        $this->assertTrue(file_exists('Import/_files/ImportsTestsUsers.php'));
+        $this->assertTrue(file_exists('Import/_files/generated/BaseImportsTestsUsers.php'));
+        Doctrine_Lib::removeDirectories('Import/_files');
     }
 }
