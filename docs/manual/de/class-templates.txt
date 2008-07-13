@@ -43,7 +43,7 @@ class TimestampTemplate extends Doctrine_Template
 }
 </code>
 
-Lets say we have a class called Blog that needs the timestamp functionality. All we need to do is to add loadTemplate() 
+Lets say we have a class called Blog that needs the timestamp functionality. All we need to do is to add actAs() 
 call in the class definition.
 
 <code type="php">
@@ -56,7 +56,7 @@ class Blog extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->loadTemplate('TimestampTemplate');
+        $this->actAs('TimestampTemplate');
     }
 }
 </code>
@@ -139,14 +139,14 @@ class User extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('UserTemplate');
+        $this->actAs('UserTemplate');
     }
 }
 class Email extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('EmailTemplate');
+        $this->actAs('EmailTemplate');
     }
 }
 </code>
@@ -190,7 +190,7 @@ class User extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->loadTemplate('AuthTemplate');
+        $this->actAs('AuthTemplate');
     }
 }
 class AuthTemplate extends Doctrine_Template

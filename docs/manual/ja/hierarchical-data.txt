@@ -55,7 +55,7 @@
     public function setTableDefinition() {
         ...
 
-        $this->loadTemplate('Doctrine_Template_NestedSet');       
+        $this->actAs('Doctrine_Template_NestedSet');       
 
        ...
     }

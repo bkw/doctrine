@@ -87,7 +87,7 @@ class Ticket_832_User extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('Ticket_832_UserTemplate');
+        $this->actAs('Ticket_832_UserTemplate');
     }
 }
 
@@ -95,6 +95,6 @@ class Ticket_832_Email extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('Ticket_832_EmailTemplate');
+        $this->actAs('Ticket_832_EmailTemplate');
     }
 }

@@ -3,6 +3,6 @@ class ConcreteEmail extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('EmailTemplate');
+        $this->actAs('EmailTemplate');
     }
 }

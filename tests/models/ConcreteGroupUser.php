@@ -3,6 +3,6 @@ class ConcreteGroupUser extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('GroupUserTemplate');
+        $this->actAs('GroupUserTemplate');
     }
 }

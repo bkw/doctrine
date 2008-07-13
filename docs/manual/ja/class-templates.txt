@@ -37,7 +37,7 @@ class TimestampTemplate extends Doctrine_Template
 }
 </code>
 
-タイムスタンプの機能を必要とするBlogと呼ばれるクラスを考えてみましょう。必要なことはloadTemplate()コールをクラス定義に追加することです。
+タイムスタンプの機能を必要とするBlogと呼ばれるクラスを考えてみましょう。必要なことはactAs()コールをクラス定義に追加することです。
 
 <code type="php">
 class Blog extends Doctrine_Record
@@ -49,7 +49,7 @@ class Blog extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->loadTemplate('TimestampTemplate');
+        $this->actAs('TimestampTemplate');
     }
 }
 </code>
@@ -124,14 +124,14 @@ class User extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('UserTemplate');
+        $this->actAs('UserTemplate');
     }
 }
 class Email extends Doctrine_Record
 {
     public function setUp()
     {
-        $this->loadTemplate('EmailTemplate');
+        $this->actAs('EmailTemplate');
     }
 }
 </code>
@@ -171,7 +171,7 @@ class User extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->loadTemplate('AuthTemplate');
+        $this->actAs('AuthTemplate');
     }
 }
 class AuthTemplate extends Doctrine_Template

@@ -36,7 +36,7 @@ more general alternative would look like this:
     {
         ...
 
-        $this->loadTemplate('Doctrine_Template_NestedSet');       
+        $this->actAs('Doctrine_Template_NestedSet');       
 
        ...
     }

@@ -39,15 +39,15 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         $query = new Doctrine_RawSql($this->connection);
         $query->parseQuery($sql);
         
-        $this->assertEqual($query->getQueryPart('from'), array('photos p'));
+        $this->assertEqual($query->getSqlQueryPart('from'), array('photos p'));
 
 
         $sql = 'SELECT {p.*} FROM (SELECT p.* FROM photos p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE t.tag_id = 65) p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE p.can_see = -1 AND t.tag_id = 62 LIMIT 200';
         $query->parseQuery($sql);
 
-        $this->assertEqual($query->getQueryPart('from'), array('(SELECT p.* FROM photos p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE t.tag_id = 65) p LEFT JOIN photos_tags t ON t.photo_id = p.id'));
-        $this->assertEqual($query->getQueryPart('where'), array('p.can_see = -1 AND t.tag_id = 62'));
-        $this->assertEqual($query->getQueryPart('limit'), array(200));
+        $this->assertEqual($query->getSqlQueryPart('from'), array('(SELECT p.* FROM photos p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE t.tag_id = 65) p LEFT JOIN photos_tags t ON t.photo_id = p.id'));
+        $this->assertEqual($query->getSqlQueryPart('where'), array('p.can_see = -1 AND t.tag_id = 62'));
+        $this->assertEqual($query->getSqlQueryPart('limit'), array(200));
     }
     public function testAsteriskOperator() 
     {

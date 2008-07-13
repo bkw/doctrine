@@ -7,7 +7,7 @@ class Blog extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->loadTemplate('Taggable');
+        $this->actAs('Taggable');
     }
 }
 class Taggable extends Doctrine_Template
