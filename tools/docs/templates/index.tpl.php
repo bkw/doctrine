@@ -16,6 +16,11 @@
 
 <div id="wrap">
 
+<ul>
+  <li><a href="index.php">Manual</a></li>
+  <li><a href="cookbook.php">Cookbook</a></li>
+</ul>
+
 <div id="content">
 
 <h1><?php echo $title; ?></h1>

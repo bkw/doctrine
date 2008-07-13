@@ -162,9 +162,11 @@ if ($revision > $cacheRev) {
 // Load table of contents from cache
 $toc = $cache->fetch('toc');
 
+$what = isset($what) ? $what:'manual';
+
 // If table of contents was not cached, parse it from documentation files
 if ( ! $toc instanceof Sensei_Doc_Toc) {
-    $toc = new Sensei_Doc_Toc(dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'manual' . DIRECTORY_SEPARATOR . 'en.txt');
+    $toc = new Sensei_Doc_Toc(dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . $what . DIRECTORY_SEPARATOR . 'en.txt');
     $cache->save($toc, 'toc');
 }
     
@@ -190,7 +192,7 @@ $rendererClass = 'Sensei_Doc_Renderer_' . $format;
 $renderer = new $rendererClass($toc);
 
 $renderer->setOptions(array(
-    'title'    => 'Doctrine Manual',
+    'title'    => 'Doctrine ' . ucwords($what),
     'author'   => 'Konsta Vesterinen',
     'version'  => 'Rev. ' . $revision,
     'subject'  => 'Object relational mapping',
