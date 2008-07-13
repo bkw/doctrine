@@ -96,14 +96,3 @@ class FileTable extends Doctrine_Table
 </code>
 
 This is where you can put your custom finder methods which can be used by calling Doctrine::getTable('User').
-
-+++ Singularizing Import
-
-By default Doctrine will attempt to ensure your models are singularized when they are imported from an existing 
-database. This feature may not be ideal for everyone so it can easily be turned off using an attribute.
-
-<code type="php">
-Doctrine_Manager::getInstance()->setAttribute('singularize_import', false);
-</code>
-
-Now, if you have a table named "files", the result will be a model named "Files" instead of "File".

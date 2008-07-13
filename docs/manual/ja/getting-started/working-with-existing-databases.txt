@@ -83,13 +83,3 @@ class FileTable extends Doctrine_Table
 </code>
 
 ここにカスタムメソッドを追加してDoctrine::getTable('User')を使って呼ぶことができます。
-
-+++ Singularizing Import
-
-デフォルトではDoctrineは既存のデータベースから読み込まれた各モデルの名前を単数型にしようとします。この機能を望まない方は以下の方法で簡単にoffにしてください
-
-<code type="php">
-Doctrine_Manager::getInstance()->setAttribute('singularize_import', false);
-</code>
-
-これで"files"というテーブル名からは"File.php"というモデルは無く、"Files.php"というモデルが生成されます。
