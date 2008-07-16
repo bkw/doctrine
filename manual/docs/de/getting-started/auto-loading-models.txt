@@ -1,28 +1,31 @@
-Doctrine offers two ways of loading models. We have conservative(lazy) loading, and aggressive loading. Conservative loading 
-will not require the PHP file initially, instead it will cache the path to the class name and this path is then used in the 
-Doctrine::autoload() we registered earlier with spl_autoload_register(array('Doctrine', 'autoload')).de Below are some examples 
-using the both types of model loading.
+Doctrine kann Models auf zwei verschiedene Arten laden. Diese werden als conservative (lazy) und aggressive loading bezeichnet.
+Conversative loading läd die PHP Dateien zunächst nicht direkt, sondern speichert den Pfad zur Klasse im Cache, damit dieser
+später von Doctrine::autoload() aufgerufen werden kann, welcher vorher mit spl_autoload_register(array('Doctrine', 'autoload'))
+registriert werden muss.
+
+Die beiden Methoden im Vergleich:
 
 +++ Conservative
 
-Conservative model loading is going to be the ideal model loading method for a production environment. This method will lazy 
-load all of the models instead of loading them all when model loading is executed.
+Conservative Loading eignet sich sehr gut für Produktivumgebungen. Die Models werden erst geladen, wenn sie benötigt werden.
+Voraussetzung dafür ist, dass jede Datei nur eine einzige Klasse enthält und nach dem Klassennamen benannt ist.
+So muss zum Beispiel die Klasse User in der Datei User.php liegen.
 
-Conservative model loading requires that each file contain only one class, and the file must be named after the class. For example, if you have a class named User, it must be contained in a file named User.php
-
-Here is an example of a basic Doctrine implementation using conservative model loading.
+Ein einfaches Beispiel für Conservative Loading:
 <code type="php">
-//require the base Doctrine class
-require_once('path-to-doctrine/lib/Doctrine.php');
+//Doctrine einbindne
+require_once('pfad-zu-doctrine/lib/Doctrine.php');
 
-//register the autoloader
+//Den Autoloader registrieren
 spl_autoload_register(array('Doctrine', 'autoload'));
 
 Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
-Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
+Doctrine::loadModels('/pfad/zu/den/models'); // Damit werden die Model-Dateien noch nicht per require() eingebunden.
 
-$user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+$user = new User(); // Dies ruft Doctrine::autoload() auf, um die Datei User.php einzubinden.
 </code>
+
+
 
 +++ Aggressive
 

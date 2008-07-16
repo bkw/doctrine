@@ -1,6 +1,6 @@
-There are currently four different methods to install Doctrine.
+Zur Zeit gibt es vier verschiedene Wege, Doctrine zu installieren.
 
-* SVN (subversion)
+* SVN (Subversion)
 * SVN externals
 * Pear
 * Zip-package
