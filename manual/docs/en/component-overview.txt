@@ -786,8 +786,12 @@ foreach($table->findByDql("name LIKE '%John%'") as $user) {
 
 ++++ Custom table classes
 
-Adding custom table classes is very easy. Only thing you need to do is name the classes as {{[componentName]Table}} 
-and make them inherit {{Doctrine_Table}}.
+Adding custom table classes is very easy. Just name the classes as {{[componentName]Table}} 
+and make them inherit {{Doctrine_Table}}. Make sure to set {{ATTR_AUTOLOAD_TABLE_CLASSES}} if you want them to autoload:
+
+<code type="php>
+Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+</code>
 
 <code type="php">
 
