@@ -1,16 +1,13 @@
-Lazy-connecting to database can save a lot of resources. There might be many pages where you don't need an actual 
-database connection, hence its always recommended to use lazy-connecting (that means Doctrine will only connect to 
-database when needed).
+Lazy-Connecting zur Datenbank kann viele Systemresourcen sparen. Oftmals wird auf vielen Seiten keine DB-Verbindung gebraucht. Deshalb sollten Sie immer Lazy-Connecting benutzen. So stellt Doctrine nur dann eine DB-Verbindung her, wenn diese auch wirklich benötigt wird.
 
-This feature can be very useful when using for example page caching, hence not actually needing a database connection 
-on every request. Remember connecting to database is an expensive operation.
+Diese Funktion kann z.B. dann sehr sinnvoll sein, wenn Sie komplette Seiten cachen, denn dann brauchen Sie die Datenbankverbindung nicht. Denken Sie immer daran, dass das Verbinden mit der Datenbank ein sehr resourcenintensiver Vorgang ist.
 
 <code type="php">
-// initalize a new Doctrine_Connection
+// neues Doctrine_Connection Objekt erzeugen
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test');
 // !! no actual database connection yet !!
 
-// connects database and performs a query
+// stellt die Verbindung zur Datenbank her und führt eine Anfrage aus
 $users = Doctrine_Query::create()
           ->from('User u')
           ->execute();

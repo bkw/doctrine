@@ -1,5 +1,5 @@
-Opening a new database connection in Doctrine is very easy. If you wish to use PDO (www.php.net/PDO) you can just 
-initalize a new PDO object:
+Eine neue Datenbankverbindung mit Doctrine herzustellen ist sehr einfach.
+Wenn Sie PDO (www.php.net/PDO) benutzen wollen, erzeugen Sie einfach ein neues PDO Objekt:
 
 <code type="php">
 $dsn = 'mysql:dbname=testdb;host=127.0.0.1';
@@ -14,10 +14,8 @@ try {
 }
 </code>
 
-Note: Directly passing a PDO instance to Doctrine_Manager::connection() will not allow Doctrine to be aware of the username 
-and password for the connection, since their is no way to retrieve it from an existing PDO instance. The username and password 
-is required in order for Doctrine to be able to create and drop databases. To get around this you can manually set the 
-username and password option directly on the $conn object.
+Anmerkung: Wenn Sie eine PDO Instanz direkt an Doctrine_Manager::connection() übergeben, kennt Doctrine den Usernamen/Passwort der Verbindung nicht, da sich diese Informationen nicht aus einer bestehenden PDO Instanz auslesen lassen. Username und Passwort werden von Doctrine aber benötigt, um Datenbanken zu erzeugen und zu löschen.
+Dieses Problem können Sie umgehen, indem sie dem $conn Objekt manuell Username und Passwort zuweisen.
 
 <code type="php">
 $conn->setOption('username', 'username');

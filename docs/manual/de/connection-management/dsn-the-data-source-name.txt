@@ -1,37 +1,30 @@
-In order to connect to a database through Doctrine, you have to create a valid DSN - data source name. 
+Um eine DB-Verbindung mit Doctrine herzustellen, benutzen Sie einen gültigen DSN  - data source name (Name der Datenquelle).
+Doctrine unterstützt sowohl PEAR/DB/MDB2 als auch PDO DSN. Wenn Sie mehr zu PDO DSN wissen möchten, lesen Sie [[php PDO->__construct()]].
+ 
+Ein DSN besteht aus folgenden Teilen
 
-Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style data source names. The following 
-section deals with PEAR like data source names. If you need more info about the PDO-style data source names see 
-[[php PDO->__construct()]].
+||~ DSN Teil   ||~ Beschreibung ||
+||  phptype    ||  von PHP benutzte DB (z.B. mysql , pgsql etc.) ||
+||  dbsyntax   ||  verwendete Datenbaksyntax im Bezug auf SQL Syntax etc. ||
+||  protocol   ||  Übertragunsprotokoll ( z.B. tcp, unix etc.) ||
+||  hostspec   ||  Hostrechner (z.B. localhost)(Hostname[:Port]) ||
+||  database   ||  Name der Dantenbank auf dem DBMS Server ||
+||  username   ||  Username für Login ||
+||  password   ||  Passwort für Login ||
+||  proto_opts ||  Kann zusammen mit protocol benutzt werden||
+||  option     ||  Zusätzliche Verbindungsoptionen angehängt im URL-Query String Format (Key/Value Paare getrennt mit &). Die folgende Tabelle zeigt eine unvollständige Auswahl an Optionen: ||
 
-The DSN consists in the following parts:
+**Optionsliste**
 
-||~ DSN part   ||~ Description ||
-||  phptype    ||  Database backend used in PHP (i.e. mysql , pgsql etc.) ||
-||  dbsyntax   ||  Database used with regards to SQL syntax etc. ||
-||  protocol   ||  Communication protocol to use ( i.e. tcp, unix etc.) ||
-||  hostspec   ||  Host specification (hostname[:port]) ||
-||  database   ||  Database to use on the DBMS server ||
-||  username   ||  User name for login ||
-||  password   ||  Password for login ||
-||  proto_opts ||  Maybe used with protocol ||
-||  option     ||  Additional connection options in URI query string format. Options are separated by ampersand 
-(&). The Following table shows a non complete list of options: ||
+||~ Name     ||~ Beschreibung ||
+||  charset  ||  Einige Backends unterstützen das Setzen des Client Zeichensatzes.||
+||  new_link ||  Einige RDBMS erzeugen keine neuen Verbindungen, wenn sie mehrfach mit dem gleichen Host verbinden. Diese Option versucht, immer eine neue Verbindung zu erzwingen. ||
 
-
-**List of options**
-
-||~ Name     ||~ Description ||
-||  charset  ||  Some backends support setting the client charset.||
-||  new_link ||  Some RDBMS do not create new connections when connecting to the same host multiple times. This option 
-will attempt to force a new connection. ||
-
-The DSN can either be provided as an associative array or as a string. The string format of the supplied DSN is in its 
-fullest form:
+Der DSN kann entweder als assoziatives Array oder als String übergeben werden. Die komplette Variante des String-Formats sieht so aus:
 
 <code>phptype(dbsyntax)://username:password@protocol+hostspec/database?option=value</code>
 
-Most variations are allowed:
+Die meisten Schreibweisen werden unterstützt, z.B.:
 
 <code>
 phptype://username:password@protocol+hostspec:110//usr/db_file.db
@@ -46,29 +39,28 @@ phptype(dbsyntax)
 phptype
 </code>
 
-The currently supported database backends are: 
+Zur Zeit werden folgende DB-Systeme unterstützt:
 
-||~ Driver name ||~ Supported databases ||
+||~ Treibername ||~ Unerstützte Datenbank ||
 ||  fbsql       ||  FrontBase ||
-||  ibase       ||  InterBase / Firebird (requires PHP 5) ||
-||  mssql       ||  Microsoft SQL Server (NOT for Sybase. Compile PHP --with-mssql) ||
+||  ibase       ||  InterBase / Firebird (benötigt PHP 5) ||
+||  mssql       ||  Microsoft SQL Server (NICHT für Sybase. Compile PHP --with-mssql) ||
 ||  mysql       ||  MySQL ||
-||  mysqli      ||  MySQL (supports new authentication protocol) (requires PHP 5) ||
+||  mysqli      ||  MySQL (unterstütztz neues Authentication Protokoll) (benötigt PHP 5) ||
 ||  oci8        ||  Oracle 7/8/9/10    ||
 ||  pgsql       ||  PostgreSQL  ||
 ||  querysim    ||  QuerySim   ||
 ||  sqlite      ||  SQLite 2 ||
 
-A second DSN format supported is
+Ein zweites unterstütztes DSN Format ist:
 
 <code>
 phptype(syntax)://user:pass@protocol(proto_opts)/database
 </code>
 
-If your database, option values, username or password contain characters used to delineate DSN parts, you can escape 
-them via URI hex encodings:  
+Wenn der Datenbankname, die Option Parameter, der Username oder das Passwort Zeichen enthalten, die zur Kennzeichnung von DSN Teilen reserviert sind, können Sie diese durch die entsprechenden URI Hexadezimal-Codes ersetzen:
 
-||~ Character ||~ Hex Code ||
+||~ Zeichen   ||~ Hex Code ||
 || :          ||  %3a      ||
 || /          ||  %2f      || 
 || @          ||  %40      || 
@@ -79,37 +71,37 @@ them via URI hex encodings:
 || =          ||  %3d      || 
 || &          ||  %26      || 
 
-Warning 
-Please note, that some features may be not supported by all database backends. 
+Warnung 
+Bitte beachten Sie, dass einige Features nicht von allen Datenbanksystemen unterstützt werden. 
  
 
-+++ Examples
++++ Beispiele
 
-**Example 1.** Connect to database through a socket
+**Bespiel 1.** Verbindung zur Datenbank mit einer Socket-Connection
 
 <code>
 mysql://user@unix(/path/to/socket)/pear
 </code>
 
-**Example 2.** Connect to database on a non standard port
+**Bespiel 2.** Verbindung zur Datenbank über einen Nicht-Standard-Port
 
 <code>
 pgsql://user:pass@tcp(localhost:5555)/pear
 </code>
 
-**Example 3.** Connect to SQLite on a Unix machine using options
+**Bespiel 3.** Verbindung mit SQLite auf einem Unix Server mit zusätzliche Parameters (options)
 
 <code>
 sqlite:////full/unix/path/to/file.db?mode=0666
 </code>
 
-**Example 4.** Connect to SQLite on a Windows machine using options
+**Bespiel 4.** Verbindung mit SQLite auf einem Windows Server mit zusätzliche Parameters (options)
 
 <code>
 sqlite:///c:/full/windows/path/to/file.db?mode=0666
 </code>
 
-**Example 5.** Connect to MySQLi using SSL
+**Bespiel 5.** Verbingung mit MySQLi über SSL
 
 <code>
 mysqli://user:pass@localhost/pear?key=client-key.pem&cert=client-cert.pem

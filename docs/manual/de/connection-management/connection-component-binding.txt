@@ -1,6 +1,4 @@
-Doctrine allows you to bind connections to components (= your ActiveRecord classes). This means everytime a component 
-issues a query or data is being fetched from the table the component is pointing at Doctrine will use the bound 
-connection.
+Mit Doctrine können Sie einzelnen Komponenten ihrer Anwendung (= ActiveRecord Klassen) unterschiedliche Verbindungen zuweisen (binding). Immer wenn eine Komponente Datenbankzugriffe durchführt, nutzt diese die ihr zugewiesene DB-Verbindung:
 
 <code type="php">
 $conn = $manager->openConnection('mysql://username:password@localhost/dbname', 'connection 1');
@@ -13,9 +11,9 @@ $manager->bindComponent('Group', 'connection 2');
 
 $q = Doctrine_Query::create();
 
-// Doctrine uses 'connection 1' for fetching here
+// Doctrine nutzt 'connection 1' zum Zugriff
 $users = $q->from('User u')->where('u.id IN (1,2,3)')->execute();
 
-// Doctrine uses 'connection 2' for fetching here
+// Doctrine nutzt 'connection 2' zum Zugriff
 $groups = $q->from('Group g')->where('g.id IN (1,2,3)')->execute();
 </code>
