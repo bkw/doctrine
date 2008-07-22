@@ -44,6 +44,7 @@ class Doctrine_Template_SoftDelete extends Doctrine_Template
                                 'options'       =>  array('default' => false,
                                                           'notnull' => true,
                                                           ),
+                                'reverse'       => false,
     );
 
     /**
