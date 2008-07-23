@@ -156,7 +156,7 @@ $pager_layout->setSeparatorTemplate($separatorTemplate);
 $pager_layout->getSeparatorTemplate();
 
 // Handy method to execute the query without need to retrieve the Pager instance
-$pager_layout->execute($params = array(), $hydrationMode = Doctrine::FETCH_RECORD);
+$pager_layout->execute($params = array(), $hydrationMode = null);
 </code>
 
 There are a couple of other methods that are available if you want to extend the {{Doctrine_Pager_Layout}} to create 

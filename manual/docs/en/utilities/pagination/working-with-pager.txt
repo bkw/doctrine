@@ -35,7 +35,7 @@ To run the query, the process is similar to the current existent {{Doctrine_Quer
 the way you usually do it. Here is the PHP complete syntax, including the syntax of optional parameters:
 
 <code type="php">
-$items = $pager->execute([$args = array() [, $fetchType = Doctrine::FETCH_RECORD]]);
+$items = $pager->execute([$args = array() [, $fetchType = null]]);
 
 foreach ($items as $item) {
 	// ...
