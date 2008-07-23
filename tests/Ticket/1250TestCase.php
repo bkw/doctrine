@@ -39,6 +39,9 @@ class Doctrine_Ticket_1250_TestCase extends Doctrine_UnitTestCase {
   {
      try {
         $r = new Doctrine_Ticket_1250_i18n();
+        // This is needed since all fields are internationalized.
+        // Reason for not fixing that is BC. Manual describes this behavior very well
+        $r->state('TDIRTY');
         $r->Translation['en']->title = 'Title in english';
         $r->Translation['en']->content = 'Content in english';
         $r->Translation['fr']->title = 'Titre en français';
