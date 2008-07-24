@@ -147,3 +147,20 @@ AliasTest:
     test_col:
       name: test_col as test_col_alias
       type: string(255)
+      
+# App-level cascade delete
+AppCascadeDeleteTest:
+  columns: 
+    id: 
+      primary: true
+      autoincrement: true
+      type: integer(4)
+    alias_id:
+      type: integer(4)
+
+  relations:
+    AliasTest:
+      type: one
+      local: alias_id
+      foreign: id
+      cascade: [delete]
