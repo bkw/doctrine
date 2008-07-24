@@ -234,13 +234,11 @@ class Doctrine_Data_Import extends Doctrine_Data
         $rows = array();
 
         foreach ($array as $className => $data) {
-            if ( ! empty($specifiedModels) && !in_array($className, $specifiedModels)) {
+            if ( ! empty($specifiedModels) && ! in_array($className, $specifiedModels)) {
                 continue;
             }
 
-            $templates = array_keys(Doctrine::getTable($className)->getTemplates());
-
-            if (in_array('Doctrine_Template_NestedSet', $templates)) {
+            if (Doctrine::getTable($className)->isTree()) {
                 $nestedSets[$className][] = $data;
                 $this->_buildNestedSetRows($className, $data);
             } else {
@@ -273,9 +271,7 @@ class Doctrine_Data_Import extends Doctrine_Data
 
             foreach ($tree as $model) {
                 foreach ($this->_importedObjects as $obj) {
-                    $templates = array_keys($obj->getTable()->getTemplates());
-                    
-                    if ($obj instanceof $model && ! in_array('Doctrine_Template_NestedSet', $templates)) {
+                    if ($obj instanceof $model && ! $obj->getTable()->isTree()) {
                         $obj->save();
                     }
                 }
