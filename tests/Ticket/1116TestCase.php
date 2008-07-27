@@ -14,6 +14,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 
 	public function testTicket()
 	{
+	    Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
 		$q = new Doctrine_Query();
 		$q->select('s.*')
 		  ->from('Ticket_1116_User s')
@@ -33,6 +34,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		//now also this works! (always works witch mock only fails with mysql)
 		$test = $q->fetchOne();
 		$this->assertFalse($test);
+		Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
 	}
 }
 

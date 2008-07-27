@@ -1,5 +1,4 @@
 <?php
-Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
 class SoftDeleteTest extends Doctrine_Record
 {
     public function setTableDefinition()

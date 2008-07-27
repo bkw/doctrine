@@ -42,6 +42,30 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
 
         parent::prepareTables();
     }
+    
+    public function testLimitWithNormalManyToMany() 
+    {
+        $coll = new Doctrine_Collection($this->connection->getTable("Photo"));
+        $tag = new Tag();
+        $tag->tag = "Some tag";
+        $coll[0]->Tag[0] = $tag;
+        $coll[0]->name = "photo 1";
+        $coll[1]->Tag[0] = $tag;
+        $coll[1]->name = "photo 2";
+        $coll[2]->Tag[0] = $tag;
+        $coll[2]->name = "photo 3";
+        $coll[3]->Tag[0]->tag = "Other tag";
+        $coll[3]->name = "photo 4";
+        $this->connection->flush();
+
+        $q = new Doctrine_Query();
+        $q->from('Photo')->where('Photo.Tag.id = ?')->orderby('Photo.id DESC')->limit(100);
+
+        $photos = $q->execute(array(1));
+        $this->assertEqual($photos->count(), 3);            
+        $this->assertEqual($q->getQuery(), 
+        "SELECT p.id AS p__id, p.name AS p__name FROM photo p LEFT JOIN phototag p2 ON p.id = p2.photo_id LEFT JOIN tag t ON t.id = p2.tag_id WHERE p.id IN (SELECT DISTINCT p3.id FROM photo p3 LEFT JOIN phototag p4 ON p3.id = p4.photo_id LEFT JOIN tag t2 ON t2.id = p4.tag_id WHERE t2.id = ? ORDER BY p3.id DESC LIMIT 100) AND t.id = ? ORDER BY p.id DESC");
+    }
 
     public function testLimitWithOneToOneLeftJoin()
     {
@@ -265,29 +289,6 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         $q->from('User u, u.Group g')->where('g.id > 1')->orderby('u.name DESC')->limit(10); 
 
-    }
-    public function testLimitWithNormalManyToMany() 
-    {
-        $coll = new Doctrine_Collection($this->connection->getTable("Photo"));
-        $tag = new Tag();
-        $tag->tag = "Some tag";
-        $coll[0]->Tag[0] = $tag;
-        $coll[0]->name = "photo 1";
-        $coll[1]->Tag[0] = $tag;
-        $coll[1]->name = "photo 2";
-        $coll[2]->Tag[0] = $tag;
-        $coll[2]->name = "photo 3";
-        $coll[3]->Tag[0]->tag = "Other tag";
-        $coll[3]->name = "photo 4";
-        $this->connection->flush();
-
-        $q = new Doctrine_Query();
-        $q->from('Photo')->where('Photo.Tag.id = ?')->orderby('Photo.id DESC')->limit(100);
-
-        $photos = $q->execute(array(1));
-        $this->assertEqual($photos->count(), 3);            
-        $this->assertEqual($q->getQuery(), 
-        "SELECT p.id AS p__id, p.name AS p__name FROM photo p LEFT JOIN phototag p2 ON p.id = p2.photo_id LEFT JOIN tag t ON t.id = p2.tag_id WHERE p.id IN (SELECT DISTINCT p3.id FROM photo p3 LEFT JOIN phototag p4 ON p3.id = p4.photo_id LEFT JOIN tag t2 ON t2.id = p4.tag_id WHERE t2.id = ? ORDER BY p3.id DESC LIMIT 100) AND t.id = ? ORDER BY p.id DESC");
     }
 
     public function testLimitNoticesOrderbyJoins()

@@ -41,6 +41,7 @@ class Doctrine_Ticket_1121_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
         $q = Doctrine_Query::create()
                 ->from('Ticket_1121_User u')
                 // UserProfile has SoftDelete behavior but because it is aliased as Profile, it tries to 
@@ -51,6 +52,7 @@ class Doctrine_Ticket_1121_TestCase extends Doctrine_UnitTestCase
         // The condition and params for UserProfile SoftDelete and are not added properly
         $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.username AS t__username, t.password AS t__password, t.profile_id AS t__profile_id, t.deleted AS t__deleted, t2.id AS t2__id, t2.name AS t2__name, t2.about AS t2__about, t2.deleted AS t2__deleted FROM ticket_1121__user t LEFT JOIN ticket_1121__profile t2 ON t.profile_id = t2.id WHERE t.deleted = ? AND t2.deleted = ?');
         $this->assertEqual(count($q->getParams()), 2);
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
 }
 

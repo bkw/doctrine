@@ -36,6 +36,7 @@ class Doctrine_Record_SerializeUnserialize_TestCase extends Doctrine_UnitTestCas
     public function prepareTables()
     {
         $this->tables[] = 'SerializeTest';
+        $this->tables[] = 'TestRecord';
 
         parent::prepareTables();
     }
