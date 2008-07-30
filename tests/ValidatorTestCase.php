@@ -37,6 +37,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareTables() 
     {
+        
         $this->tables[] = 'ValidatorTest';
         $this->tables[] = 'ValidatorTest_Person';
         $this->tables[] = 'ValidatorTest_FootballPlayer';
@@ -115,20 +116,6 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(Doctrine_Validator::isValidType($var, 'object'));
     }
 
-    /*public function testDecimalType()
-    {
-        $validDecimals = array('99.22', 99999.3);
-        foreach ($validDecimals as $value) {
-            $this->assertTrue(Doctrine_Validator::isValidType($value, 'decimal'));
-        }
-        
-        $invalidDecimals = array('decimal', '99999999', '99999999.3', '0.0002', 0.001);
-        foreach ($invalidDecimals as $value) {
-            $this->assertFalse(Doctrine_Validator::isValidType($value, 'decimal'));
-        }
-        
-    }*/
-
     public function testValidate2() 
     {
         $test = new ValidatorTest();
@@ -148,7 +135,6 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(in_array('range', $stack['myrange']));
         $this->assertTrue(in_array('regexp', $stack['myregexp']));
         $test->mystring = 'str';
-
 
         $test->save();
     }
@@ -430,6 +416,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
             $this->fail();
             $this->conn->commit();
         } catch (Doctrine_Validator_Exception $dve) {
+            $this->conn->rollback();
             $s = $dve->getInvalidRecords();
             $this->assertEqual(1, count($dve->getInvalidRecords()));
             $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();
@@ -494,7 +481,6 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $e) {
             $this->pass();
         }
-        
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 }
