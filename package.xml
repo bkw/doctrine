@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-06-23</date>
- <time>18:50:54</time>
+ <date>2008-08-05</date>
+ <time>10:44:57</time>
  <version>
-  <release>0.11.0</release>
-  <api>0.11.0</api>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -457,6 +457,7 @@ requiring needless code duplication.</description>
      <file name="Access.php" role="php" />
      <file name="Adapter.php" role="php" />
      <file name="AuditLog.php" role="php" />
+     <file name="Builder.php" role="php" />
      <file name="Cache.php" role="php" />
      <file name="Cli.php" role="php" />
      <file name="Collection.php" role="php" />
@@ -506,260 +507,6 @@ requiring needless code duplication.</description>
     </dir> <!-- /lib/Doctrine -->
     <file name="Doctrine.php" role="php" />
    </dir> <!-- /lib -->
-   <dir name="manual">
-    <dir name="docs">
-     <dir name="en">
-      <dir name="basic-schema-mapping">
-       <dir name="columns">
-        <file name="column-aliases.txt" role="php" />
-        <file name="column-naming.txt" role="php" />
-        <file name="data-types.txt" role="php" />
-        <file name="default-values.txt" role="php" />
-       </dir> <!-- /manual/docs/en/basic-schema-mapping/columns -->
-       <file name="columns.txt" role="php" />
-       <file name="constraints-and-validators.txt" role="php" />
-       <file name="indexes.txt" role="php" />
-       <file name="introduction.txt" role="php" />
-       <file name="record-identifiers.txt" role="php" />
-       <file name="table-and-class-naming.txt" role="php" />
-       <file name="table-options.txt" role="php" />
-      </dir> <!-- /manual/docs/en/basic-schema-mapping -->
-      <dir name="coding-standards">
-       <file name="coding-style.txt" role="php" />
-       <file name="naming-conventions.txt" role="php" />
-       <file name="overview.txt" role="php" />
-       <file name="php-file-formatting.txt" role="php" />
-       <file name="testing.txt" role="php" />
-      </dir> <!-- /manual/docs/en/coding-standards -->
-      <dir name="component-overview">
-       <file name="locking-manager.txt" role="php" />
-       <file name="profiler.txt" role="php" />
-       <file name="validators.txt" role="php" />
-       <file name="view.txt" role="php" />
-      </dir> <!-- /manual/docs/en/component-overview -->
-      <dir name="configuration">
-       <file name="introduction.txt" role="php" />
-       <file name="levels-of-configuration.txt" role="php" />
-       <file name="setting-attributes.txt" role="php" />
-      </dir> <!-- /manual/docs/en/configuration -->
-      <dir name="connection-management">
-       <file name="connection-component-binding.txt" role="php" />
-       <file name="dsn-the-data-source-name.txt" role="php" />
-       <file name="lazy-connecting-to-database.txt" role="php" />
-       <file name="managing-connections.txt" role="php" />
-       <file name="opening-a-new-connection.txt" role="php" />
-      </dir> <!-- /manual/docs/en/connection-management -->
-      <dir name="dql-doctrine-query-language">
-       <file name="bnf.txt" role="php" />
-       <file name="conditional-expressions.txt" role="php" />
-       <file name="delete-queries.txt" role="php" />
-       <file name="examples.txt" role="php" />
-       <file name="from-clause.txt" role="php" />
-       <file name="functional-expressions.txt" role="php" />
-       <file name="group-by-having-clauses.txt" role="php" />
-       <file name="indexby-keyword.txt" role="php" />
-       <file name="introduction.txt" role="php" />
-       <file name="join-syntax.txt" role="php" />
-       <file name="limit-and-offset-clauses.txt" role="php" />
-       <file name="order-by-clause.txt" role="php" />
-       <file name="select-queries.txt" role="php" />
-       <file name="subqueries.txt" role="php" />
-       <file name="update-queries.txt" role="php" />
-       <file name="where-clause.txt" role="php" />
-      </dir> <!-- /manual/docs/en/dql-doctrine-query-language -->
-      <dir name="getting-started">
-       <file name="auto-loading-models.txt" role="php" />
-       <file name="command-line-interface.txt" role="php" />
-       <file name="creating-tables.txt" role="php" />
-       <file name="generating-models.txt" role="php" />
-       <file name="installation.txt" role="php" />
-       <file name="my-first-project-tutorial.txt" role="php" />
-       <file name="starting-new-project.txt" role="php" />
-       <file name="working-with-existing-databases.txt" role="php" />
-      </dir> <!-- /manual/docs/en/getting-started -->
-      <dir name="hierarchical-data">
-       <file name="examples.txt" role="php" />
-       <file name="introduction.txt" role="php" />
-       <file name="nested-set.txt" role="php" />
-      </dir> <!-- /manual/docs/en/hierarchical-data -->
-      <dir name="improving-performance">
-       <file name="bundle-your-class-files.txt" role="php" />
-       <file name="compile.txt" role="php" />
-       <file name="fetch-only-what-you-need.txt" role="php" />
-       <file name="free-objects.txt" role="php" />
-       <file name="introduction.txt" role="php" />
-       <file name="other-tips.txt" role="php" />
-       <file name="use-a-bytecode-cache.txt" role="php" />
-      </dir> <!-- /manual/docs/en/improving-performance -->
-      <dir name="real-world-examples">
-       <file name="forum-application.txt" role="php" />
-       <file name="user-management-system.txt" role="php" />
-      </dir> <!-- /manual/docs/en/real-world-examples -->
-      <dir name="technology">
-       <file name="architecture.txt" role="php" />
-       <file name="design-patterns-used.txt" role="php" />
-       <file name="internal-optimizations.txt" role="php" />
-       <file name="speed.txt" role="php" />
-      </dir> <!-- /manual/docs/en/technology -->
-      <dir name="transactions">
-       <file name="introduction.txt" role="php" />
-       <file name="isolation-levels.txt" role="php" />
-       <file name="locking-strategies.txt" role="php" />
-       <file name="nesting.txt" role="php" />
-       <file name="savepoints.txt" role="php" />
-       <file name="unit-of-work.txt" role="php" />
-      </dir> <!-- /manual/docs/en/transactions -->
-      <dir name="utilities">
-       <dir name="pagination">
-        <file name="advanced-layouts-with-pager.txt" role="php" />
-        <file name="controlling-range-styles.txt" role="php" />
-        <file name="customizing-pager-layout.txt" role="php" />
-        <file name="introduction.txt" role="php" />
-        <file name="working-with-pager.txt" role="php" />
-       </dir> <!-- /manual/docs/en/utilities/pagination -->
-       <file name="command-line-interface.txt" role="php" />
-       <file name="facade.txt" role="php" />
-       <file name="pagination.txt" role="php" />
-       <file name="sandbox.txt" role="php" />
-      </dir> <!-- /manual/docs/en/utilities -->
-      <dir name="working-with-objects">
-       <dir name="component-overview">
-        <file name="collection.txt" role="php" />
-        <file name="connection.txt" role="php" />
-        <file name="manager.txt" role="php" />
-        <file name="record.txt" role="php" />
-        <file name="table.txt" role="php" />
-       </dir> <!-- /manual/docs/en/working-with-objects/component-overview -->
-       <file name="dealing-with-relations.txt" role="php" />
-      </dir> <!-- /manual/docs/en/working-with-objects -->
-      <file name="basic-schema-mapping.txt" role="php" />
-      <file name="caching.txt" role="php" />
-      <file name="class-templates.txt" role="php" />
-      <file name="coding-standards.txt" role="php" />
-      <file name="component-overview.txt" role="php" />
-      <file name="configuration.txt" role="php" />
-      <file name="connection-management.txt" role="php" />
-      <file name="data-fixtures.txt" role="php" />
-      <file name="database-abstraction.txt" role="php" />
-      <file name="dql-doctrine-query-language.txt" role="php" />
-      <file name="event-listeners.txt" role="php" />
-      <file name="exceptions-and-warnings.txt" role="php" />
-      <file name="file-parser.txt" role="php" />
-      <file name="getting-started.txt" role="php" />
-      <file name="hierarchical-data.txt" role="php" />
-      <file name="improving-performance.txt" role="php" />
-      <file name="mapping-relations.txt" role="php" />
-      <file name="migration.txt" role="php" />
-      <file name="native-sql.txt" role="php" />
-      <file name="object-relational-mapping.txt" role="php" />
-      <file name="plugins.txt" role="php" />
-      <file name="real-world-examples.txt" role="php" />
-      <file name="relations.txt" role="php" />
-      <file name="schema-files.txt" role="php" />
-      <file name="searching.txt" role="php" />
-      <file name="technology.txt" role="php" />
-      <file name="transactions.txt" role="php" />
-      <file name="utilities.txt" role="php" />
-      <file name="working-with-objects.txt" role="php" />
-     </dir> <!-- /manual/docs/en -->
-     <dir name="ja">
-      <dir name="getting-started">
-       <file name="creating-tables.txt" role="php" />
-       <file name="generting-models.txt" role="php" />
-       <file name="installation.txt" role="php" />
-       <file name="starting-new-project.txt" role="php" />
-       <file name="working-with-existing-databases.txt" role="php" />
-      </dir> <!-- /manual/docs/ja/getting-started -->
-      <file name="basic-schema-mapping.txt" role="php" />
-      <file name="caching.txt" role="php" />
-      <file name="class-templates.txt" role="php" />
-      <file name="coding-standards.txt" role="php" />
-      <file name="component-overview.txt" role="php" />
-      <file name="configuration.txt" role="php" />
-      <file name="connection-management.txt" role="php" />
-      <file name="data-fixtures.txt" role="php" />
-      <file name="database-abstraction.txt" role="php" />
-      <file name="dql-doctrine-query-language.txt" role="php" />
-      <file name="event-listeners.txt" role="php" />
-      <file name="exceptions-and-warnings.txt" role="php" />
-      <file name="facade.txt" role="php" />
-      <file name="file-parser.txt" role="php" />
-      <file name="getting-started.txt" role="php" />
-      <file name="hierarchical-data.txt" role="php" />
-      <file name="improving-performance.txt" role="php" />
-      <file name="mapping-relations.txt" role="php" />
-      <file name="migration.txt" role="php" />
-      <file name="native-sql.txt" role="php" />
-      <file name="object-relational-mapping.txt" role="php" />
-      <file name="plugins.txt" role="php" />
-      <file name="real-world-examples.txt" role="php" />
-      <file name="relations.txt" role="php" />
-      <file name="sandbox.txt" role="php" />
-      <file name="schema-files.txt" role="php" />
-      <file name="searching.txt" role="php" />
-      <file name="technology.txt" role="php" />
-      <file name="transactions.txt" role="php" />
-      <file name="working-with-objects.txt" role="php" />
-     </dir> <!-- /manual/docs/ja -->
-     <file name=".htaccess" role="php" />
-     <file name="en.txt" role="php" />
-     <file name="ja.txt" role="php" />
-    </dir> <!-- /manual/docs -->
-    <dir name="lib">
-     <dir name="Text">
-      <dir name="Wiki">
-       <dir name="Parse">
-        <dir name="Doc">
-         <file name="Code.php" role="php" />
-         <file name="Doclink.php" role="php" />
-         <file name="Prefilter.php" role="php" />
-         <file name="Table.php" role="php" />
-        </dir> <!-- /manual/lib/Text/Wiki/Parse/Doc -->
-       </dir> <!-- /manual/lib/Text/Wiki/Parse -->
-       <dir name="Render">
-        <dir name="Latex">
-         <file name="Code.php" role="php" />
-         <file name="Doclink.php" role="php" />
-         <file name="Heading.php" role="php" />
-         <file name="List.php" role="php" />
-         <file name="Phplookup.php" role="php" />
-         <file name="Table.php" role="php" />
-         <file name="Url.php" role="php" />
-        </dir> <!-- /manual/lib/Text/Wiki/Render/Latex -->
-        <dir name="Xhtml">
-         <file name="Blockquote.php" role="php" />
-         <file name="Code.php" role="php" />
-         <file name="Doclink.php" role="php" />
-        </dir> <!-- /manual/lib/Text/Wiki/Render/Xhtml -->
-        <file name="Latex.php" role="php" />
-       </dir> <!-- /manual/lib/Text/Wiki/Render -->
-       <file name="Doc.php" role="php" />
-      </dir> <!-- /manual/lib/Text/Wiki -->
-     </dir> <!-- /manual/lib/Text -->
-     <file name=".htaccess" role="php" />
-     <file name="highlight.php" role="php" />
-    </dir> <!-- /manual/lib -->
-    <dir name="scripts">
-     <file name="mootools.v1.11.js" role="php" />
-     <file name="toc.js" role="php" />
-     <file name="tree.js" role="php" />
-    </dir> <!-- /manual/scripts -->
-    <dir name="styles">
-     <file name="basic.css" role="php" />
-     <file name="iefix.css" role="php" />
-     <file name="print.css" role="php" />
-    </dir> <!-- /manual/styles -->
-    <dir name="templates">
-     <file name=".htaccess" role="php" />
-     <file name="index.tpl.php" role="php" />
-     <file name="latex.tpl.php" role="php" />
-     <file name="xhtml.tpl.php" role="php" />
-    </dir> <!-- /manual/templates -->
-    <dir name="tmp">
-     <file name=".htaccess" role="php" />
-    </dir> <!-- /manual/tmp -->
-    <file name="index.php" role="php" />
-   </dir> <!-- /manual -->
    <dir name="tests">
     <dir name="Cache">
      <dir name="Query">
@@ -1385,6 +1132,7 @@ requiring needless code duplication.</description>
      <file name="935TestCase.php" role="test" />
      <file name="941TestCase.php" role="test" />
      <file name="950TestCase.php" role="test" />
+     <file name="952TestCase.php" role="test" />
      <file name="963TestCase.php" role="test" />
      <file name="966TestCase.php" role="test" />
      <file name="969TestCase.php" role="test" />
@@ -1401,8 +1149,26 @@ requiring needless code duplication.</description>
      <file name="1116TestCase.php" role="test" />
      <file name="1118TestCase.php" role="test" />
      <file name="1121TestCase.php" role="test" />
+     <file name="1123TestCase.php" role="test" />
+     <file name="1124TestCase.php" role="test" />
+     <file name="1125TestCase.php" role="test" />
      <file name="1133TestCase.php" role="test" />
      <file name="1134TestCase.php" role="test" />
+     <file name="1160TestCase.php" role="test" />
+     <file name="1175TestCase.php" role="test" />
+     <file name="1192TestCase.php" role="test" />
+     <file name="1195TestCase.php" role="test" />
+     <file name="1205TestCase.php" role="test" />
+     <file name="1206TestCase.php" role="test" />
+     <file name="1211TestCase.php" role="test" />
+     <file name="1213TestCase.php" role="test" />
+     <file name="1215TestCase.php" role="test" />
+     <file name="1225TestCase.php" role="test" />
+     <file name="1228TestCase.php" role="test" />
+     <file name="1250TestCase.php" role="test" />
+     <file name="1251TestCase.php" role="test" />
+     <file name="1253TestCase.php" role="test" />
+     <file name="1296TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1766,7 +1532,6 @@ requiring needless code duplication.</description>
    <file name="CHANGELOG" role="doc" />
    <file name="COPYRIGHT" role="doc" />
    <file name="LICENSE" role="doc" />
-   <file name="README" role="doc" />
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -1786,6 +1551,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2008-08-05</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>0.11.0</release>
