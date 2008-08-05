@@ -1,3 +1,71 @@
+1.0.0-BETA1
+-----------
+     * [r4663] Creating 0.12 branch - Last pre 1.0 branch
+     * [r4664] Moving 0.12 to 1.0 branch
+     * [r4665] Added possibility to hook custom constructor implementation inside of *Table classes, through the method construct().
+     * [r4666] Added named query support, which already exists in 2.0. It is not a backport, only a custom implementation to minimize the discrepancies between 1.0 and 2.0. Documentation needed,
+	  but I already create a ticket to track for this change.
+     * [r4667] Reorganizing docs.
+     * [r4668] Moving to tools folder.
+     * [r4669] Updating changelog for 0.11.1
+     * [r4670] Copying.
+     * [r4671] Removing.
+     * [r4672] Moving standalone docs frontend to tools/docs
+     * [r4673] Manual reorganization.
+     * [r4674] Readding manual documentation.
+     * [r4675] Fixing paths.
+     * [r4676] Removing README. No content.
+     * [r4677] fixes #1198
+     * [r4678] fixes #1191
+     * [r4679] fixes #1188 - Removing generate accessors functionality
+     * [r4680] Removing unused functions.
+     * [r4681] fixes #1181 - removing loadTemplate() in favor of using actAs() always for loading behaviors, templates, etc.
+     * [r4682] fixes #1186 - removing all use of singularization and plurilization
+     * [r4683] fixes #939
+     * [r4684] fixes #1195
+     * [r4685] Updating docs frontend to show manual and cookbook
+     * [r4686] Fixed #1246 and fixed #1247. The issue is the same, patch applied! Thanks for report and for the patch.
+     * [r4687] Adding the first dutch translation.
+     * [r4688] adding test coverage for #1250
+     * [r4692] Adding coverage for #1125
+     * [r4693] fixes #1125
+     * [r4694] Adding coverage for 1253
+     * [r4695] Added German translation for the Connection Management chapter of the documentation
+     * [r4698] Adding new tutorial to cookbook for simple template usage.
+     * [r4700] fix so abstract classes are not instantiated.
+     * [r4704] Merged changeset r4696 into 1.0 branch
+     * [r4705] Merged changeset r4697 into 1.0 branch
+     * [r4706] Fixes #1268 and fixes #1260. Fixed test case of #1250. Updated documentation to support changes. Remove BC break of fetchTree and also Pager is now aware of Hydration mode defined in
+	  Query object.
+     * [r4707] Better solution to ticket #1268.
+     * [r4708] fixes #1262 and fixes #1272
+     * [r4709] Added coverage to ticket #1219. This ticket works for me. Small changes in import.
+     * [r4710] fixes #1234
+	  Ticket: 1234
+     * [r4711] Added coverage to ticket #1265. Unable to reproduce user assertion. Marking as works for me.
+     * [r4712] Initial entry of column aggregation recipe for cookbook.
+     * [r4713] copied for starting the docs translation to brazilian portuguese
+     * [r4714] Fixes #1195.
+     * [r4715] Fixes #1255. Thanks for the patch!
+     * [r4716] Fixed #1038. Fixed #1229. Fixed #1250. Fixed #1243. Sorry for the combined commit but the changes were too intertwined.
+     * [r4717] cleanup
+     * [r4719] Fixed #1264.
+     * [r4720] Fixed #1296. Addressed various transaction nesting issues.
+     * [r4721] Added testcase for 1296.
+     * [r4722] Fixed #1293.
+     * [r4724] subversion access test and slight translation fixes on lazy-connecting-to-database.txt
+     * [r4726] Fixes #1306
+     * [r4727] Fixes #1301. Thanks for the suggestion & patch.
+     * [r4728] Fixes #1300.
+     * [r4729] Fixes #1299. Thanks for the tip and patch!
+     * [r4730] Fixes #1298. Thanks for patch!
+     * [r4731] Missing files of patch for ticket #1298.
+     * [r4732] Fixes #1214. Thanks for the patch.
+     * [r4733] Fixes #1132. Thanks for the patch & tests!
+     * [r4734] Fixes #1279. Added PDO driver installation check topic in manual.
+     * [r4735] Fixes #1283. Moved getDql from Doctrine_Query to Doctrine_Query_Abstract.
+     * [r4736] Fixes #1314 in 1.0. Thanks for the patch!
+
 0.11.1
 ------
      * [r4553] Releasing 0.11.0
