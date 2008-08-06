@@ -32,7 +32,7 @@ class MyQuery extends Doctrine_Query
 
     public function preQuery()
     {
-        // If this is a select query then set connection to one of the salves
+        // If this is a select query then set connection to one of the slaves
         if ($this->getType() == Doctrine_Query::SELECT) {
             $this->_conn = Doctrine_Manager::getInstance()->getConnection('slave_' . rand(1, 4));
         // All other queries are writes so they need to go to the master
