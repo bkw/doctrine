@@ -1,6 +1,6 @@
-Eine Datenbankverbindung nur im Bedarfsfall aufzubauen (lazy connecting) kann viele Systemresourcen sparen. Oftmals wird auf vielen Seiten keine DB-Verbindung gebraucht. Deshalb sollten Sie immer Lazy-Connecting benutzen. So stellt Doctrine nur dann eine DB-Verbindung her, wenn diese auch wirklich benötigt wird.
+ï»¿Eine Datenbankverbindung nur im Bedarfsfall aufzubauen (lazy connecting) kann viele Systemresourcen sparen. Oftmals wird auf vielen Seiten keine DB-Verbindung gebraucht. Deshalb sollten Sie immer Lazy-Connecting benutzen. So stellt Doctrine nur dann eine DB-Verbindung her, wenn diese auch wirklich benÃ¶tigt wird.
 
-Dieses Feature kann zum Beispiel beim Cachen von Seiten sehr hilfreich sein, denn dort benötigt man nicht bei jedem Request eine Datenbankverbindung.
+Dieses Feature kann zum Beispiel beim Cachen von Seiten sehr hilfreich sein, denn dort benÃ¶tigt man nicht bei jedem Request eine Datenbankverbindung.
 Denken Sie immer daran, dass das Verbinden mit der Datenbank ein sehr resourcenintensiver Vorgang ist.
 
 <code type="php">
@@ -8,7 +8,7 @@ Denken Sie immer daran, dass das Verbinden mit der Datenbank ein sehr resourceni
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test');
 // !! noch keine Verbindung hergestellt !!
 
-// verbindet zur Datenbank und führt den Query aus
+// verbindet zur Datenbank und fÃ¼hrt die Query aus
 $users = Doctrine_Query::create()
           ->from('User u')
           ->execute();

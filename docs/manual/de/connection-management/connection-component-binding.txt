@@ -1,4 +1,4 @@
-Mit Doctrine können Sie einzelnen Komponenten ihrer Anwendung (= ActiveRecord Klassen) unterschiedliche Verbindungen zuweisen (binding). Immer wenn eine Komponente Datenbankzugriffe durchführt, nutzt diese die ihr zugewiesene DB-Verbindung:
+ï»¿Mit Doctrine kÃ¶nnen Sie einzelnen Komponenten ihrer Anwendung (= ActiveRecord Klassen) unterschiedliche Verbindungen zuweisen (binding). Immer wenn eine Komponente Datenbankzugriffe durchfÃ¼hrt, nutzt diese die ihr zugewiesene DB-Verbindung:
 
 <code type="php">
 $conn = $manager->openConnection('mysql://username:password@localhost/dbname', 'connection 1');

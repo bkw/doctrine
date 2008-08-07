@@ -1,20 +1,20 @@
-Von Beginn an wurde Doctrine so entworfen, dass es mit mehreren DB-Verbindungen arbeitet. Außer Sie geben die Verbindung explizit an, benutzt Doctrine immer die dezeit aktuelle Verbindung für Anfragen. 
-Das folgende Bespiel zeigt, wie man eine optionale DB-Verbindung als 2. Funktionsparameter {{openConnection()}} übergibt:
+ï»¿Von Beginn an wurde Doctrine so entworfen, dass es mit mehreren DB-Verbindungen arbeitet. AuÃŸer Sie geben die Verbindung explizit an, benutzt Doctrine immer die dezeit aktuelle Verbindung fÃ¼r Anfragen. 
+Das folgende Bespiel zeigt, wie man eine optionale DB-Verbindung als 2. Funktionsparameter {{openConnection()}} Ã¼bergibt:
 
 <code type="php">
 // Doctrine_Manager verwaltet alle Verbindungen
 
 $manager = Doctrine_Manager::getInstance();
 
-// erste Verbindung öffnen
+// erste Verbindung Ã¶ffnen
  
 $conn = $manager->openConnection('mysql://username:password@localhost/test', 'connection 1');
 </code>
 
-Zur Vereinfachung stellt {{Doctrine_Manager}} die statische Methode {{connection()}} bereit. Beim Aufruf mit Parametern öffnet sie eine neue Verbindung, ohne Parameter liefert sie die aktuelle Vebindung zurück.
+Zur Vereinfachung stellt {{Doctrine_Manager}} die statische Methode {{connection()}} bereit. Beim Aufruf mit Parametern Ã¶ffnet sie eine neue Verbindung, ohne Parameter liefert sie die aktuelle Vebindung zurÃ¼ck.
 
 <code type="php">
-// erste Verbindung öffnen
+// erste Verbindung Ã¶ffnen
  
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
 
@@ -23,18 +23,18 @@ $conn2 = Doctrine_Manager::connection();
 // $conn2 == $conn
 </code>
 
-Die aktuelle Verbindung ist immer die zuletzt geöffnete.
+Die aktuelle Verbindung ist immer die zuletzt geÃ¶ffnete.
 
 
 <code type="php">
-// zweite Verbindung öffnen
+// zweite Verbindung Ã¶ffnen
 
 $conn2 = $manager->openConnection('mysql://username2:password2@localhost/test2', 'connection 2');
 
 $manager->getCurrentConnection(); // $conn2
 </code>
 
-Ändern Sie die benutzte Verbindung durch Aufrufen von {{setCurrentConnection()}}.
+Ã„ndern Sie die benutzte Verbindung durch Aufrufen von {{setCurrentConnection()}}.
 <code type="php">
 $manager->setCurrentConnection('connection 1');
 
@@ -42,7 +42,7 @@ $manager->getCurrentConnection(); // $conn
 </code>
 
 
-Da {{Doctrine_Manager}} das {{IteratorAggregate}} Interface implementiert, können sie ganz einfach mit foreach über das Manager Objekt iterieren, um auf die geöffneten Verbindungen zuzugreifen:
+Da {{Doctrine_Manager}} das {{IteratorAggregate}} Interface implementiert, kÃ¶nnen sie ganz einfach mit foreach Ã¼ber das Manager Objekt iterieren, um auf die geÃ¶ffneten Verbindungen zuzugreifen:
 
 <code type="php">
 // iterating through connections
