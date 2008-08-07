@@ -31,7 +31,7 @@
  */
 class Doctrine_Ticket_1304_TestCase extends Doctrine_UnitTestCase {
   public function prepareTables() {
-    $this->tables[] = 'Doctrine_Ticket_1304_slug';
+    $this->tables[] = 'Doctrine_Ticket_1304_Slug';
     parent::prepareTables();
   }
   
@@ -39,7 +39,7 @@ class Doctrine_Ticket_1304_TestCase extends Doctrine_UnitTestCase {
   {
 	// run 1
      try {
-        $r = new Doctrine_Ticket_1304_slug();
+        $r = new Doctrine_Ticket_1304_Slug();
         $r->Translation['en']->title	= 'Title';
         $r->Translation['en']->content	= 'Content';
         $r->save();
@@ -50,7 +50,7 @@ class Doctrine_Ticket_1304_TestCase extends Doctrine_UnitTestCase {
 
 	// run 2
      try {
-        $r = new Doctrine_Ticket_1304_slug();
+        $r = new Doctrine_Ticket_1304_Slug();
         $r->Translation['en']->title	= 'Title';
         $r->Translation['en']->content	= 'Content';
         $r->save();
@@ -61,7 +61,7 @@ class Doctrine_Ticket_1304_TestCase extends Doctrine_UnitTestCase {
 
 	// run 3
      try {
-        $r = new Doctrine_Ticket_1304_slug();
+        $r = new Doctrine_Ticket_1304_Slug();
         $r->Translation['en']->title	= 'Title';
         $r->Translation['en']->content	= 'Content';
         $r->save();
@@ -72,11 +72,10 @@ class Doctrine_Ticket_1304_TestCase extends Doctrine_UnitTestCase {
   }
 }
 
-class Doctrine_Ticket_1304_slug extends Doctrine_Record
+class Doctrine_Ticket_1304_Slug extends Doctrine_Record
 {
   public function setTableDefinition()
   {
-    $this->setTableName('Doctrine_Ticket_1304_slug');
     $this->hasColumn('title', 'string', 255, array('type' => 'string', 'length' => '255'));
     $this->hasColumn('content', 'string', null, array('type' => 'string'));
   }
@@ -84,7 +83,7 @@ class Doctrine_Ticket_1304_slug extends Doctrine_Record
   public function setUp()
   {
     $i18n0 = new Doctrine_Template_I18n(array('fields' => array(0 => 'title', 1 => 'content')));
-    $sluggable1 = new Doctrine_Template_Sluggable(array('fields' => array(0 => 'title')));
+    $sluggable1 = new Doctrine_Template_Sluggable(array('fields' => array(0 => 'title'), 'indexName' => 'i18n_sluggable_test'));
     $i18n0->addChild($sluggable1);
     $this->actAs($i18n0);
   }
