@@ -54,7 +54,7 @@ User:
     password: changeme
     Phonenumber: 
       Phonenumber_1: 
-        phonenumber: 6155139185
+        phonenumber: 615-513-9185
 END;
         try {
             file_put_contents('test.yml', $yml);
@@ -70,7 +70,7 @@ END;
             
             $this->assertEqual($user->name, 'jwage');
             $this->assertEqual($user->Phonenumber->count(), 1);
-            $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
+            $this->assertEqual($user->Phonenumber[0]->phonenumber, '615-513-9185');
             
             $data = new Doctrine_Data();
             $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
@@ -134,9 +134,9 @@ User:
     Phonenumber: [Phonenumber_1, Phonenumber_2]
 Phonenumber:
   Phonenumber_1:
-    phonenumber: 6155139185
+    phonenumber: 615-513-9185
   Phonenumber_2:
-    phonenumber: 6153137679
+    phonenumber: 615-313-7679
 END;
         try {
             file_put_contents('test.yml', $yml);
@@ -152,8 +152,8 @@ END;
 
             $this->assertEqual($user->name, 'jwage2');
             $this->assertEqual($user->Phonenumber->count(), 2);
-            $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
-            $this->assertEqual($user->Phonenumber[1]->phonenumber, '6153137679');
+            $this->assertEqual($user->Phonenumber[0]->phonenumber, '615-513-9185');
+            $this->assertEqual($user->Phonenumber[1]->phonenumber, '615-313-7679');
 
             $this->pass();
         } catch (Exception $e) {
