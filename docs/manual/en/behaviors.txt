@@ -11,7 +11,6 @@ Doctrine_Template is a class templating system. Templates are basically ready-to
 classes can load. When a template is being loaded its setTableDefinition() and setUp() methods are being invoked and the 
 method calls inside them are being directed into the class in question.
 
-
 ++ Core Behaviors
 
 Doctrine comes bundled with some templates that offer out of the box functionality for your models. You can enable these 
@@ -901,3 +900,33 @@ WikiTest:
     title: string(255)
     content: string
 </code>
+
+++ Generating Files
+
+By default with behaviors the classes which are generated are evaluated at 
+run-time and no files containing the classes are ever written to disk. This can 
+be changed with a configuration option. Below is an example of how to configure
+the I18n behavior to generate the classes and write them to files instead of 
+evaluating them at run-time.
+
+<code type="php">
+class NewsArticle extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 255);
+        $this->hasColumn('body', 'string', 255);
+        $this->hasColumn('author', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields'          => array('title', 'body'),
+                                   'generateFiles'   => true,
+                                   'generatePath'    => '/path/to/generate'));
+    }
+}
+</code>
+
+Now the behavior will generate a file instead of generating the code and using 
+eval() to evaluate it at runtime.
