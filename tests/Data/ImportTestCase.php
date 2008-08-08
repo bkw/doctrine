@@ -308,7 +308,7 @@ END;
             $this->assertEqual($i[0]['lft'], 1);
             $this->assertEqual($i[0]['rgt'], 6);
             $this->assertEqual($i[0]['level'], 0);
-            $this->assertEqual($i[0]['root_id'], '1');
+            $this->assertEqual($i[0]['root_id'], $i[0]['id']);
 
             $this->assertEqual($i[1]['name'], 'Item 1.1');
             $this->assertEqual($i[1]['lft'], 2);
@@ -320,7 +320,7 @@ END;
             $this->assertEqual($i[3]['lft'], 1);
             $this->assertEqual($i[3]['rgt'], 12);
             $this->assertEqual($i[3]['level'], 0);
-            $this->assertEqual($i[3]['root_id'], '2');
+            $this->assertEqual($i[3]['root_id'], $i[3]['id']);
 
             $this->assertEqual($i[4]['name'], 'Item 2.1');
             $this->assertEqual($i[4]['lft'], 2);

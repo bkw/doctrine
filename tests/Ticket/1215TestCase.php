@@ -38,6 +38,11 @@ class Doctrine_Ticket_1215_TestCase extends Doctrine_UnitTestCase
         parent::prepareTables();
     }
     
+    /*
+    TEST NO LONGER VALID AS DOCTRINE-GENERATED ROOT IDS ARE NO LONGER SUPPORTED.
+    SEE Doctrine_Tree_NestedSet#createRoot(), Doctrine_Tree_NestedSet#getNextRootId() AND
+    Doctrine_Tree_NestedSet#getMaxRootId() FOR DETAILS.
+    
     public function prepareData()
     {
         $tree = Doctrine::getTable('Ticket_1215_TreeManyRoots')->getTree();
@@ -64,7 +69,7 @@ class Doctrine_Ticket_1215_TestCase extends Doctrine_UnitTestCase
 
         $tree = Doctrine::getTable('Ticket_1215_TreeManyRoots')->getTree();
         $this->assertEqual($tree->getMaxRootId(), 2);
-    }
+    }*/
 }
 
 class Ticket_1215_TreeManyRoots extends Doctrine_Record
