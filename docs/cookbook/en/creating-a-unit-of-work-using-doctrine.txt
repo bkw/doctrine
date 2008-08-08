@@ -282,4 +282,4 @@ class UnitOfWork
 }
 </code>
 
-Thanks for reading, feel free to check out <a href='http://jon.lebensold.ca'>my blog</a> or <a href='mailto:jon@lebensold.ca'>email me</a> if you have any questions.
+Thanks for reading, feel free to check out http://jon.lebensold.ca or mail me at jon@lebensold.ca if you have any questions.
