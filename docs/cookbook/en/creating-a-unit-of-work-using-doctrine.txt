@@ -233,8 +233,7 @@ class UnitOfWork
      */
     public function commitAll()
     {
-        $manager = Doctrine_Manager::getInstance();
-        $conn = array_pop($manager->getConnections());
+        $conn = Doctrine_Manager::connection();
 
         try {
             $conn->beginTransaction();
