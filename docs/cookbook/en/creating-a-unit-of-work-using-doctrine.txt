@@ -120,7 +120,7 @@ public function commitAll()
         $conn->rollback();
     }
 
-    $this->ClearAll();
+    $this->clearAll();
 }
 </code>
 
@@ -246,7 +246,7 @@ class UnitOfWork
             $conn->rollback();
         }
 
-        $this->ClearAll();
+        $this->clearAll();
     }
 
     protected function _performCreatesOrUpdates($conn)
