@@ -33,5 +33,45 @@
  */
 class Doctrine_Cache_Apc_TestCase extends Doctrine_UnitTestCase 
 {
-
+    public function prepareTables()
+    {
+        $this->tables = array('User');
+        parent::prepareTables();
+    }
+    
+    public function prepareData()
+    {
+        $user = new User();
+        $user->name = 'Hans';
+        $user->save();
+    }
+    
+    public function testApcAsResultCache()
+    {
+        if (!extension_loaded("apc")) {
+            return;
+        }
+        
+        // clear user cache to make sure we always get the same behavior:
+        // 1st iteration cache miss, subsequent iterations cache hit.
+        apc_clear_cache("user");
+        
+        $cacheDriver = new Doctrine_Cache_Apc();
+        $this->conn->setAttribute(Doctrine::ATTR_RESULT_CACHE, $cacheDriver);
+        
+        $queryCountBefore = $this->conn->count();
+        
+        for ($i = 0; $i < 10; $i++) {
+            $u = Doctrine_Query::create()
+                ->from('User u')
+                ->addWhere('u.name = ?', array('Hans'))
+                ->useResultCache()
+                ->execute();
+            $this->assertEqual(1, count($u));
+            $this->assertEqual("Hans", $u[0]->name);
+        }
+        
+        // Just 1 query should be run
+        $this->assertEqual($queryCountBefore + 1, $this->conn->count());
+    }
 }
