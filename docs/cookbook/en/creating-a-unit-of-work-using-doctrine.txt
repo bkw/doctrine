@@ -152,7 +152,7 @@ $lastProjects = $t->findByName('new project');
 $unitOfWork = new UnitOfWork();
 
 // prepare an UPDATE
-$lastProjects[0]->username = 'old project';
+$lastProjects[0]->name = 'old project';
 $unitOfWork->registerModelForCreateOrUpdate($lastProjects[0]);
 
 // prepare a CREATE
