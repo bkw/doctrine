@@ -105,7 +105,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
               ->count(array('open'));
             $this->assertEqual($ret, 1);
         } catch (Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
     }
 
@@ -238,6 +238,21 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
           ->where("e.status = 'verified'")
           ->execute();
 
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE e.status = 1");
+        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE e.status = 'verified'");
+    }
+
+    public function testInvalidValueErrors()
+    {
+        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_VALIDATE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        try {
+            $test = new EnumTest();
+            $test->status = 'opeerertn';
+            $test->save();
+            $this->fail();
+        } catch (Exception $e) {
+            $this->pass();
+        }
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, $orig);
     }
 }

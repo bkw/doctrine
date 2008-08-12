@@ -262,50 +262,6 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE e2.name = 'some group' AND (e.type = 0)");
     }
-    public function testEnumValuesWorkInPlaceholders()
-    {
-        $e = new EnumTest;
-        $e->status = 'verified';
-        $e->save();
-
-        $q = new Doctrine_Query();
-        
-        $q->select('e.*')->from('EnumTest e')->where('e.status = ?');
-
-        $q->getQuery();
-
-        $this->assertEqual(count($q->getEnumParams()), 1);
-
-        $q->execute(array('verified'));
-    }
-
-    public function testEnumValuesWorkWithMultiplePlaceholders()
-    {
-        $q = new Doctrine_Query();
-
-        $q->select('e.*')->from('EnumTest e')->where('e.id = ? AND e.status = ?');
-        
-        $q->getQuery();
-
-        $p = $q->getEnumParams();
-        $this->assertEqual(array_keys($p), array(0, 1));
-        $this->assertTrue(empty($p[0]));
-        $q->execute(array(1, 'verified'));
-    }
-
-    public function testEnumValuesWorkWithMultipleNamedPlaceholders()
-    {
-        $q = new Doctrine_Query();
-
-        $q->select('e.*')->from('EnumTest e')->where('e.id = :id AND e.status = :status');
-        
-        $q->getQuery();
-
-        $p = $q->getEnumParams();
-        $this->assertEqual(array_keys($p), array(':id', ':status'));
-        $this->assertTrue(empty($p[':id']));
-        $q->execute(array(1, 'verified'));
-    }
 
     public function testLiteralValueAsInOperatorOperandIsSupported()
     {
