@@ -76,11 +76,11 @@ class Doctrine_Ticket_923_TestCase extends Doctrine_UnitTestCase {
           ->limit(20)
           ->offset(0)
           ->execute();
+          
+          $this->assertEqual($result->count(), 3);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-
-        $this->assertEqual($result->count(), 3);
     }
 }
 
