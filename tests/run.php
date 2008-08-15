@@ -8,35 +8,15 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('max_execution_time', 900);
 ini_set('date.timezone', 'GMT+0');
 
-$DCTRN_DIR = (defined('DOCTRINE_DIR') ? DOCTRINE_DIR : dirname(__FILE__) . '/../lib/');
+if ( ! defined('DOCTRINE_DIR')) {
+    define('DOCTRINE_DIR', dirname(__FILE__) . '/../lib/');
+}
 
 require_once(dirname(__FILE__) . '/DoctrineTest.php');
-require_once($DCTRN_DIR .'Doctrine.php');
+require_once(DOCTRINE_DIR . 'Doctrine.php');
+
 spl_autoload_register(array('Doctrine', 'autoload'));
 spl_autoload_register(array('DoctrineTest','autoload'));
-
-/*require_once $DCTRN_DIR . 'Doctrine/Exception.php';
-
-require_once $DCTRN_DIR . 'Doctrine/Locator/Injectable.php';
-require_once $DCTRN_DIR . 'Doctrine/Access.php';
-require_once $DCTRN_DIR . 'Doctrine/Record/Abstract.php';
-require_once $DCTRN_DIR . 'Doctrine/Record.php';
-
-require_once $DCTRN_DIR . 'Doctrine/Configurable.php';
-require_once $DCTRN_DIR . 'Doctrine/Table.php';
-
-require_once $DCTRN_DIR . 'Doctrine/EventListener/Interface.php';
-require_once $DCTRN_DIR . 'Doctrine/EventListener.php';
-
-require_once $DCTRN_DIR . 'Doctrine/Template.php';
-
-require_once $DCTRN_DIR . 'Doctrine/Manager/Exception.php';
-require_once $DCTRN_DIR . 'Doctrine/Manager.php';
-require_once $DCTRN_DIR . 'Doctrine/Null.php';
-*/
-// Test case
-//require_once dirname(__FILE__) . '/Ticket/NjeroTestCase.php';
-
 
 $test = new DoctrineTest();
 
