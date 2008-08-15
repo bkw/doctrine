@@ -170,9 +170,11 @@ class DoctrineTest
     public function requireModels()
     {
         $models = new DirectoryIterator(dirname(__FILE__) . '/models/');
+
         foreach($models as $key => $file) {
             if ($file->isFile() && ! $file->isDot()) {
                 $e = explode('.', $file->getFileName());
+
                 if (end($e) === 'php') {
                     require_once $file->getPathname();
                 }
@@ -189,10 +191,12 @@ class DoctrineTest
     public function parseOptions($array) {
         $currentName='';
         $options=array();
+
         foreach($array as $name) {
             if (strpos($name,'-')===0) {
-                $name=str_replace('-','',$name);      
+                $name=str_replace('-','',$name);
                 $currentName=$name;
+
                 if ( ! isset($options[$currentName])) {
                     $options[$currentName]=array();         
                 }
@@ -202,6 +206,7 @@ class DoctrineTest
                 $options[$currentName]=$values;
             }
         }
+
         return $options;
     }
 
@@ -218,27 +223,19 @@ class DoctrineTest
             return false;
         }
 
-        $e      = explode('_', $class);
-        $count  = count($e);
-
+        $e = explode('_', $class);
+        $count = count($e);
         $prefix = array_shift($e);
 
         if ($prefix !== 'Doctrine') {
             return false;
         }
 
-        $dir    = array_shift($e);
-
-        $file   = $dir . '_' . substr(implode('_', $e), 0, -(strlen('_TestCase'))) . 'TestCase.php';
-
-        if ( $count > 3) {
-            $file   = str_replace('_', DIRECTORY_SEPARATOR, $file);
-        } else {
-            $file   = str_replace('_', '', $file);
-        }
+        $dir = array_shift($e);
+        $file = $dir . '_' . substr(implode('_', $e), 0, -(strlen('_TestCase'))) . 'TestCase.php';
+        $file = str_replace('_', (($count > 3) ? DIRECTORY_SEPARATOR : ''), $file);
 
         // create a test case file if it doesn't exist
-
         if ( ! file_exists($file)) {
             $contents = file_get_contents('template.tpl');
             $contents = sprintf($contents, $class, $class);
@@ -249,6 +246,7 @@ class DoctrineTest
 
             file_put_contents($file, $contents);
         }
+
         require_once($file);
 
         return true;

@@ -14,6 +14,7 @@
 class Doctrine_Ticket_Njero_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() { }
+    
     public function prepareTables()
     {
         $this->tables[] = 'CoverageCodeN';
@@ -21,7 +22,8 @@ class Doctrine_Ticket_Njero_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'LiabilityCodeN';
         $this->tables[] = 'PolicyN';
         $this->tables[] = 'RateN';
-        parent::prepareTables();    
+
+        parent::prepareTables();
     }
 
     public function testHasOneMultiLevelRelations()
