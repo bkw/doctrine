@@ -34,11 +34,11 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() 
     { }
-    
+
     public function prepareTables() 
     { }
 
-    public function testJoinConditionsAreSupportedForOneToManyLeftJoins()
+    /*public function testJoinConditionsAreSupportedForOneToManyLeftJoins()
     {
         $q = new Doctrine_Query();
         
@@ -81,5 +81,15 @@ class Doctrine_Query_JoinCondition_TestCase extends Doctrine_UnitTestCase
         $q->parseQuery("SELECT a.name, b.id FROM User a LEFT JOIN a.Phonenumber b ON a.name = b.phonenumber");
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.name = p.phonenumber WHERE (e.type = 0)");
+    }*/
+    
+    public function testJoinWithConditionAndNotInClause()
+    {
+        // Related to ticket #1329
+        $q = new Doctrine_Query();
+
+        $q->parseQuery("SELECT a.name, b.id FROM User a LEFT JOIN a.Phonenumber b WITH a.id NOT IN (1, 2, 3)");
+
+        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id AND e.id NOT IN (1, 2, 3) WHERE (e.type = 0)");
     }
 }
