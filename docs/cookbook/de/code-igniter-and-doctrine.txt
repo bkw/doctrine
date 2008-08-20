@@ -285,7 +285,7 @@ Add the following yaml to the file
 User:
   jwage:
     username: jwage
-    password: elite1baller
+    password: test
 </code>
 
 Now run the build-all-reload task to drop db, build models, recreate
