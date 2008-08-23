@@ -34,11 +34,13 @@ class Doctrine_Ticket_894_TestCase extends Doctrine_UnitTestCase {
 
     public function prepareTables() {
       $this->tables = array();
-      $this->tables[] = 'T894_Day';      
+      $this->tables[] = 'T894_Day';
       parent::prepareTables();
     }
-    
+
+
     public function prepareData() {}
+
 
     public function testTicket()
     {
@@ -52,12 +54,13 @@ class Doctrine_Ticket_894_TestCase extends Doctrine_UnitTestCase {
     }
 }
 
+
 class T894_Day extends Doctrine_Record
 {
-  public function setTableDefinition()
-  {
-    $this->setTableName('t894_days');
-    $this->hasColumn('id', 'integer', 3, array('autoincrement' => true, 'unsigned' => true, 'primary' => true, 'notnull' => true));
-    $this->hasColumn('number', 'integer');
-  }
+    public function setTableDefinition()
+    {
+        $this->setTableName('t894_days');
+        $this->hasColumn('id', 'integer', 3, array('autoincrement' => true, 'unsigned' => true, 'primary' => true, 'notnull' => true));
+        $this->hasColumn('number', 'integer');
+    }
 }

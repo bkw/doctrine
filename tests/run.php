@@ -46,11 +46,11 @@ $tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_642_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
+//$tickets->addTestCase(new Doctrine_Ticket_710_TestCase()); // Only uncomment if you want to check free() performance!
 $tickets->addTestCase(new Doctrine_Ticket_736_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_741_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_749_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_786_TestCase());
-//$tickets->addTestCase(new Doctrine_Ticket_710_TestCase()); // Only uncomment if you want to check free() performance!
 $tickets->addTestCase(new Doctrine_Ticket_832_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_838_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_867_TestCase());
@@ -72,6 +72,7 @@ $tickets->addTestCase(new Doctrine_Ticket_952_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_963_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_966_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_969_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_973_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_982_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_987_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1015_TestCase());
