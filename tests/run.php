@@ -12,10 +12,12 @@ if ( ! defined('DOCTRINE_DIR')) {
     define('DOCTRINE_DIR', dirname(__FILE__) . '/../lib/');
 }
 
-require_once(dirname(__FILE__) . '/DoctrineTest.php');
 require_once(DOCTRINE_DIR . 'Doctrine.php');
 
 spl_autoload_register(array('Doctrine', 'autoload'));
+
+require_once(dirname(__FILE__) . '/DoctrineTest.php');
+
 spl_autoload_register(array('DoctrineTest','autoload'));
 
 $test = new DoctrineTest();
@@ -42,40 +44,34 @@ $tickets->addTestCase(new Doctrine_Ticket_626C_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_626D_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_638_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_642_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_438_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_673_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_697_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_832_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_838_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_904_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_923_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_927_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_935_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_966_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_969_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_941_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_930_TestCase());
-
-// Only uncomment the following ticket if you want to check free() performance!
-//$tickets->addTestCase(new Doctrine_Ticket_710_TestCase());
-
 $tickets->addTestCase(new Doctrine_Ticket_736_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_741_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_749_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_786_TestCase());
+//$tickets->addTestCase(new Doctrine_Ticket_710_TestCase()); // Only uncomment if you want to check free() performance!
+$tickets->addTestCase(new Doctrine_Ticket_832_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_838_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_867_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_876_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_889_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_894_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_904_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_912_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_915_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_932_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_923_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_927_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_929_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_930_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_963_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_932_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_935_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_941_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_950_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_952_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_894_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_963_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_966_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_969_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_982_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_987_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1015_TestCase());
@@ -87,14 +83,14 @@ $tickets->addTestCase(new Doctrine_Ticket_1099_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1106_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1113_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1116_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1118_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1121_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1125_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_1134_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_1118_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1123_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1124_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1131_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1133_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1134_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1160_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1175_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1192_TestCase());

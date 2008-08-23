@@ -32,7 +32,7 @@
  */
 class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
 {
-    /**
+    
     public function testParseSelect()
     {
     	$q = new Doctrine_Query();
@@ -111,16 +111,16 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
     public function testEmptySelectPart()
     {
         $q = new Doctrine_Query();
-        
+
         try {
             $q->select(null);
-            
+
             $this->fail();
         } catch(Doctrine_Query_Exception $e) {
             $this->pass();
         }
     }
-            */
+
     public function testUnknownAggregateFunction() 
     {
         $q = new Doctrine_Query();
