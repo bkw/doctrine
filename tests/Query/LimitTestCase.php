@@ -135,7 +135,7 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
     public function testLimitWithOneToManyLeftJoinAndOrderBy() 
     {
         $q = new Doctrine_Query();
-        $q->select('User.name')->from('User')->where("User.Phonenumber.phonenumber LIKE '%123%'")->orderby('User.Email.address')->limit(5);
+        $q->select('User.name')->distinct()->from('User')->where("User.Phonenumber.phonenumber LIKE '%123%'")->orderby('User.Email.address')->limit(5);
         
 
         $users = $q->execute();
@@ -300,5 +300,18 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
           ->orderby('t.id DESC')->limit(10);
 
         $this->assertEqual($q->getSql(), "SELECT p.id AS p__id, p.name AS p__name, t.id AS t__id, t.tag AS t__tag FROM photo p LEFT JOIN phototag p2 ON p.id = p2.photo_id LEFT JOIN tag t ON t.id = p2.tag_id WHERE p.id IN (SELECT DISTINCT p3.id FROM photo p3 LEFT JOIN phototag p4 ON p3.id = p4.photo_id LEFT JOIN tag t2 ON t2.id = p4.tag_id ORDER BY t2.id DESC LIMIT 10) ORDER BY t.id DESC");
+    }
+    
+    public function testLimitSubqueryNotNeededIfSelectSingleFieldDistinct()
+    {
+        $q = new Doctrine_Query();
+        $q->select('u.id')->distinct()->from('User u LEFT JOIN u.Phonenumber p');
+        $q->where('u.name = ?');
+        $q->limit(5);
+
+        $users = $q->execute(array('zYne'));
+        $this->assertEqual(1, $users->count());
+        
+        $this->assertEqual($q->getSql(), "SELECT DISTINCT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.name = ? AND (e.type = 0) LIMIT 5");
     }
 }

@@ -226,4 +226,22 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q->free();
     }
     
+    public function testQueryCacheCanBeDisabledForSingleQuery()
+    {
+        $cache = new Doctrine_Cache_Array();
+        $q = new Doctrine_Query();
+        $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p')->where('u.name = ?', 'walhala')
+                ->useQueryCache(false);
+        
+        $coll = $q->execute();
+        
+        $this->assertEqual($cache->count(), 0);
+        $this->assertEqual(count($coll), 0);
+
+        $coll = $q->execute();
+
+        $this->assertEqual($cache->count(), 0);
+        $this->assertEqual(count($coll), 0);
+    }
+    
 }
