@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Ticket_969_TestCase
+ * Doctrine_Ticket_894_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>

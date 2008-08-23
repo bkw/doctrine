@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Ticket_973_TestCase
+ * Doctrine_Ticket_668_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,13 +30,12 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_973_TestCase extends Doctrine_UnitTestCase
-{
-    public function prepareTables() {
-        $this->tables = array();
-        $this->tables[] = 'T973_Day';
+class Doctrine_Ticket_668_TestCase extends Doctrine_UnitTestCase {
 
-        parent::prepareTables();
+    public function prepareTables() {
+      $this->tables = array();
+      $this->tables[] = 'T668_User';
+      parent::prepareTables();
     }
 
 
@@ -45,21 +44,21 @@ class Doctrine_Ticket_973_TestCase extends Doctrine_UnitTestCase
 
     public function testTicket()
     {
-       $query = Doctrine_Query::create()
-                ->from('T973_Day d')
-                ->where('d.id IN(46)');
-        $this->assertEqual(' FROM T973_Day d WHERE d.id IN(46)', $query->getDql());
-        $this->assertEqual($query->getSql(), 'SELECT t.id AS t__id, t.number AS t__number FROM t973_days t WHERE d.id IN(46)');
+        $query = Doctrine_Query::create()
+                ->from('T668_User u')
+                ->where("u.name LIKE '%foo OR bar%'");
+        $this->assertEqual(" FROM T668_User u WHERE u.name LIKE '%foo OR bar%'", $query->getDql());
+        $this->assertEqual($query->getSql(), "SELECT t.id AS t__id, t.name AS t__name FROM t668_user t WHERE (t.name LIKE '%foo OR bar%')");
     }
 }
 
 
-class T973_Day extends Doctrine_Record
+class T668_User extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->setTableName('t973_days');
+        $this->setTableName('t668_user');
         $this->hasColumn('id', 'integer', 3, array('autoincrement' => true, 'unsigned' => true, 'primary' => true, 'notnull' => true));
-        $this->hasColumn('number', 'integer');
+        $this->hasColumn('name', 'string', 100);
     }
 }
