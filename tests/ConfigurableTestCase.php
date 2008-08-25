@@ -113,7 +113,7 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, false);
     }
     public function testDefaultPortabilityAttributeValueIsAll() {
-        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), Doctrine::PORTABILITY_ALL);
+        $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), Doctrine::PORTABILITY_NONE);
     }
     public function testPortabilityAttributeAcceptsPortabilityConstants() {
         $this->manager->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_RTRIM | Doctrine::PORTABILITY_FIX_CASE);
