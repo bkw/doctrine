@@ -1,3 +1,64 @@
+1.0.0-RC1
+---------
+     * [r4737] Releasing 1.0.0-BETA2
+     * [r4738] adding Testcase for #1304
+     * [r4739] Initial entry of master and slave connections cookbook recipe.
+     * [r4740] Fixing typo.
+     * [r4741] converted german translation to UTF-8
+     * [r4742] fixes #1207
+     * [r4743] Fixed issue with test data
+     * [r4744] fixes #1112
+     * [r4745] Fixing unexpected exception due to duplicate index name.
+     * [r4746] fixes #1304
+     * [r4747] fixes #1248
+     * [r4748] Adding test coverage for #1257
+     * [r4749] Added coverage for #1244
+     * [r4750] fixes #1244
+     * [r4751] Added coverage for #1236
+     * [r4752] Added coverage for #1230
+     * [r4753] fixes #1223
+     * [r4754] Added coverage for #1289
+     * [r4755] fixes #1289
+     * [r4756] Changing inline level for dumping.
+     * [r4757] fixes #1324
+     * [r4758] fixes #1112. Package sfYaml now handles overflows with int values and consider them as string. Updated tests to add coverage to it.
+     * [r4759] Fixed #1126. Fixed #1165.
+     * [r4760] Initial entry of creating a unit of work using doctrine
+     * [r4761] Fixing mistakes.
+     * [r4762] Another fix.
+     * [r4763] Fixing email address and web address.
+     * [r4764] fixing typo.
+     * [r4766] Fixing a minor bug
+     * [r4767] Fixed APC cache driver. Dont know where the old Doctrine_Cache_Apc#save() code came from... if anyone knows please tell me. Added a testcase to test using apc as a result cache.
+	  Fixed #1196.
+     * [r4768] BC BREAK - Completely removing emulated enum conversions. Version 1.0 will store complete enum value in varchar(255) column by default.
+     * [r4769] Fixed #1311.
+     * [r4770] fixes #1305. When you try to assign a null value in a column that has notnull=true, it tries to assign the default value, preventing SQL error.
+	  Updated ticket #923. It had incorrect call place in code.
+     * [r4772] Fixed #1277. Added coverage for #1254.
+     * [r4773] Added needed changes to support backtrace generation of 5.3 win build.
+     * [r4774] Cleaning the mess I did with this file... =)
+     * [r4775] Fixed #1344.
+     * [r4777] fixed #1329. Added checking for 2 words operator (NOT IN for example) in JoinCondition.php
+     * [r4778] fixed #1280. Fixed Export that never deals with default=null in all DBMS. Also fixed $entity->Relation = null; situation that cleans the reference.
+	  Now we have unset and unlink that deletes related object and = null that only defines the default value when save() is called.
+     * [r4779] fixed #1266. Thanks for the information!
+	  Also I removed the comments I added previously in JoinConditionTestCase.php
+     * [r4780] Added coverage to ticket #1131. Unable to reproduce the issue.
+	  Fixed wrong variable name in Doctrine_Export*::getNotNullFieldDeclaration
+     * [r4782] Another fix for the APC cache driver.
+     * [r4783] .
+     * [r4786] fixes #1288. Added a fixed alias to findXXX methods. THe alias name is 'dctrn_find'.
+     * [r4787] fixes #1362. Thanks for the report and patch!
+     * [r4788] fixes #1352. Added comment support on integer fields on MySQL.
+     * [r4790] Fixed nestedset object comparison issue reported on the forums.
+     * [r4793] Relaxed the restriction on joined classes (pk of the left side of the join must be selected) for subqueries.
+     * [r4794] limit-subquery and query cache adjustments.
+     * [r4796] Small organization of tests and documantation fixes
+     * [r4797] Added coverage for #973 in 1.0 branch. Ticket was already addressed in another changeset
+     * [r4798] Missed to include ticket test file... =)
+     * [r4799] Added coverage for #668 in 1.0 branch. Ticket was already addressed in another changeset
+
 1.0.0-BETA1
 -----------
      * [r4663] Creating 0.12 branch - Last pre 1.0 branch

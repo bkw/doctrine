@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-08-05</date>
- <time>10:44:57</time>
+ <date>2008-08-25</date>
+ <time>16:06:00</time>
  <version>
   <release>1.0.0</release>
   <api>1.0.0</api>
@@ -254,12 +254,18 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
+      <dir name="sfYaml">
+       <file name="Dumper.php" role="php" />
+       <file name="Inline.php" role="php" />
+       <file name="Parser.php" role="php" />
+      </dir> <!-- /lib/Doctrine/Parser/sfYaml -->
       <dir name="Spyc">
        <file name="YamlNode.php" role="php" />
       </dir> <!-- /lib/Doctrine/Parser/Spyc -->
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
+      <file name="sfYaml.php" role="php" />
       <file name="Spyc.php" role="php" />
       <file name="Xml.php" role="php" />
       <file name="Yml.php" role="php" />
@@ -927,6 +933,7 @@ requiring needless code duplication.</description>
      <file name="MyUserOneThing.php" role="test" />
      <file name="MyUserOtherThing.php" role="test" />
      <file name="NestedSetTest_SingleRootNode.php" role="test" />
+     <file name="NestedSet_MultiRootNode.php" role="test" />
      <file name="NestReference.php" role="test" />
      <file name="NestTest.php" role="test" />
      <file name="NotNullTest.php" role="test" />
@@ -1005,6 +1012,7 @@ requiring needless code duplication.</description>
      <file name="002_mysql_change_column.php" role="test" />
     </dir> <!-- /tests/mysql_migration_classes -->
     <dir name="NestedSet">
+     <file name="MultiRootTestCase.php" role="test" />
      <file name="SingleRootTestCase.php" role="test" />
     </dir> <!-- /tests/NestedSet -->
     <dir name="Query">
@@ -1108,6 +1116,7 @@ requiring needless code duplication.</description>
      <file name="626DTestCase.php" role="test" />
      <file name="638TestCase.php" role="test" />
      <file name="642TestCase.php" role="test" />
+     <file name="668TestCase.php" role="test" />
      <file name="673TestCase.php" role="test" />
      <file name="697TestCase.php" role="test" />
      <file name="710TestCase.php" role="test" />
@@ -1136,6 +1145,7 @@ requiring needless code duplication.</description>
      <file name="963TestCase.php" role="test" />
      <file name="966TestCase.php" role="test" />
      <file name="969TestCase.php" role="test" />
+     <file name="973TestCase.php" role="test" />
      <file name="982TestCase.php" role="test" />
      <file name="987TestCase.php" role="test" />
      <file name="1015TestCase.php" role="test" />
@@ -1152,6 +1162,7 @@ requiring needless code duplication.</description>
      <file name="1123TestCase.php" role="test" />
      <file name="1124TestCase.php" role="test" />
      <file name="1125TestCase.php" role="test" />
+     <file name="1131TestCase.php" role="test" />
      <file name="1133TestCase.php" role="test" />
      <file name="1134TestCase.php" role="test" />
      <file name="1160TestCase.php" role="test" />
@@ -1165,10 +1176,21 @@ requiring needless code duplication.</description>
      <file name="1215TestCase.php" role="test" />
      <file name="1225TestCase.php" role="test" />
      <file name="1228TestCase.php" role="test" />
+     <file name="1230TestCase.php" role="test" />
+     <file name="1236TestCase.php" role="test" />
+     <file name="1244TestCase.php" role="test" />
      <file name="1250TestCase.php" role="test" />
      <file name="1251TestCase.php" role="test" />
      <file name="1253TestCase.php" role="test" />
+     <file name="1254TestCase.php" role="test" />
+     <file name="1257TestCase.php" role="test" />
+     <file name="1277TestCase.php" role="test" />
+     <file name="1280TestCase.php" role="test" />
+     <file name="1289TestCase.php" role="test" />
      <file name="1296TestCase.php" role="test" />
+     <file name="1304TestCase.php" role="test" />
+     <file name="1305TestCase.php" role="test" />
+     <file name="1372TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1560,7 +1582,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2008-08-05</date>
+   <date>2008-08-25</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
