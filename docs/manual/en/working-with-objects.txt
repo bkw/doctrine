@@ -1,8 +1,13 @@
 ++ Dealing with relations
+
 ++ Many-to-Many relations
+
+Note: Doctrine requires that Many-to-Many relationships be bi-directional. For example: both User must have many Group and Group must have many User. This is required by Doctrine in order for Many-to-Many relationships to fully work.
+
 +++ Creating a new link
-Lets say we have two classes User and Group which are linked trhough a GroupUser association class. When working with 
-transient (new) records the fastest way for adding a User and couple of Groups for it is:
+
+Lets say we have two classes User and Group which are linked through a GroupUser association class. When working with transient (new) records the fastest way for adding a User and couple of Groups for it is:
+
 <code type="php">
 $user = new User();
 $user->name = 'Some User';
@@ -11,8 +16,8 @@ $user->Group[1]->name = 'Some Other Group';
 $user->save();
 </code>
 
-However in real world scenarious you often already have existing groups, where you want to add a given user. The most 
-efficient way of doing this is:
+However in real world scenarios you often already have existing groups, where you want to add a given user. The most efficient way of doing this is:
+
 <code type="php">
 $gu = new GroupUser();
 $gu->user_id = $userId;
