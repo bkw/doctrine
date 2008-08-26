@@ -193,6 +193,35 @@ Doctrine_Query::create()
   ->execute();
 </code>
 
++++ Replacing records
+
+Replacing records is simple. If you instantiate a new object and save it and then late instantiate another new object with the same primary key or unique index value which already exists in the database, then it will replace/update that row in the database instead of inserting a new one. Below is an example.
+
+First, imagine a User model where username is a unique index.
+
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'changeme';
+$user->save();
+
+// Issues the following query
+// INSERT INTO user (username, password) VALUES (?,?) ('jwage', 'changeme')
+</code>
+
+Now lets create another new object and set the same username but a different password.
+
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'newpassword';
+$user->replace();
+
+// Issues the following query
+// REPLACE INTO user (id,username,password) VALUES (?,?,?)	(null, 'jwage', 'newpassword')
+// The record is replaced/updated instead of a new one being inserted
+</code>
+
 +++ Refreshing records
 
 Sometimes you may want to refresh your record with data from the database, use
