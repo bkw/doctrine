@@ -958,7 +958,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
             $user->replace();
             $this->pass();
         } catch (Exception $e) {
-            $this->fail('Doctrine_Record::save() does not work: ' . $e->getMessage());
+            $this->fail('Doctrine_Record::replace() does not work: ' . $e->getMessage());
         }
     }
 
