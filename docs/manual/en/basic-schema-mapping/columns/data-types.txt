@@ -384,8 +384,13 @@ Test:
 
 ++++ Enum
 
-Doctrine has a unified enum type. Enum typed columns automatically convert the string values into index numbers and vice 
-versa. The possible values for the column can be specified with Doctrine_Record::setEnumValues(columnName, array values).
+Doctrine has a unified enum type. Enum typed columns automatically convert the string values into index numbers and vice versa. The possible values for the column can be specified with Doctrine_Record::setEnumValues(columnName, array values) or can be specified on the column definition with hasColumn()
+
+Note: If you wish to use native enum types for your dbms if it supports it then you must set the following attribute:
+
+<code type="php">
+$conn->setAttribute('use_native_enum', true);
+</code>
 
 <code type="php">
 class Test extends Doctrine_Record
