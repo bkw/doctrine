@@ -344,7 +344,13 @@ class GroupUser extends Doctrine_Record
         $this->hasColumn('group_id', 'integer', null, array('primary' => true));
     }
 }
+</code>
 
+Notice how the relationship is bi-directional. Both User hasMany Group and Group hasMany User. This is required by Doctrine in order for Many2Many relationships to fully work.
+
+Now lets play around with the new models and create a user and assign it some groups.
+
+<code type="php">
 $user = new User();
 
 // add two groups
