@@ -62,6 +62,18 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $e->save();
     }
 
+    public function testSearchFromTableObject()
+    {
+        $results = Doctrine::getTable('SearchTest')->search('orm');
+        $this->assertEqual($results[0]['id'], 1);
+        $query = Doctrine_Query::create()
+            ->from('SearchTest s');
+        $query = Doctrine::getTable('SearchTest')->search('orm', $query);
+        $this->assertEqual($query->getSql(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE s.id IN(SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id)');
+        $results = $query->fetchArray();
+        $this->assertEqual($results[0]['id'], 1);
+    }
+
     public function testQuerying()
     {
         $q = new Doctrine_Query();
@@ -172,6 +184,6 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
     {
         $oQuery = new Doctrine_Search_Query("SearchTest");
         $oQuery->query("^test");
-        $this->assertEqual($oQuery->getSql(), "SELECT SUM(sub_relevance) AS relevance, id FROM  WHERE keyword = ? GROUP BY id ORDER BY relevance DESC");
+        $this->assertEqual($oQuery->getSql(), "SELECT SUM(sub_relevance) AS relevance, id FROM search_test WHERE keyword = ? GROUP BY id ORDER BY relevance DESC");
     }
 }
