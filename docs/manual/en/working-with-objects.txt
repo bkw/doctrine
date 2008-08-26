@@ -517,7 +517,7 @@ representation of the object and print that.
 print_r ($user->toArray()); // toArray(false) if you don't want to get the relations
 </code>
 
-+++ fromArray
++++ From Array
 
 If you have an array of values you want to use to fill a record or even a collection, the {{fromArray()}} method 
 simplifies this common task.
@@ -536,7 +536,7 @@ $user->fromArray($data);
 $user->Emails->count(); // --> 2
 </code>
 
-+++ synchronizeWithArray
++++ Synchronize With Array
 
 {{synchronizeWithArray()}} allows you to... well, synchronize a record with an array. So if have an array representation 
 of your model and modify a field, modify a relationship field or even delete or create a relationship, this changes will 
