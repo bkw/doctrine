@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-08-25</date>
- <time>16:06:00</time>
+ <date>2008-08-27</date>
+ <time>16:54:59</time>
  <version>
   <release>1.0.0</release>
   <api>1.0.0</api>
@@ -286,6 +286,7 @@ requiring needless code duplication.</description>
       <file name="Condition.php" role="php" />
       <file name="Exception.php" role="php" />
       <file name="Filter.php" role="php" />
+      <file name="Forupdate.php" role="php" />
       <file name="From.php" role="php" />
       <file name="Groupby.php" role="php" />
       <file name="Having.php" role="php" />
@@ -1095,6 +1096,7 @@ requiring needless code duplication.</description>
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Sequence -->
     <dir name="Table">
+     <file name="NamedQueryTestCase.php" role="test" />
      <file name="RemoveColumnTestCase.php" role="test" />
     </dir> <!-- /tests/Table -->
     <dir name="Ticket">
@@ -1153,6 +1155,7 @@ requiring needless code duplication.</description>
      <file name="1044TestCase.php" role="test" />
      <file name="1071TestCase.php" role="test" />
      <file name="1072TestCase.php" role="test" />
+     <file name="1077TestCase.php" role="test" />
      <file name="1099TestCase.php" role="test" />
      <file name="1106TestCase.php" role="test" />
      <file name="1113TestCase.php" role="test" />
@@ -1190,7 +1193,10 @@ requiring needless code duplication.</description>
      <file name="1296TestCase.php" role="test" />
      <file name="1304TestCase.php" role="test" />
      <file name="1305TestCase.php" role="test" />
+     <file name="1325TestCase.php" role="test" />
+     <file name="1365TestCase.php" role="test" />
      <file name="1372TestCase.php" role="test" />
+     <file name="1383TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1226,7 +1232,6 @@ requiring needless code duplication.</description>
     <file name="CtiColumnAggregationInheritanceTestCase.php" role="test" />
     <file name="CustomPrimaryKeyTestCase.php" role="test" />
     <file name="CustomResultSetOrderTestCase.php" role="test" />
-    <file name="CustomResultSetOrderTestCaseTestCase.php" role="test" />
     <file name="DataDictSqliteTestCase.php" role="test" />
     <file name="DataDictTestCase.php" role="test" />
     <file name="DbProfilerTestCase.php" role="test" />
@@ -1582,7 +1587,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2008-08-25</date>
+   <date>2008-08-27</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
