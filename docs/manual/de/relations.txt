@@ -896,6 +896,7 @@ Rejects the delete or update operation for the parent table. NO ACTION and RESTR
 or ON UPDATE clause.
 
 //SET DEFAULT// :
+Set the value to the columns default value. Note: MySQL INNODB does not support SET DEFAULT ON UPDATE or ON DELETE.
 
 In the following example we define two classes, User and Phonenumber with their relation being one-to-many. We also add 
 a foreign key constraint with onDelete cascade action. This means that everytime a users is being deleted its associated 
