@@ -175,6 +175,103 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             $this->pass();
         }
     }
+    
+    
+    public function testOrQuerySupport()
+    {
+        $q1 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where('u.name = ?')
+            ->orWhere('u.loginname = ?');
+            
+        $q2 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where('u.name = ? OR u.loginname = ?');
+
+        $this->assertEqual(
+            $q1->getSqlQuery(),
+            'SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id ' .
+            'WHERE e.name = ? OR e.loginname = ? AND (e.type = 0)'
+        );
+        
+        $items1 = $q1->execute(array('zYne', 'jwage'), Doctrine::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array('zYne', 'jwage'), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertEqual(count($items1), count($items2));
+        
+        $q1->free();
+        $q2->free();
+    }
+
+
+    public function testOrQuerySupport2()
+    {
+        $q1 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where('u.name = ?')
+            ->andWhere('u.loginname = ?')
+            ->orWhere('u.id = ?');
+            
+        $q2 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where('(u.name = ? AND u.loginname = ?) OR (u.id = ?)');
+
+        $this->assertEqual(
+            $q1->getSqlQuery(),
+            'SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id ' .
+            'WHERE e.name = ? AND e.loginname = ? OR e.id = ? AND (e.type = 0)'
+        );
+        
+        $items1 = $q1->execute(array('jon', 'jwage', 4), Doctrine::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array('jon', 'jwage', 4), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertEqual(count($items1), count($items2));
+
+        $q1->free();
+        $q2->free();
+    }
+    
+    
+    public function testOrQuerySupport3()
+    {
+        $q1 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where("u.name = 'jon'")
+            ->andWhere("u.loginname = 'jwage'")
+            ->orWhere("u.id = 4")
+            ->orWhere("u.id = 5")
+            ->andWhere("u.name LIKE 'Arnold%'");
+            
+        $q2 = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where("((u.name = 'jon' AND u.loginname = 'jwage') OR (u.id = 4 OR (u.id = 5 AND u.name LIKE 'Arnold%')))");
+
+        $this->assertEqual(
+            $q1->getSqlQuery(),
+            "SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id " .
+            "WHERE e.name = 'jon' AND e.loginname = 'jwage' OR e.id = 4 OR e.id = 5 AND e.name LIKE 'Arnold%' AND (e.type = 0)"
+        );
+        
+        $items1 = $q1->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array(), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertEqual(count($items1), count($items2));
+
+        $q1->free();
+        $q2->free();
+    }
 }
 
 class MyQuery extends Doctrine_Query
