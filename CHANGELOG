@@ -1,3 +1,59 @@
+1.0.0-RC2
+---------
+     * [r4799] Added coverage for #668 in 1.0 branch. Ticket was already addressed in another changeset
+     * [r4802] Committing failing test case for Ticket #1372 for branches/1.0
+     * [r4804] Ensure unique queries are generated when generating SQL for exporting schema to database. Fixes #1372
+     * [r4806] Updating for RC1
+     * [r4808] fixes #1369
+     * [r4809] fixes #1257
+     * [r4810] fixes #1364
+     * [r4811] Adding mssql identifier quotes
+     * [r4812] Turning portability off by default.
+     * [r4813] fixes #1376. Fixed in both 0.11 and 1.0 branches. Thanks for the patch!
+     * [r4814] fixes #1378 in 0.11 and 1.0 branches. Fixed array index dubeous access that generates warning sometimes. Thanks for the patch!
+     * [r4815] Fixed #1291. Patch applied.
+     * [r4816] fixes #1227
+     * [r4817] docs
+     * [r4818] fixing typo
+     * [r4819] fixing Doctrine_Record::replace()
+     * [r4820] fixes #1270
+     * [r4821] Small fixes
+     * [r4822] fixes #1287
+     * [r4823] Fixing Searchable behavior for 1.0
+     * [r4824] fixes #1221
+     * [r4825] Adding coverage for #1383
+     * [r4826] fixes #1383
+     * [r4827] fixes #1295
+     * [r4828] fixes #1377
+     * [r4829] Dropped Doctrine_Record_Abstract::ownsOne and Doctrine_Record_Abstract::ownsMany as scheduled.
+     * [r4830] Removed Doctrine_Relation::ONE_AGGREGATE, Doctrine_Relation::ONE_AGGREGATE in favor of a single one Doctrine_Relation::ONE.
+	  Removed Doctrine_Relation::MANY_AGGREGATE, Doctrine_Relation::MANY_AGGREGATE in favor of a single one Doctrine_Relation::MANY.
+	  Finished removal of ownsOne and ownsMany.
+     * [r4831] fixes #1363
+     * [r4832] fixes #1360
+     * [r4833] fixes #1356
+     * [r4834] fixes #1355 - You can now set an array of options to be passed to the Doctrine_Import_Builder for the builderOptions option key.
+     * [r4835] Added coverage to #1365. It's not possible to reproduce the issue.
+     * [r4836] fixes #1349
+     * [r4837] fixes #1346
+     * [r4838] fixes #1343
+     * [r4839] fixes #1340
+     * [r4840] fixes #1334
+     * [r4841] Adding coverage for #1325
+     * [r4842] fixes #1325
+     * [r4843] Adding alias support for sluggable column
+     * [r4844] fixes #1319 - Added relationship reverse engineering support for MSSQL
+     * [r4845] Completed Doctrine_Query_Registry support. Included named query support, backported from trunk. From now on you're able to define and run named queries from *Table classes.
+	  Documentation to be added.
+     * [r4846] Include documentation of Named Query support.
+     * [r4847] Dropped Doctrine_Record related FETCH_* constants, as scheduled for removal.
+     * [r4848] fixes #1331. Added andWhere, andWhereIn, andWhereNotIn, orWhere, orWhereIn, orWhereNotIn support to 1.0. Added some coverage to this support.
+     * [r4849] Added missing API documentation for andWhere and orWhere.
+     * [r4850] fixes #1389
+     * [r4851] fixes #4850
+     * [r4852] fixes #1077
+     * [r4853] fixes #1308
+
 1.0.0-RC1
 ---------
      * [r4737] Releasing 1.0.0-BETA2
