@@ -223,6 +223,7 @@ $core->addTestCase(new Doctrine_Manager_TestCase());
 $core->addTestCase(new Doctrine_Connection_TestCase());
 $core->addTestCase(new Doctrine_Table_TestCase());
 $core->addTestCase(new Doctrine_Table_RemoveColumn_TestCase());
+$core->addTestCase(new Doctrine_Table_NamedQuery_TestCase());
 $core->addTestCase(new Doctrine_UnitOfWork_TestCase());
 $core->addTestCase(new Doctrine_Collection_TestCase());
 $core->addTestCase(new Doctrine_Collection_Snapshot_TestCase());
