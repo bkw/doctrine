@@ -141,7 +141,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
 
         $q->parseQuery('SELECT u.id, u.name, COUNT(p.id) FROM User u LEFT JOIN u.Phonenumber p GROUP BY u.id');
 
-        $users = $q->execute(array(), Doctrine::FETCH_ARRAY);
+        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
 
         $this->assertEqual($users[0]['Phonenumber'][0]['COUNT'], 1);
 

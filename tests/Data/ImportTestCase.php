@@ -228,7 +228,7 @@ END;
             $query = new Doctrine_Query();
             $query->from('ImportNestedSet');
 
-            $i = $query->execute(array(), Doctrine::FETCH_ARRAY);
+            $i = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
 
             $this->assertEqual($i[0]['name'], 'Root');
             $this->assertEqual($i[0]['lft'], 1);
@@ -302,7 +302,7 @@ END;
                 ->from('ImportNestedSetMultipleTree insmt')
                 ->orderBy('insmt.root_id ASC, insmt.lft ASC');
 
-            $i = $query->execute(array(), Doctrine::FETCH_ARRAY);
+            $i = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
 
             $this->assertEqual($i[0]['name'], 'Item 1');
             $this->assertEqual($i[0]['lft'], 1);

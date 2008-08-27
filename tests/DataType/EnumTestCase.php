@@ -221,7 +221,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         $q->select('e.*')
           ->from('EnumTest e')
           ->limit(1);
-        $ret = $q->execute(array(), Doctrine::FETCH_ARRAY);
+        $ret = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
 
         if (is_numeric($ret[0]['status'])) {
             $this->fail();
