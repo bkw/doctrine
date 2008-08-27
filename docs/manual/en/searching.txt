@@ -137,6 +137,33 @@ $search->setOption('analyzer', new MyAnalyzer());
 Doctrine_Search provides a query language similar to Apache Lucene. The parsed behind Doctrine_Search_Query converts 
 human readable, easy-to-construct search queries to their complex sql equivalents.
 
+++ Performing Searches
+
+Here is a simple example to retrieve the record ids and relevance data.
+
+<code type="php">
+$results = Doctrine::getTable('Article a')->search('php orm');
+
+// Executes the following query and returns an associative array
+// SELECT COUNT(keyword) AS relevance, id FROM article_index WHERE id IN (SELECT id FROM article_index WHERE keyword = ?) AND id IN (SELECT id FROM article_index WHERE keyword = ?) GROUP BY id ORDER BY relevance DESC
+
+print_r($results); // Will print an array of record ids and the relevance of each
+</code>
+
+You can optionally pass the search() function a query object to modify with a where condition subquery to limit the results using the search index.
+
+<code type="php">
+$query = Doctrine_Query::create()
+	->from('Article a');
+
+$articles = Doctrine::getTable('Article a')->search('php orm', $query)->fetchArray();
+
+// Executes the following query
+// SELECT a.id AS a__id, a.title AS a__title, a.body AS a__body FROM article a WHERE a.id IN(SELECT id FROM article_index WHERE id IN (SELECT id FROM article_index WHERE keyword = ?) && id IN (SELECT id FROM article_index WHERE keyword = ?) GROUP BY id)
+
+print_r($articles); // Will print the articles which have the keywords php or orm in them.
+</code>
+
 ++ File searches
 
 As stated before Doctrine_Search can also be used for searching files. Lets say we have a directory which we want to be 
