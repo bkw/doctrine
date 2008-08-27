@@ -441,7 +441,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
         $fk = $e->getTable()->getRelation("Child");
         $this->assertTrue($fk instanceof Doctrine_Relation_ForeignKey);
-        $this->assertEqual($fk->getType(), Doctrine_Relation::MANY_AGGREGATE);
+        $this->assertEqual($fk->getType(), Doctrine_Relation::MANY);
         $this->assertEqual($fk->getForeign(), "parent_id");
         $this->assertEqual($fk->getLocal(), "id");
 

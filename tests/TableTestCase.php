@@ -99,14 +99,14 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $fk = $this->objTable->getRelation("Group");
         $this->assertTrue($fk instanceof Doctrine_Relation_Association);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
-        $this->assertTrue($fk->getType() == Doctrine_Relation::MANY_AGGREGATE);
+        $this->assertTrue($fk->getType() == Doctrine_Relation::MANY);
         $this->assertTrue($fk->getLocal() == "user_id");
         $this->assertTrue($fk->getForeign() == "group_id");
 
         $fk = $this->objTable->getRelation("Email");
         $this->assertTrue($fk instanceof Doctrine_Relation_LocalKey);
         $this->assertTrue($fk->getTable() instanceof Doctrine_Table);
-        $this->assertTrue($fk->getType() == Doctrine_Relation::ONE_AGGREGATE);
+        $this->assertTrue($fk->getType() == Doctrine_Relation::ONE);
         $this->assertTrue($fk->getLocal() == "email_id");
         $this->assertTrue($fk->getForeign() == $fk->getTable()->getIdentifier());
 
