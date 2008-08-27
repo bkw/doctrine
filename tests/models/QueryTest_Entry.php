@@ -6,6 +6,7 @@ class QueryTest_Entry extends Doctrine_Record
      */
     public function setTableDefinition()
     {        
+        $this->hasColumn('id', 'integer', 4, array('primary', 'autoincrement', 'notnull'));
         $this->hasColumn('authorId', 'integer', 4,
                 array('notnull'));
         $this->hasColumn('date', 'integer', 4,
