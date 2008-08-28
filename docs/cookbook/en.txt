@@ -6,3 +6,4 @@
 + Taking Advantage of Column Aggregation Inheritance
 + Master and Slave Connections
 + Creating a Unit of Work Using Doctrine
++ Record Based Retrieval Security Template
