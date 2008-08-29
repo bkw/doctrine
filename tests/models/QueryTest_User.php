@@ -14,7 +14,12 @@ class QueryTest_User extends Doctrine_Record
      */
     public function setUp()
     {
-        $this->hasOne('QueryTest_Rank as visibleRank', 'QueryTest_User.visibleRankId');
-        $this->hasMany('QueryTest_Rank as ranks', 'QueryTest_UserRank.rankId');
+        $this->hasOne('QueryTest_Rank as visibleRank', array(
+            'local' => 'visibleRankId', 'foreign' => 'id'
+        ));
+
+        $this->hasMany('QueryTest_Rank as ranks', array(
+            'local' => 'userId', 'foreign' => 'rankId', 'refClass' => 'QueryTest_UserRank'
+        ));
     }
 }

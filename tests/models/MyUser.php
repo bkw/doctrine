@@ -8,7 +8,12 @@ class MyUser extends Doctrine_Record
     
     public function setUp()
     {
-		  $this->hasMany('MyOneThing', 'MyOneThing.user_id');
-		  $this->hasMany('MyOtherThing', 'MyOtherThing.user_id');
+		  $this->hasMany('MyOneThing', array(
+            'local' => 'id', 'foreign' => 'user_id'
+          ));
+
+		  $this->hasMany('MyOtherThing', array(
+            'local' => 'id', 'foreign' => 'user_id'
+          ));
     }
 }

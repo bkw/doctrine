@@ -10,6 +10,9 @@ class App_User extends Doctrine_Record {
         $this->hasColumn('zipcode', 'string', 9, 'nospace');
     }
     public function setUp() {
-        $this->hasMany('App', 'App.user_id');
+        $this->hasMany('App', array(
+            'local' => 'id',
+            'foreign' => 'user_id'
+        ));
     }    
 }

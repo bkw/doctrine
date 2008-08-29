@@ -10,6 +10,8 @@ class ORM_TestEntry extends Doctrine_Record {
    } 
     
    public function setUp() {  
-        $this->hasOne('ORM_TestItem', 'ORM_TestEntry.itemID'); 
+        $this->hasOne('ORM_TestItem', array(
+            'local' => 'itemID', 'foreign' => 'id'
+        ));
    }
 }

@@ -8,6 +8,8 @@ class PackageVersionNotes extends Doctrine_Record
     }
     public function setUp()
     {
-        $this->hasOne('PackageVersion', 'PackageVersionNotes.package_version_id');
+        $this->hasOne('PackageVersion', array(
+            'local' => 'package_version_id', 'foreign' => 'id'
+        ));
     }
 }

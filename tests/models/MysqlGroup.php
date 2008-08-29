@@ -4,7 +4,14 @@ class MysqlGroup extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->hasColumn('name', 'string', null);
-
-        $this->hasMany('MysqlUser', 'MysqlGroupMember.user_id');
+    }
+    
+    public function setUp()
+    {
+        $this->hasMany('MysqlUser', array(
+            'local' => 'group_id', 
+            'foreign' => 'user_id',
+            'refClass' => 'MysqlGroupMember'
+        ));
     }
 }

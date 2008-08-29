@@ -4,7 +4,14 @@ class MyOneThing extends Doctrine_Record {
         $this->hasColumn('name', 'string');
         $this->hasColumn('user_id', 'integer');
     }
+
     public function setUp() {
-		$this->hasMany('MyUserOneThing', 'MyUserOneThing.one_thing_id');
+		$this->hasMany('MyUserOneThing', array(
+            'local' => 'id', 'foreign' => 'one_thing_id'
+        ));
+        
+        $this->hasOne('MyUser', array(
+            'local' => 'user_id', 'foreign' => 'id'
+        ));
     }
 }

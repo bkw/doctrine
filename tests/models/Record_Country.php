@@ -4,7 +4,10 @@ class Record_Country extends Doctrine_Record {
         $this->hasColumn('name', 'string', 200);
     }
     public function setUp() {
-        $this->hasMany('Record_City as City', 'City.country_id');
+        $this->hasMany('Record_City as City', array(
+            'local' => 'id',
+            'foreign' => 'country_id'
+        ));
     }
 }
 

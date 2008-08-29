@@ -13,8 +13,11 @@ class QueryTest_Rank extends Doctrine_Record
         $this->hasColumn('icon as icon', 'string', 50,
                 array('notnull', 'default' => ' ', 'regexp' => '/^[a-zA-Z0-9_\-]+\.(jpg|gif|png)$/D'));        
     }
+
     public function setUp()
     {
-        $this->hasMany('QueryTest_User as users', 'QueryTest_UserRank.userId');
+        $this->hasMany('QueryTest_User as users', array(
+            'local' => 'rankId', 'foreign' => 'userId', 'refClass' => 'QueryTest_UserRank'
+        ));
     }
 }

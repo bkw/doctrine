@@ -6,7 +6,9 @@ class PackageVersion extends Doctrine_Record {
     }
     public function setUp()
     {
-        $this->hasOne('Package', 'PackageVersion.package_id');
-        $this->hasMany('PackageVersionNotes as Note', 'PackageVersionNotes.package_version_id');
+        $this->hasOne('Package', array('local' => 'package_id', 'foreign' => 'id'));
+        $this->hasMany('PackageVersionNotes as Note', array(
+            'local' => 'id', 'foreign' => 'package_version_id'
+        ));
     }
 }

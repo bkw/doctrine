@@ -18,6 +18,8 @@ class QueryTest_Entry extends Doctrine_Record
      */
     public function setUp()
     {
-        $this->hasOne('QueryTest_User as author', 'QueryTest_Entry.authorId');
+        $this->hasOne('QueryTest_User as author', array(
+            'local' => 'authorId', 'foreign' => 'id'
+        ));
     }
 }
