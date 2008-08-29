@@ -34,9 +34,9 @@ class Doctrine_Ticket_1390_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $record1 = Doctrine::getTable('User')->find(4);
         $user = new User();
-        $record2 = $user->getTable()->find(4);
+        $record1 = $user->getTable()->find(4);
+        $record2 = Doctrine::getTable('User')->find(4);
         $this->assertEqual($record1, $record2);
     }
 }
