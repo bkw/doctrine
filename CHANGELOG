@@ -1,3 +1,17 @@
+1.0.0
+-----
+     * [r4854] Releasing Doctrine-1.0.0-RC2
+     * [r4855] new article
+     * [r4857] Dropped hasOne(string, string) and hasMany(string, string) in favor to hasOne(string, array) and hasMany(string, array) support. Backward compatibility (
+     * [r4858] fixes #1394. Thanks for the patch!
+     * [r4859] Adding coverage for #1390
+     * [r4860] Switching order for #1390
+     * [r4861] Adding coverage for #1335
+     * [r4862] fixes #1335 - Throw an exception when Doctrine_Query::execute() is called with no from parts
+     * [r4863] Moving exception to top of function
+     * [r4864] Added coverage for #1326
+     * [r4865] fixes #1081 - Added pre/postValidate() support
+
 1.0.0-RC2
 ---------
      * [r4799] Added coverage for #668 in 1.0 branch. Ticket was already addressed in another changeset
