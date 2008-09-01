@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-08-27</date>
- <time>16:54:59</time>
+ <date>2008-09-01</date>
+ <time>15:24:30</time>
  <version>
   <release>1.0.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -1194,9 +1194,12 @@ requiring needless code duplication.</description>
      <file name="1304TestCase.php" role="test" />
      <file name="1305TestCase.php" role="test" />
      <file name="1325TestCase.php" role="test" />
+     <file name="1326TestCase.php" role="test" />
+     <file name="1335TestCase.php" role="test" />
      <file name="1365TestCase.php" role="test" />
      <file name="1372TestCase.php" role="test" />
      <file name="1383TestCase.php" role="test" />
+     <file name="1390TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1584,10 +1587,10 @@ requiring needless code duplication.</description>
     <api>1.0.0</api>
    </version>
    <stability>
-    <release>beta</release>
-    <api>beta</api>
+    <release>stable</release>
+    <api>stable</api>
    </stability>
-   <date>2008-08-27</date>
+   <date>2008-09-01</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
