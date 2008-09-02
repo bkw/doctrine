@@ -1,16 +1,12 @@
 ++ Introduction
 
-This is a tutorial & how-to on using a security template and listener to restrict a user to specific records, or a range of
-specific records based on credentials and a user table association. Basically fine grained user access control.
+This is a tutorial & how-to on using a security template and listener to restrict a user to specific records, or a range of specific records based on credentials and a user table association. Basically fine grained user access control.
 
-This template was created for a project which had a few credentials, division_manager, district_manager, branch_manager, and salesperson.
-We have a list of accounts, their related sales and all sorts of sensitive information for each account. Each logged in user should be allowed
-to only view the accounts and related information based off their credentials + either the division, district, branch or salesperson they are allowed to view.
+This template was created for a project which had a few credentials, division_manager, district_manager, branch_manager, and salesperson. We have a list of accounts, their related sales and all sorts of sensitive information for each account. Each logged in user should be allowed to only view the accounts and related information based off their credentials + either the division, district, branch or salesperson they are allowed to view.
 
 So a division manager can view all info for all accounts within his division. A salesperson can only view the accounts they are assign.
 
-The template has been a work in progress so the code below may not actually be the final code I'm using today. But since it is now working for all situations 
-I'm asking of it, I thought I would post it as is.
+The template has been a work in progress so the code below may not actually be the final code I'm using today. But since it is now working for all situations I'm asking of it, I thought I would post it as is.
 
 ++ Template
 
@@ -142,8 +138,7 @@ class gsSecurityListener extends Doctrine_Record_Listener
 
 ++ YAML schema syntax
 
-Here is the schema I used this template with. I've removed lots of extra options, other templates I was using, indexes and table names. It may not work out of 
-the box without the indexes - YMMV.
+Here is the schema I used this template with. I've removed lots of extra options, other templates I was using, indexes and table names. It may not work out of the box without the indexes - YMMV.
 
 <code type="yaml">
 ---
@@ -321,9 +316,7 @@ This provides the credentials the user was given when they logged in as well as 
 
 ++ User setup
 
-In my case, I create users and provide a checkbox for their credentials, one for each type I have. Lets take Division Manager as an example. 
-In my case we have 3 divisions, East, Central, West. When I create a user I assign it the West division, and check off that they are a division manager.
-I can then proceed to login, and my account listing page will restrict the accounts I see automatically to my division.
+In my case, I create users and provide a checkbox for their credentials, one for each type I have. Lets take Division Manager as an example. In my case we have 3 divisions, East, Central, West. When I create a user I assign it the West division, and check off that they are a division manager. I can then proceed to login, and my account listing page will restrict the accounts I see automatically to my division.
 
 ++ Querying
 
@@ -341,11 +334,8 @@ produces the resulting sql.
 SELECT ... FROM accounts a2 LEFT JOIN branches b2 ON a2.branch_id = b2.id LEFT JOIN divisions d2 ON a2.division_id = d2.id LEFT JOIN user_divisions u2 ON d2.id = u2.division_id WHERE a2.company_name LIKE ? AND u2.user_id = ? ORDER BY a2.company_name
 </code>
 
-The results you get back will always be restricted to the division you have been assigned. Since in our schema we've defined restrictions on the Branch and Districts as well
-if I were to want to provide a user with a drop down of potential branches, I can simply query the branches as I normally would, and only the ones in my division would be
-returned to choose from.
+The results you get back will always be restricted to the division you have been assigned. Since in our schema we've defined restrictions on the Branch and Districts as well if I were to want to provide a user with a drop down of potential branches, I can simply query the branches as I normally would, and only the ones in my division would be returned to choose from.
 
 ++ Restrictions
 
-For the time being, this module only protects tables in the FROM clause, since doctrine currently runs the query listener for the new tables added to the query by the template, 
-and thus we get a pretty nasty query in the end that doesn't work. If I can figure out how to detect such situations reliably I'll update the article.
+For the time being, this module only protects tables in the FROM clause, since doctrine currently runs the query listener for the new tables added to the query by the template, and thus we get a pretty nasty query in the end that doesn't work. If I can figure out how to detect such situations reliably I'll update the article.
