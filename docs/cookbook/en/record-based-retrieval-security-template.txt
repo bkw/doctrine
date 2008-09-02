@@ -12,8 +12,8 @@ The template has been a work in progress so the code below may not actually be t
 I'm asking of it, I thought I would post it as is.
 
 ++ Template
-<code>
 
+<code type="php">
 class gsSecurityTemplate extends Doctrine_Template
 {
     protected $_options = array();
@@ -26,8 +26,9 @@ class gsSecurityTemplate extends Doctrine_Template
      */
     public function __construct(array $options)
     {
-        if( !isset($options['conditions']) || empty($options['conditions']) )
+        if (!isset($options['conditions']) || empty($options['conditions'])) {
             throw new Doctrine_Exception('Unable to create security template without conditions');
+        }
 
         $this->_options = $options;
     }
@@ -64,60 +65,52 @@ class gsSecurityListener extends Doctrine_Record_Listener
         $class   = get_class($invoker);
         $params  = $event->getParams();
 
-        if($class == $params['alias'])
+        if($class == $params['alias']) {
             return;
+        }
 
         $q       = $event->getQuery();
 
         // only apply to the main protected table not chained tables... may break some situations
-        if(!$q->contains('FROM '.$class))
+        if(!$q->contains('FROM '.$class)) {
             return;
+        }
 
         $wheres = array();
         $pars   = array();
 
         $from = $q->getDqlPart('from');
 
-        foreach($this->_options['conditions'] as $rel_name => $conditions)
-        {
+        foreach ($this->_options['conditions'] as $rel_name => $conditions) {
             $apply = false;
-            foreach($conditions['apply_to'] as $val)
-            {
-                if(in_array($val,self::$_credentials))
-                {
+            foreach ($conditions['apply_to'] as $val) {
+                if (in_array($val,self::$_credentials)) {
                     $apply = true;
                     break;
                 }
             }
 
-            if($apply)
-            {
+            if ($apply) {
                 $alias = $params['alias'];
                 $aliases = array();
                 $aliases[] = $alias;
 
-                foreach($conditions['through'] as $key => $table)
-                {
+                foreach ($conditions['through'] as $key => $table) {
                     $index = 0;
                     $found = false;
-                    foreach($from as $index => $val)
-                    {
-                        if(strpos($val,$table) !== false)
-                        {
+                    foreach ($from as $index => $val) {
+                        if (strpos($val,$table) !== false) {
                             $found = true;
                             break;
                         }
 
                     }
 
-                    if($found)
-                    {
+                    if ($found) {
                         $vals = explode(' ', substr($from[$index],strpos($from[$index],$table)));
                         $alias = (count($vals) == 2) ? $vals[1]:$vals[0];
                         $aliases[] = $alias;
-                    }
-                    else
-                    {
+                    } else {
                         $newalias = strtolower(substr($table,0,3)).self::$_alias_count++;
                         $q->leftJoin(end($aliases).'.'.$table.' '.$newalias);
                         $aliases[] = $newalias;
@@ -129,8 +122,9 @@ class gsSecurityListener extends Doctrine_Record_Listener
             }
         }
 
-        if(!empty($wheres))
+        if(!empty($wheres)) {
             $q->addWhere( '('.implode(' OR ',$wheres).')',$pars);
+        }
     }
 
     static public function setUserId($id)
@@ -150,7 +144,7 @@ class gsSecurityListener extends Doctrine_Record_Listener
 Here is the schema I used this template with. I've removed lots of extra options, other templates I was using, indexes and table names. It may not work out of 
 the box without the indexes - YMMV.
 
-<code>
+<code type="yaml">
 ---
 Account:
   actAs:
@@ -235,7 +229,6 @@ Branch:
     division_id: { type: integer(1), unsigned: true }
     is_active: { type: boolean, default: true }
 
-#-------------------------------------------------------------------------------------
 User:
   relations:
     Divisions:
@@ -305,15 +298,15 @@ You can see from the User model that the credentials are set within the db. All 
 ++ Using the template
 
 Once you've built your models from the schema, you should see something like the following in your model's setUp function.
-<code>
 
+<code type="php">
 $gssecuritytemplate0 = new gsSecurityTemplate(array('conditions' => array('Division' =>  array( 'through' =>  array( 0 => 'Division',  1 => 'UserDivision',  ),  'field' => 'user_id',  'apply_to' =>  array( 0 => 'division_manager',  ),  'exclude_for' =>  array( 0 => 'admin',  ), ), 'Branch' =>  array( 'through' =>  array( 0 => 'Branch',  1 => 'UserBranch',  ),  'field' => 'user_id',  'apply_to' =>  array( 0 => 'branch_manager',  ),  'exclude_for' =>  array( 0 => 'admin',  1 => 'division_manager',  2 => 'district_manager',  ), ), 'Salesperson' =>  array( 'through' =>  array( 0 => 'Salesperson',  1 => 'UserSalesperson',  ),  'field' => 'user_id',  'apply_to' =>  array( 0 => 'salesperson',  ),  'exclude_for' =>  array( 0 => 'admin',  1 => 'division_manager',  2 => 'district_manager',  3 => 'branch_manager',  ), ), 'District' =>  array( 'through' =>  array( 0 => 'Branch',  1 => 'District',  2 => 'UserDistrict',  ),  'field' => 'user_id',  'apply_to' =>  array( 0 => 'district_manager',  ),  'exclude_for' =>  array( 0 => 'admin',  1 => 'division_manager',  ), ))));
 $this->actAs($gssecuritytemplate0);
-
 </code>
 
 The last part you need to use is to provide the template with the running user's credentials and id. In my project's session bootstrapping I have the following ( I use the symfony MVC framework ).
-<code>
+
+<code type="php">
 public function initialize($context, $parameters = null)
 {
     parent::initialize($context, $parameters = null);
@@ -324,7 +317,6 @@ public function initialize($context, $parameters = null)
 </code>
 
 This provides the credentials the user was given when they logged in as well as their id.
-
 
 ++ User setup
 
@@ -337,23 +329,20 @@ I can then proceed to login, and my account listing page will restrict the accou
 Now if you query the Account model, the template is triggered and based on your credentials the results will be restricted.
 
 The query below
-<code>
+
+<code type="php">
   $accounts = Doctrine_Query::create()->from('Account a')->leftJoin('a.Branches b')->where('a.company_name LIKE ?','A%')->execute();
 </code>
 
 produces the resulting sql.
 
 <code>
-</code>
-
 SELECT ... FROM accounts a2 LEFT JOIN branches b2 ON a2.branch_id = b2.id LEFT JOIN divisions d2 ON a2.division_id = d2.id LEFT JOIN user_divisions u2 ON d2.id = u2.division_id WHERE a2.company_name LIKE ? AND u2.user_id = ? ORDER BY a2.company_name
-
 <code>
 
 The results you get back will always be restricted to the division you have been assigned. Since in our schema we've defined restrictions on the Branch and Districts as well
 if I were to want to provide a user with a drop down of potential branches, I can simply query the branches as I normally would, and only the ones in my division would be
 returned to choose from.
-
 
 ++ Restrictions
 
