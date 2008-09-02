@@ -6,6 +6,7 @@ specific records based on credentials and a user table association. Basically fi
 This template was created for a project which had a few credentials, division_manager, district_manager, branch_manager, and salesperson.
 We have a list of accounts, their related sales and all sorts of sensitive information for each account. Each logged in user should be allowed
 to only view the accounts and related information based off their credentials + either the division, district, branch or salesperson they are allowed to view.
+
 So a division manager can view all info for all accounts within his division. A salesperson can only view the accounts they are assign.
 
 The template has been a work in progress so the code below may not actually be the final code I'm using today. But since it is now working for all situations 
@@ -331,14 +332,14 @@ Now if you query the Account model, the template is triggered and based on your 
 The query below
 
 <code type="php">
-  $accounts = Doctrine_Query::create()->from('Account a')->leftJoin('a.Branches b')->where('a.company_name LIKE ?','A%')->execute();
+$accounts = Doctrine_Query::create()->from('Account a')->leftJoin('a.Branches b')->where('a.company_name LIKE ?','A%')->execute();
 </code>
 
 produces the resulting sql.
 
 <code>
 SELECT ... FROM accounts a2 LEFT JOIN branches b2 ON a2.branch_id = b2.id LEFT JOIN divisions d2 ON a2.division_id = d2.id LEFT JOIN user_divisions u2 ON d2.id = u2.division_id WHERE a2.company_name LIKE ? AND u2.user_id = ? ORDER BY a2.company_name
-<code>
+</code>
 
 The results you get back will always be restricted to the division you have been assigned. Since in our schema we've defined restrictions on the Branch and Districts as well
 if I were to want to provide a user with a drop down of potential branches, I can simply query the branches as I normally would, and only the ones in my division would be
