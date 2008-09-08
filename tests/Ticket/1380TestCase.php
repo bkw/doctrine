@@ -54,5 +54,6 @@ class Doctrine_Ticket_1380_TestCase extends Doctrine_UnitTestCase
             ->limit(1);
         $user = $q->fetchOne();
         $this->assertTrue(isset($user['test_calculated_column']));
+        $this->assertEqual($user['Album'][0]['test_calculated_column'], $user['test_calculated_column']);
     }
 }
