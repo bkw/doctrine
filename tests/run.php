@@ -127,6 +127,7 @@ $tickets->addTestCase(new Doctrine_Ticket_1335_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1351_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1365_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1372_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1380_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1381_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1383_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1390_TestCase());
