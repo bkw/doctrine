@@ -241,13 +241,23 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $user->Group[2]->name = "Terminators";
         
         $user2 = $this->objTable->find(4);
-        $user2->Group = $user->Group;
+        //$user2->Group = $user->Group;
+        $user2->Group = new Doctrine_Collection('Group');
+        $user2->Group[] = $user->Group[0];
+        $user2->Group[] = $user->Group[1];
+        $user2->Group[] = $user->Group[2];
         
         $user3 = $this->objTable->find(6);
-        $user3->Group = $user->Group;
+        //$user3->Group = $user->Group;
+        $user3->Group = new Doctrine_Collection('Group');
+        $user3->Group[] = $user->Group[0];
+        $user3->Group[] = $user->Group[1];
+        $user3->Group[] = $user->Group[2];
 
         $this->assertEqual($user->Group[0]->name, "Action Actors");
         $this->assertEqual(count($user->Group), 3);
+        $this->assertEqual(count($user2->Group), 3);
+        $this->assertEqual(count($user3->Group), 3);
 
         $this->connection->flush();
         
@@ -255,8 +265,8 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($user->Group), 3);
         
         $q = new Doctrine_Query();
-        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);       
-             
+        $q->from("User")->where("User.Group.id = ?")->orderby("User.id ASC")->limit(5);
+        
         $users = $q->execute(array($user->Group[1]->id));
         
         $this->assertEqual($users->count(), 3);

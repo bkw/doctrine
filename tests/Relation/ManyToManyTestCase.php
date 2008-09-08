@@ -35,6 +35,7 @@ class Doctrine_Relation_ManyToMany_TestCase extends Doctrine_UnitTestCase {
             $rel = $component->getTable()->getRelation('M2MTest2');
             $this->pass();
         } catch(Doctrine_Exception $e) {
+            echo $e->getMessage();
             $this->fail();
         }
         $this->assertEqual($rel->getForeign(), 'oid');
