@@ -58,7 +58,7 @@ class Doctrine_Query_Having_TestCase extends Doctrine_UnitTestCase
 
     public function testReturnFuncIfNumeric()
     {
-       $having =  new Doctrine_Query_Having("test");
+       $having =  new Doctrine_Query_Having(new Doctrine_Query());
        $part = $having->load("1");
        $this->assertEqual("1",trim($part));
 
