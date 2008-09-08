@@ -15,7 +15,7 @@ deleted {{record_count}} records.
 <code type="php">
 $q = Doctrine_Query::create();
 
-$rows = $q->delete('Account')
+$rows = $q->delete()
           ->from('Account a')
           ->where('a.id > ?', 3)
           ->execute();
