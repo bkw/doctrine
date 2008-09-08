@@ -161,13 +161,13 @@ class T1323User extends Doctrine_Record
         $this->hasMany('T1323User as Parents', array('local' => 'child_id',
                                                 'foreign'  => 'parent_id',
                                                 'refClass' => 'T1323UserReference',
-                                                'refClassRelation' => 'childLinks'
+                                                'refClassRelationAlias' => 'childLinks'
                                                 ));
 
         $this->hasMany('T1323User as Children', array('local' => 'parent_id',
                                                  'foreign'  => 'child_id',
                                                  'refClass' => 'T1323UserReference',
-                                                 'refClassRelation' => 'parentLinks'
+                                                 'refClassRelationAlias' => 'parentLinks'
                                                  ));
     }
     

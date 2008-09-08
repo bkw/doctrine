@@ -151,13 +151,13 @@ class BaseConcept extends Doctrine_Record
     $this->hasMany('Concept as broaderConcepts', array('refClass' => 'ConceptRelation',
                                                        'local' => 'concept_id',
                                                        'foreign' => 'parent_concept_id', 
-                                                       'refClassRelation' => 'broaderLinks'));
+                                                       'refClassRelationAlias' => 'broaderLinks'));
 
 
     $this->hasMany('Concept as narrowerConcepts', array('refClass' => 'ConceptRelation',
                                                         'local' => 'parent_concept_id',
                                                         'foreign' => 'concept_id', 
-                                                        'refClassRelation' => 'narrowerLinks'));
+                                                        'refClassRelationAlias' => 'narrowerLinks'));
   }
 }
 
