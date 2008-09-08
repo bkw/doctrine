@@ -294,7 +294,7 @@ To see what's in the database, you can use the list*() family of functions in th
 
 * listTableConstraints(): takes a table name
 
-* listTableFields(): takes a table name
+* listTableColumns(): takes a table name
 
 * listTableIndexes(): takes a table name
 
@@ -330,7 +330,7 @@ $cons = $conn->import->listTableConstraints('event_participants');
 +++ Listing table fields
 
 <code type="php">
-$fields = $conn->import->listTableFields('events');
+$fields = $conn->import->listTableColumns('events');
 print_r($fields);
 /*
 prints:
