@@ -1,3 +1,37 @@
+1.0.1
+-----
+     * [r4869] fixes #1405. Thanks for the tip!
+     * [r4870] Added coverage to tickets #1381 and also #1395, which are the same. Unable to reproduce the issue.
+     * [r4871] Fixing coding standards.
+     * [r4873] A few more documentation fixes.
+     * [r4874] Removing new lines
+     * [r4876] Fixed #1427. Thanks for the patch.
+     * [r4880] fixes #1426
+     * [r4881] fixes #1432
+     * [r4882] fixes #1430
+     * [r4883] fixes #1425
+     * [r4884] fixes #1435
+     * [r4885] fixes #1433
+     * [r4886] fixes #1431
+     * [r4887] Fixing test
+     * [r4888] fixes #1418
+     * [r4889] Fixed #1323. Final adjustments to come from jon.
+     * [r4890] fixes #1323 Renaming to refClassRelationAlias and adding support to yaml
+     * [r4891] Added coverage for #1400
+     * [r4892] Adding coverage for #1351
+     * [r4893] Updating test to include Searchable as I18n child
+     * [r4894] fixes #1420 Fixes segfault when combining column aggregation inheritance and I18n behavior
+     * [r4895] Added coverage for #1419
+     * [r4896] Fixing minor regression where the file parser would always return an array even if the file being parsed was empty and now it returns null. Fixing to make it always return an array.
+     * [r4897] Added coverage for #1380
+     * [r4898] Enhancing coverage for #1380
+     * [r4899] fixes #1437
+     * [r4900] Adding coverage for #1131
+     * [r4901] Fixing uncaught exception.
+     * [r4902] Updating test case for #1131
+     * [r4903] Adding coverage for #1436
+     * [r4904] Adding coverage for #632
+
 1.0.0
 -----
      * [r4854] Releasing Doctrine-1.0.0-RC2
