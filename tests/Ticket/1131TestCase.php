@@ -50,11 +50,13 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
         $role->name = 'Role One';
         $role->save();
         $this->role_one = $role->id;
+        $role->free();
         
         $role = new Ticket_1131_Role();
         $role->name = 'Role Two';
         $role->save();
         $this->role_two = $role->id;
+        $role->free();
         
         $group = new Ticket_1131_Group();
         $group->role_id = $this->role_one;
@@ -66,13 +68,12 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
         $user->role_id = $this->role_two;
         $user->name = 'jwage';
         $user->save();
-        
-        $role->free();
+
         $group->free();
         $user->free();
     }
 
-    public function testOriginalTicket()
+    public function testTicket()
     {
         $user = Doctrine_Query::create()
             ->from('Ticket_1131_User u')
@@ -82,18 +83,7 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
         $this->assertFalse($user->get('group_id') instanceof Doctrine_Record);
     }
     
-    public function testOriginalTicketWithJoins()
-    {
-        $user = Doctrine_Query::create()
-            ->from('Ticket_1131_User u')
-            ->leftJoin('u.Group g')
-            ->where('u.id = ?')->fetchOne(array(1));
-
-        $this->assertEqual($user->Group->id, 1);
-        $this->assertFalse($user->get('group_id') instanceof Doctrine_Record);
-    }
-    
-    public function testOverloading()
+    public function testTicketWithOverloadingAndTwoQueries()
     {
         $orig = Doctrine_Manager::getInstance()->getAttribute('auto_accessor_override');
         Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
@@ -101,28 +91,6 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
         $user = Doctrine_Query::create()
             ->from('Ticket_1131_User u')
             ->where('u.id = ?')->fetchOne(array(1));
-        
-        $this->assertEqual($user->group_id, 1);
-        $this->assertEqual($user->get('group_id'), 1);
-        $this->assertFalse($user->get('group_id') instanceof Doctrine_Record);
-        
-        $this->assertEqual($user->role_id, 2);
-        $this->assertEqual($user->get('role_id'), 2);
-        $this->assertFalse($user->get('role_id') instanceof Doctrine_Record);
-        
-        $this->assertEqual($user->Group->id, 1);
-        $this->assertEqual($user->get('Group')->get('id'), 1);
-        
-        $this->assertEqual($user->Role->id, 2);
-        $this->assertEqual($user->get('Role')->get('id'), 2);
-        
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', $orig);
-    }
-    
-    public function testOverloadingWithJoins()
-    {
-        $orig = Doctrine_Manager::getInstance()->getAttribute('auto_accessor_override');
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
         
         $user = Doctrine_Query::create()
             ->from('Ticket_1131_UserWithOverloading u')
@@ -130,19 +98,8 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
             ->leftJoin('u.Role r')
             ->addWhere('u.id = ?')->fetchOne(array(1));
         
-        $this->assertEqual($user->group_id, 1);
-        $this->assertEqual($user->get('group_id'), 1);
-        $this->assertFalse($user->get('group_id') instanceof Doctrine_Record);
-        
-        $this->assertEqual($user->role_id, 1);
-        $this->assertEqual($user->get('role_id'), 1);
-        $this->assertFalse($user->get('role_id') instanceof Doctrine_Record);
-        
-        $this->assertEqual($user->Group->id, 1);
-        $this->assertEqual($user->get('Group')->get('id'), 1);
-        
         $this->assertEqual($user->Role->id, 1);
-        $this->assertEqual($user->get('Role')->get('id'), 1);
+        $this->assertFalse($user->role_id instanceof Doctrine_Record);
         
         Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', $orig);
     }
