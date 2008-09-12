@@ -42,7 +42,7 @@ $view->comments = $comments;
 配列の代わりにビューでオブジェクトの恩恵を考えたことがありますか？ビューでビジネスロジックを実行しようとしていないでしょうか？一つのパラメータによって不要な処理作業を省くことができます:
 
 <code type="php">
- ... ->execute(array(1), Doctrine::FETCH_ARRAY);
+ ... ->execute(array(1), Doctrine::HYDRATE_ARRAY);
 </code> 
 これは一連の入れ子のPHP配列を返します。いくつかのコメントを取得したことを前提とすると、次のようになります:
 <code>

@@ -33,7 +33,7 @@ $view->comments = $comments;
 </code> Can you think of any benefit of having objects in the view instead of arrays? You're not going to execute business 
 logic in the view, are you? One parameter can save you a lot of unnecessary processing:
 <code type="php">
- ... ->execute(array(1), Doctrine::FETCH_ARRAY);
+ ... ->execute(array(1), Doctrine::HYDRATE_ARRAY);
 </code> This will return a bunch of nested php arrays. It could look something like this, assuming we fetched some comments:
 <code>
 array(5) (
