@@ -1,3 +1,9 @@
+1.0.2
+-----
+     * [r4906] Fixed issue reported by user Adam @ doctrine-user when working with related components aliased.
+     * [r4907] Removing coverage as it is not valid.
+     * [r4908] fixes #1451. Thanks for the patch!
+
 1.0.1
 -----
      * [r4869] fixes #1405. Thanks for the tip!
