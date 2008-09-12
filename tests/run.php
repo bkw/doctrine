@@ -134,6 +134,7 @@ $tickets->addTestCase(new Doctrine_Ticket_1390_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1400_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1419_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1436_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1452_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
