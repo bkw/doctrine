@@ -131,7 +131,13 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
                     )
             ));
 
-        $user->synchronizeWithArray($userArray);
+        try {
+            $user->synchronizeWithArray($userArray);
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+        
         $this->assertEqual($user->Group->count(), 1);
         $user->free();
 
