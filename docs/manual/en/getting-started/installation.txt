@@ -32,7 +32,7 @@ The installation of doctrine via SVN is very easy. Just get the latest revision 
 In order to check out Doctrine in the current directory using the **svn** command line tool use the following code:
 
 <code type="bash">
-svn co http://svn.phpdoctrine.org/branches/0.11 .
+svn co http://svn.phpdoctrine.org/branches/1.0 .
 </code>
 
 If you do not have a SVN client, chose one from the list below. Find the **Checkout** option and enter svn.phpdoctrine.org/branches/0.11 in the **path** or **repository url** parameter. There is no need for a username 
