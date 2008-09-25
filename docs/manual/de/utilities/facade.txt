@@ -144,7 +144,6 @@ GenerateSql
 GenerateYamlDb
 GenerateYamlModels
 LoadData
-LoadDummyData
 Migrate
 RebuildDb
 </code>

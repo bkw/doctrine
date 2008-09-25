@@ -37,18 +37,6 @@ $data = new Doctrine_Data();
 $data->importData($path, $format, $models);
 </code>
 
-++ ダミーデータ
-
-Doctrine_DataでダミーのデータをすべてのDoctrine Recordにインポートします
-
-<code type="php">
-$numRecords = 3; // それぞれのモデルに対して投入するダミーレコードの番号
-$models = array('User', 'Email'); // ダミーデータを生成するためのモデル。何も指定されない場合すべてのロードされたモデルに対してダミーデータを生成する。
-
-$data = new Doctrine_Data();
-$data->importDummyData($numRecords, $models);
-</code>
-
 ++ 書く
 
 手動でフィクスチャファイルを書きアプリケーションでそれらをロードできます。下記はサンプルのdata.ymlフィクスチャファイルです。データフィクスチャファイルを複数のファイルに分割することもできます。Doctrineはすべてのフィクスチャファイルを読み込み解析し、すべてのデータをロードします。

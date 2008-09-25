@@ -121,7 +121,6 @@ GenerateSql
 GenerateYamlDb
 GenerateYamlModels
 LoadData
-LoadDummyData
 Migrate
 RebuildDb
 </code>
@@ -156,7 +155,6 @@ DoctrineのCliはタスクのコレクションで、Doctrineで開発とテス�
 ./cli generate-yaml-from-db
 ./cli generate-yaml-from-models
 ./cli load-data
-./cli load-dummy-data
 ./cli migrate
 ./cli rebuild-db
 

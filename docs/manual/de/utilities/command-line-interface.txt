@@ -28,7 +28,6 @@ Doctrine Command Line Interface
 ./doctrine generate-yaml-db
 ./doctrine generate-yaml-models
 ./doctrine load-data
-./doctrine load-dummy-data
 ./doctrine migrate
 ./doctrine rebuild-db
 
