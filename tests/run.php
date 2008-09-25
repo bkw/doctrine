@@ -26,6 +26,7 @@ $test = new DoctrineTest();
 // If you write a ticket testcase add it to the bottom of the list, with the ticket number in it
 $tickets = new GroupTest('Tickets Tests', 'tickets');
 $tickets->addTestCase(new Doctrine_Ticket_Njero_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_Ayoub_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_381_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_384_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_424B_TestCase());
@@ -131,10 +132,10 @@ $tickets->addTestCase(new Doctrine_Ticket_1372_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1381_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1383_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1390_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1395_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1400_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1419_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1436_TestCase());
-$tickets->addTestCase(new Doctrine_Ticket_1452_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
