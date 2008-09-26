@@ -51,8 +51,6 @@ class Doctrine_Ticket_1395_TestCase extends Doctrine_UnitTestCase
     {
         try {
             $myModel = $this->conn->getTable('T1395_MyModel')->find(0);
-            print_r($myModel->toArray(true));
-            exit;
             $this->assertTrue(isset($myModel->dt_created));
             $this->assertTrue(isset($myModel->days_old)); // This is a calculated field from within the T1395_Listener::preHydrate
             $this->assertTrue(isset($myModel->dt_created_tx)); // This is a calculated field from within the T1395_Listener::preHydrate
