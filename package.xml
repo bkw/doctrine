@@ -1591,10 +1591,25 @@ requiring needless code duplication.</description>
   </required>
   <optional>
    <extension>
+    <name>pdo_dblib</name>
+   </extension>
+   <extension>
     <name>pdo_mysql</name>
    </extension>
    <extension>
+    <name>pdo_odbc</name>
+   </extension>
+   <extension>
     <name>pdo_sqlite</name>
+   </extension>
+   <extension>
+    <name>pdo_firebird</name>
+   </extension>
+   <extension>
+    <name>pdo_oci</name>
+   </extension>
+   <extension>
+    <name>pdo_pgsql</name>
    </extension>
   </optional>
  </dependencies>
