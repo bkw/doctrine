@@ -112,7 +112,7 @@ class Doctrine_Export_Pgsql_TestCase extends Doctrine_UnitTestCase
         $options = array('primary' => array('name', 'type'));
         $this->export->createTable($name, $fields, $options);
 
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10) DEFAULT \'def\', type INT DEFAULT 12, is_active BOOLEAN DEFAULT false, is_admin BOOLEAN DEFAULT true, PRIMARY KEY(name, type))');
+        $this->assertEqual($this->adapter->pop(), "CREATE TABLE mytable (name CHAR(10) DEFAULT 'def', type INT DEFAULT 12, is_active BOOLEAN DEFAULT 'false', is_admin BOOLEAN DEFAULT 'true', PRIMARY KEY(name, type))");
     }
     public function testCreateTableSupportsMultiplePks()
      {
