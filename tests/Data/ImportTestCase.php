@@ -37,7 +37,7 @@ class Doctrine_Data_Import_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'User';
         $this->tables[] = 'Phonenumber';
         $this->tables[] = 'Album';
-        $this->tables[] = 'I18nTest';
+        $this->tables[] = 'I18nTestImport';
         $this->tables[] = 'ImportNestedSet';
         $this->tables[] = 'ImportNestedSetMultipleTree';
         $this->tables[] = 'I18nNumberLang';
@@ -71,16 +71,7 @@ END;
             $this->assertEqual($user->name, 'jwage');
             $this->assertEqual($user->Phonenumber->count(), 1);
             $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
-            
-            $data = new Doctrine_Data();
-            $data->exportData('test.yml', 'yml', array('User', 'Phonenumber'));
 
-            $array = Doctrine_Parser::load('test.yml', 'yml');
-            $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['phonenumber']));
-            $this->assertTrue(isset($array['Phonenumber']['Phonenumber_1']['Entity']));
-            $this->assertTrue(isset($array['User']['User_4']['name']));
-            $this->assertTrue(isset($array['User']['User_4']['Email']));
-            
             $this->pass();
         } catch (Exception $e) {
             $this->fail();
@@ -166,9 +157,8 @@ END;
     {
         $yml = <<<END
 ---
-I18nTest:
-  I18nTest_1:
-    id: 1234
+I18nTestImport:
+  I18nTestImport_1:
     Translation:
       en:
         name: english name
@@ -184,12 +174,10 @@ END;
             $this->conn->clear();
 
             $query = new Doctrine_Query();
-            $query->from('I18nTest i, i.Translation t')
-                  ->where('i.id = ?', 1234);
+            $query->from('I18nTestImport i, i.Translation t');
 
             $i = $query->execute()->getFirst();
 
-            $this->assertEqual($i->id, 1234);
             $this->assertEqual($i->Translation['en']->name, 'english name');
             $this->assertEqual($i->Translation['fr']->name, 'french name');
             $this->assertEqual($i->Translation['en']->title, 'english title');
@@ -606,5 +594,18 @@ class I18nNumberLang extends Doctrine_Record
     public function setUp()
     {
         $this->actAs('I18n', array('fields' => array('title', 'body'), 'type' => 'integer', 'length' => 4));
+    }
+}
+
+class I18nTestImport extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 200);
+        $this->hasColumn('title', 'string', 200);
+    }
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('name', 'title')));
     }
 }

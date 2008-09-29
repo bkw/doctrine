@@ -34,29 +34,29 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareTables()
     {
-        $this->tables[] = 'I18nTest';
+        $this->tables[] = 'I18nTestExport';
         parent::prepareTables();
     }
 
     public function testI18nExport()
     {
         try {
-            $i = new I18nTest();
-            $i->assignIdentifier(500);
+            $i = new I18nTestExport();
             $i->Translation['en']->title = 'english test';
             $i->Translation['fr']->title = 'french test';
             $i->save();
+            $i->free();
 
             $data = new Doctrine_Data();
-            $data->exportData('test.yml', 'yml', array('I18nTest'));
+            $data->exportData('test.yml', 'yml', array('I18nTestExport', 'I18nTestExportTranslation'));
 
             $array = Doctrine_Parser::load('test.yml', 'yml');
 
             $this->assertTrue( ! empty($array));
+            $this->assertTrue(isset($array['I18nTestExport']['I18nTestExport_1']));
+            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_en']));
+            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_fr']));
 
-            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['en']['title']));
-            $this->assertTrue(isset($array['I18nTest']['I18nTest_500']['Translation']['fr']['title']));
-            
             $this->pass();
         } catch (Exception $e) {
             $this->fail($e->getMessage());
@@ -65,5 +65,18 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
         if (file_exists('test.yml')) {
             unlink('test.yml');
         }
+    }
+}
+
+class I18nTestExport extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 200);
+        $this->hasColumn('title', 'string', 200);
+    }
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('name', 'title')));
     }
 }
