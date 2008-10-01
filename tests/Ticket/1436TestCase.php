@@ -62,86 +62,65 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
     
     public function testSynchronizeAddMNLinks()
     {
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
+        $user = Doctrine_Query::create()->from('User u')->fetchOne();
         $userArray = array(
             'Group' => array(
                 '_identifiers' => array(
-                    $this->group_one,
-                    $this->group_two,
-                    $this->group_three
+                    $this->group_one => true,
+                    $this->group_two => true,
+                    $this->group_three => false
                     )
             ));
 
         $user->synchronizeWithArray($userArray);
-        $this->assertEqual($user->Group->count(), 3);
-        $user->save();
-        $user->free();
-
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $this->assertEqual($user->Group->count(), 3);
-        $this->assertEqual($user->Group[0]->name, 'Group One');
-        $this->assertEqual($user->Group[1]->name, 'Group Two');
-        $this->assertEqual($user->Group[2]->name, 'Group Three');
-    }
-
-    public function testSynchronizeRemoveMNLinks()
-    {
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $userArray = array(
-            'Group' => array(
-                '_identifiers' => array(
-                    $this->group_three
-                    )
-            ));
-
-        $user->synchronizeWithArray($userArray);
-        $this->assertEqual($user->Group->count(), 1);
-        $user->save();
-        $user->free();
-
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $this->assertEqual($user->Group->count(), 1);
-        $this->assertEqual($user->Group[0]->name, 'Group Three');
-    }
-
-    public function testSynchronizeRemoveAllLinks()
-    {
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $userArray = array(
-            'Group' => array(
-                '_identifiers' => array()
-            ));
-
-        $user->synchronizeWithArray($userArray);
-        $this->assertEqual($user->Group->count(), 0);
-        $user->save();
-        $user->free();
-
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $this->assertEqual($user->Group->count(), 0);
-    }
-
-    public function testSynchronizeDoesNotPersistUntilSave()
-    {
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $userArray = array(
-            'Group' => array(
-                '_identifiers' => array(
-                    $this->group_three
-                    )
-            ));
 
         try {
-            $user->synchronizeWithArray($userArray);
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
+          $user->save();
+        } catch (Exception $e ) {
+          $this->fail("Failed saving with " . $e->getMessage());
+        }
+    }
+    public function testSynchronizeAddMNLinksAfterSave()
+    {
+        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
+        $this->assertEqual($user->Group[0]->name, 'Group One');
+        $this->assertEqual($user->Group[1]->name, 'Group Two');
+        $this->assertTrue(!isset($user->Group[2]));
+    }
+    public function testSynchronizeChangeMNLinks()
+    {
+        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
+        $userArray = array(
+            'Group' => array(
+                '_identifiers' => array(
+                    $this->group_one => false,
+                    $this->group_two => true,
+                    $this->group_three => true
+                    )
+            ));
+        
+        $user->synchronizeWithArray($userArray);
+        
+        $this->assertTrue(!isset($user->Groups));
+        
+        try {
+          $user->save();
+        } catch (Exception $e ) {
+          $this->fail("Failed saving with " . $e->getMessage());
         }
         
-        $this->assertEqual($user->Group->count(), 1);
-        $user->free();
-
-        $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
-        $this->assertEqual($user->Group->count(), 0);
+        $user->refresh();
+        $user->loadReference('Group');
+        
+        $this->assertEqual($user->Group[0]->name, 'Group Two');
+        $this->assertEqual($user->Group[1]->name, 'Group Three');
+        $this->assertTrue(!isset($user->Group[2]));
+    }
+    public function testSynchronizeMNRecordsDontDeleteAfterUnlink()
+    {
+        $group = Doctrine::getTable('Group')->find($this->group_one);
+        
+        $this->assertTrue(!empty($group));
+        $this->assertEqual($group->name, 'Group One');
     }
 }

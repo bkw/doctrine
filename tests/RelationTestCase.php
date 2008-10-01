@@ -67,7 +67,7 @@ class Doctrine_Relation_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($user->Group->count(), 3);
         
-        $user->unlink('Group', array(2, 3, 4));
+        $user->unlink('Group', array(2, 3, 4), true);
         
         $this->assertEqual($user->Group->count(), 0);
         
@@ -92,7 +92,7 @@ class Doctrine_Relation_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($user->Phonenumber->count(), 3);
         
-        $user->unlink('Phonenumber', array(1, 2, 3));
+        $user->unlink('Phonenumber', array(1, 2, 3), true);
         
         $this->assertEqual($user->Phonenumber->count(), 0);
         

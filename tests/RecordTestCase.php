@@ -797,7 +797,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Group[1]->id, 1);
         $this->assertEqual($user->Group[2]->id, 2);
 
-        $user->unlink('Group', array($group1->id, $group2->id));
+        $user->unlink('Group', array($group1->id, $group2->id), true);
         $this->assertEqual($user->Group->count(), 1);
 
         $user->save();
@@ -813,7 +813,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
 
         // REPLACING OLD ASSOCIATED REFERENCE
-        $user->unlink('Group', 3);  // you MUST first unlink old relationship
+        $user->unlink('Group', 3, true);  // you MUST first unlink old relationship
         $user->Group[1] = $group1;
         $user->Group[0] = $group2;
         $user->save();
@@ -823,7 +823,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Group[0]->identifier(), $group2->identifier());
         $this->assertEqual($user->Group[1]->identifier(), $group1->identifier());
 
-        $user->unlink('Group');
+        $user->unlink('Group', array(), true);
         $user->save();
         $user->free();
 
