@@ -1,0 +1,32 @@
+Update from 1.0 to 1.1
+======================
+
+This document details the changes made to Doctrine 1.1 to make it easier for you to upgrade your projects to use this version.
+
+Doctrine Record
+---------------
+
+[r5014](http://trac.doctrine-project.org/changeset/5014) - Added support for `FROM User u WHERE u.id IN ?` in the Doctrine_Query api.
+
+    $q = Doctrine_Query::create()
+      ->from('User u')
+      ->where('u.id IN ?', array(1, 2, 3));
+    $users = $q->execute();
+
+[r5018](http://trac.doctrine-project.org/changeset/5018) - Added `Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS` for auto freeing query objects after execution 
+
+    $manager->setAttribute('auto_free_query_objects');
+    $q = Doctrine_Query::create()
+      ->from('User u')
+    $users = $q->execute(); // $q->free() is triggered
+
+[r5019](http://trac.doctrine-project.org/changeset/5019) - `unlink()` and `link()` have been changed to not delete references until `save()` is called on the object
+
+    // Does not link until save()
+    $user = Doctrine::getTable('User')->find(1);
+    $user->link('Groups', array(1, 2, 3));
+    $user->save();
+
+    // Third argument will force it to save instantly
+    $user = Doctrine::getTable('User')->find(1);
+    $user->link('Groups', array(1, 2, 3), true);
