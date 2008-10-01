@@ -307,6 +307,7 @@ $test->addTestCase($event_listener);
 
 // Query Tests
 $query_tests = new GroupTest('Query Tests','query');
+$query_tests->addTestCase(new Doctrine_Query_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Condition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultiJoin2_TestCase());
@@ -331,7 +332,6 @@ $query_tests->addTestCase(new Doctrine_Query_From_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Select_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_JoinCondition_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MultipleAggregateValue_TestCase());
-$query_tests->addTestCase(new Doctrine_Query_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MysqlSubquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_PgsqlSubquery_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_MysqlSubqueryHaving_TestCase());

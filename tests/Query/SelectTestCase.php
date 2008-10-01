@@ -244,4 +244,23 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[4]->Phonenumber[0]->max, '444 555');
     }
 
+    public function testWhereInSupportInDql()
+    {
+        $q = Doctrine_Query::create()
+            ->select('u.id, p.id')
+            ->from('User u')
+            ->leftJoin('u.Phonenumber p')
+            ->where('u.id IN ?');
+
+        $params = array(array(4, 5, 6));
+
+        $this->assertEqual(
+            $q->getSqlQuery($params),
+            'SELECT e.id AS e__id, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id IN (?, ?, ?) AND (e.type = 0)'
+        );
+
+        $users = $q->execute($params, Doctrine::HYDRATE_ARRAY);
+        
+        $this->assertEqual(count($users), 3);
+    }
 }

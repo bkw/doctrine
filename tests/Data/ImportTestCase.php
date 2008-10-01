@@ -67,7 +67,7 @@ END;
                   ->where('u.name = ?', 'jwage');
 
             $user = $query->execute()->getFirst();
-            
+
             $this->assertEqual($user->name, 'jwage');
             $this->assertEqual($user->Phonenumber->count(), 1);
             $this->assertEqual($user->Phonenumber[0]->phonenumber, '6155139185');
@@ -135,7 +135,7 @@ END;
 
             $this->conn->clear();
 
-            $query = new Doctrine_Query();
+            $query = Doctrine_Query::create();
             $query->from('User u, u.Phonenumber')
                   ->where('u.name = ?', 'jwage2');
 

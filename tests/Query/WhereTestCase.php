@@ -35,13 +35,14 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() 
     { }
+
     public function prepareTables() 
     {
         $this->tables = array('Entity', 'EnumTest', 'GroupUser', 'Account', 'Book');
         parent::prepareTables();
     }
 
-    public function testDirectParameterSetting() 
+    public function testDirectParameterSetting()
     {
         $this->connection->clear();
 
@@ -107,13 +108,14 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[0]->name, 'someone');
         $this->assertEqual($users[1]->name, 'someone.2');
     }
-    public function testDirectMultipleParameterSetting2() 
+    
+    public function testDirectMultipleParameterSetting2()
     {
-        $q = new Doctrine_Query();
+        $q = Doctrine_Query::create()
+            ->from('User')
+            ->where('User.id IN (?, ?)', array(1, 2));
 
-        $q->from('User')->where('User.id IN (?, ?)', array(1, 2));
-        
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id IN (?, ?) AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id IN (?, ?) AND (e.type = 0)');
 
         $users = $q->execute();
 
@@ -130,7 +132,8 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[0]->name, 'someone');
         $this->assertEqual($users[1]->name, 'someone.2');
     }
-    public function testNotInExpression() 
+    
+    public function testNotInExpression()
     {
         $q = new Doctrine_Query();
 
@@ -140,6 +143,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users->count(), 1);
         $this->assertEqual($users[0]->name, 'someone.2');
     }
+
     public function testExistsExpression() 
     {
         $q = new Doctrine_Query();
@@ -178,6 +182,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[0]->name, 'someone');
         $this->assertEqual($users[1]->name, 'someone.2');
     }
+
     public function testComponentAliases() 
     {
         $q = new Doctrine_Query();
@@ -191,6 +196,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[1]->name, 'someone.2');             
 
     }
+
     public function testComponentAliases2() 
     {
         $q = new Doctrine_Query();
@@ -202,6 +208,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users->count(), 1);
         $this->assertEqual($users[0]->name, 'someone');
     }
+
     public function testOperatorWithNoTrailingSpaces()
     {
         $q = new Doctrine_Query();
@@ -213,6 +220,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'someone' AND (e.type = 0)");
     }
+
     public function testOperatorWithNoTrailingSpaces2() 
     {
         $q = new Doctrine_Query();
@@ -224,6 +232,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
     }
+
     public function testOperatorWithSingleTrailingSpace() 
     {
         $q = new Doctrine_Query();
@@ -235,6 +244,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
     }
+
     public function testOperatorWithSingleTrailingSpace2() 
     {
         $q = new Doctrine_Query();
@@ -246,6 +256,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
     }
+
     public function testDeepComponentReferencingIsSupported()
     {
         $q = new Doctrine_Query();
@@ -254,6 +265,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON e.id = g.user_id LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE e2.name = 'some group' AND (e.type = 0)");
     }
+
     public function testDeepComponentReferencingIsSupported2()
     {
         $q = new Doctrine_Query();

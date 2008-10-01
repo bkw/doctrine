@@ -34,12 +34,14 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareData() 
     { }
+
     public function prepareTables()
     {
         $this->tables = array('NestTest', 'NestReference', 'Entity', 'EntityReference');
         
         parent::prepareTables();
     }
+
     public function testInitJoinTableSelfReferencingInsertingData() 
     {
         $e = new Entity();
@@ -78,6 +80,7 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(($count + 13), $this->conn->count());
     }
+
     public function testNestRelationsFetchingData()
     {    
         $this->connection->clear();
@@ -87,7 +90,7 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 
         $this->assertTrue($e->Entity[0] instanceof Entity);
         $this->assertTrue($e->Entity[1] instanceof Entity);
-
+        
         $this->assertEqual($e->Entity[0]->name, 'Friend 1');
         $this->assertEqual($e->Entity[1]->name, 'Friend 2');
 
@@ -126,8 +129,6 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($e->Entity[0] instanceof Entity);
         $this->assertTrue($e->Entity[1] instanceof Entity);
 
-
-
         $this->assertEqual(count($this->conn), ($count + 1));
 
         $this->assertEqual($e->Entity[0]->name, "Friend 1");
@@ -160,6 +161,7 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($coll->count(), 1);
     }
+
     public function testNestRelationsParsing()
     {
         $nest = new NestTest();
@@ -200,12 +202,14 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
         
         $this->connection->clear();
     }
+
     public function testEqualNestRelationsLoading()
     {
         $nest = $this->conn->queryOne('FROM NestTest n WHERE n.id = 1');
 
         $this->assertEqual($nest->Relatives->count(), 5);
     }
+
     public function testNestRelationsQuerying()
     {
         $this->connection->clear();
@@ -218,6 +222,7 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($n[0]->Parents->count(), 3);
     }
+
     public function testNestRelationsQuerying2()
     {
         $this->connection->clear();

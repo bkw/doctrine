@@ -75,21 +75,21 @@ class Doctrine_Ticket_424C_TestCase extends Doctrine_UnitTestCase
       $peter = $this->newUser(2, 'Peter', array($groupA, $groupC));
       $alan  = $this->newUser(3, 'Alan',  array($groupB, $groupC));
 
-      $q = new Doctrine_Query();            
+      $q = Doctrine_Query::create();
       $gu = $q->from('mmrGroupUser_C')->execute();
       $this->assertEqual(count($gu), 6);
 
       // Direct query
-      $q = new Doctrine_Query();            
+      $q = Doctrine_Query::create();
       $gu = $q->from('mmrGroupUser_C')->where('group_id = ?', $groupA->id)->execute();
       $this->assertEqual(count($gu), 2);
 
       // Query by join
-      $q = new Doctrine_Query();
-      $userOfGroupAByName = $q->from('mmrUser_C u, u.Group g')
-                              ->where('g.name = ?', array($groupA->name));
+      $q = Doctrine_Query::create()
+            ->from('mmrUser_C u, u.Group g')
+            ->where('g.name = ?', array($groupA->name));
 
-      $q->execute();
+      $userOfGroupAByName = $q->execute();
 
       $this->assertEqual(count($userOfGroupAByName), 2);
     }

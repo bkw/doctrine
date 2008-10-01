@@ -1,4 +1,6 @@
 <?php
+
+
 class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase {
     public function setUp() {
         parent::setUp();
