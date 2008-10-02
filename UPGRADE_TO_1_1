@@ -42,3 +42,31 @@ Doctrine Record
 
     $user->synchronizeWithArray($userArray);
     $user->save();
+
+[r5027](http://trac.doctrine-project.org/changeset/5039) - Added support for setting default charset and collate for tables.
+
+Set globally on a Doctrine_Manager instance.
+
+    $manager->setCollate('utf8_unicode_ci');
+    $manager->setCharset('utf8');
+
+The same can be set on the Doctrine_Connection and Doctrine_Record levels.
+
+    $connection->setCollate('utf8_unicode_ci');
+    $connection->setCharset('utf8');
+
+    public function setTableDefinition()
+    {
+      $this->setCollate('utf8_unicode_ci');
+      $this->setCharset('utf8');
+    }
+
+[r5030](http://trac.doctrine-project.org/changeset/5039) - Added support for setting default options for columns and auto added identifier columns.
+
+The following is now possible on Doctrine_Manager, Doctrine_Connection and Doctrine_Record.
+
+    $manager->setAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS, array('type' => 'string', 'length' => 255, 'notnull' => true));
+
+You can also customize the values that make up the auto added identifier column as well.
+
+    $manager->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'type' => 'string', 'length' => 16)); // %s in the name is replaced with the table name.
