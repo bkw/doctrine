@@ -62,6 +62,8 @@ class GroupTest extends UnitTestCase
         }
         $reporter->setTestCase($this);
         
+        $this->cachePassesAndFails();
+
         $reporter->paintFooter();
     }
 

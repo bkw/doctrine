@@ -425,9 +425,4 @@ $unsorted->addTestCase(new Doctrine_NestedSet_MultiRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
-$s = microtime(true);
 $test->run();
-$e = microtime(true);
-
-echo 'test run took: ' . ($e - $s) . ' seconds' . PHP_EOL;
-echo "peak memory usage: " . memory_get_peak_usage() / 1024 . "KB" . PHP_EOL;
