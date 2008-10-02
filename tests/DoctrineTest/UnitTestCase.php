@@ -147,7 +147,11 @@ class UnitTestCase
     public function cachePassesAndFails()
     {
         $tmpFileName = md5(serialize($this->_testCases));
-        $array = unserialize(file_get_contents('/tmp/' . $tmpFileName));
+        if (file_exists($tmpFileName)) {
+            $array = unserialize(file_get_contents('/tmp/' . $tmpFileName));
+        } else {
+            $array = array();
+        }
         if ( ! empty($array)) {
             self::$_lastRunsPassesAndFails = $array;
         }
