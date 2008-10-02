@@ -13,13 +13,6 @@ Doctrine Record
       ->where('u.id IN ?', array(1, 2, 3));
     $users = $q->execute();
 
-[r5018](http://trac.doctrine-project.org/changeset/5018) - Added `Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS` for auto freeing query objects after execution 
-
-    $manager->setAttribute('auto_free_query_objects');
-    $q = Doctrine_Query::create()
-      ->from('User u')
-    $users = $q->execute(); // $q->free() is triggered
-
 [r5019](http://trac.doctrine-project.org/changeset/5019) - `unlink()` and `link()` have been changed to not delete references until `save()` is called on the object. Also, fixed synchronizeWithArray() to synchronize many to many relationships.
 
     // Does not link until save()
@@ -42,6 +35,9 @@ Doctrine Record
 
     $user->synchronizeWithArray($userArray);
     $user->save();
+
+Default Options
+---------------
 
 [r5027](http://trac.doctrine-project.org/changeset/5039) - Added support for setting default charset and collate for tables.
 
@@ -85,3 +81,35 @@ A query can now be transformed from an update() or delete() to a select() or any
     // Change it to a select query
     $q->select();
     $user = $q->fetchOne();
+
+[r5018](http://trac.doctrine-project.org/changeset/5018) - Added `Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS` for auto freeing query objects after execution 
+
+    $manager->setAttribute('auto_free_query_objects');
+    $q = Doctrine_Query::create()
+      ->from('User u')
+    $users = $q->execute(); // $q->free() is triggered
+
+Doctrine Collection
+-------------------
+
+You can now convert a Doctrine_Collection in to a key value array made up of the values from the two specified columns.
+
+    $q = Doctrine_Query::create()
+        ->from('User u');
+    $users = $q->execute();
+
+    $array = $users->toKeyValueArray('id', 'name');
+    print_r($array);
+
+    /*
+    array(
+      4 => 'zYne',
+      5 => 'Arnold Schwarzenegger',
+      6 => 'Michael Caine',
+      7 => 'Takeshi Kitano',
+      8 => 'Sylvester Stallone',
+      9 => 'Kurt Russell',
+      10 => 'Jean Reno',
+      11 => 'Edward Furlong',
+    )
+    */
