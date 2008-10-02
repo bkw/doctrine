@@ -20,7 +20,7 @@ Doctrine Record
       ->from('User u')
     $users = $q->execute(); // $q->free() is triggered
 
-[r5019](http://trac.doctrine-project.org/changeset/5019) - `unlink()` and `link()` have been changed to not delete references until `save()` is called on the object
+[r5019](http://trac.doctrine-project.org/changeset/5019) - `unlink()` and `link()` have been changed to not delete references until `save()` is called on the object. Also, fixed synchronizeWithArray() to synchronize many to many relationships.
 
     // Does not link until save()
     $user = Doctrine::getTable('User')->find(1);
@@ -30,3 +30,15 @@ Doctrine Record
     // Third argument will force it to save instantly
     $user = Doctrine::getTable('User')->find(1);
     $user->link('Groups', array(1, 2, 3), true);
+
+    $user = Doctrine::getTable('User')->find(1);
+    $userArray = array(
+        'Group' => array(
+            '_identifiers' => array(
+                1 => true,
+                2 => true,
+                3 => false)
+        ));
+
+    $user->synchronizeWithArray($userArray);
+    $user->save();
