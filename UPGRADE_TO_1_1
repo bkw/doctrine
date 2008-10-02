@@ -106,7 +106,7 @@ You can also customize the values that make up the auto added identifier column 
 Doctrine Query
 --------------
 
-A query can now be transformed from an update() or delete() to a select() or any combination. Run a query once to update a field then turn it to a select and execute it.
+[r5031](http://trac.doctrine-project.org/changeset/5031) - A query can now be transformed from an update() or delete() to a select() or any combination. Run a query once to update a field then turn it to a select and execute it.
 
     $q = Doctrine_Query::create()
         ->update('User u')
