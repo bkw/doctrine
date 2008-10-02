@@ -7,10 +7,14 @@ class UnitTestCase
     
     protected $_messages = array();
 
+    protected static $_passesAndFails = array('passes' => array(), 'fails' => array());
+
+    protected static $_lastRunsPassesAndFails = array('passes' => array(), 'fails' => array());
+
     public function assertEqual($value, $value2)
     {
         if ($value == $value2) {
-            $this->_passed++;
+            $this->pass();
         } else {
             $seperator = "<br>";
             if(PHP_SAPI === "cli"){
@@ -30,7 +34,7 @@ class UnitTestCase
     public function assertIdentical($value, $value2)
     {
         if ($value === $value2) {
-            $this->_passed++;
+            $this->pass();
         } else {
             $this->_fail();
         }
@@ -39,7 +43,7 @@ class UnitTestCase
     public function assertNotEqual($value, $value2)
     {
         if ($value != $value2) {
-            $this->_passed++;
+            $this->pass();
         } else {
             $this->_fail();
         }
@@ -47,7 +51,7 @@ class UnitTestCase
     public function assertTrue($expr)
     {
         if ($expr) {
-            $this->_passed++;
+            $this->pass();
         } else {
             $this->_fail();
         }
@@ -55,7 +59,7 @@ class UnitTestCase
     public function assertFalse($expr)
     {
         if ( ! $expr) {
-            $this->_passed++;
+            $this->pass();
         } else {
             $this->_fail();
         }
@@ -81,6 +85,10 @@ class UnitTestCase
 
     public function pass() 
     {
+        $class = get_class($this);
+        if ( ! isset(self::$_passesAndFails['fails'][$class])) {
+            self::$_passesAndFails['passes'][$class] = $class;
+        }
         $this->_passed++;
     }
     public function fail($message = "")
@@ -108,6 +116,11 @@ class UnitTestCase
             $line = $stack['line'];
         }
         $this->_failed++;
+        $class = get_class($this);
+        if (isset(self::$_passesAndFails['passes'][$class])) {
+            unset(self::$_passesAndFails['passes'][$class]);
+        }
+        self::$_passesAndFails['fails'][$class] = $class;
     }
     public function run(DoctrineTest_Reporter $reporter = null, $filter = null) 
     {
@@ -130,5 +143,54 @@ class UnitTestCase
     public function getPassCount()
     {
         return $this->_passed;
+    }
+    public function cachePassesAndFails()
+    {
+        $tmpFileName = md5(serialize($this->_testCases));
+        $array = unserialize(file_get_contents('/tmp/' . $tmpFileName));
+        if ( ! empty($array)) {
+            self::$_lastRunsPassesAndFails = $array;
+        }
+        file_put_contents('/tmp/' . $tmpFileName, serialize(self::$_passesAndFails));
+    }
+    public function getPassesAndFails()
+    {
+        return self::$_passesAndFails;
+    }
+    public function getLastRunsPassesAndFails()
+    {
+        return self::$_lastRunsPassesAndFails;
+    }
+    public function getNewFails()
+    {
+        $newFails = array();
+        $fails = self::$_passesAndFails['fails'];
+        foreach ($fails as $fail) {
+            // If it passed before then it is a new fail
+            if (isset(self::$_lastRunsPassesAndFails['passes'][$fail])) {
+                $newFails[$fail] = $fail;
+            }
+        }
+        return $newFails;;
+    }
+    public function getFixedFails()
+    {
+        $fixed = array();
+        $fails = self::$_lastRunsPassesAndFails['fails'];
+        foreach ($fails as $fail) {
+            // If the fail passes this time then it is fixed
+            if (isset(self::$_passesAndFails['passes'][$fail])) {
+                $fixed[$fail] = $fail;
+            }
+        }
+        return $fixed;;
+    }
+    public function getNumNewFails()
+    {
+        return count($this->getNewFails());
+    }
+    public function getNumFixedFails()
+    {
+        return count($this->getFixedFails());
     }
 }

@@ -104,6 +104,14 @@ class DoctrineTest
             }
         } 
 
+        if (isset($options['ticket'])) {
+            $testGroup = new GroupTest('Doctrine Framework Custom test', 'custom');
+            foreach ($options['ticket'] as $ticket) {
+                $class = 'Doctrine_Ticket_' . $ticket. '_TestCase';
+                $testGroup->addTestCase(new $class);
+            }
+        }
+
         $filter = '';
         if (isset($options['filter'])) {
             $filter = $options['filter'];
