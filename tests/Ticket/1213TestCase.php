@@ -57,7 +57,7 @@ class Doctrine_Ticket_1213_Birthday extends Doctrine_Record
 {
 	public function setTableDefinition()
 	{
-		$this->hasColumn('person_guid', 'string', 32);
+		$this->hasColumn('person_guid', 'string', 32, array('primary' => true));
 		$this->hasColumn('Bday', 'timestamp');
 
 		$this->index('person_guid', array('fields' => array('person_guid')));
@@ -68,7 +68,7 @@ class Doctrine_Ticket_1213_Person extends Doctrine_Record
 {
 	public function setTableDefinition()
 	{
-		$this->hasColumn('guid', 'string', 32);
+		$this->hasColumn('guid', 'string', 32, array('primary' => true));
 		$this->hasColumn('Name', 'string', 100);
 
 		$this->index('guid', array('fields' => array('guid')));
