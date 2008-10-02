@@ -289,7 +289,7 @@ $behaviors->addTestCase(new Doctrine_SoftDelete_TestCase());
 $test->addTestCase($behaviors);
 
 // Validator Testing
-$validators = new GroupTest('Vavlidators Testing', 'validators');
+$validators = new GroupTest('Validators Testing', 'validators');
 $validators->addTestCase(new Doctrine_Validator_TestCase());
 $validators->addTestCase(new Doctrine_Validator_Future_TestCase());
 $validators->addTestCase(new Doctrine_Validator_Past_TestCase());
