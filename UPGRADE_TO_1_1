@@ -36,6 +36,26 @@ Doctrine Record
     $user->synchronizeWithArray($userArray);
     $user->save();
 
+[r5034](http://trac.doctrine-project.org/changeset/5034) - You can now retrieve the old values of records through the getModified() function. By default it returns an array of fieldName => newValue but if you specify getModified(true) it will return the old values.
+
+    $users = Doctrine::getTable('User')->findAll();
+    $user = $users->getFirst();
+    $user->name = 'zYne-';
+    
+    $oldValues = $user->getModified(true);
+    /*
+    array(
+      'name' => 'zYne',
+    )
+    */
+    
+    $newValues = $user->getModified(false);
+    /*
+    array(
+      'name' => 'zYne-',
+    )
+    */
+
 Default Options
 ---------------
 
