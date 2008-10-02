@@ -108,17 +108,20 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getQuery(), 'SELECT MAX(e.id) AS e__0, MIN(e.name) AS e__1, COUNT(p.id) AS p__2 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
 
-    public function testEmptySelectPart()
+    public function testChangeUpdateToSelect()
     {
-        $q = new Doctrine_Query();
+        $q = Doctrine_Query::create()
+            ->update('User u')
+            ->set('u.password', '?', 'newpassword')
+            ->where('u.username = ?', 'jwage');
 
-        try {
-            $q->select(null);
+        $this->assertEqual($q->getType(), Doctrine_Query_Abstract::UPDATE);
+        $this->assertEqual($q->getDql(), 'UPDATE User u SET u.password = ? WHERE u.username = ?');
 
-            $this->fail();
-        } catch(Doctrine_Query_Exception $e) {
-            $this->pass();
-        }
+        $q->select();
+
+        $this->assertEqual($q->getType(), Doctrine_Query_Abstract::SELECT);
+        $this->assertEqual($q->getDql(), ' FROM User u WHERE u.username = ?');
     }
 
     public function testUnknownAggregateFunction() 

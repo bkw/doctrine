@@ -70,3 +70,18 @@ The following is now possible on Doctrine_Manager, Doctrine_Connection and Doctr
 You can also customize the values that make up the auto added identifier column as well.
 
     $manager->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'type' => 'string', 'length' => 16)); // %s in the name is replaced with the table name.
+
+Doctrine Query
+--------------
+
+A query can now be transformed from an update() or delete() to a select() or any combination. Run a query once to update a field then turn it to a select and execute it.
+
+    $q = Doctrine_Query::create()
+        ->update('User u')
+        ->set('u.password', '?', 'newpassword')
+        ->where('u.username = ?', 'jwage');
+    $q->execute();
+
+    // Change it to a select query
+    $q->select();
+    $user = $q->fetchOne();
