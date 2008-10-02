@@ -898,14 +898,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         // only load the data from database if the Doctrine_Record is in proxy state
         if ($this->_state == Doctrine_Record::STATE_PROXY) {
             $id = $this->identifier();
+            
             if ( ! is_array($id)) {
                 $id = array($id);
             }
+            
             if (empty($id)) {
                 return false;
             }
 
             $data = empty($data) ? $this->getTable()->find($id, Doctrine::HYDRATE_ARRAY) : $data;
+            
             foreach ($data as $field => $value) {
                if ( ! isset($this->_data[$field]) || $this->_data[$field] === self::$_null) {
                    $this->_data[$field] = $value;
@@ -917,8 +920,10 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             } else if (count($data) >= $this->_table->getColumnCount()) {
                 $this->_state = Doctrine_Record::STATE_CLEAN;
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -935,12 +940,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         if ($this->_table->getAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE)) {
             $componentName = $this->_table->getComponentName();
-            $accessor = isset(self::$_customAccessors[$componentName][$fieldName]) ? self::$_customAccessors[$componentName][$fieldName]:'get' . Doctrine_Inflector::classify($fieldName);
+
+            $accessor = isset(self::$_customAccessors[$componentName][$fieldName])
+                ? self::$_customAccessors[$componentName][$fieldName]
+                : 'get' . Doctrine_Inflector::classify($fieldName);
+
             if (isset(self::$_customAccessors[$componentName][$fieldName]) || method_exists($this, $accessor)) {
                 self::$_customAccessors[$componentName][$fieldName] = $accessor;
                 return $this->$accessor($load);
             }
         }
+
         return $this->_get($fieldName, $load);
     }
 
@@ -948,11 +958,12 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         $value = self::$_null;
 
-        if (isset($this->_data[$fieldName])) {
+        if (array_key_exists($fieldName, $this->_data)) {
             // check if the value is the Doctrine_Null object located in self::$_null)
             if ($this->_data[$fieldName] === self::$_null && $load) {
                 $this->load();
             }
+
             if ($this->_data[$fieldName] === self::$_null) {
                 $value = null;
             } else {
@@ -970,9 +981,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 $rel = $this->_table->getRelation($fieldName);
                 $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
             }
+
             if ($this->_references[$fieldName] === self::$_null) {
                 return null;
             }
+
             return $this->_references[$fieldName];
         } catch (Doctrine_Table_Exception $e) {
             foreach ($this->_table->getFilters() as $filter) {
