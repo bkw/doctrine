@@ -56,6 +56,22 @@ Doctrine Record
     )
     */
 
+[r5035](http://trac.doctrine-project.org/changeset/5035) - Added ability to use custom setters with fromArray()
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('password');
+    }
+
+    public function setEncryptedPassword($password)
+    {
+        return $this->_set('password', md5($password));
+    }
+
+    $user->fromArray(array('encrypted_password' => 'changeme'));
+
+Will invoke the custom setter setEncryptedPassword()
+
 Default Options
 ---------------
 

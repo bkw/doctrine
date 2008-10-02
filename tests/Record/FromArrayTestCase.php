@@ -85,5 +85,4 @@ class Doctrine_Record_FromArray_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Group[0]->name, 'New Group');
         $this->assertEqual($user->Group[1]->name, 'Group One');
     }
-
 }
