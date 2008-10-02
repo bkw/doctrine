@@ -92,7 +92,7 @@ A query can now be transformed from an update() or delete() to a select() or any
 Doctrine Collection
 -------------------
 
-You can now convert a Doctrine_Collection in to a key value array made up of the values from the two specified columns.
+[r5032](http://trac.doctrine-project.org/changeset/5032) - You can now convert a Doctrine_Collection in to a key value array made up of the values from the two specified columns.
 
     $q = Doctrine_Query::create()
         ->from('User u');
@@ -113,3 +113,16 @@ You can now convert a Doctrine_Collection in to a key value array made up of the
       11 => 'Edward Furlong',
     )
     */
+
+Doctrine Validation
+-------------------
+
+[r5033](http://trac.doctrine-project.org/changeset/5033) - You can now specify a unique validator on a set of fields. The argument of the unique() function can either be an array of fields or an argument for each field.
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('email_address', 'string', 255);
+
+        $this->unique('username', 'email_address');
+    }
