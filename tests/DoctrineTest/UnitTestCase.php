@@ -146,7 +146,7 @@ class UnitTestCase
     }
     public function cachePassesAndFails()
     {
-        $tmpFileName = '/tmp/' . md5(serialize($this->_testCases));
+        $tmpFileName = sys_get_temp_dir() . '/' . md5(serialize($this->_testCases));
         if (file_exists($tmpFileName)) {
             $array = unserialize(file_get_contents($tmpFileName));
         } else {
