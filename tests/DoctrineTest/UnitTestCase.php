@@ -146,16 +146,16 @@ class UnitTestCase
     }
     public function cachePassesAndFails()
     {
-        $tmpFileName = md5(serialize($this->_testCases));
+        $tmpFileName = '/tmp/' . md5(serialize($this->_testCases));
         if (file_exists($tmpFileName)) {
-            $array = unserialize(file_get_contents('/tmp/' . $tmpFileName));
+            $array = unserialize(file_get_contents($tmpFileName));
         } else {
             $array = array();
         }
         if ( ! empty($array)) {
             self::$_lastRunsPassesAndFails = $array;
         }
-        file_put_contents('/tmp/' . $tmpFileName, serialize(self::$_passesAndFails));
+        file_put_contents($tmpFileName, serialize(self::$_passesAndFails));
     }
     public function getPassesAndFails()
     {
