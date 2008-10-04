@@ -808,7 +808,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      * @param Doctrine_Connection $conn     optional connection parameter
      * @return Doctrine_Collection
      */
-    public function save(Doctrine_Connection $conn = null)
+    public function save(Doctrine_Connection $conn = null, $processDiff = true)
     {
         if ($conn == null) {
             $conn = $this->_table->getConnection();
@@ -819,7 +819,9 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
 
             $conn->transaction->addCollection($this);
 
-            $this->processDiff();
+            if ($processDiff) {
+                $this->processDiff();
+            }
 
             foreach ($this->getData() as $key => $record) {
                 $record->save($conn);
