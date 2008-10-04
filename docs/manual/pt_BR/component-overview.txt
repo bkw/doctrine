@@ -77,7 +77,7 @@ $user['name'] = 'Jack Daniels';
 
 $user['age'] = 100;
 
-print_r($user->modifiedFields()); // array('name' => 'Jack Daniels', 'age' => 100);
+print_r($user->getModified()); // array('name' => 'Jack Daniels', 'age' => 100);
 
 $user->isModified(); // true
 </code>
