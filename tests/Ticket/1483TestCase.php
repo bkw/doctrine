@@ -30,64 +30,54 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_1483_TestCase extends Doctrine_UnitTestCase
+class Doctrine_Ticket_1483_TestCase extends Doctrine_UnitTestCase 
 {
-    public function prepareTables()
+    public function testTest()
     {
-        $this->tables[] = 'T1483_Phrase';
-        
-        parent::prepareTables();
+        $q = Doctrine_Query::create()
+            ->from('Ticket_1483_User u')
+            ->leftJoin('u.Groups g WITH g.id = (SELECT g2.id FROM Ticket_1483_Group g2 WHERE (g2.name = \'Test\' OR g2.name = \'Test2\'))');
+        $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.username AS t__username, t2.id AS t2__id, t2.name AS t2__name FROM ticket_1483__user t LEFT JOIN ticket_1483__user_group t3 ON t.id = t3.user_id LEFT JOIN ticket_1483__group t2 ON t2.id = t3.group_id AND t2.id = (SELECT t4.id AS t4__id FROM ticket_1483__group t4 WHERE (t4.name = \'Test\' OR t4.name = \'Test2\'))');
+
     }
-    
-    
-    public function prepareData()
+}
+
+class Ticket_1483_User extends Doctrine_Record
+{
+    public function setTableDefinition()
     {
-        $i = new T1483_Phrase();
-
-        $i->Translation['EN']->name = 'some name';
-        $i->Translation['FI']->name = 'joku nimi';
-
-        $i->save();
+        $this->hasColumn('username', 'string', 255);
     }
 
-
-    public function testTicket()
+    public function setUp()
     {
-        $table = 'Phrase';
+        $this->hasMany('Ticket_1483_Group as Groups', array('local'    => 'user_id',
+                                                            'foreign'  => 'group_id',
+                                                            'refClass' => 'Ticket_1483_UserGroup'));
+    }
+}
 
-        try {
-            $q = Doctrine_Query::create()
-                //->select("$table.*, t2_$table.*, t_$table.*")
-                ->from("T1483_$table $table")
-                ->leftJoin("$table.Translation t2_$table WITH t2_$table.lang = 'EN' INDEXBY t2_$table.lang")
-                ->leftJoin("$table.Translation t_$table WITH t_$table.lang = 'FI' INDEXBY t_$table.lang");
-    
-            //echo '<pre>'.var_export($q->getSqlQuery(), true).'</pre>';
-    
-            $items = $q->execute();
-    
-            //echo '<pre>'.var_export($items->toArray(), true).'</pre>';
-            
-            $this->pass();
-        } catch (Doctrine_Exception $e) {
-            $this->fail($e->getMessage());
-        }
+class Ticket_1483_Group extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Ticket_1483_User as Users', array('local'    => 'group_id',
+                                                          'foreign'  => 'user_id',
+                                                          'refClass' => 'Ticket_1483_UserGroup'));
     }
 }
 
 
-class T1483_Phrase extends Doctrine_Record
+class Ticket_1483_UserGroup extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->setTableName('phrase');
-        
-        $this->hasColumn('name', 'string', 255);
-    }
-    
-    
-    public function setUp()
-    {
-        $this->actAs('I18n', array('fields' => array('name')));
+        $this->hasColumn('user_id', 'integer');
+        $this->hasColumn('group_id', 'integer');
     }
 }
