@@ -58,7 +58,7 @@ User:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -93,7 +93,7 @@ Album:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -131,7 +131,7 @@ Phonenumber:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -169,7 +169,7 @@ I18nTestImport:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -209,7 +209,7 @@ ImportNestedSet:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -282,7 +282,7 @@ ImportNestedSetMultipleTree:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -351,7 +351,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -389,7 +389,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
             $this->fail();
         } catch (Exception $e) {
             $this->pass();
@@ -491,7 +491,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -526,7 +526,7 @@ I18nNumberLang:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml');
+            Doctrine::loadData('test.yml', true);
 
             $this->conn->clear();
 
