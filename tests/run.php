@@ -145,11 +145,13 @@ $tickets->addTestCase(new Doctrine_Ticket_1465_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1480_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1483_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1507_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1520_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1523_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1527_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1537_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1540_TestCase());
 $tickets->addTestCase(new Doctrine_Ticket_1543_TestCase());
+$tickets->addTestCase(new Doctrine_Ticket_1545_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)

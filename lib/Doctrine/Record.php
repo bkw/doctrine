@@ -988,10 +988,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
             return $this->_references[$fieldName];
         } catch (Doctrine_Table_Exception $e) {
+            $success = false;
             foreach ($this->_table->getFilters() as $filter) {
-                if (($value = $filter->filterGet($this, $fieldName, $value)) !== null) {
-                    return $value;
-                }
+                try {
+                    $value = $filter->filterGet($this, $fieldName, $value);
+                    $success = true;
+                } catch (Doctrine_Exception $e) {}
+            }
+            if ($success) {
+                return $value;
+            } else {
+                throw $e;
             }
         }
     }
@@ -1078,10 +1085,17 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             try {
                 $this->coreSetRelated($fieldName, $value);
             } catch (Doctrine_Table_Exception $e) {
+                $success = false;
                 foreach ($this->_table->getFilters() as $filter) {
-                    if (($value = $filter->filterSet($this, $fieldName, $value)) !== null) {
-                        break;
-                    }
+                    try {
+                        $value = $filter->filterSet($this, $fieldName, $value);
+                        $success = true;
+                    } catch (Doctrine_Exception $e) {}
+                }
+                if ($success) {
+                    return $value;
+                } else {
+                    throw $e;
                 }
             }
         }
