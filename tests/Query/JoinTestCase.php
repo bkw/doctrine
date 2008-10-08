@@ -113,6 +113,32 @@ class Doctrine_Query_Join_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getSql(), 'SELECT r.id AS r__id, r.name AS r__name, r2.id AS r2__id, r2.name AS r2__name, r2.country_id AS r2__country_id, r2.district_id AS r2__district_id FROM record__country r INNER JOIN record__city r2 ON r.id = r2.country_id AND LOWER(UPPER(r2.name)) LIKE LOWER(?) WHERE r.id = ?');
     }
+    
+    
+    public function testQueryMultipleAggFunctionInJoins2()
+    {
+        $q = new Doctrine_Query();
+
+        $q->select('c.*, c2.*, d.*')
+          ->from('Record_Country c')
+          ->innerJoin('c.City c2 WITH LOWER(UPPER(c2.name)) LIKE CONCAT(UPPER(?), UPPER(c2.name))', array('city 1'))
+          ->where('c.id = ?', array(1));
+
+        $this->assertEqual($q->getSql(), 'SELECT r.id AS r__id, r.name AS r__name, r2.id AS r2__id, r2.name AS r2__name, r2.country_id AS r2__country_id, r2.district_id AS r2__district_id FROM record__country r INNER JOIN record__city r2 ON r.id = r2.country_id AND LOWER(UPPER(r2.name)) LIKE CONCAT(UPPER(?), UPPER(r2.name)) WHERE r.id = ?');
+    }
+    
+    
+    public function testQueryMultipleAggFunctionInJoins3()
+    {
+        $q = new Doctrine_Query();
+
+        $q->select('c.*, c2.*, d.*')
+          ->from('Record_Country c')
+          ->innerJoin('c.City c2 WITH CONCAT(UPPER(c2.name), c2.name) LIKE UPPER(?)', array('CITY 1city 1'))
+          ->where('c.id = ?', array(1));
+
+        $this->assertEqual($q->getSql(), 'SELECT r.id AS r__id, r.name AS r__name, r2.id AS r2__id, r2.name AS r2__name, r2.country_id AS r2__country_id, r2.district_id AS r2__district_id FROM record__country r INNER JOIN record__city r2 ON r.id = r2.country_id AND CONCAT(UPPER(r2.name), r2.name) LIKE UPPER(?) WHERE r.id = ?');
+    }
 
 
     public function testQueryWithInInsideJoins()
