@@ -41,8 +41,11 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
 
     public function prepareData() 
     {
-	    $cats = array('cat1', 'cat2', 'cat3');
+	    Doctrine_Manager::getInstance()->getCurrentConnection()->beginTransaction();
+
+        $cats = array('cat1', 'cat2', 'cat3');
 	    $now = time();
+
         for ($i = 0; $i < 10; $i++) {
 		    $age = $now - rand(0,10000);
             $x = new RelX();
@@ -57,7 +60,9 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
 		        $y->rel_x_id = $x->id;
 		        $y->save();
 		    }
-	    }   
+	    }
+        
+        Doctrine_Manager::getInstance()->getCurrentConnection()->commit();
     }
 
     public function testSubqueryExtractionUsesWrongAliases()
@@ -72,7 +77,9 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
         //	echo $sql;
 
         $xs = $q->execute();
-        
+
+        // Doctrine_Ticket_1254_TestCase : method testSubqueryExtractionUsesWrongAliases failed on line 76 
+        // This fails sometimes at
         $this->assertEqual(3, count($xs));
         
     }
