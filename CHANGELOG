@@ -1,3 +1,98 @@
+1.0.3
+-----
+     * [r4912] fixes #1323
+     * [r4948] Fixing uncaught exception in test suite.
+     * [r4950] Updating 1.0 branch for Doctrine 1.0.2
+     * [r4953] fixes #1446
+     * [r4954] fixes #1453
+     * [r4955] Added coverage for #1452
+     * [r4956] Fixing some wording.
+     * [r4957] fixes #1450
+     * [r4958] fixes #1447
+     * [r4959] fixes #1413
+     * [r4961] Fixing use_dql_callbacks so it can be specified at the connection level as well as the manager level.
+     * [r4968] undefined variable
+     * [r4969] [1.0] Fixes issue with DQL deletes which use SoftDelete behavior
+     * [r4970] Fixed #1466: fixed Oracle's lastInsertId()
+     * [r4973] Fixed #1499. Fixed #1492.
+     * [r4975] [1.0] Adding coverage for #1395
+     * [r4976] [1.0] Added coverage for #1480
+     * [r4977] [1.0] Removing references to FETCH_ARRAY
+     * [r4978] [1.0] Adding missing test
+     * [r4979] [1.0] fixes #1457 Removed the dummy data code and updated documentation
+     * [r4980] [1.0] fixes #1481 Fixing missing support for cascade: [delete] option to YAML
+     * [r4981] [1.0] fixes #1469 Adds PDO as a dependency in the PEAR package.xml
+     * [r4982] [1.0] Added coverage for #1461
+     * [r4983] [1.0] Adding coverage for #1454
+     * [r4984] [1.0] Removed deprecated task
+     * [r4985] [1.0] fixes #1458 Fixes undefined variable
+     * [r4986] [1.0] fixes #1459 Removing unused file
+     * [r4987] [1.0] fixes #1473 Fixes issue with not being able to set created and updated at values manually with Timestampable
+     * [r4988] [1.0] fixes #1456 Making postDelete() run inside transaction
+     * [r4989] [1.0] fixes #1469
+     * [r4990] [1.0] fixes #1337 Fixes issue with oracle export driver
+     * [r4991] [1.0] fixes #1064
+     * [r4992] [1.0] Adding coverage for #1380
+     * [r4993] [1.0] fixes #1380 Hydrating calculated columns to base component
+     * [r4994] [1.0] Cleaning up test for #1395
+     * [r4995] [1.0] fixes #1395 Fixes regression with calculated columns in preHydrate()
+     * [r4996] [1.0] Fixing debug print_r()
+     * [r4997] [1.0] fixes #1486 Fixes issue with CURRENT_TIMESTAMP default value in mysql
+     * [r4998] [1.0] fixes #1150 Fixes issue with validating length of multibyte character strings
+     * [r4999] [1.0] Added coverage for #1507
+     * [r5000] [1.0] fixes #1507 Fixes issue with Doctrine_Configurable::getParam() namespaces
+     * [r5001] [1.0] fixes #1254, fixes #1454, fixes #1480 Fixes issue with subqueries and shared information
+     * [r5002] [1.0] fixes #1465 Throw exception when bad DQL is used for joining components.
+     * [r5003] [1.0] Removing isset() that is not needed in the hydrator
+     * [r5004] [1.0] fixes #1475 Fixes issue with pgsql and quoting boolean values
+     * [r5005] [1.0] Fixed test case that was failing because test not being setup properly.
+     * [r5006] [1.0] fixes #1476 Fixes issue with ON and WITH keywords for joins being case insensitive
+     * [r5007] [1.0] Fixes issue with exporting records with only a primary key and no other columns
+     * [r5008] [1.0] Fixes test that fails incorrectly
+     * [r5009] [1.0] Another commit to fix #1476 and fixes possible unexpected behavior introduced in r5006.
+     * [r5010] [1.0] Fixes issue with serializing Connection objects with PDO instances
+     * [r5011] Renaming sfYaml to YamlSf, since Symfony's simple autoloader incorrectly refers to Doctrine file instead of Symfony's one.
+	  Issue reported by francoisz. I hope the patch fixes the issue.
+     * [r5012] Fixes #1518. Thanks for the tip and patch!
+     * [r5015] [1.0] Fixed #1510.
+     * [r5017] [1.0, 1.1] fixes #1336 - fixes issue with RawSql adding primary keys on distinct queries
+     * [r5020] [1.0, 1.1] fixes #1517 Implemented serialize()/unserialize() for Doctrine_Connection instances
+     * [r5024] [1.0, 1.1] Fixed array_merge_recursive warnings when using Doctrine with PHP
+     * [r5026] [1.0, 1.1] fixes #1294
+     * [r5028] [1.0, 1.1] fixes #1441 fixes issue where update column is not set for dql update queries
+     * [r5037] [1.0, 1.1]Fixed unexpected conversion of Doctrine_Null into null when second calling _get.
+	  Issue reported by user jesepe in #doctrine channel.
+     * [r5038] [1.0, 1.1] Added color outputting to tests as well as a new fails and fixed fails lines at the end report.
+     * [r5040] [1.0, 1.1] Fixes issue with caching last runs results
+     * [r5041] [1.0, 1.1] fixes invalid ticket test case #1213
+     * [r5042] [1.0, 1.1] Fixes issue with changes in tests
+     * [r5044] [1.0, 1.1] Fixes hardcoded path
+     * [r5045] [1.0, 1.1] fixes #1434
+     * [r5046] [1.0, 1.1] fixes #1511
+     * [r5047] [1.0, 1.1] fixes #952
+     * [r5049] [1.0] fixes #632 Fixes issue where unsetting a record from a collection will delete the record from the reference table as well as the related object.
+     * [r5050] [1.0] Documentation updates
+     * [r5051] [1.0, 1.1] Added coverage for #1483
+     * [r5052] [1.0, 1.1] Added coverage for #1523
+     * [r5053] [1.0, 1.1] fixes #1527
+     * [r5056] [1.0, 1.1] fixes issue with subqueries and shared information as well as cloning query objects
+     * [r5058] [1.0, 1.1] Added coverage for #1537
+     * [r5059] [1.0, 1.1] fixes #1543 Fixed regression with Timestampable behavior.
+     * [r5060] [1.0, 1.1] fixes #1533 fixes with with Doctrine_Data::purge() and no argument
+     * [r5061] [1.0, 1.1] fixes #1536
+     * [r5062] [1.0, 1.1] Added check for fixture path existance in data-dump task.
+     * [r5063] [1.0, 1.1] fixes #1540 Fixes issue with query condition parser.
+     * [r5064] [1.0, 1.1] fixes #1545 Fixes issue with record filters implementation
+     * [r5065] [1.0, 1.1] fixes #1545 - fixes issue with record filters and null values
+     * [r5066] [1.0, 1.1] fixes #1483, #1488, #1513, #1514.
+	  Improved JoinCondition handling.
+	  Added possibility to use placeholders in functions.
+     * [r5067] Oracle shouldn't have index definition in CREATE TABLE DDL. Only UNIQUE indexes should be there but defined as CONSTRAINT index_name UNIQUE (fields).
+	  Btree indexes need to be defined as standalone CREATE INDEX statement.
+     * [r5069] Fixes #1549: added delimiter of SQL queries in exported file as connection parameter
+     * [r5071] fixes #1530. Thanks a lot for your help to address the ticket!
+     * [r5074] [1.0, 1.1] fixes #1534 Issue with params and dql callbacks.
+
 1.0.2
 -----
      * [r4906] Fixed issue reported by user Adam @ doctrine-user when working with related components aliased.
