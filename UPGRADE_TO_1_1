@@ -103,6 +103,19 @@ You can also customize the values that make up the auto added identifier column 
 
     $manager->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'type' => 'string', 'length' => 16)); // %s in the name is replaced with the table name.
 
+[r5079](http://trac.doctrine-project.org/changeset/5079) - Added ability to retrieve the modified properties from the last transaction with the Doctrine_Record::getLastModified() method
+
+    $user = new User();
+    $user->username = 'jwage';
+    print_r($user->getModified()); // array('username' => 'jwage')
+    $user->save();
+
+    // getModified() returns the current modified properties and in this case now no propeties are modified.
+    print_r($user->getModified()); // array()
+
+    // you can retrieve the last modified properties like the following
+    print_r($user->getLastModified()); // array('username' => 'jwage')
+
 Doctrine Query
 --------------
 
