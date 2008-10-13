@@ -958,13 +958,15 @@ abstract class Doctrine_Query_Abstract
             throw new Doctrine_Query_Exception('You must have at least one component specified in your from.');
         }
 
-        $params = $this->getParams($params);
+        $preQueryParams = $this->getParams($params);
 
-        $this->_preQuery($params);
+        $this->_preQuery($preQueryParams);
 
         if ($hydrationMode !== null) {
             $this->_hydrator->setHydrationMode($hydrationMode);
         }
+
+        $params = $this->getParams($params);
 
         if ($this->_resultCache && $this->_type == self::SELECT) {
             $cacheDriver = $this->getResultCacheDriver();
