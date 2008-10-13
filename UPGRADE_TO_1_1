@@ -265,3 +265,16 @@ Generates the following User and Phonenumber class
                                     'foreign' => 'id'));
       }
     }
+
+Versionable Behavior
+--------------------
+
+[r5084](http://trac.doctrine-project.org/changeset/5084) - As of Doctrine 1.1 you are now able to reference relationships defined on the versioned model from the {CLASS}Version auto generated model.
+
+    // These relationships are defined on the User model but they
+    // are copied to the UserVersion model when it is generated.
+    $q = Doctrine_Query::create()
+        ->from('UserVersion u')
+        ->leftJoin('u.Profile p')
+        ->leftJoin('u.Phonenumbers p2')
+        ->leftJoin('u.Groups g');
