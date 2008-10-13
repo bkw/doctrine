@@ -186,4 +186,37 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $oQuery->query("^test");
         $this->assertEqual($oQuery->getSql(), "SELECT SUM(sub_relevance) AS relevance, id FROM search_test WHERE keyword = ? GROUP BY id ORDER BY relevance DESC");
     }
+
+    public function testStandardAnalyzerCanHandleAccentedCharactersGracefullyWorks()
+    {
+        $analyzer = new Doctrine_Search_Analyzer_Standard();
+
+        $words = $analyzer->analyze("un éléphant ça trompe énormément", "utf-8");
+        $this->assertEqual($words[1], "elephant");
+        $this->assertEqual($words[2], "ca");
+        $this->assertEqual($words[4], "enormement");
+    }
+    
+    public function testUtf8AnalyzerWorks()
+    {
+        $analyzer = new Doctrine_Search_Analyzer_Utf8();
+
+        $words = $analyzer->analyze("un Éléphant ça trompe énormément", "utf-8");
+        $this->assertEqual($words[1], "éléphant");
+        $this->assertEqual($words[2], "ça");
+        $this->assertEqual($words[4], "énormément");
+    }
+ 
+    public function testUtf8AnalyzerKnowsToHandleOtherEncodingsWorks()
+    {
+        $analyzer = new Doctrine_Search_Analyzer_Utf8();
+
+        // convert our test string to iso8859-15
+        $iso = iconv('UTF8','ISO8859-15', "un éléphant ça trompe énormément");
+
+        $words = $analyzer->analyze($iso,"ISO8859-15");
+        $this->assertEqual($words[1], "éléphant");
+        $this->assertEqual($words[2], "ça");
+        $this->assertEqual($words[4], "énormément");
+    }
 }
