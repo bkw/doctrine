@@ -39,7 +39,7 @@ class Doctrine_Ticket_1077_TestCase extends Doctrine_UnitTestCase
         parent::prepareTables();
     }
 
-    public function testTest()
+    public function testAutomaticAccessorsAndMutators()
     {
         $orig = Doctrine_Manager::getInstance()->getAttribute('auto_accessor_override');
         Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
@@ -65,6 +65,19 @@ class Doctrine_Ticket_1077_TestCase extends Doctrine_UnitTestCase
 
         Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', $orig);
     }
+
+    public function testDefiningCustomAccessorsAndMutators()
+    {
+        $user = new Ticket_1077_User();
+        $user->username = 'jwage';
+        $user->password = 'changeme';
+        $user->hasAccessor('username', 'usernameAccessor');
+        $user->hasMutator('username', 'usernameMutator');
+        $username = 'test';
+        $user->usernameMutator($username);
+        $this->assertEqual($user->usernameAccessor(), $user->username);
+        $this->assertEqual($user->usernameAccessor(), $username);
+    }
 }
 
 class Ticket_1077_User extends Doctrine_Record
@@ -81,6 +94,16 @@ class Ticket_1077_User extends Doctrine_Record
     {
         $this->hasMany('Ticket_1077_Phonenumber as Phonenumbers', array('local'   => 'id',
                                                                         'foreign' => 'user_id'));
+    }
+
+    public function usernameAccessor()
+    {
+        return $this->_get('username');
+    }
+
+    public function usernameMutator($value)
+    {
+        $this->_set('username', $value);
     }
 
     public function getPhonenumbers()

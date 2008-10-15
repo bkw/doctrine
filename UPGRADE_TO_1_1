@@ -286,3 +286,26 @@ Versionable Behavior
     actAs:
       Versionable:
         deleteVersions: false
+
+[r5098](http://trac.doctrine-project.org/changeset/5098) - Added ability to define custom accessors/mutators for a Doctrine record
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string');
+    }
+
+    public function setUp()
+    {
+        $this->hasAccessor('username', 'customUsernameAccessor');
+        $this->hasMutator('username', 'customUsernameMutator');
+    }
+
+    public function customUsernameAccessor()
+    {
+        return $this->_get('username');
+    }
+
+    public function customUsernameMutator($value)
+    {
+        $this->_set('username', $value);
+    }
