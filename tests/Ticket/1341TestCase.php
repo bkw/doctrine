@@ -59,10 +59,10 @@ class Doctrine_Ticket_1341_TestCase extends Doctrine_UnitTestCase
                 'user_id' => '1',
               ),
             ));
-        $q = Doctrine_Query::create()
-            ->from('Ticket_1341_User u')
-            ->leftJoin('u.Profile p');
-        $users = $q->execute();
+            $q = Doctrine_Query::create()
+                ->from('Ticket_1341_User u')
+                ->leftJoin('u.Profile p');
+            $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.username AS t__username, t.password AS t__password, t2.id AS t2__id, t2.name AS t2__name, t2.userid AS t2__userid FROM ticket_1341__user t LEFT JOIN ticket_1341__profile t2 ON t.id = t2.userid');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
