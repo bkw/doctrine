@@ -59,6 +59,10 @@ class Doctrine_Ticket_1341_TestCase extends Doctrine_UnitTestCase
                 'user_id' => '1',
               ),
             ));
+        $q = Doctrine_Query::create()
+            ->from('Ticket_1341_User u')
+            ->leftJoin('u.Profile p');
+        $users = $q->execute();
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
