@@ -278,3 +278,11 @@ Versionable Behavior
         ->leftJoin('u.Profile p')
         ->leftJoin('u.Phonenumbers p2')
         ->leftJoin('u.Groups g');
+
+[r5097](http://trac.doctrine-project.org/changeset/5097) - Added ability to disable automatic deleting of versions when a record is deleted
+
+    $this->actAs('Versionable', array('deleteVersions' => false));
+    
+    actAs:
+      Versionable:
+        deleteVersions: false
