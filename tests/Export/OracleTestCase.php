@@ -106,7 +106,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($this->adapter->pop(), 'COMMIT');
         $this->assertEqual(substr($this->adapter->pop(), 0, 14), 'CREATE TRIGGER');
-        $this->assertEqual($this->adapter->pop(), 'CREATE SEQUENCE MYTABLE_seq START WITH 1 INCREMENT BY 1 NOCACHE');  
+        $this->assertEqual($this->adapter->pop(), 'CREATE SEQUENCE mytable_seq START WITH 1 INCREMENT BY 1 NOCACHE');  
         $this->assertEqual(substr($this->adapter->pop(), 0, 7), "DECLARE");
         $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id INT)');
         $this->assertEqual($this->adapter->pop(), 'BEGIN TRANSACTION');
