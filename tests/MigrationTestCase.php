@@ -32,26 +32,48 @@
  */
 class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase 
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'MigrationPhonenumber';
+        $this->tables[] = 'MigrationUser';
+        $this->tables[] = 'MigrationProfile';
+        parent::prepareTables();
+    }
+
     public function testMigration()
     {
-        // New migration for the 'migration_classes' directory
         $migration = new Doctrine_Migration('migration_classes');
-
-        // Make sure the current version is 0
-        $this->assertEqual($migration->getCurrentVersion(), 0);
-
-        // migrate to version latest version
-        $migration->migrate($migration->getLatestVersion());
-        // Make sure the current version is latest version
-        $this->assertEqual($migration->getCurrentVersion(), $migration->getLatestVersion());
-
-        // now migrate back to original version
+        $this->assertFalse($migration->hasMigrated());
+        $migration->setCurrentVersion(3);
         $migration->migrate(0);
-
-        // Make sure the current version is 0
         $this->assertEqual($migration->getCurrentVersion(), 0);
+        $this->assertEqual($migration->getLatestVersion(), 4);
+        $this->assertEqual($migration->getNextVersion(), 5);
+        $current = $migration->getCurrentVersion();
+        $migration->setCurrentVersion(100);
+        $this->assertEqual($migration->getCurrentVersion(), 100);
+        $migration->setCurrentVersion($current);
+
+        $migration->migrate(3);
+        $this->assertTrue($migration->hasMigrated());
+        $this->assertEqual($migration->getCurrentVersion(), 3);
+        $this->assertTrue($this->conn->import->tableExists('migration_phonenumber'));
+        $this->assertTrue($this->conn->import->tableExists('migration_user'));
+        $this->assertTrue($this->conn->import->tableExists('migration_profile'));
+        $migration->migrate(4);
+        $this->assertFalse($this->conn->import->tableExists('migration_profile'));
+
+        $migration->migrate(0);
+        $this->assertEqual($migration->getCurrentVersion(), 0);
+        $this->assertTrue($migration->getMigrationClass(1) instanceof AddPhonenumber);
+        $this->assertTrue($migration->getMigrationClass(2) instanceof AddUser);
+        $this->assertTrue($migration->getMigrationClass(3) instanceof AddProfile);
+        $this->assertTrue($migration->getMigrationClass(4) instanceof DropProfile);
+        $this->assertFalse($this->conn->import->tableExists('migration_phonenumber'));
+        $this->assertFalse($this->conn->import->tableExists('migration_user'));
+        $this->assertFalse($this->conn->import->tableExists('migration_profile'));
     }
-    
+
     public function testMigrationClassNameInflected()
     {
         $tests = array('test-class-Name',
@@ -69,5 +91,31 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
             $code = $builder->generateMigrationClass($test);
             $this->assertTrue(strpos($code, 'TestClassName'));
         }
+    }
+}
+
+class MigrationPhonenumber extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('user_id', 'integer');
+        $this->hasColumn('phonenumber', 'string', 255);
+    }
+}
+
+class MigrationUser extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
+    }
+}
+
+class MigrationProfile extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
     }
 }

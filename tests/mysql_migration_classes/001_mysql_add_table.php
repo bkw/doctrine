@@ -1,5 +1,5 @@
 <?php
-class MysqlAddTable extends Doctrine_Migration
+class MysqlAddTable extends Doctrine_Migration_Base
 {
     public function up()
     {

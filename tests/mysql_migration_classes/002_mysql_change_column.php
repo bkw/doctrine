@@ -1,5 +1,5 @@
 <?php
-class MysqlChangeColumn extends Doctrine_Migration
+class MysqlChangeColumn extends Doctrine_Migration_Base
 {
     public function up()
     {
