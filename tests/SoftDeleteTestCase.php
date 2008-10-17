@@ -46,7 +46,7 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
         $test->something = 'test';
         $test->save();
         $test->delete();
-        $this->assertTrue($test->deleted_at);
+        $this->assertEqual($test->deleted_at, "datetime('now')");
         $test->free();
         Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
