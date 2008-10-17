@@ -96,8 +96,6 @@ class Doctrine_Record_Hook_TestCase extends Doctrine_UnitTestCase
             $r->delete();
             $this->assertEqual($r->state(), Doctrine_Record::STATE_CLEAN);
             $this->assertEqual($r->deleted_at, "datetime('now')");
-            $r->refresh();
-            $this->assertEqual($r->deleted_at, date('Y-m-d h:i:s'));
         } catch(Doctrine_Exception $e) {
             $this->fail();
         }
