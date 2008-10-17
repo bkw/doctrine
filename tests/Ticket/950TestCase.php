@@ -44,7 +44,7 @@ class Doctrine_Ticket_950_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($sql), 3);
         $this->assertEqual($sql[0], 'CREATE TABLE country_record (id BIGINT NOT NULL AUTO_INCREMENT, iso VARCHAR(2) NOT NULL, name VARCHAR(80), printable_name VARCHAR(80), iso3 VARCHAR(3), numcode BIGINT, INDEX iso_idx (iso), PRIMARY KEY(id)) ENGINE = INNODB');
         $this->assertEqual($sql[1], 'CREATE TABLE adresse_record (id BIGINT NOT NULL AUTO_INCREMENT, adresse VARCHAR(255), cp VARCHAR(60), ville VARCHAR(255), pays VARCHAR(2), INDEX pays_idx (pays), PRIMARY KEY(id)) ENGINE = INNODB');
-        $this->assertEqual($sql[2], 'ALTER TABLE adresse_record ADD FOREIGN KEY (pays) REFERENCES country_record(iso)');
+        $this->assertEqual($sql[2], 'ALTER TABLE adresse_record ADD CONSTRAINT adresse_record_pays_country_record_iso FOREIGN KEY (pays) REFERENCES country_record(iso)');
     }
 }
 
