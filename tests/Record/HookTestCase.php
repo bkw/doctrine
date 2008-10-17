@@ -89,13 +89,13 @@ class Doctrine_Record_Hook_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($r->name, 'something');
         $this->assertEqual($r->something, 'something');
 
-        $this->assertEqual($r->deleted, null);
+        $this->assertEqual($r->deleted_at, null);
         $this->assertEqual($r->state(), Doctrine_Record::STATE_CLEAN);
 
         try {
             $r->delete();
             $this->assertEqual($r->state(), Doctrine_Record::STATE_CLEAN);
-            $this->assertEqual($r->deleted, true);
+            $this->assertEqual($r->deleted_at, true);
         } catch(Doctrine_Exception $e) {
             $this->fail();
         }
