@@ -49,7 +49,7 @@ class GroupTest extends UnitTestCase
                 $testCase->run();
             } catch(Exception $e) {
                 $this->_failed += 1;
-                $this->_messages[] = 'Unexpected exception thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();;
+                $this->_messages[] = 'Unexpected ' . get_class($e) . ' thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();
                 
             }
             $this->_passed += $testCase->getPassCount();
