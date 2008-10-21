@@ -525,7 +525,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     {
         $key = (string) $key;
         if ( ! isset($this->_connections[$key])) {
-            throw new InvalidKeyException();
+            throw new Doctrine_Connection_Exception("Connection key '$key' does not exist.");
         }
         $this->_currIndex = $key;
     }
