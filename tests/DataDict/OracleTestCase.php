@@ -210,6 +210,10 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
         $a['length'] = 2;
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(2)');
+        
+        unset($a['length']);
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'INT');
     }
 
     public function testGetNativeDefinitionSupportsFloatType() 
@@ -276,18 +280,25 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
     {
         $a = array('type' => 'string');
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(16777215)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
     public function testGetNativeDefinitionSupportsArrayType2() 
     {
         $a = array('type' => 'array');
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(16777215)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
     public function testGetNativeDefinitionSupportsObjectType() 
     {
         $a = array('type' => 'object');
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(16777215)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
+    public function testGetNativeDefinitionSupportsLargerStrings()
+    {
+        $a = array('type' => 'string', 'length' => 4001);
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
+    }
+    
 }
