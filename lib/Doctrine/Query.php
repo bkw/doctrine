@@ -192,6 +192,9 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
      */
     public function reset()
     {
+        $this->_subqueryAliases = array();
+        $this->_aggregateAliasMap = array();
+        $this->_pendingAggregates = array();
         $this->_pendingJoinConditions = array();
         $this->_pendingSubqueries = array();
         $this->_pendingFields = array();
