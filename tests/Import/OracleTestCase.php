@@ -44,7 +44,7 @@ class Doctrine_Import_Oracle_TestCase extends Doctrine_UnitTestCase
     {
         $this->import->listTableColumns('table');
 
-        $q = "SELECT column_name, data_type, data_length, nullable, data_default, data_scale, data_precision FROM all_tab_columns WHERE table_name = 'TABLE' ORDER BY column_name";
+        $q = "SELECT column_name, data_type, data_length, nullable, data_default, data_scale, data_precision FROM all_tab_columns WHERE table_name = 'table' ORDER BY column_id";
 
         $this->assertEqual($this->adapter->pop(), $q);
     }
