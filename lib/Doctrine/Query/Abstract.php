@@ -542,6 +542,16 @@ abstract class Doctrine_Query_Abstract
     }
 
     /**
+     * Get the raw array of parameters
+     *
+     * @return array
+     */
+    public function getRawParams()
+    {
+      return $this->_params;
+    }
+
+    /**
      * setParams
      *
      * @param array $params
