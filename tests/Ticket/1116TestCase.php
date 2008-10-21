@@ -57,7 +57,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		$this->assertFalse($test);
 
 		$sql    = $q->getSql(); // just getSql()?!?! and it works ? the params are ok after this call  
-		$params = $q->getParams();
+		$params = $q->getFlattenedParams();
 		$this->assertEqual(count($params), 1); // now we have array('test',null) very strange ..... 
 
 		$this->assertEqual($sql, "SELECT u.id AS u__id, u.username AS u__username, u.deleted_at AS u__deleted_at FROM user u WHERE u.username = ? AND u.deleted_at IS NULL");

@@ -138,6 +138,8 @@ Doctrine Query
       ->from('User u')
     $users = $q->execute(); // $q->free() is triggered
 
+[r5121](http://trac.doctrine-project.org/changeset/5121) - Added new Doctrine_Query_Abstract::getFlattenedParams() to replace Doctrine_Query_Abstract::getParams() and Doctrine_Query_Abstract::getParams() now returns the raw unmodified array of query parameters.
+
 Doctrine Collection
 -------------------
 

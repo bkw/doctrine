@@ -94,7 +94,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
 
         $hook->hookWhere($a['where']);
         $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.name LIKE ? OR e.name LIKE ?) AND e.loginname LIKE ? AND (e.type = 0)');
-        $this->assertEqual($hook->getQuery()->getParams(), array('%Jack%', '%Daniels%', '%TheMan%'));
+        $this->assertEqual($hook->getQuery()->getFlattenedParams(), array('%Jack%', '%Daniels%', '%TheMan%'));
     }
 
     public function testHookWhereSupportsIntegerTypes()
@@ -105,7 +105,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
 
         $hook->hookWhere($a['where']);
         $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id = ? AND (e.type = 0)');
-        $this->assertEqual($hook->getQuery()->getParams(), array(10000));
+        $this->assertEqual($hook->getQuery()->getFlattenedParams(), array(10000));
     }
 
     public function testHookWhereDoesntAcceptUnknownColumn()

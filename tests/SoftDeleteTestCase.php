@@ -59,7 +59,7 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
                     ->where('s.name = ?', array('test'));
 
         $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted_at AS s__deleted_at FROM soft_delete_test s WHERE s.name = ? AND s.deleted_at IS NULL');
-        $params = $q->getParams();
+        $params = $q->getFlattenedParams();
         $this->assertEqual(count($params), 1);
         $this->assertEqual($params[0], 'test');
 
@@ -83,7 +83,7 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
 
         $results = $q->execute(array('test1', 'test2'));
         $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted_at AS s__deleted_at FROM soft_delete_test s WHERE s.name = ? AND s.something = ? AND s.deleted_at IS NULL');
-        $this->assertEqual($q->getParams(array('test1', 'test2')), array('test1', 'test2'));
+        $this->assertEqual($q->getFlattenedParams(array('test1', 'test2')), array('test1', 'test2'));
         $this->assertEqual($results->count(), 1);
         Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
