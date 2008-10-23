@@ -212,7 +212,7 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $analyzer = new Doctrine_Search_Analyzer_Utf8();
 
         // convert our test string to iso8859-15
-        $iso = iconv('UTF8','ISO8859-15', "un éléphant ça trompe énormément");
+        $iso = iconv('UTF-8','ISO8859-15', "un éléphant ça trompe énormément");
 
         $words = $analyzer->analyze($iso,"ISO8859-15");
         $this->assertEqual($words[1], "éléphant");
