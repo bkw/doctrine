@@ -647,8 +647,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                                    'onDelete' => $fk['onDelete']);
 
                 if ($relation instanceof Doctrine_Relation_LocalKey) {
-                    $def = array('local'        => $relation->getLocal(),
-                                 'foreign'      => $relation->getForeign(),
+                    $def = array('local'        => $relation->getLocalColumnName(),
+                                 'foreign'      => $relation->getForeignColumnName(),
                                  'foreignTable' => $relation->getTable()->getTableName());
 
                     if (($key = array_search($def, $options['foreignKeys'])) === false) {
