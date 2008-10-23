@@ -702,6 +702,7 @@ User:
     type: concrete
 
 Group:
+  tableName: groups
   inheritance:
     extends: Entity
     type: concrete
