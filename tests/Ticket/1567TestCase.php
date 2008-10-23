@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Ticket_1480_TestCase
+ * Doctrine_Ticket_1567_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,48 +30,43 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_1480_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Ticket_1567_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareTables()
     {
-        $this->tables[] = 'Foo';
-        $this->tables[] = 'Bar';
+        $this->tables[] = 'Ticket_1567_Project';
         parent::prepareTables();
     }
 
-    public function testSubQueryWithSoftDeleteTestCase()
+    public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
-        $q = Doctrine_Query::create()
-            ->from('Foo f')
-            ->addWhere('f.id IN (SELECT b.user_id FROM Bar b)');
-        $this->assertEqual($q->getSql(), 'SELECT f.id AS f__id, f.name AS f__name, f.password AS f__password, f.deleted_at AS f__deleted_at FROM foo f WHERE f.id IN (SELECT b.user_id AS b__user_id FROM bar b) AND f.deleted_at IS NULL');
-        $this->assertEqual(count($q->getFlattenedParams()), 0);
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        $project = new Ticket_1567_Project();
+        $project->name = 'test';
+        $project->user_id = 1;
+        $project->deleted = true;
+        $project->save();
+
+        $query = Doctrine_Query::create();
+        $query->from('Ticket_1567_Project p');
+        $query->addWhere('p.user_id = ?', 1);
+        $query->addWhere('p.deleted = ?', true);
+        
+        $this->assertEqual($query->count(), 1);
+        $this->assertEqual($query->execute()->count(), 1);
     }
 }
 
-class Foo extends Doctrine_Record
+class Ticket_1567_Project extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->setTableName('foo');
-        $this->hasColumn('id', 'integer');
-        $this->hasColumn('name', 'string');
-        $this->hasColumn('password', 'string');
+        $this->hasColumn('name', 'string', 255, array('notnull' => true));
+        $this->hasColumn('user_id', 'integer');
+        $this->hasColumn('deleted', 'boolean', 1, array('notnull' => true, 'default' => 'false'));
     }
 
     public function setUp()
     {
         $this->actAs('SoftDelete');
-    }
-}
-
-class Bar extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->setTableName('bar');
-        $this->hasColumn('user_id', 'integer');
     }
 }
