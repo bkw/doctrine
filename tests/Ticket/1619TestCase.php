@@ -42,6 +42,15 @@ class Doctrine_Ticket_1619_TestCase extends Doctrine_UnitTestCase {
 		$a = new Ticket_1619_Article();
 		$a->Translation['fr']->name = 'article';
 		$a->Translation['fr']->description = 'article';
+		$a->Translation['en']->name = 'english article';
+		$a->Translation['en']->description = 'english description';
+		$a->save();
+		
+		$b = new Ticket_1619_Article();
+		$a->Translation['fr']->name = 'maison';
+		$a->Translation['fr']->description = 'habitation';
+		$a->Translation['en']->name = 'english house';
+		$a->Translation['en']->description = 'english big house';
 		$a->save();
 	}
 }
