@@ -12,7 +12,7 @@ You can export data to fixtures file in many different formats
 $data = new Doctrine_Data();
 $data->exportData('data.yml', 'yml');
 
-// Dump to individual files. One file per model. 3rd argument true specifies to dump to individual files
+// Dump to individual files. One file per model. 4th argument true specifies to dump to individual files
 $data = new Doctrine_Data();
 $data->exportData('path/to/directory', 'yml', true);
 </code>
