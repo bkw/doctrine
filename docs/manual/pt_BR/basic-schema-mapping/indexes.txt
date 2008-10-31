@@ -78,7 +78,7 @@ class MultipleIndexTest extends Doctrine_Record
         $this->hasColumn('age', 'integer');
 
         $this->index('myindex', array('fields' => array('name', 'code')));
-        $this->index('ageindex', array('fields' => array('age'));
+        $this->index('ageindex', array('fields' => array('age')));
     }
 }
 </code>
