@@ -1,0 +1,313 @@
+Update from 1.0 to 1.1
+======================
+
+This document details the changes made to Doctrine 1.1 to make it easier for you to upgrade your projects to use this version.
+
+Doctrine Record
+---------------
+
+[r5014](http://trac.doctrine-project.org/changeset/5014) - Added support for `FROM User u WHERE u.id IN ?` in the Doctrine_Query api.
+
+    $q = Doctrine_Query::create()
+      ->from('User u')
+      ->where('u.id IN ?', array(1, 2, 3));
+    $users = $q->execute();
+
+[r5019](http://trac.doctrine-project.org/changeset/5019) - `unlink()` and `link()` have been changed to not delete references until `save()` is called on the object. Also, fixed synchronizeWithArray() to synchronize many to many relationships.
+
+    // Does not link until save()
+    $user = Doctrine::getTable('User')->find(1);
+    $user->link('Groups', array(1, 2, 3));
+    $user->save();
+
+    // Third argument will force it to save instantly
+    $user = Doctrine::getTable('User')->find(1);
+    $user->link('Groups', array(1, 2, 3), true);
+
+    $user = Doctrine::getTable('User')->find(1);
+    $userArray = array(
+        'Group' => array(
+            '_identifiers' => array(
+                1 => true,
+                2 => true,
+                3 => false)
+        ));
+
+    $user->synchronizeWithArray($userArray);
+    $user->save();
+
+[r5034](http://trac.doctrine-project.org/changeset/5034) - You can now retrieve the old values of records through the getModified() function. By default it returns an array of fieldName => newValue but if you specify getModified(true) it will return the old values.
+
+    $users = Doctrine::getTable('User')->findAll();
+    $user = $users->getFirst();
+    $user->name = 'zYne-';
+    
+    $oldValues = $user->getModified(true);
+    /*
+    array(
+      'name' => 'zYne',
+    )
+    */
+    
+    $newValues = $user->getModified(false);
+    /*
+    array(
+      'name' => 'zYne-',
+    )
+    */
+
+[r5035](http://trac.doctrine-project.org/changeset/5035) - Added ability to use custom setters with fromArray()
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('password');
+    }
+
+    public function setEncryptedPassword($password)
+    {
+        return $this->_set('password', md5($password));
+    }
+
+    $user->fromArray(array('encrypted_password' => 'changeme'));
+
+Will invoke the custom setter setEncryptedPassword()
+
+Default Options
+---------------
+
+[r5027](http://trac.doctrine-project.org/changeset/5039) - Added support for setting default charset and collate for tables.
+
+Set globally on a Doctrine_Manager instance.
+
+    $manager->setCollate('utf8_unicode_ci');
+    $manager->setCharset('utf8');
+
+The same can be set on the Doctrine_Connection and Doctrine_Record levels.
+
+    $connection->setCollate('utf8_unicode_ci');
+    $connection->setCharset('utf8');
+
+    public function setTableDefinition()
+    {
+      $this->setCollate('utf8_unicode_ci');
+      $this->setCharset('utf8');
+    }
+
+[r5030](http://trac.doctrine-project.org/changeset/5039) - Added support for setting default options for columns and auto added identifier columns.
+
+The following is now possible on Doctrine_Manager, Doctrine_Connection and Doctrine_Record.
+
+    $manager->setAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS, array('type' => 'string', 'length' => 255, 'notnull' => true));
+
+You can also customize the values that make up the auto added identifier column as well.
+
+    $manager->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'type' => 'string', 'length' => 16)); // %s in the name is replaced with the table name.
+
+[r5079](http://trac.doctrine-project.org/changeset/5079) - Added ability to retrieve the modified properties from the last transaction with the Doctrine_Record::getLastModified() method
+
+    $user = new User();
+    $user->username = 'jwage';
+    print_r($user->getModified()); // array('username' => 'jwage')
+    $user->save();
+
+    // getModified() returns the current modified properties and in this case now no propeties are modified.
+    print_r($user->getModified()); // array()
+
+    // you can retrieve the last modified properties like the following
+    print_r($user->getLastModified()); // array('username' => 'jwage')
+
+Doctrine Query
+--------------
+
+[r5031](http://trac.doctrine-project.org/changeset/5031) - A query can now be transformed from an update() or delete() to a select() or any combination. Run a query once to update a field then turn it to a select and execute it.
+
+    $q = Doctrine_Query::create()
+        ->update('User u')
+        ->set('u.password', '?', 'newpassword')
+        ->where('u.username = ?', 'jwage');
+    $q->execute();
+
+    // Change it to a select query
+    $q->select();
+    $user = $q->fetchOne();
+
+[r5018](http://trac.doctrine-project.org/changeset/5018) - Added `Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS` for auto freeing query objects after execution 
+
+    $manager->setAttribute('auto_free_query_objects');
+    $q = Doctrine_Query::create()
+      ->from('User u')
+    $users = $q->execute(); // $q->free() is triggered
+
+[r5121](http://trac.doctrine-project.org/changeset/5121) - Added new Doctrine_Query_Abstract::getFlattenedParams() to replace Doctrine_Query_Abstract::getParams() and Doctrine_Query_Abstract::getParams() now returns the raw unmodified array of query parameters.
+
+Doctrine Collection
+-------------------
+
+[r5032](http://trac.doctrine-project.org/changeset/5032) - You can now convert a Doctrine_Collection in to a key value array made up of the values from the two specified columns.
+
+    $q = Doctrine_Query::create()
+        ->from('User u');
+    $users = $q->execute();
+
+    $array = $users->toKeyValueArray('id', 'name');
+    print_r($array);
+
+    /*
+    array(
+      4 => 'zYne',
+      5 => 'Arnold Schwarzenegger',
+      6 => 'Michael Caine',
+      7 => 'Takeshi Kitano',
+      8 => 'Sylvester Stallone',
+      9 => 'Kurt Russell',
+      10 => 'Jean Reno',
+      11 => 'Edward Furlong',
+    )
+    */
+
+Doctrine Validation
+-------------------
+
+[r5033](http://trac.doctrine-project.org/changeset/5033) - You can now specify a unique validator on a set of fields. The argument of the unique() function can either be an array of fields or an argument for each field.
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('email_address', 'string', 255);
+
+        $this->unique('username', 'email_address');
+    }
+
+Doctrine Hydration
+------------------
+
+[r5016](http://trac.doctrine-project.org/changeset/5016) - A performance change was made to the hydration process which should yield some improvements when hydrating large result sets.
+
+Doctrine Schema Files
+---------------------
+
+You are now able to pass extra attributes through the YAML schema parser to store any custom column information and you have access to it through the Doctrine_Table.
+
+    ---
+    User:
+      columns:
+        username:
+          type: string(255)
+          extra:
+            test: 123
+        password:
+          type: string(255)
+
+          $username = Doctrine::getTable('User')->getDefinitionOf('username');
+          echo $username['extra']['test']; // 123
+
+Generated Models
+----------------
+
+Doctrine will now generate phpDoc property tags with the generated base classes.
+
+    ---
+    User:
+      columns:
+        username: string(255)
+        password: string(255)
+
+    Phonenumber:
+      columns:
+        user_id: integer
+        phonenumber: string
+      relations:
+        User:
+          foreignAlias: Phonenumbers
+
+Generates the following User and Phonenumber class
+
+    /**
+     * This class has been auto-generated by the Doctrine ORM Framework
+     *
+     * @property string $username
+     * @property string $password
+     * @property $Phonenumbers
+     */
+    abstract class BaseUser extends Doctrine_Record
+    {
+      public function setTableDefinition()
+      {
+        $this->setTableName('user');
+        $this->hasColumn('username', 'string', 255, array('type' => 'string', 'length' => '255'));
+        $this->hasColumn('password', 'string', 255, array('type' => 'string', 'length' => '255'));
+      }
+
+      public function setUp()
+      {
+        $this->hasMany('Phonenumber as Phonenumbers', array('local' => 'id',
+                                                            'foreign' => 'user_id'));
+      }
+    }
+
+    /**
+     * This class has been auto-generated by the Doctrine ORM Framework
+     *
+     * @property integer $user_id
+     * @property string $phonenumber
+     * @property $User
+     */
+    abstract class BasePhonenumber extends Doctrine_Record
+    {
+      public function setTableDefinition()
+      {
+        $this->setTableName('phonenumber');
+        $this->hasColumn('user_id', 'integer', null, array('type' => 'integer'));
+        $this->hasColumn('phonenumber', 'string', null, array('type' => 'string'));
+      }
+
+      public function setUp()
+      {
+        $this->hasOne('User', array('local' => 'user_id',
+                                    'foreign' => 'id'));
+      }
+    }
+
+Versionable Behavior
+--------------------
+
+[r5084](http://trac.doctrine-project.org/changeset/5084) - As of Doctrine 1.1 you are now able to reference relationships defined on the versioned model from the {CLASS}Version auto generated model.
+
+    // These relationships are defined on the User model but they
+    // are copied to the UserVersion model when it is generated.
+    $q = Doctrine_Query::create()
+        ->from('UserVersion u')
+        ->leftJoin('u.Profile p')
+        ->leftJoin('u.Phonenumbers p2')
+        ->leftJoin('u.Groups g');
+
+[r5097](http://trac.doctrine-project.org/changeset/5097) - Added ability to disable automatic deleting of versions when a record is deleted
+
+    $this->actAs('Versionable', array('deleteVersions' => false));
+    
+    actAs:
+      Versionable:
+        deleteVersions: false
+
+[r5098](http://trac.doctrine-project.org/changeset/5098) - Added ability to define custom accessors/mutators for a Doctrine record
+
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string');
+    }
+
+    public function setUp()
+    {
+        $this->hasAccessor('username', 'customUsernameAccessor');
+        $this->hasMutator('username', 'customUsernameMutator');
+    }
+
+    public function customUsernameAccessor()
+    {
+        return $this->_get('username');
+    }
+
+    public function customUsernameMutator($value)
+    {
+        $this->_set('username', $value);
+    }
