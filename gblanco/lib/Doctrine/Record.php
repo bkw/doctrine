@@ -512,7 +512,10 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             if ( ! ($stack instanceof Doctrine_Validator_ErrorStack)) {
                throw new Doctrine_Record_Exception('Argument should be an instance of Doctrine_Validator_ErrorStack.');
             }
+            
             $this->_errorStack = $stack;
+            
+            return null;
         } else {
             return $this->getErrorStack();
         }
@@ -971,9 +974,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $componentName = $this->_table->getComponentName();
         if ($accessor) {
             self::$_customAccessors[$componentName][$fieldName] = $accessor;
-        } else {
-            return (isset(self::$_customAccessors[$componentName][$fieldName]) && self::$_customAccessors[$componentName][$fieldName]);
+            
+            return true;
         }
+        
+        return (isset(self::$_customAccessors[$componentName][$fieldName]) && self::$_customAccessors[$componentName][$fieldName]);
     }
 
     /**
@@ -1000,6 +1005,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $componentName = $this->_table->getComponentName();
             return self::$_customAccessors[$componentName][$fieldName];
         }
+        
+        return 'get' . Doctrine_Inflector::classify($fieldName);
     }
 
     /**
@@ -1026,9 +1033,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $componentName = $this->_table->getComponentName();
         if ($mutator) {
             self::$_customMutators[$componentName][$fieldName] = $mutator;
-        } else {
-            return (isset(self::$_customMutators[$componentName][$fieldName]) && self::$_customMutators[$componentName][$fieldName]);
+            
+            return true;
         }
+        
+        return (isset(self::$_customMutators[$componentName][$fieldName]) && self::$_customMutators[$componentName][$fieldName]);
     }
 
     /**
@@ -1043,6 +1052,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $componentName = $this->_table->getComponentName();
             return self::$_customMutators[$componentName][$fieldName];
         }
+        
+        return 'set' . Doctrine_Inflector::classify($fieldName);
     }
 
     /**
@@ -1080,17 +1091,14 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function get($fieldName, $load = true)
     {
         if ($this->_table->getAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE) || $this->hasAccessor($fieldName)) {
-            $componentName = $this->_table->getComponentName();
-
-            $accessor = $this->hasAccessor($fieldName) 
-                ? $this->getAccessor($fieldName)
-                : 'get' . Doctrine_Inflector::classify($fieldName);
+            $accessor = $this->getAccessor($fieldName);
 
             if ($this->hasAccessor($fieldName) || method_exists($this, $accessor)) {
                 $this->hasAccessor($fieldName, $accessor);
                 return $this->$accessor($load);
             }
         }
+        
         return $this->_get($fieldName, $load);
     }
 
@@ -1118,7 +1126,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
         
         try {
-            if ( ! isset($this->_references[$fieldName]) && $load) {
+	        if ((empty($this->_references) || ! isset($this->_references[$fieldName])) && $load) {
                 $rel = $this->_table->getRelation($fieldName);
                 $this->_references[$fieldName] = $rel->fetchRelatedFor($this);
             }
@@ -1142,6 +1150,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 throw $e;
             }
         }
+        
+        return null;
     }
 
     /**
@@ -1176,16 +1186,14 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     public function set($fieldName, $value, $load = true)
     {
         if ($this->_table->getAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE) || $this->hasMutator($fieldName)) {
-            $componentName = $this->_table->getComponentName();
-            $mutator = $this->hasMutator($fieldName)
-                ? $this->getMutator($fieldName):
-                'set' . Doctrine_Inflector::classify($fieldName);
+            $mutator = $this->getMutator($fieldName);
 
             if ($this->hasMutator($fieldName) || method_exists($this, $mutator)) {
                 $this->hasMutator($fieldName, $mutator);
                 return $this->$mutator($value, $load);
             }
         }
+        
         return $this->_set($fieldName, $value, $load);
     }
 
@@ -1533,6 +1541,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $modifiedFields = $this->_modified;
         }
 
+        // CTI lookup for modified fields
         foreach ($modifiedFields as $field) {
             $type = $this->_table->getTypeOf($field);
 
@@ -1767,8 +1776,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
 
         // eliminate relationships missing in the $array
-        foreach ($this->_references as $name => $relation) {
-            
+        foreach ($this->_references as $name => $relation) {           
             if ( ! isset($array[$name])) {
                 unset($this->$name);
             }

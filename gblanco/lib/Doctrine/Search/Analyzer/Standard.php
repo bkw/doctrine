@@ -289,7 +289,7 @@ class Doctrine_Search_Analyzer_Standard implements Doctrine_Search_Analyzer_Inte
         for ($i = 0; $i < strlen($s1); $i++)
         {
             $ch1 = $s1[$i];
-            $ch2 = mb_substr($text, $i, 1);
+            $ch2 = iconv_substr($text, $i, 1);
 
             $r .= $ch1=='?'?$ch2:$ch1;
         }

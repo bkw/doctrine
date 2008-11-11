@@ -76,6 +76,7 @@ class Doctrine_I18n extends Doctrine_Record_Generator
         $options = array('className' => $this->_options['className']);
 
         $cols = $this->_options['table']->getColumns();
+        $columns = array();
 
         foreach ($cols as $column => $definition) {
             if (in_array($column, $this->_options['fields'])) {
@@ -98,7 +99,7 @@ class Doctrine_I18n extends Doctrine_Record_Generator
         $originalName = $this->_options['table']->getClassnameToReturn();
         $relations = $this->_options['table']->getRelationParser()->getPendingRelations();
         foreach($relations as $table => $relation) {
-            if ($table != $this->_table->getTableName() ) {
+	        if ($table != $this->_table->getTableName() ) {
                 // check that the localColumn is part of the moved col
                 if (isset($relation['local']) && in_array($relation['local'], $this->_options['fields'])) {
                     // found one, let's rewrite it

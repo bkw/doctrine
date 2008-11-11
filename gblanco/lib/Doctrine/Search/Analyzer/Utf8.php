@@ -49,11 +49,14 @@ class Doctrine_Search_Analyzer_Utf8 extends Doctrine_Search_Analyzer_Standard
         
         $ret = array();
         if ( ! empty($terms)) {
+            $extLoaded = extension_loaded('mbstring');;
+            
             foreach ($terms as $i => $term) {
                 if (empty($term)) {
                     continue;
                 }
-                $lower = mb_strtolower(trim($term), 'UTF-8');
+                
+                $lower = $extLoaded ? mb_strtolower(trim($term), 'UTF-8') : strtolower(trim($term));
 
                 if (in_array($lower, self::$_stopwords)) {
                     continue;

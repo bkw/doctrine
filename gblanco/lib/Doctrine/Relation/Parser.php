@@ -525,4 +525,10 @@ class Doctrine_Relation_Parser
         }
         return $def;
     }
+    
+    
+    public function injectRelation($relName, $relation)
+    {
+        $this->_relations[$relName] = $relation;
+    }
 }

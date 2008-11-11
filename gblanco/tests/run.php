@@ -1,6 +1,6 @@
 <?php
 
-// Debug Diagnosic process attacher sleep time needed to link process
+// Debug Diagnostic process attacher sleep time needed to link process
 // More info about that: http://bugs.php.net/bugs-generating-backtrace-win32.php
 //sleep(10);
 
@@ -251,17 +251,34 @@ $record->addTestCase(new Doctrine_Record_Synchronize_TestCase());
 $record->addTestCase(new Doctrine_Record_FromArray_TestCase());
 $test->addTestCase($record);
 
-// Inheritance Tests
+// INHERITANCE TESTS
+
+// Concrete Inheritance tests
+$concrete_inheritance = new GroupTest('Concrete Inheritance Tests', 'concrete_inheritance');
+$concrete_inheritance->addTestCase(new Doctrine_ConcreteInheritance_TestCase());
+$test->addTestCase($concrete_inheritance);
+
+// Column Aggregation Inheritance tests
+$aggregation_inheritance = new GroupTest('Concrete Inheritance Tests', 'aggregation_inheritance');
+$aggregation_inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
+$test->addTestCase($aggregation_inheritance);
+
+// Class Table Inheritance tests
+$classtable_inheritance = new GroupTest('Concrete Inheritance Tests', 'classtable_inheritance');
+$classtable_inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_NewClassTableInheritance_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTITreeStructure_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTII18nOnChild_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTII18nOnParent_TestCase());
+$test->addTestCase($classtable_inheritance);
+
+// General tests
 $inheritance = new GroupTest('Inheritance Tests', 'inheritance');
-$inheritance->addTestCase(new Doctrine_ConcreteInheritance_TestCase());
-$inheritance->addTestCase(new Doctrine_CtiColumnAggregationInheritance_TestCase());
-$inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_TestCase());
-$inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
-$inheritance->addTestCase(new Doctrine_NewClassTableInheritance_TestCase());
-$inheritance->addTestCase(new Doctrine_CTITreeStructure_TestCase());
-$inheritance->addTestCase(new Doctrine_CTII18n_TestCase());
+$aggregation_inheritance->addTestCase(new Doctrine_CtiColumnAggregationInheritance_TestCase());
 $inheritance->addTestCase(new Doctrine_Query_ApplyInheritance_TestCase());
 $test->addTestCase($inheritance);
+
+// END OF INHERITANCE TESTS
 
 // Search Tests
 $search = new GroupTest('Search Tests', 'search');

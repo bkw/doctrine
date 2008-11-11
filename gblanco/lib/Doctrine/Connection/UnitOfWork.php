@@ -277,6 +277,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                 foreach ($deletedRecords as $record) {
                     // currently just for bc!
                     $this->_deleteCTIParents($table, $record);
+                    $this->_deleteCTIChildren($table, $record);
                     //--
                     $record->state(Doctrine_Record::STATE_TCLEAN);
                     $record->getTable()->removeRecord($record);
@@ -677,7 +678,6 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                 }
 
                 $relatedCompIndex = array_search($relatedClassName, $flushList);
-                $type = $rel->getType();
 
                 // skip self-referenced relations
                 if ($relatedClassName === $currentClass) {
@@ -765,8 +765,6 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
     /**
      * Class Table Inheritance code.
      * Support dropped for 0.10/1.0.
-     *
-     * Note: This is flawed. We also need to delete from subclass tables.
      */
     private function _deleteCTIParents(Doctrine_Table $table, $record)
     {
@@ -775,6 +773,23 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                 $parentTable = $table->getConnection()->getTable($parent);
                 $this->conn->delete($parentTable, $record->identifier());
             }
+        }
+    }
+
+    /**
+     * Class Table Inheritance code.
+     * Support dropped for 0.10/1.0
+     *
+     */
+    private function _deleteCTIChildren(Doctrine_Table $table, $record)
+    {
+        $children = $table->getJoinedInheritanceMapChildren();
+        
+	    if (count($children) > 0) {  
+            foreach ($children as $child) {
+	            $childTable = $table->getConnection()->getTable($child);
+	            $this->conn->delete($childTable, $record->identifier());
+	        }
         }
     }
 
@@ -836,7 +851,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                 continue;
             }
 
-            $this->conn->update($this->conn->getTable($class), $dataSet[$class], $identifier);
+            $this->conn->update($parentTable, $dataSet[$class], $identifier);
         }
     }
 

@@ -262,8 +262,7 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
         $this->reference = $record;
         $this->relation  = $relation;
 
-        if ($relation instanceof Doctrine_Relation_ForeignKey || 
-                $relation instanceof Doctrine_Relation_LocalKey) {
+        if ($relation instanceof Doctrine_Relation_ForeignKey || $relation instanceof Doctrine_Relation_LocalKey) {
             $this->referenceField = $relation->getForeignFieldName();
 
             $value = $record->get($relation->getLocalFieldName());
@@ -593,7 +592,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
             }
         } elseif ($rel instanceof Doctrine_Relation_Association) {
             $identifier = $this->_table->getIdentifier();
-            $asf        = $rel->getAssociationFactory();
             $name       = $table->getComponentName();
 
             foreach ($this->data as $key => $record) {
@@ -713,7 +711,6 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
      */
     public function fromArray($array, $deep = true)
     {
-        $data = array();
         foreach ($array as $rowKey => $row) {
             $this[$rowKey]->fromArray($row, $deep);
         }

@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_I18n_TestCase
+ * Doctrine_CTII18nOnChild_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
+class Doctrine_CTII18nOnChild_TestCase extends Doctrine_UnitTestCase
 {
 
     public function prepareData()
@@ -38,29 +38,14 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
     public function prepareTables()
     {
-        $this->tables = array();
+        $this->tables = array('CTII18nOnChildTest');
 
         parent::prepareTables();
     }
 
-    public function testTranslationTableGetsExported()
-    {
-    	$this->conn->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
-    	
-    	$this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_TABLES);
-        $this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_CONSTRAINTS);
-        $this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_PLUGINS);
-
-        $sql = $this->conn->export->exportClassesSql(array('CTII18nTest'));
-
-        foreach ($sql as $query) {
-            $this->conn->exec($query);
-        }
-    }
-
     public function testTranslatedColumnsAreRemovedFromMainComponent()
     {
-        $i = new CTII18nTest();
+        $i = new CTII18nOnChildTest();
         
         $columns = $i->getTable()->getColumns();
 
@@ -70,14 +55,13 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
     public function testTranslationTableIsInitializedProperly()
     {
-        $i = new CTII18nTest();
+        $i = new CTII18nOnChildTest();
         $i->id = 1;
         $i->parent_name = 'blah';
-
+        
         $i->Translation['EN']->name = 'some name';
         $i->Translation['EN']->title = 'some title';
-        $this->assertEqual($i->Translation->getTable()->getComponentName(), 'CTII18nTestTranslation');
-
+        $this->assertEqual($i->Translation->getTable()->getComponentName(), 'CTII18nOnChildTestTranslation');
 
         $i->Translation['FI']->name = 'joku nimi';
         $i->Translation['FI']->title = 'joku otsikko';
@@ -87,7 +71,7 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
         $this->conn->clear();
 
-        $t = Doctrine_Query::create()->from('CTII18nTestTranslation')->fetchOne();
+        $t = Doctrine_Query::create()->from('CTII18nOnChildTestTranslation')->fetchOne();
 
         $this->assertEqual($t->name, 'some name');
         $this->assertEqual($t->title, 'some title');
@@ -98,7 +82,7 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
     public function testUpdatingI18nItems()
     {
-        $i = Doctrine_Query::create()->query('FROM CTII18nTest')->getFirst();
+        $i = Doctrine_Query::create()->query('FROM CTII18nOnChildTest')->getFirst();
 
         $i->Translation['EN']->name = 'updated name';
         $i->Translation['EN']->title = 'updated title';
@@ -107,7 +91,7 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
         $this->conn->clear();
 
-        $t = Doctrine_Query::create()->from('CTII18nTestTranslation')->fetchOne();
+        $t = Doctrine_Query::create()->from('CTII18nOnChildTestTranslation')->fetchOne();
 
         $this->assertEqual($t->name, 'updated name');
         $this->assertEqual($t->title, 'updated title');
@@ -116,7 +100,7 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
     public function testDataFetching()
     {
-        $i = Doctrine_Query::create()->from('CTII18nTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+        $i = Doctrine_Query::create()->from('CTII18nOnChildTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
 
         $this->assertEqual($i['Translation']['EN']['name'], 'updated name');
         $this->assertEqual($i['Translation']['EN']['title'], 'updated title');
@@ -129,7 +113,7 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
     
     public function testIndexByLangIsAttachedToNewlyCreatedCollections()
     {
-    	$coll = new Doctrine_Collection('CTII18nTestTranslation');
+    	$coll = new Doctrine_Collection('CTII18nOnChildTestTranslation');
 
         $coll['EN']['name'] = 'some name';
         
@@ -138,8 +122,34 @@ class Doctrine_CTII18n_TestCase extends Doctrine_UnitTestCase
 
     public function testIndexByLangIsAttachedToFetchedCollections()
     {
-        $coll = Doctrine_Query::create()->from('CTII18nTestTranslation')->execute();
+        $coll = Doctrine_Query::create()->from('CTII18nOnChildTestTranslation')->execute();
 
         $this->assertTrue($coll['FI']->exists());
+    }
+}
+
+
+/* MODELS */
+abstract class CTII18nOnChildTestAbstract extends Doctrine_Record
+{}
+
+class CTII18nTestOnChildParent extends CTII18nOnChildTestAbstract
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('parent_name', 'string', 200);
+    }
+}
+
+class CTII18nOnChildTest extends CTII18nTestOnChildParent
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 200);
+        $this->hasColumn('title', 'string', 200);
+    }
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('name', 'title')));
     }
 }

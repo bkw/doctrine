@@ -653,7 +653,6 @@ final class Doctrine
             // - abstract classes
             // - not a subclass of Doctrine_Record
             if ( ! $class->isAbstract() && $class->isSubClassOf('Doctrine_Record')) {
-
                 return true;
             }
         }
