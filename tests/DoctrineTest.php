@@ -119,6 +119,8 @@ class DoctrineTest
 
         //show help text
         if (isset($options['help'])) {
+            $availableGroups = sort(array_keys($this->groups));	
+	
             echo "Doctrine test runner help\n";
             echo "===========================\n";
             echo " To run all tests simply run this script without arguments. \n";
@@ -126,7 +128,8 @@ class DoctrineTest
             echo " -coverage will generate coverage report data that can be viewed with the cc.php script in this folder. NB! This takes time. You need xdebug to run this\n";
             echo " -group <groupName1> <groupName2> <className1> Use this option to run just a group of tests or tests with a given classname. Groups are currently defined as the variable name they are called in this script.\n";
             echo " -filter <string1> <string2> case insensitive strings that will be applied to the className of the tests. A test_classname must contain all of these strings to be run\n"; 
-            echo "\nAvailable groups:\n tickets, transaction, driver, data_dict, sequence, export, import, expression, core, relation, data_types, utility, db, event_listener, query_tests, record, cache\n";
+            echo "\nAvailable groups:\n " . implode(', ', $availableGroups) . "\n";
+
             die();
         }
 
