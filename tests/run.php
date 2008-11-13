@@ -303,6 +303,7 @@ $unsorted->addTestCase(new Doctrine_NewCore_TestCase());
 $unsorted->addTestCase(new Doctrine_Template_TestCase());
 $unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_NestedSet_MultiRoot_TestCase());
+$unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
