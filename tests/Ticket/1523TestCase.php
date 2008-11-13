@@ -49,7 +49,7 @@ class Doctrine_Ticket_1523_TestCase extends Doctrine_UnitTestCase
 
 		$pager = new Doctrine_Pager($q, 1, 10);
 		$pager->execute(array());
-		$this->assertEqual($pager->getQuery()->getSql(), 'SELECT t.id AS t__id, t.code AS t__code, t2.id AS t2__id, t2.tmp_id AS t2__tmp_id FROM ticket_1523__user t INNER JOIN ticket_1523__group t2 ON t.id = t2.tmp_id WHERE EXISTS (SELECT t3.id AS t3__id FROM ticket_1523__user t3 WHERE t3.id = t.id) ORDER BY t.code ASC');
+		$this->assertEqual($pager->getQuery()->getSql(), 'SELECT t.id AS t__id, t.code AS t__code, t2.id AS t2__id, t2.tmp_id AS t2__tmp_id FROM ticket_1523__user t INNER JOIN ticket_1523__group t2 ON t.id = t2.tmp_id WHERE t.id IN (SELECT DISTINCT t3.id FROM ticket_1523__user t3 INNER JOIN ticket_1523__group t4 ON t3.id = t4.tmp_id WHERE EXISTS (SELECT t5.id AS t3__id FROM ticket_1523__user t5 WHERE t5.id = t3.id) ORDER BY t3.code ASC LIMIT 10) AND EXISTS (SELECT t3.id AS t3__id FROM ticket_1523__user t3 WHERE t3.id = t.id) ORDER BY t.code ASC');
     }
 }
 
