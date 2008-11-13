@@ -54,7 +54,7 @@ class Doctrine_Import_Sqlite_TestCase extends Doctrine_UnitTestCase
     {
         $this->import->listTables();
         
-        $q = "SELECT name FROM sqlite_master WHERE type = 'table' UNION ALL SELECT name FROM sqlite_temp_master WHERE type = 'table' ORDER BY name";
+        $q = "SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence' UNION ALL SELECT name FROM sqlite_temp_master WHERE type = 'table' ORDER BY name";
 
         $this->assertEqual($this->adapter->pop(), $q);
     }
