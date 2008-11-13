@@ -30,63 +30,50 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_1523_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Ticket_1523_TestCase extends Doctrine_UnitTestCase
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'Ticket_1523_User';
+        $this->tables[] = 'Ticket_1523_Group';
+        parent::prepareTables();
+    }
+
     public function testTest()
     {
         $q = Doctrine_Query::create()
-            ->from('Ticket_1523_User u')
-            ->where('EXISTS (SELECT ug.user_id FROM Ticket_1523_UserGroup ug LEFT JOIN ug.Group g WHERE ug.user_id = u.id AND g.name = \'Test\')')
-            ->orderBy('u.username ASC');
-        $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.username AS t__username FROM ticket_1523__user t WHERE EXISTS (SELECT t2.user_id AS t2__user_id FROM ticket_1523__user_group t2 LEFT JOIN ticket_1523__group t3 ON t2.group_id = t3.id WHERE (t2.user_id = t.id AND t3.name = \'Test\')) ORDER BY t.username ASC');
+			->from('Ticket_1523_User u')
+			->innerJoin('u.Ticket_1523_Group g')
+			->where('EXISTS (SELECT uu.id FROM Ticket_1523_User uu WHERE uu.id = u.id)')
+			->orderBy('u.code ASC');
+
+		$pager = new Doctrine_Pager($q, 1, 10);
+		$pager->execute(array());
+		$this->assertEqual($pager->getQuery()->getSql(), 'SELECT t.id AS t__id, t.code AS t__code, t2.id AS t2__id, t2.tmp_id AS t2__tmp_id FROM ticket_1523__user t INNER JOIN ticket_1523__group t2 ON t.id = t2.tmp_id WHERE EXISTS (SELECT t3.id AS t3__id FROM ticket_1523__user t3 WHERE t3.id = t.id) ORDER BY t.code ASC');
     }
 }
 
 class Ticket_1523_User extends Doctrine_Record
 {
-    public function setTableDefinition()
-    {
-        $this->hasColumn('username', 'string', 255);
-    }
-
-    public function setUp()
-    {
-        $this->hasMany('Ticket_1523_Group as Groups', array('local'    => 'user_id',
-                                                            'foreign'  => 'group_id',
-                                                            'refClass' => 'Ticket_1523_UserGroup'));
-    }
+	public function setTableDefinition()
+	{
+    	$this->hasColumn('id', 'integer', 4, array('type' => 'integer', 'length' => 4, 'primary' => true));
+    	$this->hasColumn('code', 'string', 64, array('type' => 'string', 'length' => '64', 'notnull' => true));
+	}
+	public function setUp()
+	{
+		$this->hasMany('Ticket_1523_Group', array(
+			'local' => 'id',
+			'foreign' => 'tmp_id',
+		));
+	}
 }
 
 class Ticket_1523_Group extends Doctrine_Record
 {
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string', 255);
-    }
-
-    public function setUp()
-    {
-        $this->hasMany('Ticket_1523_User as Users', array('local'    => 'group_id',
-                                                          'foreign'  => 'user_id',
-                                                          'refClass' => 'Ticket_1523_UserGroup'));
-    }
-}
-
-
-class Ticket_1523_UserGroup extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('user_id', 'integer');
-        $this->hasColumn('group_id', 'integer');
-    }
-
-    public function setUp()
-    {
-        $this->hasOne('Ticket_1523_User as User', array('local'   => 'user_id',
-                                                        'foreign' => 'id'));
-
-        $this->hasOne('Ticket_1523_Group as Group', array('local'   => 'group_id',
-                                                          'foreign' => 'id'));
-    }
+	public function setTableDefinition()
+	{
+		$this->hasColumn('id', 'integer', 4, array('type' => 'integer', 'length' => 4, 'primary' => true, ));
+		$this->hasColumn('tmp_id', 'integer', 4, array('type' => 'integer', 'length' => 4, 'notnull' => true));
+	}
 }
