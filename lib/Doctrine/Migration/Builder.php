@@ -174,16 +174,19 @@ END;
         $foreignKeys = array();
         
         foreach ($models as $model) {
-            $export = Doctrine::getTable($model)->getExportableFormat();
-            
-            $foreignKeys[$export['tableName']] = $export['options']['foreignKeys'];
-            
-            $up = $this->buildCreateTable($export);
-            $down = $this->buildDropTable($export);
-            
-            $className = 'Add' . Doctrine_Inflector::classify($export['tableName']);
+            $table = Doctrine::getTable($model);
+            if ($table->getTableName() !== $this->migration->getTableName()) {
+                $export = $table->getExportableFormat();
 
-            $this->generateMigrationClass($className, array(), $up, $down);
+                $foreignKeys[$export['tableName']] = $export['options']['foreignKeys'];
+
+                $up = $this->buildCreateTable($export);
+                $down = $this->buildDropTable($export);
+
+                $className = 'Add' . Doctrine_Inflector::classify($export['tableName']);
+
+                $this->generateMigrationClass($className, array(), $up, $down);
+            }
         }
         
         if ( ! empty($foreignKeys)) {
