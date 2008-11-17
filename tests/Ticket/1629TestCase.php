@@ -53,9 +53,12 @@ class Doctrine_Ticket_1629_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create()
             ->from('Ticket_1629_User u')
             ->leftJoin('u.Phonenumbers p');
+            
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id, t.username AS t__username, t.password AS t__password, t.deleted_at AS t__deleted_at, t2.id AS t2__id, t2.user_id AS t2__user_id, t2.phonenumber AS t2__phonenumber, t2.deleted_at AS t2__deleted_at FROM ticket_1629__user t LEFT JOIN ticket_1629__phonenumber t2 ON t.id = t2.user_id AND t2.deleted_at IS NULL WHERE (t.deleted_at IS NULL)');
+            
         $users = $q->fetchArray();
         $this->assertEqual(count($users), 1);
-        $this->assertFalse(isset($users[0]['Phonenumbers']));
+        $this->assertEqual(count($users[0]['Phonenumbers']), 0);
 
         Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
