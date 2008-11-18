@@ -12,6 +12,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = "SluggableItem6";
         $this->tables[] = "SluggableItem7";
         $this->tables[] = "SluggableItem8";
+        $this->tables[] = "SluggableItem9";
         parent::prepareTables();
     }
     
@@ -187,6 +188,30 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item1->name = 'New name';
         $item1->save();
         $this->assertEqual($item1->slug, 'my-item-1');
+    }
+
+    public function testSluggableWithSoftDeleteFailWithSameSlug()
+    {
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+	
+        parent::prepareTables();
+        $item0 = new SluggableItem9();
+        $item0->name = 'test';
+        $item0->save();
+        $this->assertEqual($item0->slug, 'test');
+
+        // Let's try to blow up Doctrine!
+        $item0->delete(); // muhaha! I don't actually delete it!
+
+        // We must have 0 as total of records
+        $this->assertEqual(Doctrine_Query::create()->from('SluggableItem9')->count(), 0);
+
+        $item1 = new SluggableItem9();
+        $item1->name = 'test';
+        $item1->save();
+        $this->assertEqual($item1->slug, 'test-1');
+
+        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
 }
 
@@ -375,5 +400,26 @@ class SluggableItem8 extends Doctrine_Record
         $this->actAs('Sluggable', array('unique'    => true,
                                         'fields'    => array('name'),
                                         'canUpdate' => true));
+    }
+}
+
+// Model usage with mixing of SoftDelete
+class SluggableItem9 extends Doctrine_Record
+{
+
+    public function setTableDefinition()
+    {
+        $this->setTableName('my_item9');
+        $this->hasColumn('name', 'string', 50);
+    }
+
+    public function setUp()
+    { 
+        parent::setUp();
+
+        $this->actAs('SoftDelete');
+        $this->actAs('Sluggable', array('unique'      => true,
+                                        'uniqueIndex' => true,
+                                        'fields'      => array('name')));
     }
 }
