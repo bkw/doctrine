@@ -169,6 +169,15 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
         $q->update('User u')->set('u.name', 'CURRENT_TIMESTAMP')->where('u.id = ?');
         
         $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = CURRENT_TIMESTAMP WHERE "id" = ? AND ("type" = 0)');
+    }
+
+    public function testUpdateQuerySupportsIdentifierQuoting8()
+    {
+        $q = new Doctrine_Query();
+
+        $q->update('User u')->set('u.id', 'u.id + 1')->where('u.name = ?');
+        
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "id" = "id" + 1 WHERE "name" = ? AND ("type" = 0)');
 
         $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
