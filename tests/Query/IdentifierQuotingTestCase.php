@@ -124,6 +124,33 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
         $q->update('User')->set('name', '?', 'guilhermeblanco')->where('id = ?');
         
         $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = ? WHERE "id" = ? AND ("type" = 0)');
+    }
+
+    public function testUpdateQuerySupportsIdentifierQuoting3()
+    {
+        $q = new Doctrine_Query();
+
+        $q->update('User')->set('name', 'LOWERCASE(name)')->where('id = ?');
+        
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = LOWERCASE("name") WHERE "id" = ? AND ("type" = 0)');
+    }
+
+    public function testUpdateQuerySupportsIdentifierQuoting4()
+    {
+        $q = new Doctrine_Query();
+
+        $q->update('User u')->set('u.name', 'LOWERCASE(u.name)')->where('u.id = ?');
+        
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = LOWERCASE("name") WHERE "id" = ? AND ("type" = 0)');
+    }
+
+    public function testUpdateQuerySupportsIdentifierQuoting5()
+    {
+        $q = new Doctrine_Query();
+
+        $q->update('User u')->set('u.name', 'UPPERCASE(LOWERCASE(u.name))')->where('u.id = ?');
+        
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = UPPERCASE(LOWERCASE("name")) WHERE "id" = ? AND ("type" = 0)');
 
         $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
