@@ -1585,7 +1585,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                                 . '.'
                                 . $localTable->getColumnName($localTable->getIdentifier())) // what about composite keys?
                                 . ' = '
-                                . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getLocalColumnName());
+                                . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getLocalRefColumnName());
 
                     if ($relation->isEqual()) {
                         // equal nest relation needs additional condition
@@ -1594,7 +1594,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                                     . '.'
                                     . $table->getColumnName($table->getIdentifier()))
                                     . ' = '
-                                    . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getForeignColumnName());
+                                    . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getForeignRefColumnName());
                     }
 
                     $this->_sqlParts['from'][] = $queryPart;
@@ -1689,13 +1689,13 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $queryPart .= $this->_conn->quoteIdentifier($foreignAlias . '.' . $localIdentifier)
                     . ' = '
-                    . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getForeignColumnName());
+                    . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getForeignRefColumnName());
 
         if ($relation->isEqual()) {
             $queryPart .= ' OR '
                         . $this->_conn->quoteIdentifier($foreignAlias . '.' . $localIdentifier)
                         . ' = '
-                        . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getLocalColumnName())
+                        . $this->_conn->quoteIdentifier($assocAlias . '.' . $relation->getLocalRefColumnName())
                         . ') AND '
                         . $this->_conn->quoteIdentifier($foreignAlias . '.' . $localIdentifier)
                         . ' != '
