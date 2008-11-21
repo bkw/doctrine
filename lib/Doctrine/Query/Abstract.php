@@ -1866,7 +1866,7 @@ abstract class Doctrine_Query_Abstract
         $this->_queryCache = $driver;
 
         if ($timeToLive !== null) {
-            $this->setResultCacheLifeSpan($timeToLive);
+            $this->setQueryCacheLifeSpan($timeToLive);
         }
         return $this;
     }
