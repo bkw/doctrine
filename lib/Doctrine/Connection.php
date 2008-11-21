@@ -1017,8 +1017,9 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
 
                 return $stmt;
             }
-        } catch (Doctrine_Adapter_Exception $e) {
-        } catch (PDOException $e) { }
+        } 
+        catch (Doctrine_Adapter_Exception $e) { }
+        catch (PDOException $e) { }
 
         $this->rethrowException($e, $this);
     }
