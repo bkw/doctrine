@@ -1512,7 +1512,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         foreach ($array as $key => $value) {
             if ($key == '_identifier') {
                 $refresh = true;
-                $this->assignIdentifier((array) $value);
+                $this->assignIdentifier($value);
                 continue;
             }
 
@@ -1550,7 +1550,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         foreach ($array as $key => $value) {
             if ($key == '_identifier') {
                 $refresh = true;
-                $this->assignIdentifier((array) $value);
+                $this->assignIdentifier($value);
                 continue;
             }
 
