@@ -1,4 +1,4 @@
 + My First Project
-+ symfony 1.1 and Doctrine
-+ symfony 1.1 and Doctrine Migrations
++ symfony and Doctrine
++ symfony Doctrine Migrations
 + Code Igniter and Doctrine
