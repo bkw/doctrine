@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-10-13</date>
- <time>21:04:04</time>
+ <date>2008-11-25</date>
+ <time>23:05:06</time>
  <version>
-  <release>1.0.3</release>
-  <api>1.0.3</api>
+  <release>1.0.4</release>
+  <api>1.0.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -41,6 +41,7 @@ requiring needless code duplication.</description>
       <dir name="Statement">
        <file name="Interface.php" role="php" />
        <file name="Mock.php" role="php" />
+       <file name="Oracle.php" role="php" />
       </dir> <!-- /lib/Doctrine/Adapter/Statement -->
       <file name="Db2.php" role="php" />
       <file name="Exception.php" role="php" />
@@ -933,6 +934,7 @@ requiring needless code duplication.</description>
      <file name="MyUserOtherThing.php" role="test" />
      <file name="NestedSetTest_SingleRootNode.php" role="test" />
      <file name="NestedSet_MultiRootNode.php" role="test" />
+     <file name="NestedSet_Timestampable_MultiRootNode.php" role="test" />
      <file name="NestReference.php" role="test" />
      <file name="NestTest.php" role="test" />
      <file name="NotNullTest.php" role="test" />
@@ -1013,6 +1015,7 @@ requiring needless code duplication.</description>
     <dir name="NestedSet">
      <file name="MultiRootTestCase.php" role="test" />
      <file name="SingleRootTestCase.php" role="test" />
+     <file name="TimestampableMultiRootTestCase.php" role="test" />
     </dir> <!-- /tests/NestedSet -->
     <dir name="Query">
      <file name="AggregateValueTestCase.php" role="test" />
@@ -1121,7 +1124,6 @@ requiring needless code duplication.</description>
      <file name="668TestCase.php" role="test" />
      <file name="673TestCase.php" role="test" />
      <file name="697TestCase.php" role="test" />
-     <file name="710TestCase.php" role="test" />
      <file name="736TestCase.php" role="test" />
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
@@ -1198,6 +1200,7 @@ requiring needless code duplication.</description>
      <file name="1325TestCase.php" role="test" />
      <file name="1326TestCase.php" role="test" />
      <file name="1335TestCase.php" role="test" />
+     <file name="1341TestCase.php" role="test" />
      <file name="1351TestCase.php" role="test" />
      <file name="1365TestCase.php" role="test" />
      <file name="1372TestCase.php" role="test" />
@@ -1210,13 +1213,16 @@ requiring needless code duplication.</description>
      <file name="1419TestCase.php" role="test" />
      <file name="1436TestCase.php" role="test" />
      <file name="1441TestCase.php" role="test" />
+     <file name="1449TestCase.php" role="test" />
      <file name="1452TestCase.php" role="test" />
      <file name="1454TestCase.php" role="test" />
      <file name="1461TestCase.php" role="test" />
+     <file name="1464TestCase.php" role="test" />
      <file name="1465TestCase.php" role="test" />
      <file name="1480TestCase.php" role="test" />
      <file name="1483TestCase.php" role="test" />
      <file name="1488TestCase.php" role="test" />
+     <file name="1500TestCase.php" role="test" />
      <file name="1507TestCase.php" role="test" />
      <file name="1513TestCase.php" role="test" />
      <file name="1520TestCase.php" role="test" />
@@ -1226,6 +1232,14 @@ requiring needless code duplication.</description>
      <file name="1540TestCase.php" role="test" />
      <file name="1543TestCase.php" role="test" />
      <file name="1545TestCase.php" role="test" />
+     <file name="1558TestCase.php" role="test" />
+     <file name="1604TestCase.php" role="test" />
+     <file name="1619TestCase.php" role="test" />
+     <file name="1621bTestCase.php" role="test" />
+     <file name="1621TestCase.php" role="test" />
+     <file name="1628TestCase.php" role="test" />
+     <file name="1629TestCase.php" role="test" />
+     <file name="1658TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1608,6 +1622,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.4</release>
+    <api>1.0.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-11-25</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.3</release>

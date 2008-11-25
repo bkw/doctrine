@@ -1,3 +1,103 @@
+1.0.4
+-----
+     * [r5076] [1.0] Releasing Doctrine 1.0.3
+     * [r5077] [1.0] fixes #1132 Fixes regression in r5074
+     * [r5081] [1.0, 1.1] fixes #1548
+     * [r5082] [1.0, 1.1] Fixes #1463: Updated Doctrine_Adapter_Oracle. Thanks to vadik56..
+     * [r5086] [1.0, 1.1] fixes #1464 fixes issue with postgres timestampz and the date validators
+     * [r5087] [1.0, 1.1] fixes #1558 - issue with empty whereIn params
+     * [r5088] [1.0, 1.1] fixes #1556 - issue with query registry not storing copies of queries
+     * [r5089] [1.0] fixes #1529 - issue with SoftDelete where conditions. Added OR IS NULL to solve problem.
+     * [r5091] [1.0, 1.1] fixes #1528 - issue with unsigned validator and float/string values
+     * [r5092] [1.0, 1.1] addresses #1341 Added test coverage
+     * [r5093] [1.0, 1.1] addresses #1341 fixed test so it fails
+     * [r5094] [1.0, 1.1] addresses #1341 updated test again to fail differently.
+     * [r5095] [1.0, 1.1] fixes #1341 - issue with local/foreign and column aliases
+     * [r5102] [1.0, 1.1] Export: Primary key fields in CREATE TABLE was not quoted when ATTR_QUOTE_IDENTIFIER turned on.
+	  Export/Oracle: CREATE TRIGGER and anonymous statement shouldn't be used with ATTR_QUOTE_IDENTIFIER turned on.
+     * [r5104] [1.0, 1.1] Moved parseQuery method from Doctrine_Adapter_Oracle to Doctrine_Adapter_Statement_Oracle to handle the queryString by the Statement. Both classes reformated to follow
+	  coding standard.
+     * [r5111] [1.0, 1.1] Fixes #1588: Oracle building schema does not detect foreign keys
+     * [r5113] [1.0, 1.1] Fixes #1585: Oracle building model fails due to precision element - precision in number type is now data_length
+     * [r5115] [1.0, 1.1] fixes #1591
+     * [r5116] [1.0, 1.1] Oracle DataDict allowed to export VARCHAR2 and NUMBER bigger than allowed Oracle size. Max limit for VARCHAR2 is 4000 bytes and NUMBER precision 38. Clob used when string
+	  is bigger than 4000.
+     * [r5118] [1.0, 1.1] fixes #1563
+     * [r5119] [1.0, 1.1] fixes #1531
+     * [r5120] [1.0] fixes #1577
+     * [r5122] [1.0, 1.1] fixing tests to auto include all tests found in the Ticket folder
+     * [r5123] [1.0, 1.1] fixes #1006
+     * [r5124] [1.0, 1.1] fixes #1568
+     * [r5125] [1.0, 1.1] fixes #1477
+     * [r5126] [1.0, 1.1] fixes #1575
+     * [r5127] [1.0, 1.1] fixes #1583
+     * [r5128] [1.0, 1.1] fixes #1594
+     * [r5129] [1.0, 1.1] fixes #1578
+     * [r5130] [1.0, 1.1] fixes #1570
+     * [r5132] [1.0, 1.1, 2.0] fixes #1599 Thanks for the report!
+     * [r5136] [1.0, 1.1] fixes #1602
+     * [r5137] [1.0, 1.1] fixes #1604
+     * [r5138] [1.0, 1.1] Set query part didn't quote identifiers when ATTR_QUOTE_IDENTIFIER setted to true. Therefor shifting left and right values in NestedSets didn't work with this attribute
+	  turned on.
+     * [r5140] TestCase 1619
+     * [r5141] TestCase 1619
+     * [r5142] [1.0, 1.1] fixes #1340
+     * [r5143] [1.0, 1.1] fixes #1610
+     * [r5144] [1.0, 1.1] addresses #1629 - added coverage for issue
+     * [r5145] [1.0, 1.1] fixes #1628
+     * [r5146] [1.0, 1.1] fixes #1618
+     * [r5147] [1.0, 1.1] fixes #1611
+     * [r5148] [1.0, 1.1] fixes #1620
+     * [r5149] [1.0, 1.1] fixes parse error in example
+     * [r5150] [1.0, 1.1] fixes #1573
+     * [r5151] [1.0, 1.1] Fixed some updates in Doctrine_Node_NestedSet where ATTR_QUOTE_IDENTIFIER didn't quote the columns in set parts of query - related to r5138
+     * [r5153] [1.0, 1.1] Added checking for no existent schema files
+     * [r5154] [1.0, 1.1] Added checking for no existent schema files (fixed)
+     * [r5155] [1.0, 1.1] Reverting changes by guilhermeblanco as they are un-necessary and break backwards compatibility
+     * [r5156] Fixed cross access logic that was failing.
+     * [r5157] [1.0, 1.1] Complementary fix to cross access logic that was incorrect.
+     * [r5164] [1.0, 1.1] fixes issue with sqlite importing the sqlite_sequence table
+     * [r5165] [1.0] fixes #1538
+     * [r5168] [1.0] Fixes #1631. Thanks for the patch!
+     * [r5170] [1.0] fixes #1638. Thanks for the tip and patch!
+     * [r5171] [1.0, 1.1] Updating coverage, addresses #1523
+     * [r5172] [1.0, 1.1] fixes #1637. Thanks for the tip and patch! I could not add the test case since we do not have a mock driver of memcache and it fails in our test suite (memcache must be
+	  loaded), but your changes are applied.
+     * [r5173] [1.0, 1.1] fixes #1449
+     * [r5174] [1.0, 1.1] closes #1523 - test case was wrong. As far as we can tell this is all working properly and the test case is passing correctly. If we're mistaken can you please update the
+	  ticket and point us straight. Thanks.
+     * [r5175] fixes #1667. thanks for the tip and patch!
+     * [r5176] fixes #1555. Added smalldatetime and smallmoney portable declarations for MSSQL
+     * [r5177] fixes #1569. Correct non-UTF8 data fixture load by removing wrong charset convertion
+     * [r5178] fixes #1646. Added missing quote in set for update queries. Thanks for reporting
+     * [r5179] fixes #1648. Corrected wrong field reference that was causing a random behavior of saving related records
+     * [r5180] fixes #1414. Fixed limit-subquery algorithm when mixing with order by. Thanks for the tip and patch!
+     * [r5183] [1.0, 1.1] fixed #1646 and added coverage to it. Now update queries are able to run without the need of their component alias
+     * [r5184] [1.0, 1.1] fixed #1646 and #1582. Adjusted filgerGet call. Commit fixing the agg expression usage with update queries.
+     * [r5185] [1.0, 1.1] fixed #1646. Fixed Query_Abstract::set to correctly quote identifiers. I hope this is the last fix to be applied.
+     * [r5186] [1.0, 1.1] fixes #1678. Thanks for the tip and patch!
+     * [r5187] fixes #1646. Last commit regarding this DQL issue, please!
+     * [r5188] [1.0, 1.1] fixes #1625. Sluggable and SoftDelete can play nicely together now!
+     * [r5189] [1.0, 1.1] fixes #1472. There is no QueryCache in RawSql, since it expects to be a plain SQL. All other caches are valid to be used. I applied your patch since it is valid. Thanks!
+     * [r5190] [1.0, 1.1] fixes #1613. Added possibiity to define depth when fetching branches in a NestedSet model.
+     * [r5191] [1.0, 1.1] fixes #1612. Added reporting for task dump-data if not model were found. Thanks for the patch!
+     * [r5195] [1.0, 1.1] Fixing issue with update() and delete() not being consistant.
+     * [r5196] [1.0, 1.1] Fixes issue with result cache not respecting passed ttl (closes #1686)
+     * [r5197] [1.0, 1.1] Fixes issue with Doctrine_Lib::arrayDeepMerge() not working for more than 2 arguments (closes #1684)
+     * [r5198] [1.0, 1.1] Fixing a bug that was made visible by fixing a previous bug.
+     * [r5199] [1.0, 1.1] Adding some more coverage for the DQL delete()
+     * [r5200] [1.0, 1.1] Removing new line at end of test template.
+     * [r5201] [1.0, 1.1] Added coverage (addresses #1658)
+     * [r5202] [1.0, 1.1] fixes #1627. Fixed UNIQUE index creation for MSSQL
+     * [r5203] [1.0, 1.1] fixes #1267. Fixed UNIQUE index creation for MSSQL. Now syntax is correct.
+     * [r5204] [1.0, 1.1] fixes #1309, #1500 and #1621. Fixed association table column retrieval. Maybe I missed other changes, so please report back if you find anything else.
+     * [r5205] [1.0, 1.1] fixes #1689. Fixes list databases for MySQL driver
+     * [r5206] [1.0, 1.1] fixes #1685. Fixes Query Cache that was not respecting TTL. Thanks for the tip and patch!
+     * [r5207] [1.0, 1.1] fixes #1641. Doctrine_Table now applies the DQL listeners too
+     * [r5209] [1.0, 1.1] fixes #1621. Fixed inheritance with M2M relations + aliases. Third needed part of this patch.
+     * [r5210] [1.0, 1.1] fixes #880. MSSQL Identity columns are not generated as autoincrement: true when generating yaml from db.
+     * [r5212] Fixes failing test in Doctrine_Record_Synchronize_TestCase method testSynchronizeRecord
+
 1.0.3
 -----
      * [r4912] fixes #1323
