@@ -311,3 +311,7 @@ Versionable Behavior
     {
         $this->_set('username', $value);
     }
+
+[r5220](http://trac.doctrine-project.org/changeset/5220) - Added ability to define foreign key constraint format to be used when generating tables on database
+
+    Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_FKNAME_FORMAT, '%localtbl_%localcol_%reftbl_%refcol_%i'); // Default is %localtbl_%localcol_%reftbl_%refcol
