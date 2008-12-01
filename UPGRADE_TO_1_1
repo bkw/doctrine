@@ -178,6 +178,35 @@ Doctrine Validation
         $this->unique('username', 'email_address');
     }
 
+Registering Validators
+----------------------
+
+In Doctrine 1.1 you now have the ability to register custom validators so that Doctrine is aware of them. You can also get the allowed validators.
+
+    [php]
+    // Register a new validator
+    $manager = Doctrine_Manager::getInstance();
+    $manager->registerValidators('MyValidator');
+
+    // Get array of validators
+    $validators = $manager->getValidators();
+
+E-Mail Validator
+----------------
+
+You now have the ability to configure the Email validator to not check the mx record of the e-mail address.
+
+    [php]
+    class User extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('username', 'string', 255);
+            $this->hasColumn('password', 'string', 255);
+            $this->hasColumn('email_address', 'string', 255, array('email' => array('check_mx' => false)));
+        }
+    }
+
 Doctrine Hydration
 ------------------
 
