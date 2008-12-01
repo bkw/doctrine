@@ -138,7 +138,7 @@ class Doctrine_Export_Pgsql_TestCase extends Doctrine_UnitTestCase
                                          5 => 'CREATE TABLE foo (id BIGSERIAL, name VARCHAR(200) NOT NULL, parent_id BIGINT, local_foo BIGINT, PRIMARY KEY(id))', 
                                          6 => 'CREATE TABLE bar (id BIGSERIAL, name VARCHAR(200), PRIMARY KEY(id))', 
                                          7 => 'ALTER TABLE foo_reference ADD CONSTRAINT foo_reference_foo1_foo_id FOREIGN KEY (foo1) REFERENCES foo(id) NOT DEFERRABLE INITIALLY IMMEDIATE', 
-                                         8 => 'ALTER TABLE foo_bar_record ADD CONSTRAINT foo_bar_record_fooId_foo_id FOREIGN KEY (fooid) REFERENCES foo(id) NOT DEFERRABLE INITIALLY IMMEDIATE', 
+                                         8 => 'ALTER TABLE foo_bar_record ADD CONSTRAINT foo_bar_record_fooid_foo_id FOREIGN KEY (fooid) REFERENCES foo(id) NOT DEFERRABLE INITIALLY IMMEDIATE', 
                                          9 => 'ALTER TABLE foo ADD CONSTRAINT foo_parent_id_foo_id FOREIGN KEY (parent_id) REFERENCES foo(id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE', 
                                          10 => 'ALTER TABLE foo ADD CONSTRAINT foo_local_foo_foo_locally_owned_id FOREIGN KEY (local_foo) REFERENCES foo_locally_owned(id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE', 
                                          ));

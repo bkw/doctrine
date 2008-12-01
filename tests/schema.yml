@@ -164,3 +164,32 @@ AppCascadeDeleteTest:
       local: alias_id
       foreign: id
       cascade: [delete]
+      
+ListenerTestAsArray:
+  columns:
+    id: 
+      primary: true
+      autoincrement: true
+      type: integer(4)
+    name:
+      type: string(50)
+    slug:
+      type: string(60)
+  listeners: [Doctrine_Template_Listener_Sluggable]
+  
+ListenerTestWithParameters:
+  columns:
+    id: 
+      primary: true
+      autoincrement: true
+      type: integer(4)
+    name:
+      type: string(50)
+    slug:
+      type: string(60)
+  listeners: 
+    Doctrine_Template_Listener_Sluggable:
+      useOptions: true
+
+
+          
