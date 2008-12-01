@@ -315,3 +315,21 @@ Versionable Behavior
 [r5220](http://trac.doctrine-project.org/changeset/5220) - Added ability to define foreign key constraint format to be used when generating tables on database
 
     Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_FKNAME_FORMAT, '%localtbl_%localcol_%reftbl_%refcol_%i'); // Default is %localtbl_%localcol_%reftbl_%refcol
+
+Migrations
+----------
+
+In Doctrine 1.1 we have made a few changes to migrations.
+
+ * Generated migration classes are prefixed with a timestamp instead of a incremented integer.
+ * Added possibility for automation of up/down methods.
+ * Re-ordered arguments for addColumn() so that type is first before length.
+ * Added `Doctrine_Migration_Diff` tool.
+
+    [php]
+    public function migrate($direction)
+    {
+      $this->column($direction, 'table_name', 'column_name', 'string', '255');
+    }
+
+The above example will create the column when $direction == up and will remove the column when $direction == down.
