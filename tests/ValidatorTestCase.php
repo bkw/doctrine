@@ -384,7 +384,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         } catch (Doctrine_Validator_Exception $dve) {
             $s = $dve->getInvalidRecords();
-            $this->assertEqual(1, count($dve->getInvalidRecords()));
+            $this->assertEqual(2, count($dve->getInvalidRecords()));
             $invalids = $dve->getInvalidRecords();
             //var_dump($invalids[0]->getErrorStack());
             //echo "<br/><br/>";
@@ -418,7 +418,7 @@ class Doctrine_Validator_TestCase extends Doctrine_UnitTestCase
         } catch (Doctrine_Validator_Exception $dve) {
             $this->conn->rollback();
             $s = $dve->getInvalidRecords();
-            $this->assertEqual(1, count($dve->getInvalidRecords()));
+            $this->assertEqual(2, count($dve->getInvalidRecords()));
             $stack = $client->ValidatorTest_AddressModel[0]->getErrorStack();
 
             $this->assertTrue(in_array('notnull', $stack['address1']));

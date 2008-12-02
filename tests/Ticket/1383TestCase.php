@@ -48,6 +48,8 @@ class Doctrine_Ticket_1383_TestCase extends Doctrine_UnitTestCase
             $brand = new Ticket_1383_Brand;
             $brand->name = 'The Great Brand';
             $brand->Ticket_1383_Brand_Image[0]->name = 'imagename';
+            $brand->Ticket_1383_Brand_Image[0]->owner_id = 1;
+            $brand->Ticket_1383_Brand_Image[0]->owner_type = 0;
             $brand->save();
             $this->pass();
         } catch (Exception $e) {
