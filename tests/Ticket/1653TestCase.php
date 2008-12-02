@@ -71,6 +71,22 @@ class Doctrine_Ticket_1653_TestCase extends Doctrine_UnitTestCase
         //reset validation to default for further testcases
         Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
+
+    public function testModified()
+    {
+        $user = new Ticket_1653_User();
+        $mail = new Ticket_1653_Email();
+        $mail->address = 'test';
+        $user->emails[] = $mail;
+
+        // Should return true since one of its relationships is modified
+        $this->assertTrue($user->isModified());
+
+        $user = new Ticket_1653_User();
+        $this->assertFalse($user->isModified());
+        $user->name = 'floriank';
+        $this->assertTrue($user->isModified());
+    }
 }
 
 class Ticket_1653_User extends Doctrine_Record
