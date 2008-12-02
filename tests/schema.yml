@@ -188,8 +188,9 @@ ListenerTestWithParameters:
     slug:
       type: string(60)
   listeners: 
-    Doctrine_Template_Listener_Sluggable:
+    Sluggable:
       useOptions: true
+      class: Doctrine_Template_Listener_Sluggable
 
 
           

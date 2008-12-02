@@ -345,6 +345,58 @@ Versionable Behavior
 
     Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_FKNAME_FORMAT, '%localtbl_%localcol_%reftbl_%refcol_%i'); // Default is %localtbl_%localcol_%reftbl_%refcol
 
+[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to alias record listeners
+
+    $this->addListener(new My_Listener_FooListener($this->_options), 'FooListener');
+
+    YAML:
+
+        - No aliasing and no options usage:
+
+Foo:
+  columns:
+    bar: string(50)
+  listeners: [My_Listener_FooListener]
+
+        - No aliasing and using options
+
+Foo:
+  columns:
+    bar: string(50)
+  listeners:
+    My_Listener_FooListener:
+      useOptions: true
+
+        - Using alias definition
+
+Foo:
+  columns:
+    bar: string(50)
+  listeners:
+    FooListener:
+      class: My_Listener_FooListener
+      useOptions: true 
+
+
+[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to enable/disable record listeners
+
+    - Possibility to remove all listeners of all record listeners
+
+        Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', true);
+
+    - Possibility to remove some listeners of all record listeners
+
+        Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', array('preSerialize', 'postHydrate'));
+
+    - Possibility to remove all listeners of a single record listener
+
+        Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')->setOption('disabled', true);
+
+    - Possibility to remove some listeners of a single record listener
+
+        Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')->setOption('disabled', array('preSave', 'postInsert'));
+
+
 Migrations
 ----------
 
