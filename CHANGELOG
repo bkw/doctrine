@@ -1,3 +1,30 @@
+1.1.0-ALPHA1
+------------
+     * [r5218] [1.0, 1.1] Fixes issue with && and || being converted to AND and ||. Causes problems with postgres since || is an real operator (closes #1632)
+     * [r5219] [1.0, 1.1] fixes #1698. Thanks for the tip and patch!
+     * [r5220] [1.1] fixes #1691. Added possibility to define fk constraint name format. Thanks for the tip. I adapted a bit your patch, check out UPGRADE_TO_1_1 document.
+     * [r5221] [1.1] Fixed bug with constant name ATTR_FKNAME_FORMAT
+     * [r5222] [1.0, 1.1] fixes #1693. Added return value for Connection rollback.
+     * [r5223] [1.1] Added ability to define the ->_options usage through schema when mapping listeners. Fixed some test cases.
+     * [r5226] [1.1] Making models_path optional (closes #1643 closes #1654)
+     * [r5227] [1.1] Making Searchable behavior use default integer length for rootColumnName (closes #1603)
+     * [r5228] [1.1] fixes issue with order of loaded migrations (closes #1688)
+     * [r5229] [1.1] Making migrations BC with 1.0 while still adding new features (closes #1596)
+     * [r5230] [1.1] Updating upgrade document with information on migrations.
+     * [r5231] [1.1] Added ability to register custom validators (closes #1524)
+     * [r5232] [1.0, 1.1] fixes #1394
+     * [r5233] [1.1] Added ability to disable mx recorc checking on Email validator (closes #1385)
+     * [r5234] [1.0, 1.1] fixes issue with column aggregation inheritance in schema files (fixes #1617)
+     * [r5235] [1.0, 1.1] Added extra check (closes #1707)
+     * [r5236] [1.1] Added ability to define optional usage of options in record listener. Added ability to alias the record listener. Added ability to enable/disable record listener chain and also
+	  individual listeners.
+     * [r5237] [1.0, 1.1] fixes #1710.
+     * [r5238] [1.1] Fixed wrong addListener generator bug. It was creating an Array entry instead of ->_options
+     * [r5239] [1.1] Patch for listeners chain which were not exposing the listeners name and also were not catching the en-/dis-able coniguration correctly
+     * [r5240] [1.1] fixes issue with generated foreign key names being too long (closes #1604 closes #1600)
+     * [r5241] [1.1] Enhancing isValid() to check references (closes #1653)
+     * [r5242] [1.1] Enhancing isModified() to check references since isValid() works the same now
+
 1.0.2
 -----
      * [r4906] Fixed issue reported by user Adam @ doctrine-user when working with related components aliased.
