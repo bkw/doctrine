@@ -396,6 +396,21 @@ Foo:
 
         Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')->setOption('disabled', array('preSave', 'postInsert'));
 
+[r5241](http://trac.doctrine-project.org/changeset/5240) - Added ability to work with mapped values as if they were part of the record. It is useful to store transient data into record (this data is not persisted to database).
+
+class Foo extends Doctrine_Record {
+    public function setTableDefinition() {
+        $this->mapValue('name');
+    }
+
+    // ...
+}
+
+$foo = new Foo();
+
+$foo->name = 'guilhermeblanco';
+echo $foo->name; // prints: guilhermeblanco
+
 
 Migrations
 ----------
