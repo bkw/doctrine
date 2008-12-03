@@ -259,7 +259,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
      */
     public function fetchOne($params = array(), $hydrationMode = null)
     {
-        $collection = $this->limit(1)->execute($params, $hydrationMode);
+        $collection = $this->execute($params, $hydrationMode);
 
         if (count($collection) === 0) {
             return false;
