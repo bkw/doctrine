@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-09-11</date>
- <time>21:16:31</time>
+ <date>2008-12-03</date>
+ <time>01:39:16</time>
  <version>
-  <release>1.0.2</release>
-  <api>1.0.2</api>
+  <release>1.1.0</release>
+  <api>1.1.0</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>alpha</release>
+  <api>alpha</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -41,6 +41,7 @@ requiring needless code duplication.</description>
       <dir name="Statement">
        <file name="Interface.php" role="php" />
        <file name="Mock.php" role="php" />
+       <file name="Oracle.php" role="php" />
       </dir> <!-- /lib/Doctrine/Adapter/Statement -->
       <file name="Db2.php" role="php" />
       <file name="Exception.php" role="php" />
@@ -217,7 +218,9 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Manager -->
      <dir name="Migration">
+      <file name="Base.php" role="php" />
       <file name="Builder.php" role="php" />
+      <file name="Diff.php" role="php" />
       <file name="Exception.php" role="php" />
       <file name="IrreversibleMigrationException.php" role="php" />
       <file name="Process.php" role="php" />
@@ -254,20 +257,20 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
-      <dir name="sfYaml">
-       <file name="Dumper.php" role="php" />
-       <file name="Inline.php" role="php" />
-       <file name="Parser.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Parser/sfYaml -->
       <dir name="Spyc">
        <file name="YamlNode.php" role="php" />
       </dir> <!-- /lib/Doctrine/Parser/Spyc -->
+      <dir name="YamlSf">
+       <file name="Dumper.php" role="php" />
+       <file name="Inline.php" role="php" />
+       <file name="Parser.php" role="php" />
+      </dir> <!-- /lib/Doctrine/Parser/YamlSf -->
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
-      <file name="sfYaml.php" role="php" />
       <file name="Spyc.php" role="php" />
       <file name="Xml.php" role="php" />
+      <file name="YamlSf.php" role="php" />
       <file name="Yml.php" role="php" />
      </dir> <!-- /lib/Doctrine/Parser -->
      <dir name="Query">
@@ -343,6 +346,7 @@ requiring needless code duplication.</description>
        <file name="Exception.php" role="php" />
        <file name="Interface.php" role="php" />
        <file name="Standard.php" role="php" />
+       <file name="Utf8.php" role="php" />
       </dir> <!-- /lib/Doctrine/Search/Analyzer -->
       <dir name="Indexer">
        <file name="Dir.php" role="php" />
@@ -356,7 +360,6 @@ requiring needless code duplication.</description>
       <file name="Parser.php" role="php" />
       <file name="Query.php" role="php" />
       <file name="Record.php" role="php" />
-      <file name="Scorer.php" role="php" />
      </dir> <!-- /lib/Doctrine/Search -->
      <dir name="Sequence">
       <file name="Db2.php" role="php" />
@@ -396,7 +399,6 @@ requiring needless code duplication.</description>
       <file name="GenerateYamlDb.php" role="php" />
       <file name="GenerateYamlModels.php" role="php" />
       <file name="LoadData.php" role="php" />
-      <file name="LoadDummyData.php" role="php" />
       <file name="Migrate.php" role="php" />
       <file name="RebuildDb.php" role="php" />
      </dir> <!-- /lib/Doctrine/Task -->
@@ -793,6 +795,7 @@ requiring needless code duplication.</description>
     <dir name="Hydrate">
      <file name="CollectionInitializationTestCase.php" role="test" />
      <file name="FetchModeTestCase.php" role="test" />
+     <file name="ScalarTestCase.php" role="test" />
     </dir> <!-- /tests/Hydrate -->
     <dir name="Import">
      <file name="BuilderTestCase.php" role="test" />
@@ -806,8 +809,20 @@ requiring needless code duplication.</description>
      <file name="SchemaTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Import -->
+    <dir name="Migration">
+     <dir name="Diff">
+      <dir name="schema">
+       <file name="from.yml" role="test" />
+       <file name="to.yml" role="test" />
+      </dir> <!-- /tests/Migration/Diff/schema -->
+     </dir> <!-- /tests/Migration/Diff -->
+     <file name="DiffTestCase.php" role="test" />
+    </dir> <!-- /tests/Migration -->
     <dir name="migration_classes">
-     <file name="001_add_table.php" role="test" />
+     <file name="1224120878_add_phonenumber.class.php" role="test" />
+     <file name="1224120879_add_user.class.php" role="test" />
+     <file name="1224120880_add_profile.class.php" role="test" />
+     <file name="1224120881_drop_profile.class.php.php" role="test" />
     </dir> <!-- /tests/migration_classes -->
     <dir name="ModelLoadingTest">
      <dir name="Aggressive">
@@ -935,6 +950,7 @@ requiring needless code duplication.</description>
      <file name="MyUserOtherThing.php" role="test" />
      <file name="NestedSetTest_SingleRootNode.php" role="test" />
      <file name="NestedSet_MultiRootNode.php" role="test" />
+     <file name="NestedSet_Timestampable_MultiRootNode.php" role="test" />
      <file name="NestReference.php" role="test" />
      <file name="NestTest.php" role="test" />
      <file name="NotNullTest.php" role="test" />
@@ -1015,6 +1031,7 @@ requiring needless code duplication.</description>
     <dir name="NestedSet">
      <file name="MultiRootTestCase.php" role="test" />
      <file name="SingleRootTestCase.php" role="test" />
+     <file name="TimestampableMultiRootTestCase.php" role="test" />
     </dir> <!-- /tests/NestedSet -->
     <dir name="Query">
      <file name="AggregateValueTestCase.php" role="test" />
@@ -1030,6 +1047,7 @@ requiring needless code duplication.</description>
      <file name="FromTestCase.php" role="test" />
      <file name="GroupbyTestCase.php" role="test" />
      <file name="HavingTestCase.php" role="test" />
+     <file name="HydrateNoneTestCase.php" role="test" />
      <file name="IdentifierQuotingTestCase.php" role="test" />
      <file name="JoinConditionTestCase.php" role="test" />
      <file name="JoinTestCase.php" role="test" />
@@ -1100,6 +1118,7 @@ requiring needless code duplication.</description>
      <file name="RemoveColumnTestCase.php" role="test" />
     </dir> <!-- /tests/Table -->
     <dir name="Ticket">
+     <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
      <file name="424BTestCase.php" role="test" />
@@ -1122,10 +1141,10 @@ requiring needless code duplication.</description>
      <file name="668TestCase.php" role="test" />
      <file name="673TestCase.php" role="test" />
      <file name="697TestCase.php" role="test" />
-     <file name="710TestCase.php" role="test" />
      <file name="736TestCase.php" role="test" />
      <file name="741TestCase.php" role="test" />
      <file name="749TestCase.php" role="test" />
+     <file name="753TestCase.php" role="test" />
      <file name="786TestCase.php" role="test" />
      <file name="832TestCase.php" role="test" />
      <file name="838TestCase.php" role="test" />
@@ -1175,6 +1194,7 @@ requiring needless code duplication.</description>
      <file name="1195TestCase.php" role="test" />
      <file name="1205TestCase.php" role="test" />
      <file name="1206TestCase.php" role="test" />
+     <file name="1208TestCase.php" role="test" />
      <file name="1211TestCase.php" role="test" />
      <file name="1213TestCase.php" role="test" />
      <file name="1215TestCase.php" role="test" />
@@ -1188,26 +1208,75 @@ requiring needless code duplication.</description>
      <file name="1253TestCase.php" role="test" />
      <file name="1254TestCase.php" role="test" />
      <file name="1257TestCase.php" role="test" />
+     <file name="1276TestCase.php" role="test" />
      <file name="1277TestCase.php" role="test" />
      <file name="1280TestCase.php" role="test" />
+     <file name="1281TestCase.php" role="test" />
      <file name="1289TestCase.php" role="test" />
      <file name="1296TestCase.php" role="test" />
      <file name="1304TestCase.php" role="test" />
      <file name="1305TestCase.php" role="test" />
+     <file name="1307TestCase.php" role="test" />
+     <file name="1315TestCase.php" role="test" />
      <file name="1323b2TestCase.php" role="test" />
      <file name="1323TestCase.php" role="test" />
      <file name="1325TestCase.php" role="test" />
      <file name="1326TestCase.php" role="test" />
      <file name="1335TestCase.php" role="test" />
+     <file name="1338TestCase.php" role="test" />
+     <file name="1341TestCase.php" role="test" />
      <file name="1351TestCase.php" role="test" />
      <file name="1365TestCase.php" role="test" />
      <file name="1372TestCase.php" role="test" />
+     <file name="1380TestCase.php" role="test" />
      <file name="1381TestCase.php" role="test" />
      <file name="1383TestCase.php" role="test" />
+     <file name="1385TestCase.php" role="test" />
      <file name="1390TestCase.php" role="test" />
+     <file name="1395TestCase.php" role="test" />
      <file name="1400TestCase.php" role="test" />
+     <file name="1417TestCase.php" role="test" />
      <file name="1419TestCase.php" role="test" />
      <file name="1436TestCase.php" role="test" />
+     <file name="1441TestCase.php" role="test" />
+     <file name="1449TestCase.php" role="test" />
+     <file name="1452TestCase.php" role="test" />
+     <file name="1454TestCase.php" role="test" />
+     <file name="1461TestCase.php" role="test" />
+     <file name="1464TestCase.php" role="test" />
+     <file name="1465TestCase.php" role="test" />
+     <file name="1467TestCase.php" role="test" />
+     <file name="1480TestCase.php" role="test" />
+     <file name="1483TestCase.php" role="test" />
+     <file name="1488TestCase.php" role="test" />
+     <file name="1494TestCase.php" role="test" />
+     <file name="1500TestCase.php" role="test" />
+     <file name="1507TestCase.php" role="test" />
+     <file name="1513TestCase.php" role="test" />
+     <file name="1520TestCase.php" role="test" />
+     <file name="1522TestCase.php" role="test" />
+     <file name="1523TestCase.php" role="test" />
+     <file name="1524TestCase.php" role="test" />
+     <file name="1527TestCase.php" role="test" />
+     <file name="1535TestCase.php" role="test" />
+     <file name="1537TestCase.php" role="test" />
+     <file name="1540TestCase.php" role="test" />
+     <file name="1543TestCase.php" role="test" />
+     <file name="1545TestCase.php" role="test" />
+     <file name="1558TestCase.php" role="test" />
+     <file name="1567TestCase.php" role="test" />
+     <file name="1604TestCase.php" role="test" />
+     <file name="1617TestCase.php" role="test" />
+     <file name="1617_schema.yml" role="test" />
+     <file name="1621bTestCase.php" role="test" />
+     <file name="1621TestCase.php" role="test" />
+     <file name="1622TestCase.php" role="test" />
+     <file name="1628TestCase.php" role="test" />
+     <file name="1629TestCase.php" role="test" />
+     <file name="1641TestCase.php" role="test" />
+     <file name="1653TestCase.php" role="test" />
+     <file name="1658TestCase.php" role="test" />
+     <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1615,6 +1684,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-12-03</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.2</release>
