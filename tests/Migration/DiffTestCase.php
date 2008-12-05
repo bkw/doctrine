@@ -43,17 +43,17 @@ class Doctrine_Migration_Diff_TestCase extends Doctrine_UnitTestCase
         $changes = $diff->generateChanges();
         $this->assertEqual($changes['dropped_tables']['homepage']['tableName'], 'homepage');
         $this->assertEqual($changes['created_tables']['blog_post']['tableName'], 'blog_post');
-        $this->assertEqual($changes['added_columns']['profile']['user_id'], array('type' => 'integer', 'length' => 8));
-        $this->assertEqual($changes['removed_columns']['user']['homepage_id'], array('type' => 'integer', 'length' => 8));
-        $this->assertEqual($changes['removed_columns']['user']['profile_id'], array('type' => 'integer', 'length' => 8));
+        $this->assertEqual($changes['created_columns']['profile']['user_id'], array('type' => 'integer', 'length' => 8));
+        $this->assertEqual($changes['dropped_columns']['user']['homepage_id'], array('type' => 'integer', 'length' => 8));
+        $this->assertEqual($changes['dropped_columns']['user']['profile_id'], array('type' => 'integer', 'length' => 8));
         $this->assertEqual($changes['changed_columns']['user']['username'], array('type' => 'string', 'length' => 255, 'unique' => true, 'notnull' => true));
-        $this->assertEqual($changes['created_fks']['profile']['profile_user_id_user_id']['local'], 'user_id');
-        $this->assertEqual($changes['created_fks']['blog_post']['blog_post_user_id_user_id']['local'], 'user_id');
-        $this->assertEqual($changes['dropped_fks']['user']['user_profile_id_profile_id']['local'], 'profile_id');
-        $this->assertEqual($changes['dropped_fks']['user']['user_homepage_id_homepage_id']['local'], 'homepage_id');
-        $this->assertEqual($changes['added_indexes']['blog_post']['blog_post_user_id'], array('fields' => array('user_id')));
-        $this->assertEqual($changes['added_indexes']['profile']['profile_user_id'], array('fields' => array('user_id')));
-        $this->assertEqual($changes['removed_indexes']['user']['is_active'], array('fields' => array('is_active')));
+        $this->assertEqual($changes['created_foreign_keys']['profile']['profile_user_id_user_id']['local'], 'user_id');
+        $this->assertEqual($changes['created_foreign_keys']['blog_post']['blog_post_user_id_user_id']['local'], 'user_id');
+        $this->assertEqual($changes['dropped_foreign_keys']['user']['user_profile_id_profile_id']['local'], 'profile_id');
+        $this->assertEqual($changes['dropped_foreign_keys']['user']['user_homepage_id_homepage_id']['local'], 'homepage_id');
+        $this->assertEqual($changes['created_indexes']['blog_post']['blog_post_user_id'], array('fields' => array('user_id')));
+        $this->assertEqual($changes['created_indexes']['profile']['profile_user_id'], array('fields' => array('user_id')));
+        $this->assertEqual($changes['dropped_indexes']['user']['is_active'], array('fields' => array('is_active')));
         $diff->generateMigrationClasses();
 
         $files = glob($migrationsPath . '/*.php');
