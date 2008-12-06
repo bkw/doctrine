@@ -145,20 +145,14 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
     
     public function testCreateDatabases()
     {
-        // We need to know if we're under Windows or *NIX
-        $OS = strtoupper(substr(PHP_OS, 0,3));
+        // We need to know if we're under Windows or *NIX 
+        $OS = strtoupper(substr(PHP_OS, 0,3)); 
 
-        if ($OS == 'WIN') {
-            // Grab the Windows's directory
-            $WIN_DIR = str_replace('\\', '/', $_SERVER['WINDIR']);
-
-            $this->conn1_database = $WIN_DIR . "/Temp/doctrine1.db";
-            $this->conn2_database = $WIN_DIR . "/Temp/doctrine2.db";
-        } else {
-            $this->conn1_database = "/tmp/doctrine1.db";
-            $this->conn2_database = "/tmp/doctrine2.db";
-        }
-
+        $tmp_dir = ($OS == 'WIN') ? str_replace('\\','/',sys_get_temp_dir()) : '/tmp';
+       
+        $this->conn1_database = $tmp_dir . "/doctrine1.db";
+        $this->conn2_database = $tmp_dir . "/doctrine2.db";
+        
         $this->conn1 = Doctrine_Manager::connection('sqlite:///' . $this->conn1_database, 'doctrine1');
         $this->conn2 = Doctrine_Manager::connection('sqlite:///' . $this->conn2_database, 'doctrine2');
         
