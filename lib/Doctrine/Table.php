@@ -2133,7 +2133,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                     || $name == 'scale'
                     || $name == 'type'
                     || $name == 'length'
-                    || $name == 'fixed') {
+                    || $name == 'fixed'
+                    || $name == 'comment') {
                 continue;
             }
             if ($name == 'notnull' && isset($this->_columns[$columnName]['autoincrement'])
