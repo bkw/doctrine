@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2008-11-25</date>
- <time>23:05:06</time>
+ <date>2008-12-11</date>
+ <time>00:17:00</time>
  <version>
-  <release>1.0.4</release>
-  <api>1.0.4</api>
+  <release>1.0.5</release>
+  <api>1.0.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -324,6 +324,7 @@ requiring needless code duplication.</description>
       <file name="Generator.php" role="php" />
       <file name="Iterator.php" role="php" />
       <file name="Listener.php" role="php" />
+      <file name="UnknownPropertyException.php" role="php" />
      </dir> <!-- /lib/Doctrine/Record -->
      <dir name="Relation">
       <dir name="Association">
@@ -1102,6 +1103,16 @@ requiring needless code duplication.</description>
      <file name="RemoveColumnTestCase.php" role="test" />
     </dir> <!-- /tests/Table -->
     <dir name="Ticket">
+     <dir name="1727">
+      <dir name="models1">
+       <file name="Ticket_1727_Model1.php" role="test" />
+       <file name="Ticket_1727_Model2.php" role="test" />
+      </dir> <!-- /tests/Ticket/1727/models1 -->
+      <dir name="models2">
+       <file name="Ticket_1727_Model3.php" role="test" />
+       <file name="Ticket_1727_Model4.php" role="test" />
+      </dir> <!-- /tests/Ticket/1727/models2 -->
+     </dir> <!-- /tests/Ticket/1727 -->
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
      <file name="424BTestCase.php" role="test" />
@@ -1233,13 +1244,20 @@ requiring needless code duplication.</description>
      <file name="1543TestCase.php" role="test" />
      <file name="1545TestCase.php" role="test" />
      <file name="1558TestCase.php" role="test" />
+     <file name="1562TestCase.php" role="test" />
      <file name="1604TestCase.php" role="test" />
+     <file name="1617TestCase.php" role="test" />
+     <file name="1617_schema.yml" role="test" />
      <file name="1619TestCase.php" role="test" />
      <file name="1621bTestCase.php" role="test" />
      <file name="1621TestCase.php" role="test" />
      <file name="1628TestCase.php" role="test" />
      <file name="1629TestCase.php" role="test" />
      <file name="1658TestCase.php" role="test" />
+     <file name="1703TestCase.php" role="test" />
+     <file name="1706TestCase.php" role="test" />
+     <file name="1716TestCase.php" role="test" />
+     <file name="1727TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1622,6 +1640,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.5</release>
+    <api>1.0.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-12-11</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.4</release>
