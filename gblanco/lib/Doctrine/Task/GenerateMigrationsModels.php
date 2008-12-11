@@ -34,10 +34,9 @@ class Doctrine_Task_GenerateMigrationsModels extends Doctrine_Task
 {
     public $description          =   'Generate migration classes for an existing set of models',
            $requiredArguments    =   array('migrations_path'  => 'Specify the path to your migration classes folder.',
-                                           'models_path'      => 'Specify the path to your doctrine models folder.',
                                            'yaml_schema_path' => 'Specify the path to your yaml schema files folder.'),
-           $optionalArguments    =   array();
-    
+           $optionalArguments    =   array('models_path'      => 'Specify the path to your doctrine models folder.');
+
     public function execute()
     {   
         try {
@@ -47,9 +46,12 @@ class Doctrine_Task_GenerateMigrationsModels extends Doctrine_Task
             $migration = new Doctrine_Migration($migrationsPath);
             $result1 = false;
             if ( ! count($migration->getMigrationClasses())) {
-                $result1 = Doctrine::generateMigrationsFromModels($migrationsPath, $modelsPath);
+                $builder = new Doctrine_Migration_Builder($migration);
+                $result1 = $builder->generateMigrationsFromModels($modelsPath);
             }
-            $changes = Doctrine::generateMigrationsFromDiff($migrationsPath, $modelsPath, $yamlSchemaPath);
+            $diff = new Doctrine_Migration_Diff($modelsPath, $yamlSchemaPath, $migration);
+            $changes = $diff->generateMigrationClasses();
+
             $numChanges = count($changes, true) - count($changes);
             $result = ($result1 || $numChanges) ? true:false;
         } catch (Exception $e) {

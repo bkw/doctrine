@@ -225,12 +225,13 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     public function __construct($name, Doctrine_Connection $conn, $initDefinition = false)
     {
         $this->_conn = $conn;
-
-        $this->setParent($this->_conn);
-
         $this->_options['name'] = $name;
+        
+        $this->setParent($this->_conn);           
+        $this->_conn->addTable($this);
+        
         $this->_parser = new Doctrine_Relation_Parser($this);
-
+        
         if ($initDefinition) {
             $this->record = $this->initDefinition();
 
@@ -678,8 +679,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         $options['foreignKeys'] = isset($this->_options['foreignKeys']) ?
                 $this->_options['foreignKeys'] : array();
 
-        if ($parseForeignKeys && $this->getAttribute(Doctrine::ATTR_EXPORT)
-                & Doctrine::EXPORT_CONSTRAINTS) {
+        if ($parseForeignKeys && $this->getAttribute(Doctrine::ATTR_EXPORT) & Doctrine::EXPORT_CONSTRAINTS) {
 
             $constraints = array();
 
@@ -689,7 +689,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
             foreach ($this->getRelations() as $name => $relation) {
                 $fk = $relation->toArray();
                 $fk['foreignTable'] = $relation->getTable()->getTableName();
-                $name = $relation['localTable']->getTableName() . '_' . implode('_', (array) $relation['local']) . '_' . $relation['table']->getTableName() . '_' . implode('_', (array) $relation['foreign']);
 
                 if ($relation->getTable() === $this && in_array($relation->getLocal(), $primary)) {
                     if ($relation->hasConstraint()) {
@@ -701,15 +700,17 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 $integrity = array('onUpdate' => $fk['onUpdate'],
                                    'onDelete' => $fk['onDelete']);
 
+                $fkName = $relation->getForeignKeyName();
+
                 if ($relation instanceof Doctrine_Relation_LocalKey) {
-                    $def = array('name'         => $name,
+                    $def = array('name'         => $fkName,
                                  'local'        => $relation->getLocalColumnName(),
                                  'foreign'      => $relation->getForeignColumnName(),
                                  'foreignTable' => $relation->getTable()->getTableName());
 
                     if (($key = array_search($def, $options['foreignKeys'])) === false) {
-                        $options['foreignKeys'][$name] = $def;
-                        $constraints[$name] = $integrity;
+                        $options['foreignKeys'][$fkName] = $def;
+                        $constraints[$fkName] = $integrity;
                     } else {
                         if ($integrity !== $emptyIntegrity) {
                             $constraints[$key] = $integrity;
@@ -1699,8 +1700,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     public function count()
     {
-        $a = $this->_conn->execute('SELECT COUNT(1) FROM ' . $this->_options['tableName'])->fetch(Doctrine::FETCH_NUM);
-        return current($a);
+        return $this->createQuery()->count();
     }
 
     /**
@@ -2141,11 +2141,13 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     public function getTemplate($template)
     {
-        if ( ! isset($this->_templates[$template])) {
-            throw new Doctrine_Table_Exception('Template ' . $template . ' not loaded');
+        if (isset($this->_templates['Doctrine_Template_' . $template])) {
+            return $this->_templates['Doctrine_Template_' . $template];
+        } else if (isset($this->_templates[$template])) {
+            return $this->_templates[$template];
         }
 
-        return $this->_templates[$template];
+        throw new Doctrine_Table_Exception('Template ' . $template . ' not loaded');
     }
 
     /**
@@ -2156,7 +2158,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      */
     public function hasTemplate($template)
     {
-        return isset($this->_templates[$template]);
+        return isset($this->_templates[$template]) || isset($this->_templates['Doctrine_Template_' . $template]);
     }
 
     /**
@@ -2281,7 +2283,8 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                     || $name == 'scale'
                     || $name == 'type'
                     || $name == 'length'
-                    || $name == 'fixed') {
+                    || $name == 'fixed'
+                    || $name == 'comment') {
                 continue;
             }
             if ($name == 'notnull' && isset($this->_columns[$columnName]['autoincrement'])
@@ -2425,7 +2428,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         // Forward the method on to the record instance and see if it has anything or one of its behaviors
         try {
             return call_user_func_array(array($this->getRecordInstance(), $method . 'TableProxy'), $arguments);
-        } catch (Exception $e) {}
+        } catch (Doctrine_Record_UnknownPropertyException $e) {}
 
         throw new Doctrine_Table_Exception(sprintf('Unknown method %s::%s', get_class($this), $method));
     }

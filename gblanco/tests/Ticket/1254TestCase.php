@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Template_TestCase
+ * Doctrine_Ticket_1254_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -43,14 +43,14 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
     {
 	    Doctrine_Manager::getInstance()->getCurrentConnection()->beginTransaction();
 
-        $cats = array('cat1', 'cat2', 'cat3');
+        $cats = array('cat1', 'cat2');
 	    $now = time();
 
         for ($i = 0; $i < 10; $i++) {
-		    $age = $now - rand(0,10000);
+		    $age = $now - $i * 1000;
             $x = new RelX();
 	        $x->name = "x $i";
-		    $x->category = $cats[rand(0, 2)];
+		    $x->category = $cats[$i % 2];
 		    $x->set('created_at', strftime("%Y-%m-%d %H:%M:%S", $age));
 	        $x->save();
         
@@ -80,7 +80,7 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
 
         // Doctrine_Ticket_1254_TestCase : method testSubqueryExtractionUsesWrongAliases failed on line 76 
         // This fails sometimes at
-        $this->assertEqual(3, count($xs));
+        $this->assertEqual(2, count($xs));
         
     }
 

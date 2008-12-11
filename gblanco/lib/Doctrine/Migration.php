@@ -111,6 +111,7 @@ class Doctrine_Migration
             $this->_migrationClasses = array_merge($migrationClasses, $this->_migrationClasses);
         }
 
+        $classesToLoad = array();
         $classes = get_declared_classes();
         foreach ((array) $directory as $dir) {
             $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir),
@@ -125,10 +126,17 @@ class Doctrine_Migration
                     $className = end($array);
 
                     if ($className) {
-                        $this->loadMigrationClass($className, $file->getPathName());
+                        $e = explode('_', $file->getFileName());
+                        $timestamp = $e[0];
+
+                        $classesToLoad[$timestamp] = array('className' => $className, 'path' => $file->getPathName());
                     }
                 }
             }
+        }
+        ksort($classesToLoad);
+        foreach ($classesToLoad as $class) {
+            $this->loadMigrationClass($class['className'], $class['path']);
         }
     }
 
@@ -464,11 +472,18 @@ class Doctrine_Migration
             }
 
             if ($migration->getNumChanges() > 0) {
-                $allChanges = $migration->getChanges();
-                foreach ($allChanges as $type => $changes) {
+                $changes = $migration->getChanges();
+                foreach ($changes as $value) {
+                    list($type, $change) = $value;
                     $funcName = 'process' . Doctrine_Inflector::classify($type);
                     if (method_exists($this->_process, $funcName)) {
-                        $this->_process->$funcName($changes);
+                        try {
+                            $this->_process->$funcName($change);
+                        } catch (Exception $e) {
+                            $this->addError($e);
+                        }
+                    } else {
+                        throw new Doctrine_Migration_Exception(sprintf('Invalid migration change type: %s', $type));
                     }
                 }
             }

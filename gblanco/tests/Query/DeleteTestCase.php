@@ -33,6 +33,11 @@
  */
 class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase 
 {
+    public function prepareTables()
+    {
+        $this->tables[] = 'DeleteTestModel';
+        parent::prepareTables();
+    }
     public function testDeleteAllWithColumnAggregationInheritance() 
     {
         $q = new Doctrine_Query();
@@ -102,5 +107,25 @@ class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase
         $q->delete()->from('Entity')->limit(10)->offset(20);
         
         $this->assertEqual($q->getQuery(), 'DELETE FROM entity LIMIT 10 OFFSET 20');
+    }
+    public function testDeleteWithFromInDeleteFunction()
+    {
+        $q = Doctrine::getTable('Entity')->createQuery()->delete();
+        $this->assertEqual($q->getDql(), 'DELETE FROM Entity');
+        $q = Doctrine_Query::create()->delete('Entity');
+        $this->assertEqual($q->getDql(), 'DELETE FROM Entity');
+
+        $q = Doctrine::getTable('DeleteTestModel')->createQuery()->delete('DeleteTestModel');
+        $this->assertEqual($q->getDql(), 'DELETE FROM DeleteTestModel');
+        $this->assertEqual($q->getSql(), 'DELETE FROM delete_test_model');
+        $q->execute();
+    }
+}
+
+class DeleteTestModel extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
     }
 }

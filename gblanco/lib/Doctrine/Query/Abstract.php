@@ -363,7 +363,7 @@ abstract class Doctrine_Query_Abstract
         return $q;
     }
 
-    
+
 
     /**
      * getQueryPart
@@ -505,7 +505,7 @@ abstract class Doctrine_Query_Abstract
             throw new Doctrine_Query_Exception('Unknown query part ' . $name);
         }
 
-        if ($name == 'limit' || $name == 'offset') {
+        if ($name == 'limit' || $name == 'offset' || $name == 'forUpdate') {
             $this->_sqlParts[$name] = false;
         } else {
             $this->_sqlParts[$name] = array();
@@ -661,7 +661,7 @@ abstract class Doctrine_Query_Abstract
      * If no component alias is specified it defaults to the root component
      *
      * This function is used to append a SQL condition to models which have inheritance mapping
-     * The condition is applied to the FROM component in the WHERE, but the condition is applied to 
+     * The condition is applied to the FROM component in the WHERE, but the condition is applied to
      * JOINS in the ON condition and not the WHERE
      *
      * @return string $str  SQL condition string
@@ -873,10 +873,11 @@ abstract class Doctrine_Query_Abstract
     public function getRootAlias()
     {
         if ( ! $this->_queryComponents) {
-          $this->getSql();
+            $this->getSql();
         }
+        
         reset($this->_queryComponents);
-
+        
         return key($this->_queryComponents);
     }
 
@@ -973,6 +974,35 @@ abstract class Doctrine_Query_Abstract
     }
 
     /**
+     * calculateQueryCacheHash
+     * calculate hash key for query cache
+     *
+     * @return string    the hash
+     */
+    public function calculateQueryCacheHash()
+    {
+        $dql = $this->getDql();
+        $hash = md5($dql . 'DOCTRINE_QUERY_CACHE_SALT');
+        return $hash;
+    }
+
+    /**
+     * calculateResultCacheHash
+     * calculate hash key for result cache
+     *
+     * @param array $params
+     * @return string    the hash
+     */
+    public function calculateResultCacheHash($params = array())
+    {
+        $dql = $this->getDql();
+        $params = $this->getParams($params);
+        $conn = $this->getConnection();
+        $hash = md5($conn->getName() . $conn->getOption('dsn') . $dql . var_export($params, true));
+        return $hash;
+    }
+
+    /**
      * _execute
      *
      * @param array $params
@@ -993,10 +1023,7 @@ abstract class Doctrine_Query_Abstract
         if ( ! $this->_view) {
             if ($this->_queryCache !== false && ($this->_queryCache || $this->_conn->getAttribute(Doctrine::ATTR_QUERY_CACHE))) {
                 $queryCacheDriver = $this->getQueryCacheDriver();
-                
-                // Calculate hash for dql query
-                $dql = $this->getDql();
-                $hash = md5($dql . 'DOCTRINE_QUERY_CACHE_SALT');
+                $hash = $this->calculateQueryCacheHash();
                 $cached = $queryCacheDriver->fetch($hash);
 
                 // If we have a cached query...
@@ -1072,11 +1099,7 @@ abstract class Doctrine_Query_Abstract
 
         if ($this->_resultCache && $this->_type == self::SELECT) {
             $cacheDriver = $this->getResultCacheDriver();
-
-            $dql = $this->getDql();
-            // calculate hash for dql query
-            $hash = md5($dql . var_export($dqlParams, true));
-
+            $hash = $this->calculateResultCacheHash($params);
             $cached = ($this->_expireResultCache) ? false : $cacheDriver->fetch($hash);
 
             if ($cached === false) {
@@ -1199,6 +1222,8 @@ abstract class Doctrine_Query_Abstract
         $copy->getSqlQuery($params);
         $componentsAfter = $copy->getQueryComponents();
 
+        $this->_rootAlias = $copy->getRootAlias();
+        
         if ($componentsBefore !== $componentsAfter) {
             return array_diff($componentsAfter, $componentsBefore);
         } else {
@@ -1344,8 +1369,8 @@ abstract class Doctrine_Query_Abstract
     {
         return $this->andWhere($where, $params);
     }
-    
-    
+
+
     /**
      * Adds conditions to the WHERE part of the query
      *
@@ -1360,15 +1385,15 @@ abstract class Doctrine_Query_Abstract
         } else {
             $this->_params['where'][] = $params;
         }
-        
+
         if ($this->_hasDqlQueryPart('where')) {
             $this->_addDqlQueryPart('where', 'AND', true);
         }
 
         return $this->_addDqlQueryPart('where', $where, true);
     }
-    
-    
+
+
     /**
      * Adds conditions to the WHERE part of the query
      *
@@ -1383,7 +1408,7 @@ abstract class Doctrine_Query_Abstract
         } else {
             $this->_params['where'][] = $params;
         }
-        
+
         if ($this->_hasDqlQueryPart('where')) {
             $this->_addDqlQueryPart('where', 'OR', true);
         }
@@ -1451,7 +1476,7 @@ abstract class Doctrine_Query_Abstract
 
         return $this->_addDqlQueryPart('where', $this->_processWhereIn($expr, $params, $not), true);
     }
-    
+
 
     /**
      * @nodoc
@@ -1494,7 +1519,7 @@ abstract class Doctrine_Query_Abstract
     {
         return $this->whereIn($expr, $params, true);
     }
-    
+
 
     /**
      * Adds NOT IN condition to the query WHERE part
@@ -1507,7 +1532,7 @@ abstract class Doctrine_Query_Abstract
     {
         return $this->andWhereIn($expr, $params, true);
     }
-    
+
 
     /**
      * Adds NOT IN condition to the query WHERE part
@@ -1612,9 +1637,12 @@ abstract class Doctrine_Query_Abstract
      *
      * @return Doctrine_Query
      */
-    public function delete()
+    public function delete($from = null)
     {
         $this->_type = self::DELETE;
+        if ($from != null) {
+            return $this->_addDqlQueryPart('from', $from);
+        }
         return $this;
     }
 
@@ -1625,10 +1653,13 @@ abstract class Doctrine_Query_Abstract
      * @param string $update        Query UPDATE part
      * @return Doctrine_Query
      */
-    public function update($update)
+    public function update($from = null)
     {
         $this->_type = self::UPDATE;
-        return $this->_addDqlQueryPart('from', $update);
+        if ($from != null) {
+            return $this->_addDqlQueryPart('from', $from);
+        }
+        return $this;
     }
 
     /**
@@ -1798,7 +1829,7 @@ abstract class Doctrine_Query_Abstract
     /**
      * getSql
      * shortcut for {@link getSqlQuery()}.
-     * 
+     *
      * @param array $params (optional)
      * @return string   sql query string
      */
@@ -1921,7 +1952,10 @@ abstract class Doctrine_Query_Abstract
         }
         $this->_resultCache = $driver;
 
-        return $this->setResultCacheLifeSpan($timeToLive);
+        if ($timeToLive !== null) {
+            $this->setResultCacheLifeSpan($timeToLive);
+        }
+        return $this;
     }
 
     /**
@@ -1938,8 +1972,11 @@ abstract class Doctrine_Query_Abstract
             throw new Doctrine_Query_Exception($msg);
         }
         $this->_queryCache = $driver;
-        
-        return $this->setQueryCacheLifeSpan($timeToLive);
+
+        if ($timeToLive !== null) {
+            $this->setQueryCacheLifeSpan($timeToLive);
+        }
+        return $this;
     }
 
     /**
@@ -2093,7 +2130,7 @@ abstract class Doctrine_Query_Abstract
     {
         return $this->_conn;
     }
-    
+
     /**
      * Checks if there's at least one DQL part defined to the internal parts collection.
      *

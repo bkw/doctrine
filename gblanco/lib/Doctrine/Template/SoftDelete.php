@@ -42,20 +42,8 @@ class Doctrine_Template_SoftDelete extends Doctrine_Template
                                 'type'          =>  'timestamp',
                                 'length'        =>  null,
                                 'options'       =>  array('default' => null,
-                                                          'notnull' => false,
-                                                          ),
+                                                          'notnull' => false),
     );
-
-    /**
-     * __construct
-     *
-     * @param string $array
-     * @return void
-     */
-    public function __construct(array $options = array())
-    {
-        $this->_options = Doctrine_Lib::arrayDeepMerge($this->_options, $options);
-    }
 
     /**
      * Set table definition for SoftDelete behavior

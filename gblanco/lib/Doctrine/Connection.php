@@ -153,6 +153,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                                   'wildcards'           => array('%', '_'),
                                   'varchar_max_length'  => 255,
                                   'sql_file_delimiter'  => ";\n",
+                                  'max_identifier_length' => 64,
                                   );
 
     /**
@@ -175,6 +176,14 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
                                         'Firebird'
                                         );
     protected $_count = 0;
+
+    /**
+     * @var array $_userFkNames                 array of foreign key names that have been used
+     */
+    protected $_usedNames = array(
+            'foreign_keys' => array(),
+            'indexes' => array()
+        );
 
     /**
      * the constructor
@@ -1098,6 +1107,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         if (isset($this->tables[$name])) {
             return $this->tables[$name];
         }
+        
         $class = $name . 'Table';
 
         if (class_exists($class, $this->getAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES)) &&
@@ -1106,9 +1116,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         } else {
             $table = new Doctrine_Table($name, $this, true);
         }
-
-        $this->tables[$name] = $table;
-
+        
         return $table;
     }
 
@@ -1405,7 +1413,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
      */
     public function rollback($savepoint = null)
     {
-        $this->transaction->rollback($savepoint);
+        return $this->transaction->rollback($savepoint);
     }
 
     /**
@@ -1441,9 +1449,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         } else {
             $dsn = $info['scheme'] . '://' . $this->getOption('username') . ':' . $this->getOption('password') . '@' . $info['host'] . '/' . $info['dbname'];
         }
-
-        // Re-open connection with the newly created database
-        $this->getManager()->openConnection($dsn, $this->getName(), true);
 
         if (isset($e)) {
             return $e;
@@ -1485,9 +1490,6 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         } else {
             $dsn = $info['scheme'] . '://' . $this->getOption('username') . ':' . $this->getOption('password') . '@' . $info['host'] . '/' . $info['dbname'];
         }
-
-        // Re-open connection with the newly created database
-        $this->getManager()->openConnection($dsn, $this->getName(), true);
 
         if (isset($e)) {
             return $e;
@@ -1585,5 +1587,77 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
         foreach ($array as $name => $values) {
             $this->$name = $values;
         }
+    }
+
+    /**
+     * Get/generate a unique foreign key name for a relationship
+     *
+     * @param  Doctrine_Relation $relation  Relation object to generate the foreign key name for
+     * @return string $fkName
+     */
+    public function generateUniqueRelationForeignKeyName(Doctrine_Relation $relation)
+    {
+        $parts = array(
+            $relation['localTable']->getTableName(),
+            $relation->getLocalColumnName(),
+            $relation['table']->getTableName(),
+            $relation->getForeignColumnName(),
+        );
+        $key = implode('_', array_merge($parts, array($relation['onDelete']), array($relation['onUpdate'])));
+        $format = $this->getAttribute(Doctrine::ATTR_FKNAME_FORMAT);
+
+        return $this->_generateUniqueName('foreign_keys', $parts, $key, $format, $this->properties['max_identifier_length']);
+    }
+
+    /**
+     * Get/generate unique index name for a table name and set of fields
+     *
+     * @param string $tableName     The name of the table the index exists
+     * @param string $fields        The fields that makes up the index
+     * @return string $indexName    The name of the generated index
+     */
+    public function generateUniqueIndexName($tableName, $fields)
+    {
+        $fields = (array) $fields;
+        $parts = array($tableName);
+        $parts = array_merge($parts, $fields);
+        $key = implode('_', $parts);
+        $format = $this->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT);
+
+        return $this->_generateUniqueName('indexes', $parts, $key, $format, $this->properties['max_identifier_length']);
+    }
+
+    protected function _generateUniqueName($type, $parts, $key, $format = '%s', $maxLength = 64)
+    {
+        if (isset($this->_usedNames[$type][$key])) {
+            return $this->_usedNames[$type][$key];
+        }
+
+        $generated = implode('_', $parts);
+        // If the final length is greater than 64 we need to create an abbreviated fk name
+        if (strlen(sprintf($format, $generated)) > $maxLength) {
+            $generated = '';
+            foreach ($parts as $part) {
+                $generated .= $part[0];
+            }
+            $name = $generated;
+        } else {
+            $name = $generated;
+        }
+
+        $count = 1;
+        while (in_array($name, $this->_usedNames[$type])) {
+            $e = explode('_', $name);
+            $end = end($e);
+            if (is_numeric($end))
+            {
+              unset($e[count($e) - 1]);
+              $fkName = implode('_', $e);
+            }
+            $name = $name . '_' . $count++;
+        }
+        $this->_usedNames[$type][$key] = $name;
+
+        return $name;
     }
 }

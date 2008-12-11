@@ -36,7 +36,7 @@ final class Doctrine
     /**
      * VERSION
      */
-    const VERSION                   = '1.1.0-DEV';
+    const VERSION                   = '1.1.0-BETA1';
 
     /**
      * ERROR CONSTANTS
@@ -161,6 +161,7 @@ final class Doctrine
     const ATTR_DBNAME_FORMAT        = 117;
     const ATTR_TBLCLASS_FORMAT      = 119;
     const ATTR_TBLNAME_FORMAT       = 120;
+    const ATTR_FKNAME_FORMAT        = 171;
     const ATTR_EXPORT               = 140;
     const ATTR_DECIMAL_PLACES       = 141;
 
@@ -550,6 +551,11 @@ final class Doctrine
                                         self::loadModel($className, $file->getPathName());
                                     }
                                 }
+                            }
+                            $previouslyLoaded = array_keys(self::$_loadedModelFiles, $file->getPathName());
+                            if ( ! empty($previouslyLoaded)) {
+                                $previouslyLoaded = array_combine(array_values($previouslyLoaded), array_values($previouslyLoaded));
+                                $loadedModels = array_merge($loadedModels, $previouslyLoaded);
                             }
                         }
                     }

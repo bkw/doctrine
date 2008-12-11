@@ -240,7 +240,11 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
 
         $repository = $this->_table->getRepository();
-        $repository->add($this);
+        
+        // Fix for #1682. Doctrine_Table does not have the repository yet during dummy record creation.
+        if ($repository) {
+            $repository->add($this);
+        }
 
         $this->construct();
     }
@@ -321,7 +325,23 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $this->getTable()->getRecordListener()->postValidate($event);
         $this->postValidate($event);
 
-        return $this->getErrorStack()->count() == 0 ? true : false;
+        $valid = $this->getErrorStack()->count() == 0 ? true : false;
+        if ($valid) {
+            foreach ($this->_references as $reference) {
+                if ($reference instanceof Doctrine_Record) {
+                    if ( ! $valid = $reference->isValid()) {
+                        break;
+                    }
+                } else if ($reference instanceof Doctrine_Collection) {
+                    foreach ($reference as $record) {
+                        if ( ! $valid = $record->isValid()) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return $valid;
     }
 
     /**
@@ -605,6 +625,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         $this->_values = array_merge($this->_values, $this->cleanData($data));
         $this->_data = array_merge($this->_data, $data);
+        if (count($this->_values) < $this->_table->getColumnCount()) {
+            $this->_state = self::STATE_PROXY;
+        }
         $this->prepareIdentifiers(true);
     }
 
@@ -666,10 +689,12 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         unset($vars['_filter']);
         unset($vars['_node']);
 
-        $name = $this->_table->getIdentifier();
-        $this->_data = array_merge($this->_data, $this->_id);
+        $data = $this->_data;
+        if ($this->exists()) {
+            $data = array_merge($data, $this->_id);
+        }
 
-        foreach ($this->_data as $k => $v) {
+        foreach ($data as $k => $v) {
             if ($v instanceof Doctrine_Record && $this->_table->getTypeOf($k) != 'object') {
                 unset($vars['_data'][$k]);
             } elseif ($v === self::$_null) {
@@ -1080,6 +1105,19 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     }
 
     /**
+     * Set a fieldname to have a custom accessor and mutator
+     *
+     * @param string $fieldname
+     * @param string $accessor
+     * @param string $mutator
+     */
+    public function hasAccessorMutator($fieldName, $accessor, $mutator)
+    {
+        $this->hasAccessor($fieldName, $accessor);
+        $this->hasMutator($fieldName, $mutator);
+    }
+
+    /**
      * get
      * returns a value of a property or a related component
      *
@@ -1106,6 +1144,10 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         $value = self::$_null;
 
+        if (array_key_exists($fieldName, $this->_values)) {
+            return $this->_values[$fieldName];
+        }
+
         if (array_key_exists($fieldName, $this->_data)) {
             // check if the value is the Doctrine_Null object located in self::$_null)
             if ($this->_data[$fieldName] === self::$_null && $load) {
@@ -1119,10 +1161,6 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
             
             return $value;
-        }
-
-        if (array_key_exists($fieldName, $this->_values)) {
-            return $this->_values[$fieldName];
         }
         
         try {
@@ -1140,7 +1178,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $success = false;
             foreach ($this->_table->getFilters() as $filter) {
                 try {
-                    $value = $filter->filterGet($this, $fieldName, $value);
+                    $value = $filter->filterGet($this, $fieldName);
                     $success = true;
                 } catch (Doctrine_Exception $e) {}
             }
@@ -1164,7 +1202,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      * @param mixed $value                  mixed value to be mapped
      * @return void
      */
-    public function mapValue($name, $value)
+    public function mapValue($name, $value = null)
     {
         $this->_values[$name] = $value;
     }
@@ -1199,7 +1237,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
     protected function _set($fieldName, $value, $load = true)
     {
-        if (isset($this->_data[$fieldName])) {
+        if (array_key_exists($fieldName, $this->_values)) {
+            $this->_values[$fieldName] = $value;
+        } else if (isset($this->_data[$fieldName])) {
             $type = $this->_table->getTypeOf($fieldName);
             if ($value instanceof Doctrine_Record) {
                 $id = $value->getIncremented();
@@ -1792,7 +1832,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      *
      * @param string $type Format type: xml, yml, json
      * @param string $deep Whether or not to export deep in to all relationships
-     * @return void
+     * @return mixed $exported
      */
     public function exportTo($type, $deep = true)
     {
@@ -1842,8 +1882,32 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function isModified()
     {
-        return ($this->_state === Doctrine_Record::STATE_DIRTY ||
+        $modified = ($this->_state === Doctrine_Record::STATE_DIRTY ||
                 $this->_state === Doctrine_Record::STATE_TDIRTY);
+        if ( ! $modified) {
+            if ($this->_state == self::STATE_LOCKED || $this->_state == self::STATE_TLOCKED) {
+                return false;
+            }
+
+            $stateBeforeLock = $this->_state;
+            $this->_state = $this->exists() ? self::STATE_LOCKED : self::STATE_TLOCKED;
+
+            foreach ($this->_references as $reference) {
+                if ($reference instanceof Doctrine_Record) {
+                    if ($modified = $reference->isModified()) {
+                        break;
+                    }
+                } else if ($reference instanceof Doctrine_Collection) {
+                    foreach ($reference as $record) {
+                        if ($modified = $record->isModified()) {
+                            break;
+                        }
+                    }
+                }
+            }
+            $this->_state = $stateBeforeLock;
+        }
+        return $modified;
     }
 
     /**
@@ -2130,15 +2194,22 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
     {
         $ids = (array) $ids;
 
+        // fix for #1622
+        if ( ! isset($this->_references[$alias]) && $this->hasRelation($alias)) {
+            $this->loadReference($alias);
+        }		
+
         if (isset($this->_references[$alias])) {
             foreach ($this->_references[$alias] as $k => $record) {
                 if (in_array(current($record->identifier()), $ids) || empty($ids)) {
                     $this->_references[$alias]->remove($k);
                 }
             }
+
             $this->_references[$alias]->takeSnapshot();
         }
-        if (!$this->exists() || $now === false) {
+
+        if ( ! $this->exists() || $now === false) {
             if (count($ids)) {
                 foreach ($ids as $id) {
                     $this->_pendingUnlinks[$alias][$id] = true;
@@ -2146,6 +2217,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             } else {
                 $this->_pendingUnlinks[$alias] = false;
             }
+
             return $this;
         } else {
             return $this->unlinkInDb($alias, $ids);
@@ -2198,19 +2270,23 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         if ( ! count($ids)) {
             return $this;
         }
-        if (!$this->exists() || $now === false) {
+
+        if ( ! $this->exists() || $now === false) {
             $relTable = $this->getTable()->getRelation($alias)->getTable();
             $records = $relTable->createQuery()
                 ->whereIn($relTable->getIdentifier(), $ids)
                 ->execute();
+
             foreach ($records as $record) {
                 $this->$alias->add($record);
             }
+
             foreach ($ids as $id) {
                 if (isset($this->_pendingUnlinks[$alias][$id])) {
                     unset($this->_pendingUnlinks[$alias][$id]);
                 }
             }
+
             return $this;
         } else {
             return $this->linkInDb($alias, $ids);
@@ -2225,29 +2301,30 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         $rel = $this->getTable()->getRelation($alias);
 
         if ($rel instanceof Doctrine_Relation_Association) {
-
             $modelClassName = $rel->getAssociationTable()->getComponentName();
             $localFieldName = $rel->getLocalFieldName();
             $localFieldDef  = $rel->getAssociationTable()->getColumnDefinition($localFieldName);
+
             if ($localFieldDef['type'] == 'integer') {
                 $identifier = (integer) $identifier;
             }
+
             $foreignFieldName = $rel->getForeignFieldName();
             $foreignFieldDef  = $rel->getAssociationTable()->getColumnDefinition($foreignFieldName);
+
             if ($foreignFieldDef['type'] == 'integer') {
-                for ($i = 0; $i < count($ids); $i++) {
+                for ($i = 0, $l = count($ids); $i < $l; $i++) {
                     $ids[$i] = (integer) $ids[$i];
                 }
             }
+
             foreach ($ids as $id) {
                 $record = new $modelClassName;
                 $record[$localFieldName] = $identifier;
                 $record[$foreignFieldName] = $id;
                 $record->save();
             }
-
         } else if ($rel instanceof Doctrine_Relation_ForeignKey) {
-
             $q = new Doctrine_Query();
 
             $q->update($rel->getTable()->getComponentName())
@@ -2258,9 +2335,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             }
 
             $q->execute();
-
         } else if ($rel instanceof Doctrine_Relation_LocalKey) {
-
             $q = new Doctrine_Query();
 
             $q->update($this->getTable()->getComponentName())

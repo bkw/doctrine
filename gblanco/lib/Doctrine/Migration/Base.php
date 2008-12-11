@@ -32,30 +32,18 @@
  */
 abstract class Doctrine_Migration_Base
 {
-    protected $_changes = array('created_tables'      =>  array(),
-                                'renamed_tables'      =>  array(),
-                                'created_constraints' =>  array(),
-                                'added_columns'       =>  array(),
-                                'added_indexes'       =>  array(),
-                                'dropped_fks'         =>  array(),
-                                'created_fks'         =>  array(),
-                                'dropped_constraints' =>  array(),
-                                'removed_indexes'     =>  array(),
-                                'dropped_tables'      =>  array(),
-                                'renamed_columns'     =>  array(),
-                                'changed_columns'     =>  array(),
-                                'removed_columns'     =>  array());
+    protected $_changes = array();
 
-    protected static $_opposites = array('created_tables'       => 'dropped_tables',
-                                         'dropped_tables'       => 'created_tables',
-                                         'created_constraints'  => 'dropped_constraints',
-                                         'dropped_constraints'  => 'created_constraints',
-                                         'created_fks'          => 'dropped_fks',
-                                         'dropped_fks'          => 'created_fks',
-                                         'added_columns'        => 'removed_columns',
-                                         'removed_columns'      => 'added_columns',
-                                         'added_indexes'        => 'removed_indexes',
-                                         'removed_indexes'      => 'added_indexes',
+    protected static $_opposites = array('created_table'       => 'dropped_table',
+                                         'dropped_table'       => 'created_table',
+                                         'created_constraint'  => 'dropped_constraint',
+                                         'dropped_constraint'  => 'created_constraint',
+                                         'created_foreign_key' => 'dropped_foreign_key',
+                                         'dropped_foreign_key' => 'created_foreign_key',
+                                         'created_column'      => 'dropped_column',
+                                         'dropped_column'      => 'created_column',
+                                         'created_index'       => 'dropped_index',
+                                         'dropped_index'       => 'created_index',
                                          );
 
     /**
@@ -70,7 +58,7 @@ abstract class Doctrine_Migration_Base
 
     public function getNumChanges()
     {
-        return (count($this->_changes, true) - count($this->_changes));
+        return count($this->_changes);
     }
 
     /**
@@ -82,44 +70,55 @@ abstract class Doctrine_Migration_Base
      */
     protected function _addChange($type, array $change = array())
     {
-        if (isset($change['upDown']) && isset(self::$_opposites[$type])) {
-            if ($change['upDown'] == 'down') {
-                $opposite = self::$_opposites[$type];
-                return $this->_changes[$opposite][] = $change;
-            }
+        if (isset($change['upDown']) && $change['upDown'] !== null && isset(self::$_opposites[$type])) {
+            $upDown = $change['upDown'];
             unset($change['upDown']);
+            if ($upDown == 'down') {
+                $opposite = self::$_opposites[$type];
+                return $this->_changes[] = array($opposite, $change);
+            }
         }
-        return $this->_changes[$type][] = $change;
+        return $this->_changes[] = array($type, $change);
     }
 
     /**
-     * Add a create table change
+     * Add a create or drop table change.
      *
-     * @param string $upDown    Whether to execute up or down
-     * @param string $tableName Name of the table to create
-     * @param array  $fields    Array of fields for the table
-     * @param array  $options   Array of options for the table
+     * @param string $upDown     Whether to add the up(create) or down(drop) table change.
+     * @param string $tableName  Name of the table
+     * @param array  $fields     Array of fields for table
+     * @param array  $options    Array of options for the table
      * @return void
      */
-    public function createTable($upDown, $tableName, array $fields = array(), array $options = array())
+    public function table($upDown, $tableName, array $fields = array(), array $options = array())
     {
         $options = get_defined_vars();
-        
-        $this->_addChange('created_tables', $options);
+
+        $this->_addChange('created_table', $options);
     }
 
     /**
-     * Add a drop table change
+     * Add a create table change.
      *
-     * @param string $upDown        Whether to execute up or down
-     * @param string $tableName     Name of the table to drop
+     * @param string $tableName  Name of the table
+     * @param array  $fields     Array of fields for table
+     * @param array  $options    Array of options for the table
      * @return void
      */
-    public function dropTable($upDown, $tableName, array $fields = array(), array $options = array())
+    public function createTable($tableName, array $fields = array(), array $options = array())
     {
-        $options = get_defined_vars();
-        
-        $this->_addChange('dropped_tables', $options);
+        $this->table('up', $tableName, $fields, $options);
+    }
+
+    /**
+     * Add a drop table change.
+     *
+     * @param string $tableName  Name of the table
+     * @return void
+     */
+    public function dropTable($tableName)
+    {
+        $this->table('down', $tableName);
     }
 
     /**
@@ -133,111 +132,138 @@ abstract class Doctrine_Migration_Base
     {
         $options = get_defined_vars();
         
-        $this->_addChange('renamed_tables', $options);
+        $this->_addChange('renamed_table', $options);
     }
 
     /**
-     * Add a create constraint change
+     * Add a create or drop constraint change.
      *
-     * @param string $upDown            Whether to execute up or down
-     * @param string $tableName         Name of the table to add the constraint to
-     * @param string $constraintName    Name of the constraint
-     * @param array  $definition        Definition of the constraint
+     * @param string $upDown            Whether to add the up(create) or down(drop) create change.
+     * @param string $tableName         Name of the table.
+     * @param string $constraintname    Name of the constraint.
+     * @param array  $definition        Array for the constraint definition.
      * @return void
      */
-    public function createConstraint($upDown, $tableName, $constraintName, array $definition)
+    public function constraint($upDown, $tableName, $constraintname, array $definition)
     {
         $options = get_defined_vars();
         
-        $this->_addChange('created_constraints', $options);
+        $this->_addChange('created_constraint', $options);
     }
 
     /**
-     * Add a drop constraint change
+     * Add a create constraint change.
      *
-     * @param string $upDown            Whether to execute up or down
-     * @param string $tableName         Name of the table to drop the constraint from
-     * @param string $constraintName    Name of the constraint
-     * @param string $primary           Whether or not the constraint is primary
+     * @param string $tableName         Name of the table.
+     * @param string $constraintname    Name of the constraint.
+     * @param array  $definition        Array for the constraint definition.
      * @return void
      */
-    public function dropConstraint($upDown, $tableName, $constraintName, array $definition = array(), $primary = false)
+    public function createConstraint($tableName, $constraintName, array $definition)
     {
-        $options = get_defined_vars();
-        
-        $this->_addChange('dropped_constraints', $options);
+        $this->constraint('up', $constraintName, $definition);
     }
 
     /**
-     * Add a create foreign key change
+     * Add a drop constraint change.
      *
-     * @param string $upDown       Whether to execute up or down
-     * @param string $tableName    Name of the table to drop the foreign key on
-     * @param array  $definition   An array defining the foreign key
+     * @param string $tableName         Name of the table.
+     * @param string $constraintname    Name of the constraint.
      * @return void
      */
-    public function createForeignKey($upDown, $tableName, array $definition)
+    public function dropConstraint($tableName, $constraintName)
     {
-        $options = get_defined_vars();
-        
-        $this->_addChange('created_fks', $options);
+        $this->constraint('down', $constraintName);
     }
 
     /**
-     * Add a drop foreign key change
+     * Add a create or drop foreign key change.
      *
-     * @param string $upDown        Whether to execute up or down
-     * @param string $tableName    Name of the table to drop the foreign key on
-     * @param array  $definition   An array defining the foreign key
+     * @param string $upDown        Whether to add the up(create) or down(drop) foreign key change.
+     * @param string $tableName     Name of the table.
+     * @param string $name          Name of the foreign key.
+     * @param array  $definition    Array for the foreign key definition
      * @return void
      */
-    public function dropForeignKey($upDown, $tableName, array $definition)
+    public function foreignKey($upDown, $tableName, $name, array $definition = array())
     {
+        $definition['name'] = $name;
         $options = get_defined_vars();
-        
-        $this->_addChange('dropped_fks', $options);
+
+        $this->_addChange('created_foreign_key', $options);
     }
 
     /**
-     * Add a add column change
+     * Add a create foreign key change.
      *
-     * @param string $upDown      Whether to execute up or down
-     * @param string $tableName   Name of the table to add the column to
-     * @param string $columnName  Name of the column
-     * @param string $length      Length of the column
-     * @param string $type        Type of the column
-     * @param array  $options     Array of options for the column
+     * @param string $tableName     Name of the table.
+     * @param string $name          Name of the foreign key.
+     * @param array  $definition    Array for the foreign key definition
      * @return void
      */
-    public function addColumn($upDown, $tableName, $columnName, $length = null, $type, array $options = array())
+    public function createForeignKey($tableName, $name, array $definition)
+    {
+        $this->foreignKey('up', $tableName, $name, $definition);
+    }
+
+    /**
+     * Add a drop foreign key change.
+     *
+     * @param string $tableName     Name of the table.
+     * @param string $name          Name of the foreign key.
+     * @return void
+     */
+    public function dropForeignKey($tableName, $name)
+    {
+        $this->foreignKey('down', $tableName, $name);
+    }
+
+    /**
+     * Add a add or remove column change.
+     *
+     * @param string $upDown        Whether to add the up(add) or down(remove) column change.
+     * @param string $tableName     Name of the table
+     * @param string $columnName    Name of the column
+     * @param string $type          Type of the column
+     * @param string $length        Length of the column
+     * @param array  $options       Array of options for the column
+     * @return void
+     */
+    public function column($upDown, $tableName, $columnName, $type = null, $length = null, array $options = array())
     {
         $options = get_defined_vars();
         $options['options']['length'] = $length;
         $options = array_merge($options, $options['options']);
         unset($options['options']);
 
-        $this->_addChange('added_columns', $options);
+        $this->_addChange('created_column', $options);
     }
 
     /**
-     * Add remove column change
+     * Add a add column change.
      *
-     * @param string $upDown      Whether to execute up or down
-     * @param string $tableName   Name of the table to add the column to
-     * @param string $columnName  Name of the column
-     * @param string $length      Length of the column
-     * @param string $type        Type of the column
-     * @param array  $options     Array of options for the column
+     * @param string $tableName     Name of the table
+     * @param string $columnName    Name of the column
+     * @param string $type          Type of the column
+     * @param string $length        Length of the column
+     * @param array  $options       Array of options for the column
      * @return void
      */
-    public function removeColumn($upDown, $tableName, $columnName, $length = null, $type = null, array $options = array())
+    public function addColumn($tableName, $columnName, $type, $length = null, array $options = array())
     {
-        $options = get_defined_vars();
-        $options['options']['length'] = $length;
-        $options = array_merge($options, $options['options']);
-        unset($options['options']);
+        $this->column('up', $tableName, $columnName, $type, $length, $options);
+    }
 
-        $this->_addChange('removed_columns', $options);
+    /**
+     * Add a remove column change.
+     *
+     * @param string $tableName     Name of the table
+     * @param string $columnName    Name of the column
+     * @return void
+     */
+    public function removeColumn($tableName, $columnName)
+    {
+        $this->column('down', $tableName, $columnName);
     }
 
     /**
@@ -252,7 +278,7 @@ abstract class Doctrine_Migration_Base
     {
         $options = get_defined_vars();
         
-        $this->_addChange('renamed_columns', $options);
+        $this->_addChange('renamed_column', $options);
     }
 
     /**
@@ -269,39 +295,48 @@ abstract class Doctrine_Migration_Base
         $options = get_defined_vars();
         $options['options']['length'] = $length;
 
-        $this->_addChange('changed_columns', $options);
+        $this->_addChange('changed_column', $options);
     }
 
     /**
-     * Add add index change
+     * Add a add or remove index change.
      *
-     * @param string $upDown        Whether to execute up or down
-     * @param string $tableName     Name of the table to add the index to
-     * @param string $indexName     Name of the index
-     * @param array  $definition    Definition of the index
+     * @param string $upDown       Whether to add the up(add) or down(remove) index change.
+     * @param string $tableName    Name of the table
+     * @param string $indexName    Name of the index
+     * @param array  $definition   Array for the index definition
      * @return void
      */
-    public function addIndex($upDown, $tableName, $indexName, array $definition)
+    public function index($upDown, $tableName, $indexName, array $definition = array())
     {
         $options = get_defined_vars();
         
-        $this->_addChange('added_indexes', $options);
+        $this->_addChange('created_index', $options);
     }
 
     /**
-     * Add remove index change
+     * Add a add index change.
      *
-     * @param string $upDown        Whether to execute up or down
-     * @param string $tableName     Name of the table to add the index to
-     * @param string $indexName     Name of the index
-     * @param array  $definition    Definition of the index
+     * @param string $tableName    Name of the table
+     * @param string $indexName    Name of the index
+     * @param array  $definition   Array for the index definition
      * @return void
      */
-    public function removeIndex($upDown, $tableName, $indexName, array $definition = array())
+    public function addIndex($tableName, $indexName, array $definition)
     {
-        $options = get_defined_vars();
-        
-        $this->_addChange('removed_indexes', $options);
+        $this->index('up', $tableName, $indexName, $definition);
+    }
+
+    /**
+     * Add a remove index change.
+     *
+     * @param string $tableName    Name of the table
+     * @param string $indexName    Name of the index
+     * @return void
+     */
+    public function removeIndex($tableName, $indexName)
+    {
+        $this->index('down', $tableName, $indexName);
     }
 
     public function preUp()

@@ -39,7 +39,7 @@ class Doctrine_Ticket_1604_TestCase extends Doctrine_UnitTestCase
         $def = array(
             "CREATE TABLE ticket_1604__user (id BIGINT AUTO_INCREMENT, name VARCHAR(30), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = INNODB",
             "CREATE TABLE ticket_1604__email_adresses (id BIGINT AUTO_INCREMENT, user_id BIGINT, address VARCHAR(30), INDEX user_id_idx (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = INNODB",
-            "ALTER TABLE ticket_1604__email_adresses ADD CONSTRAINT ticket_1604__email_adresses_userId_ticket_1604__user_id FOREIGN KEY (user_id) REFERENCES ticket_1604__user(id)"
+            "ALTER TABLE ticket_1604__email_adresses ADD CONSTRAINT ticket_1604__email_adresses_user_id_ticket_1604__user_id FOREIGN KEY (user_id) REFERENCES ticket_1604__user(id)"
         );
         
         $this->assertEqual($sql, $def);

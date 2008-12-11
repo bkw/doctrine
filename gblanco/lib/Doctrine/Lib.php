@@ -252,36 +252,9 @@ class Doctrine_Lib
                 $args[1] = self::arrayDeepMerge($args[0], $args[1]);
                 array_shift($args);
 
-                return call_user_func_array(array('Doctrine', 'arrayDeepMerge'), $args);
+                return call_user_func_array(array('Doctrine_Lib', 'arrayDeepMerge'), $args);
             break;
         }
-    }
-
-    /**
-     * getValidators
-     *
-     * Get available doctrine validators
-     *
-     * @return array $validators
-     */
-    public static function getValidators()
-    {
-        $validators = array();
-
-        $dir = Doctrine::getPath() . DIRECTORY_SEPARATOR . 'Doctrine' . DIRECTORY_SEPARATOR . 'Validator';
-
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY);
-        foreach ($files as $file) {
-            $e = explode('.', $file->getFileName());
-
-            if (end($e) == 'php') {
-                $name = strtolower($e[0]);
-
-                $validators[$name] = $name;
-            }
-        }
-
-        return $validators;
     }
 
     /**

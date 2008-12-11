@@ -61,6 +61,9 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
      */
     public function preDelete(Doctrine_Event $event)
     {
+        $name = $this->_options['name'];
+        $event->getInvoker()->$name = date('Y-m-d H:i:s', time());
+
         $event->skipOperation();
     }
 
@@ -72,8 +75,6 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
      */
     public function postDelete(Doctrine_Event $event)
     {
-        $name = $this->_options['name'];
-        $event->getInvoker()->$name = new Doctrine_Expression('NOW()');
         $event->getInvoker()->save();
     }
 
@@ -113,7 +114,7 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
         // 1 - We are in the root query
         // 2 - We are in the subquery and it defines the component with that alias
         if (( ! $query->isSubquery() || ($query->isSubquery() && $query->contains(' ' . $params['alias'] . ' '))) && ! $query->contains($field)) {
-            $query->addWhere($field . ' IS NULL');
+            $query->addPendingJoinCondition($params['alias'], $field . ' IS NULL');
         }
     }
 }

@@ -195,7 +195,7 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
 
         $q = new Doctrine_Query();
         $q->select('u.id, p.id')->from('User u LEFT JOIN u.Phonenumber p');
-        $q->where("u.name LIKE ? || u.name LIKE ?");
+        $q->where("u.name LIKE ? OR u.name LIKE ?");
         $q->limit(5);
 
         $users = $q->execute(array('%zYne%', '%Arnold%'));

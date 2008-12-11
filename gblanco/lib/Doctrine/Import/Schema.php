@@ -130,32 +130,6 @@ class Doctrine_Import_Schema
                                                           'keyValue'));
 
     /**
-     * _validators
-     *
-     * Array of available validators
-     *
-     * @see getValidators()
-     * @var array Array of available validators
-     */
-    protected $_validators = array();
-
-    /**
-     * getValidators
-     *
-     * Retrieve the array of available validators
-     *
-     * @return array
-     */
-    public function getValidators()
-    {
-        if (empty($this->_validators)) {
-            $this->_validators = Doctrine_Lib::getValidators();
-        }
-
-        return $this->_validators;
-    }
-
-    /**
      * getOption
      *
      * @param string $name 
@@ -261,6 +235,12 @@ class Doctrine_Import_Schema
         $builder->setOptions($this->getOptions());
         
         $array = $this->buildSchema($schema, $format);
+
+        if (count($array) == 0) { 
+            throw new Doctrine_Import_Exception(
+                sprintf('No ' . $format . ' schema found in ' . implode(", ", $schema))
+            ); 
+        }
 
         foreach ($array as $name => $definition) {
             if ( ! empty($models) && !in_array($definition['className'], $models)) {
@@ -398,7 +378,7 @@ class Doctrine_Import_Schema
                     $colDesc['values'] = isset($field['values']) ? (array) $field['values']:null;
 
                     // Include all the specified and valid validators in the colDesc
-                    $validators = $this->getValidators();
+                    $validators = Doctrine_Manager::getInstance()->getValidators();
 
                     foreach ($validators as $validator) {
                         if (isset($field[$validator])) {
@@ -466,10 +446,11 @@ class Doctrine_Import_Schema
                     if ( ! isset($array[$className]['inheritance']['keyValue'])) {
                         $array[$className]['inheritance']['keyValue'] = $className;
                     }
-                    
+
+                    $parent = $this->_findBaseSuperClass($array, $definition['className']);
                     // Add the keyType column to the parent if a definition does not already exist
-                    if ( ! isset($array[$array[$className]['inheritance']['extends']]['columns'][$array[$className]['inheritance']['keyField']])) {
-                        $array[$definition['inheritance']['extends']]['columns'][$array[$className]['inheritance']['keyField']] = array('name' => $array[$className]['inheritance']['keyField'], 'type' => 'string', 'length' => 255);
+                    if ( ! isset($array[$parent]['columns'][$array[$className]['inheritance']['keyField']])) {
+                        $array[$parent]['columns'][$array[$className]['inheritance']['keyField']] = array('name' => $array[$className]['inheritance']['keyField'], 'type' => 'string', 'length' => 255);
                     }
                 }
             }
@@ -482,7 +463,7 @@ class Doctrine_Import_Schema
                        'attributes' => array(),
                        'options' => array(),
                        'checks' => array());
-        
+
         foreach ($array as $className => $definition) {
             // Move any definitions on the schema to the parent
             if (isset($definition['inheritance']['extends']) && isset($definition['inheritance']['type']) && ($definition['inheritance']['type'] == 'simple' || $definition['inheritance']['type'] == 'column_aggregation')) {
@@ -723,7 +704,7 @@ class Doctrine_Import_Schema
         // Validators are a part of the column validation
         // This should be fixed, made cleaner
         if ($name == 'column') {
-            $validators = $this->getValidators();
+            $validators = Doctrine_Manager::getInstance()->getValidators();
             $validation = array_merge($validation, $validators);
         }
 
