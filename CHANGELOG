@@ -1,3 +1,43 @@
+1.1.0-BETA1
+-----------
+     * [r5243] [1.1] Releasing 1.1.0-ALPHA1
+     * [r5244] [1.1] Added ability to mapValues and reuse then on application. Mapped values are data that is transient and is not persisted to DB, although they are part of the record.
+     * [r5245] [1.1] fixes issue with foreign key names being too long in genrated migrations (fixes #1712)
+     * [r5246] [1.1] Enhancing generated php doc
+     * [r5248] [1.1] Fixing parse error
+     * [r5249] [1.1] fixing generating php doc block for @version
+     * [r5250] [1.0, 1.1] Fixes issue with preInsert() and preUpdate() hooks being called after isValid() (fixes #1716)
+     * [r5251] [1.0, 1.1] Fixes issue with checks not exporting in pgsql (fixes #1697)
+     * [r5252] [1.1] Fixes issue with foreign key names (addresses #1712)
+     * [r5253] [1.1] Another issue with foreign key names (addresses #1712)
+     * [r5255] [1.0, 1.1] Fixed incorrect phpdoc @return on Doctrine_Record::exportTo() (fixes #1709)
+     * [r5256] [1.0, 1.1] Added failing test case for #1706
+     * [r5257] [1.0, 1.1] Fixes issue with Searchable behavior when primary key is not an integer (fixes #1704)
+     * [r5258] Add testcase for ticket 1619
+     * [r5259] [1.0, 1.1] fixes issue with missing sqlite types in DataDict (fixes #1662)
+     * [r5260] [1.0, 1.1] Cached results are now connection/dsn specific. (fixes #1706)
+     * [r5261] [1.0, 1.1] fixes issue with creating and dropping databases (fixes #1595)
+     * [r5263] [1.0, 1.1] fixes issue with mis-leading exception being thrown (fixes #1562)
+     * [r5264] [1.0, 1.1] Fixes issue with serializing non saved records (fixes #1703)
+     * [r5265] [1.1] fixes #1696. Limit and subqueries are working perfectly now for MySQL. Also fixed the wrong parameter adjusting that was being not accepted under certain circunstances (mix of
+	  params between join/where + > 3 joins not related).
+     * [r5266] [1.1] Format/cleanup
+     * [r5267] [1.1] Fixes issue with generated foreign key names being returned already formatted
+     * [r5268] [1.1] fixes issue with length of generated index names (fixes #1712)
+     * [r5269] [1.0, 1.1] fixes issue with Doctrine::loadModels() returning empty array when called back to back with same directory (fixes #1727)
+     * [r5270] [1.1] Fixes strict standards notice (fixes #1720)
+     * [r5271] [1.1] Fixing migrations to execute in the order specified by developer (fixes #1722)
+     * [r5272] [1.1] adding coverage for ticket #1729 (addresses #1729)
+     * [r5274] [1.1] fixes issue with Versionable and SoftDelete together (fixes #1725)
+     * [r5275] [1.0, 1.1] fixes #1719. Fixed missing index in Windows specific environment for test suite. Thanks for the tip and patch!
+     * [r5276] [1.0, 1.1] Fixes #1718. Fixed setCharset call to PDO quote which was incorrect. Thanks for the tip and patch!
+     * [r5277] [1.0, 1.1] fixes #1705. Thanks for the tip and patch!
+     * [r5278] [1.1] Fixing SoftDelete failing test cases.
+     * [r5279] [1.0, 1.1] Fixing issue with actAs() where invoker was not being set
+     * [r5280] [1.0, 1,1] Fixing issue with comment being used as a validator
+     * [r5281] [1.0, 1.1] fixes inconsistant lazy loading behavior (closes #1733)
+     * [r5282] [1.0, 1.1] Added missing listTableRelations() for postgres (closes #1734)
+
 1.1.0-ALPHA1
 ------------
      * [r5218] [1.0, 1.1] Fixes issue with && and || being converted to AND and ||. Causes problems with postgres since || is an real operator (closes #1632)
