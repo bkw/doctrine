@@ -1,3 +1,38 @@
+1.0.5
+-----
+     * [r5215] Fixing filenames
+     * [r5216] Fixing
+     * [r5217] [1.0] Releasing 1.0.4
+     * [r5218] [1.0, 1.1] Fixes issue with && and || being converted to AND and ||. Causes problems with postgres since || is an real operator (closes #1632)
+     * [r5219] [1.0, 1.1] fixes #1698. Thanks for the tip and patch!
+     * [r5222] [1.0, 1.1] fixes #1693. Added return value for Connection rollback.
+     * [r5224] limit fetchOne to one result
+     * [r5232] [1.0, 1.1] fixes #1394
+     * [r5234] [1.0, 1.1] fixes issue with column aggregation inheritance in schema files (fixes #1617)
+     * [r5235] [1.0, 1.1] Added extra check (closes #1707)
+     * [r5237] [1.0, 1.1] fixes #1710.
+     * [r5247] [1.0] Reverting r5224 (fixes #1715)
+     * [r5250] [1.0, 1.1] Fixes issue with preInsert() and preUpdate() hooks being called after isValid() (fixes #1716)
+     * [r5251] [1.0, 1.1] Fixes issue with checks not exporting in pgsql (fixes #1697)
+     * [r5255] [1.0, 1.1] Fixed incorrect phpdoc @return on Doctrine_Record::exportTo() (fixes #1709)
+     * [r5256] [1.0, 1.1] Added failing test case for #1706
+     * [r5257] [1.0, 1.1] Fixes issue with Searchable behavior when primary key is not an integer (fixes #1704)
+     * [r5259] [1.0, 1.1] fixes issue with missing sqlite types in DataDict (fixes #1662)
+     * [r5260] [1.0, 1.1] Cached results are now connection/dsn specific. (fixes #1706)
+     * [r5261] [1.0, 1.1] fixes issue with creating and dropping databases (fixes #1595)
+     * [r5262] Adding ignore.
+     * [r5263] [1.0, 1.1] fixes issue with mis-leading exception being thrown (fixes #1562)
+     * [r5264] [1.0, 1.1] Fixes issue with serializing non saved records (fixes #1703)
+     * [r5269] [1.0, 1.1] fixes issue with Doctrine::loadModels() returning empty array when called back to back with same directory (fixes #1727)
+     * [r5273] [1.0] Fixing typo.
+     * [r5275] [1.0, 1.1] fixes #1719. Fixed missing index in Windows specific environment for test suite. Thanks for the tip and patch!
+     * [r5276] [1.0, 1.1] Fixes #1718. Fixed setCharset call to PDO quote which was incorrect. Thanks for the tip and patch!
+     * [r5277] [1.0, 1.1] fixes #1705. Thanks for the tip and patch!
+     * [r5279] [1.0, 1.1] Fixing issue with actAs() where invoker was not being set
+     * [r5280] [1.0, 1,1] Fixing issue with comment being used as a validator
+     * [r5281] [1.0, 1.1] fixes inconsistant lazy loading behavior (closes #1733)
+     * [r5282] [1.0, 1.1] Added missing listTableRelations() for postgres (closes #1734)
+
 1.0.4
 -----
      * [r5076] [1.0] Releasing Doctrine 1.0.3
