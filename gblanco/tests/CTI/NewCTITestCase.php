@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_NewClassTableInheritance_TestCase
+ * Doctrine_CTI_NewCTI_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_NewClassTableInheritance_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_CTI_NewCTI_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareTables()
     { }

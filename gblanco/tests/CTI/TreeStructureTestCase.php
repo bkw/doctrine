@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_TreeStructure_TestCase
+ * Doctrine_CTI_TreeStructure_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_CTITreeStructure_TestCase extends Doctrine_UnitTestCase
+class Doctrine_CTI_TreeStructure_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareTables() 
     { 

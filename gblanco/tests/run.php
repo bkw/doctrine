@@ -265,11 +265,13 @@ $test->addTestCase($aggregation_inheritance);
 
 // Class Table Inheritance tests
 $classtable_inheritance = new GroupTest('Concrete Inheritance Tests', 'classtable_inheritance');
-$classtable_inheritance->addTestCase(new Doctrine_ClassTableInheritance_TestCase());
-$classtable_inheritance->addTestCase(new Doctrine_NewClassTableInheritance_TestCase());
-$classtable_inheritance->addTestCase(new Doctrine_CTITreeStructure_TestCase());
-$classtable_inheritance->addTestCase(new Doctrine_CTII18nOnChild_TestCase());
-$classtable_inheritance->addTestCase(new Doctrine_CTII18nOnParent_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_NewCTI_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_TreeStructure_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_I18nOnChild_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_I18nOnParent_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_SoftDeleteOnChild_TestCase());
+$classtable_inheritance->addTestCase(new Doctrine_CTI_SoftDeleteOnParent_TestCase());
 $test->addTestCase($classtable_inheritance);
 
 // General tests

@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_CTII18nOnChild_TestCase
+ * Doctrine_CTI_I18nOnChild_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_CTII18nOnChild_TestCase extends Doctrine_UnitTestCase
+class Doctrine_CTI_I18nOnChild_TestCase extends Doctrine_UnitTestCase
 {
 
     public function prepareData()
