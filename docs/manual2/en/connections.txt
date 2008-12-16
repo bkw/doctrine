@@ -1,0 +1,200 @@
+++ DSN, the Data Source Name
+
+In order to connect to a database through Doctrine, you have to create a valid 
+DSN - data source name. 
+
+Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style 
+data source names. The following section deals with PEAR like data source names. 
+If you need more info about the PDO-style data source names see the 
+[documentation on pdo](http://www.php.net/pdo).
+
+The DSN consists in the following parts:
+
+| DSN part    | Description |
+|-------------|-------------|
+|  phptype    |  Database backend used in PHP (i.e. mysql , pgsql etc.) |
+|  dbsyntax   |  Database used with regards to SQL syntax etc. |
+|  protocol   |  Communication protocol to use ( i.e. tcp, unix etc.) |
+|  hostspec   |  Host specification (hostname[:port]) |
+|  database   |  Database to use on the DBMS server |
+|  username   |  User name for login |
+|  password   |  Password for login |
+|  proto_opts |  Maybe used with protocol |
+|  option     |  Additional connection options in URI query string format. Options are separated by ampersand (&). The Following table shows a non complete list of options: |
+
+**List of options**
+
+| Name     | Description |
+|----------|-------------|
+|  charset  |  Some backends support setting the client charset.|
+|  new_link |  Some RDBMS do not create new connections when connecting to the same host multiple times. This option will attempt to force a new connection. |
+
+The DSN can either be provided as an associative array or as a string. The 
+string format of the supplied DSN is in its fullest form:
+
+    phptype(dbsyntax)://username:password@protocol+hostspec/database?option=value
+
+Most variations are allowed:
+
+    phptype://username:password@protocol+hostspec:110//usr/db_file.db
+    phptype://username:password@hostspec/database
+    phptype://username:password@hostspec
+    phptype://username@hostspec
+    phptype://hostspec/database
+    phptype://hostspec
+    phptype:///database
+    phptype:///database?option=value&anotheroption=anothervalue
+    phptype(dbsyntax)
+    phptype
+
+The currently supported database backends are: 
+
+| Driver name | Supported databases |
+|-------------|---------------------|
+|  fbsql       |  FrontBase |
+|  ibase       |  InterBase / Firebird (requires PHP 5) |
+|  mssql       |  Microsoft SQL Server (NOT for Sybase. Compile PHP --with-mssql) |
+|  mysql       |  MySQL |
+|  mysqli      |  MySQL (supports new authentication protocol) (requires PHP 5) |
+|  oci8        |  Oracle 7/8/9/10    |
+|  pgsql       |  PostgreSQL  |
+|  querysim    |  QuerySim   |
+|  sqlite      |  SQLite 2 |
+
+A second DSN format supported is
+
+    phptype(syntax)://user:pass@protocol(proto_opts)/database
+
+If your database, option values, username or password contain characters used 
+to delineate DSN parts, you can escape them via URI hex encodings:  
+
+| Character | Hex Code |
+|-----------|----------|
+| :          |  %3a      |
+| /          |  %2f      | 
+| @          |  %40      | 
+| +          |  %2b      | 
+| (          |  %28      | 
+| )          |  %29      | 
+| ?          |  %3f      | 
+| =          |  %3d      | 
+| &          |  %26      | 
+
+>**CAUTION**
+>Please note, that some features may be not supported by all database backends. 
+
++++ Examples
+
+**Example 1.** Connect to database through a socket
+
+    mysql://user@unix(/path/to/socket)/pear
+
+**Example 2.** Connect to database on a non standard port
+
+    pgsql://user:pass@tcp(localhost:5555)/pear
+
+**Example 3.** Connect to SQLite on a Unix machine using options
+
+    sqlite:////full/unix/path/to/file.db?mode=0666
+
+**Example 4.** Connect to SQLite on a Windows machine using options
+
+    sqlite:///c:/full/windows/path/to/file.db?mode=0666
+
+**Example 5.** Connect to MySQLi using SSL
+
+    mysqli://user:pass@localhost/pear?key=client-key.pem&cert=client-cert.pem
+
+++ Opening New Connections
+
+Opening a new database connection in Doctrine is very easy. If you wish to use 
+[PDO](www.php.net/PDO) you can just initalize a new PDO object:
+
+    [php]
+    $dsn = 'mysql:dbname=testdb;host=127.0.0.1';
+    $user = 'dbuser';
+    $password = 'dbpass';
+
+    try {
+        $dbh = new PDO($dsn, $user, $password);
+        $conn = Doctrine_Manager::connection($dbh);
+    } catch (PDOException $e) {
+        echo 'Connection failed: ' . $e->getMessage();
+    }
+
+>**NOTE**
+>Directly passing a PDO instance to {{Doctrine_Manager::connection()}} will 
+>not allow Doctrine to be aware of the username and password for the connection, 
+>since their is no way to retrieve it from an existing PDO instance. The username 
+>and password is required in order for Doctrine to be able to create and drop 
+>databases. To get around this you can manually set the username and password 
+>option directly on the $conn object.
+
+    [php]
+    $conn->setOption('username', 'username');
+    $conn->setOption('password', 'password');
+
+++ Lazy Database Connecting
+
+Lazy-connecting to database can save a lot of resources. There might be many 
+pages where you don't need an actual database connection, hence its always 
+recommended to use lazy-connecting (that means Doctrine will only connect to 
+database when needed).
+
+This feature can be very useful when using for example page caching, hence not 
+actually needing a database connection on every request. Remember connecting to 
+database is an expensive operation.
+
+    [php]
+    // initalize a new Doctrine_Connection
+    $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test');
+    // !! no actual database connection yet !!
+
+    // connects database and performs a query
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->execute();
+
+++ Managing connections
+
+From the start Doctrine has been designed to work with multiple connections. 
+Unless separately specified Doctrine always uses the current connection for 
+executing the queries.
+
+{{Doctrine_Manager}} provides static method {{Doctrine_Manager::connection()}} 
+which opens new connection when arguments are given to it and returns the 
+current connection when no arguments have been speficied.
+
+    [php]
+    // open first connection 
+    $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
+
+    $conn2 = Doctrine_Manager::connection();
+
+    // $conn2 == $conn
+
+The current connection is the lastly opened connection. 
+
+    [php]
+    // open second connection
+    $conn2 = Doctrine_Manager::connection('mysql://username2:password2@localhost/test2', 'connection 2');
+
+    $manager->getCurrentConnection(); // $conn2
+
+You can change the current connection by calling {{setCurrentConnection()}}. 
+
+    [php]
+    $manager->setCurrentConnection('connection 1');
+
+    $manager->getCurrentConnection(); // $conn
+
+You can iterate over the opened connection by simple passing the manager object 
+to foreach clause. This is possible since {{Doctrine_Manager}} implements 
+special {{IteratorAggregate}} interface.
+
+    [php]
+    // iterating through connections
+
+    foreach($manager as $conn) {
+
+    }
