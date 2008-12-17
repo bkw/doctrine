@@ -1,7 +1,3 @@
-++ Requirements
-
-Doctrine requires PHP >= 5.2.3+. it doesn't require any external libraries. For database function call abstraction Doctrine uses PDO which comes bundled with the PHP official release that you get from www.php.net. If you use a 3 in 1 package under windows like Uniform Server or any other non official package, you may be required to perform additional configurations.
-
 ++ Checking PDO Driver Installation
 
 In order to make sure your server can run Doctrine we need to check your PHP version and that you have the necessary PDO drivers available.
