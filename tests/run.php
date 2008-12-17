@@ -182,6 +182,7 @@ $validators = new GroupTest('Validators Testing', 'validators');
 $validators->addTestCase(new Doctrine_Validator_TestCase());
 $validators->addTestCase(new Doctrine_Validator_Future_TestCase());
 $validators->addTestCase(new Doctrine_Validator_Past_TestCase());
+$validators->addTestCase(new Doctrine_Validator_ForeignKeys_TestCase());
 $test->addTestCase($validators);
 
 // Db Tests
