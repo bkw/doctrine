@@ -382,6 +382,8 @@ disable automatic deleting of versions when a record is deleted
     [php]
     $this->actAs('Versionable', array('deleteVersions' => false));
 
+And the yaml version:
+
     [yml]
     actAs:
       Versionable:
