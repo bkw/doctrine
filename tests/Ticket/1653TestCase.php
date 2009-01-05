@@ -58,16 +58,8 @@ class Doctrine_Ticket_1653_TestCase extends Doctrine_UnitTestCase
         
         //explicit call of isValid() should return false since $mail->address is null
 
-        $this->assertFalse($user->isValid());
+        $this->assertFalse($user->isValid(true));
 
-        try {
-            //implicit call of isValid() via save() should throw error since $mail->address is null
-            $user->save();
-            $this->fail('Save should not have succeeded');
-        } catch (Doctrine_Validator_Exception $dve) {
-            $this->pass();
-        }
-        
         //reset validation to default for further testcases
         Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
@@ -80,12 +72,12 @@ class Doctrine_Ticket_1653_TestCase extends Doctrine_UnitTestCase
         $user->emails[] = $mail;
 
         // Should return true since one of its relationships is modified
-        $this->assertTrue($user->isModified());
+        $this->assertTrue($user->isModified(true));
 
         $user = new Ticket_1653_User();
-        $this->assertFalse($user->isModified());
+        $this->assertFalse($user->isModified(true));
         $user->name = 'floriank';
-        $this->assertTrue($user->isModified());
+        $this->assertTrue($user->isModified(true));
     }
 }
 
