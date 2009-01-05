@@ -37,6 +37,110 @@ Here is an example using `isValid()`:
     // Returns false because the referenced Email object does not have an address set
     $valid = $user->isValid(true);
 
+[r5098](http://trac.doctrine-project.org/changeset/5098) - Added ability to 
+define custom accessors/mutators for a Doctrine record
+
+    [php]
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string');
+    }
+
+    public function setUp()
+    {
+        $this->hasAccessor('username', 'customUsernameAccessor');
+        $this->hasMutator('username', 'customUsernameMutator');
+    }
+
+    public function customUsernameAccessor()
+    {
+        return $this->_get('username');
+    }
+
+    public function customUsernameMutator($value)
+    {
+        $this->_set('username', $value);
+    }
+
+[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to 
+alias record listeners
+
+    [php]
+    $this->addListener(new My_Listener_FooListener($this->_options), 'FooListener');
+
+No aliasing and no options usage:
+
+    [yml]
+    Foo:
+      columns:
+        bar: string(50)
+      listeners: [My_Listener_FooListener]
+
+No aliasing and using options
+
+    [yml]
+    Foo:
+      columns:
+        bar: string(50)
+      listeners:
+        My_Listener_FooListener:
+          useOptions: true
+
+Using alias definition
+
+    [yml]
+    Foo:
+      columns:
+        bar: string(50)
+      listeners:
+        FooListener:
+          class: My_Listener_FooListener
+          useOptions: true 
+
+[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to 
+enable/disable record listeners
+
+Possibility to remove all listeners of all record listeners
+
+    [php]
+    Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', true);
+
+Possibility to remove some listeners of all record listeners
+
+    [php]
+    Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', 
+      array('preSerialize', 'postHydrate'));
+
+Possibility to remove all listeners of a single record listener
+
+    [php]
+    Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')
+      ->setOption('disabled', true);
+
+Possibility to remove some listeners of a single record listener
+
+    [php]
+    Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')
+      ->setOption('disabled', array('preSave', 'postInsert'));
+
+[r5241](http://trac.doctrine-project.org/changeset/5240) - Added ability to 
+work with mapped values as if they were part of the record. It is useful to 
+store transient data into record (this data is not persisted to database).
+
+    [php]
+    class Foo extends Doctrine_Record {
+        public function setTableDefinition() {
+            $this->mapValue('name');
+        }
+
+        // ...
+    }
+
+    $foo = new Foo();
+
+    $foo->name = 'guilhermeblanco';
+    echo $foo->name; // prints: guilhermeblanco
+
 [r5014](http://trac.doctrine-project.org/changeset/5014) - Added support for 
 `FROM User u WHERE u.id IN ?` in the Doctrine_Query api.
 
@@ -393,19 +497,6 @@ Generates the following User and Phonenumber class
 Versionable Behavior
 --------------------
 
-[r5084](http://trac.doctrine-project.org/changeset/5084) - As of Doctrine 1.1 
-you are now able to reference relationships defined on the versioned model 
-from the {CLASS}Version auto generated model.
-
-    [php]
-    // These relationships are defined on the User model but they
-    // are copied to the UserVersion model when it is generated.
-    $q = Doctrine_Query::create()
-        ->from('UserVersion u')
-        ->leftJoin('u.Profile p')
-        ->leftJoin('u.Phonenumbers p2')
-        ->leftJoin('u.Groups g');
-
 [r5097](http://trac.doctrine-project.org/changeset/5097) - Added ability to 
 disable automatic deleting of versions when a record is deleted
 
@@ -418,111 +509,6 @@ And the yaml version:
     actAs:
       Versionable:
         deleteVersions: false
-
-[r5098](http://trac.doctrine-project.org/changeset/5098) - Added ability to 
-define custom accessors/mutators for a Doctrine record
-
-    [php]
-    public function setTableDefinition()
-    {
-        $this->hasColumn('username', 'string');
-    }
-
-    public function setUp()
-    {
-        $this->hasAccessor('username', 'customUsernameAccessor');
-        $this->hasMutator('username', 'customUsernameMutator');
-    }
-
-    public function customUsernameAccessor()
-    {
-        return $this->_get('username');
-    }
-
-    public function customUsernameMutator($value)
-    {
-        $this->_set('username', $value);
-    }
-
-[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to 
-alias record listeners
-
-    [php]
-    $this->addListener(new My_Listener_FooListener($this->_options), 'FooListener');
-
-No aliasing and no options usage:
-
-    [yml]
-    Foo:
-      columns:
-        bar: string(50)
-      listeners: [My_Listener_FooListener]
-
-No aliasing and using options
-
-    [yml]
-    Foo:
-      columns:
-        bar: string(50)
-      listeners:
-        My_Listener_FooListener:
-          useOptions: true
-
-Using alias definition
-
-    [yml]
-    Foo:
-      columns:
-        bar: string(50)
-      listeners:
-        FooListener:
-          class: My_Listener_FooListener
-          useOptions: true 
-
-[r5236](http://trac.doctrine-project.org/changeset/5236) - Added ability to 
-enable/disable record listeners
-
-Possibility to remove all listeners of all record listeners
-
-    [php]
-    Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', true);
-
-Possibility to remove some listeners of all record listeners
-
-    [php]
-    Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', 
-      array('preSerialize', 'postHydrate'));
-
-Possibility to remove all listeners of a single record listener
-
-    [php]
-    Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')
-      ->setOption('disabled', true);
-
-Possibility to remove some listeners of a single record listener
-
-    [php]
-    Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')
-      ->setOption('disabled', array('preSave', 'postInsert'));
-
-[r5241](http://trac.doctrine-project.org/changeset/5240) - Added ability to 
-work with mapped values as if they were part of the record. It is useful to 
-store transient data into record (this data is not persisted to database).
-
-    [php]
-    class Foo extends Doctrine_Record {
-        public function setTableDefinition() {
-            $this->mapValue('name');
-        }
-
-        // ...
-    }
-
-$foo = new Foo();
-
-$foo->name = 'guilhermeblanco';
-echo $foo->name; // prints: guilhermeblanco
-
 
 Migrations
 ----------
