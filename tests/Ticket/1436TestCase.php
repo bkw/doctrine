@@ -65,12 +65,10 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
         $user = Doctrine_Query::create()->from('User u')->fetchOne();
         $userArray = array(
             'Group' => array(
-                '_identifiers' => array(
-                    $this->group_one => true,
-                    $this->group_two => true,
-                    $this->group_three => false
-                    )
-            ));
+                $this->group_one,
+                $this->group_two
+            )
+        );
 
         $user->synchronizeWithArray($userArray);
 
@@ -92,12 +90,10 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
         $user = Doctrine_Query::create()->from('User u, u.Group g')->fetchOne();
         $userArray = array(
             'Group' => array(
-                '_identifiers' => array(
-                    $this->group_one => false,
-                    $this->group_two => true,
-                    $this->group_three => true
-                    )
-            ));
+                $this->group_two,
+                $this->group_three
+            )
+        );
         
         $user->synchronizeWithArray($userArray);
         
@@ -116,6 +112,16 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Group[1]->name, 'Group Three');
         $this->assertTrue(!isset($user->Group[2]));
     }
+
+    public function testFromArray()
+    {
+        $user = new User();
+        $userArray = array('Group' => array($this->group_two, $this->group_three));
+        $user->fromArray($userArray);
+        $this->assertEqual($user->Group[0]->name, 'Group Two');
+        $this->assertEqual($user->Group[1]->name, 'Group Three');
+    }
+
     public function testSynchronizeMNRecordsDontDeleteAfterUnlink()
     {
         $group = Doctrine::getTable('Group')->find($this->group_one);
