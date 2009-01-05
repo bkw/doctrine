@@ -7,6 +7,36 @@ to upgrade your projects to use this version.
 Doctrine Record
 ---------------
 
+isValid() & isModified() Optional Deep Parameter
+------------------------------------------------
+
+When you use the `Doctrine_Record::isValid()` and `Doctrine_Record::isModified()`
+methods you can optionally pass a `$deep` argument with a value of true so that
+Doctrine will check any references that exist. So if a reference record is
+invalid or modified then the parent object will return as such.
+
+Here is an example using `isModified()`:
+
+    [php]
+    $user = new TUser();
+    $mail = new Email();
+    $mail->address = 'test';
+    $user->emails[] = $mail;
+
+    // Returns true because the referenced email model is modified
+    $modified = $user->isModified(true);
+
+Here is an example using `isValid()`:
+
+    $user = new User();
+    $mail = new Email();
+
+    $user->name = "floriank";
+    $user->emails[] = $mail;
+
+    // Returns false because the referenced Email object does not have an address set
+    $valid = $user->isValid(true);
+
 [r5014](http://trac.doctrine-project.org/changeset/5014) - Added support for 
 `FROM User u WHERE u.id IN ?` in the Doctrine_Query api.
 
@@ -32,15 +62,15 @@ relationships.
     $user->link('Groups', array(1, 2, 3), true);
 
     $user = Doctrine::getTable('User')->find(1);
-    $userArray = array(
-        'Group' => array(
-            '_identifiers' => array(
-                1 => true,
-                2 => true,
-                3 => false)
-        ));
+    $userArray = array('Group' => array(1, 2, 3));
 
     $user->synchronizeWithArray($userArray);
+    $user->save();
+
+You can also use the same structure with the `fromArray()` function:
+
+    [php]
+    $user->fromArray($userArray);
     $user->save();
 
 [r5034](http://trac.doctrine-project.org/changeset/5034) - You can now retrieve 
