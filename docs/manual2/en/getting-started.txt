@@ -1,0 +1,102 @@
+++ Checking PDO Driver Installation
+
+In order to make sure your server can run Doctrine we need to check your PHP version and that you have the necessary PDO drivers available.
+
+Create a small PHP script named `phpinfo.php` and upload it to your server. 
+
+    [php]
+    <?php phpinfo(); ?>
+
+You can execute this script via your web server or from the command line. If you execute it via your web server then you must place this file somewhere in the web root.
+
+Go to `http://localhost/phpinfo.php` in your browser and you will see a list of information detailing your PHP configuration. Check that your PHP version is >= 5.2.3 and that you have PDO and the desired drivers installed.
+
+To execute this script from the command line run the following command via ssh.
+
+    $ php phpinfo.php
+
+++ Installing
+
+There are currently four different methods to install Doctrine.
+
+* SVN (subversion)
+* SVN externals
+* Pear
+* Zip-package
+
+It is recommended to download Doctrine via SVN (subversion), because in this case updating is easy. If your project is already under version control with SVN, you should choose SVN externals.
+
+If you wish to just try out Doctrine in under 5 minutes, the sandbox package is recommended.
+
++++ Sandbox
+
+Doctrine also provides a special package which is a zero configuration Doctrine implementation for you to test Doctrine without writing one line of code. You can download it from the [download page](http://www.doctrine-project.org/download).
+
+>**NOTE**
+>The sandbox implementation is not a recommend implementation for a production application. It's only purpose is for exploring Doctrine and running small tests.
+
++++ SVN
+
+The installation of doctrine via SVN is very easy. Just get the latest revision of Doctrine from http://svn.doctrine-project.org##RELEASE_SVN_PATH##.
+
+In order to check out Doctrine in the current directory using the svn command line tool use the following code:
+
+    svn co http://svn.doctrine-project.org##RELEASE_SVN_PATH## .
+
+If you do not have a SVN client, chose one from the list below. Find the Checkout option and enter svn.doctrine-project.org##RELEASE_SVN_PATH## in the path or repository url parameter. There is no need for a username or password to check out Doctrine.
+
+* [TortoiseSVN](http://tortoisesvn.tigris.org/) a Windows application that integrates into Windows Explorer
+* [svnx](http://www.apple.com/downloads/macosx/development_tools/svnx.html) a Mac OS X GUI svn application
+* [Eclipse](http://www.eclipse.org/) has SVN integration through the [subeclipse plugin](http://subclipse.tigris.org/)
+
+Execute the following command in your doctrine directory to update the code from SVN.
+
+    svn update
+
++++ SVN Externals
+
+If your project is under version control with SVN, you should set up doctrine via svn externals. You can do this with the svn command line tool:
+
+    svn propedit svn:externals /path/to/project
+
+You have to put the following line in the editor and save the changes.
+
+    doctrine http://svn.doctrine-project.org##RELEASE_SVN_PATH##
+
+Afterwards you can download doctrine with
+
+    svn update
+
++++ PEAR Installer
+
+You can install Doctrine via PEAR with the following command:
+
+    pear install http://pear.doctrine-project.org/Doctrine-##RELEASE_POINT_NAME##
+
++++ Download Pear Package
+
+You can download Doctrine as a .tgz PEAR package from [http://www.doctrine-project.org/download](http://www.doctrine-project.org/download). Simply unzip it to your project directory with your favorite archive management tool.
+
+Under Linux you can extract the .tgz package with the following command line instruction:
+
+    tar xzf Doctrine-##RELEASE_POINT_NAME##.tgz
+
+++ Implementing
+
+Now that you have obtained Doctrine, we are ready to implement Doctrine in to our application. This is the first step towards getting started with Doctrine.
+
++++ Require Doctrine Core
+
+The first thing we must do is find the `Doctrine.php` file containing the core class so that we can require it in to our application.
+
+The `Doctrine.php` file is in the `lib` folder from when you downloaded Doctrine in the previous section.
+
+    [php]
+    require_once('/path/to/doctrine/lib/Doctrine.php');
+
++++ Register Autoloader
+
+Now that we have the class named `Doctrine` present, we need to register the class autoloader function defined inside.
+
+    [php]
+    spl_autoload_register(array('Doctrine', 'autoload'));

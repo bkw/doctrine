@@ -1,0 +1,4 @@
+++ Architecture
+++ Design Patterns Used
+++ Speed
+++ Internal Optimizations
