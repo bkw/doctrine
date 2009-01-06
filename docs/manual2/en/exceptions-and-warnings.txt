@@ -1,4 +1,0 @@
-++ Manager Exceptions
-++ Relation Exceptions
-++ Connection Exceptions
-++ Query Exceptions

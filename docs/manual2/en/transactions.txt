@@ -1,6 +1,0 @@
-++ Introduction
-++ Nesting
-++ Savepoints
-++ Locking Strategies
-+++ Pessimistic Locking
-+++ Optimistic Locking
