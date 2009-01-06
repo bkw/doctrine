@@ -1,3 +1,54 @@
+1.1.0-BETA2
+-----------
+     * [r5284] [1.1] Releasing 1.1.0-BETA1
+     * [r5285] [1.2] Updating UPGRADE file to document the changes to SoftDelete.
+     * [r5286] [1.1] Property max_identifier_length is now used as the length parameter for _generateUniqueName method. Oracle holds only 30 characters long identifiers.
+     * [r5287] Removed unfitting doc section that seemed misplaced.
+     * [r5290] [1.0, 1.1] fixed typo.
+     * [r5292] [1.1] TestCase for ticket 1745
+     * [r5293] [1.1] Initial entry of new Manual layout.
+     * [r5294] [1.1] Initial entry of Introduction chapter.
+     * [r5295] [1.0, 1.1] Fixed issue with Date validator
+     * [r5296] [1.0, 1.1] Fixes issue with validators not passing when a related object is set for a foreign key and the foreign key field is notnull (closes #1755)
+     * [r5297] [1.0, 1.1] Fixing issue with pgsql and spatial column types (closes #1731)
+     * [r5298] [1.0, 1.1] Fixes issue with inheritance type column when it is aliased (closes #1713)
+     * [r5299] [1.1] removing test case.
+     * [r5300] [1.0, 1.1] Improving error message when validation fails. (closes #1763)
+     * [r5301] [1.0, 1.1] Fixing issue with resultset cache and joined records (closes #1636)
+     * [r5303] [1.0, 1.1] Fixed issue with limit subquery algorithm queries beind cached when they should not be (closes #1726)
+     * [r5304] [1.0, 1.1] Fixed issue with accented characters with Searchable behavior (closes #1745)
+     * [r5305] [1.0, 1.1] Fixes issue with data fixtures exporting with foreign keys (closes #1665)
+     * [r5306] [1.0, 1.1] Removing free() from data exporting as it causes problems when dealing with inheritance (closes #1666)
+     * [r5307] [1.0, 1.1] Fixes issue with identifier quoting and limit subquery (closes #1762)
+     * [r5308] [1.0, 1.1] Adding odbc to list of drivers (closes #1572)
+     * [r5309] [1.0, 1.1] Changing data fixtures to use is_callable() instead of method_exists() since setters may be not real physical functions (closes #1680)
+     * [r5310] [1.0, 1.1] Fixes issue with compound filters (closes #1751)
+     * [r5311] [1.1] Fixed infinite loop problem with isValid() (closes #1750)
+     * [r5312] [1.0, 1.1] Fixes small issue with Doctrine_Template::setInvoker() (closes #1765)
+     * [r5315] [1.0, 1.1] Fixing Timestamp validator to remove regex since the individual date and time validator will do the job
+     * [r5316] [1.0, 1.1] Fixes regression in resultset cache (closes #1768) and (addresses #1636 again)
+     * [r5317] [1.0, 1.1] Fixes issue where decimal always fails length validation when null is specified for length (closes #4998)
+     * [r5318] [1.0, 1.1] fixing custom package paths for schema files
+     * [r5319] [1.0, 1.1] Fixing strict standards notice that happens in certain cases
+     * [r5320] [1.0, 1.1] Reverting r5309 (addresses #1680)
+     * [r5321] [1.0, 1.1] Fixing data fixtures so they work with setters on behaviors (closes #1680)
+     * [r5322] [1.1] Fixing markdown syntax in upgrade file.
+     * [r5323] [1.0, 1.1] Fixed isModified casting that was missing for integer values. Thanks Hannes for reporting that
+     * [r5324] Fixes weird caching exceptions in Symfony. Thanks Hannes for notification and patch
+     * [r5325] [1.0, 1.1] Fixes #1259. Fixed SELECT DISTINCT query with limit being applied.
+     * [r5326] fixes #1772. Thanks for the patch! I had to modify it a little, because it was breaking 2 test cases in our test suite.
+     * [r5327] [1.1] fixes #1792. Fixed usage of relation aliases in BETWEEN queries. Thanks for the great patch/work!
+     * [r5328] [1.0, 1.1] fizes #1701. Fixed data fixture importing of NestedSet model. Thanks for the patch!
+     * [r5333] [1.0, 1.1] Makes hydrator exceptions more verbose (closes #1800)
+     * [r5336] [1.1] Added $deep argument for isValid() and isModified() and defaulted it to false to maintain BC (closes #1653)
+     * [r5337] [1.1] Removes uses of _identifiers (closes #1739)
+     * [r5338] [1.1] Updating upgrade document for synchronizeWithArray() changes..
+     * [r5339] [1.1] Reverting r5084 as it introduces some bugs which cannot be fixed until a later version (closes #1692)
+     * [r5340] [1.0, 1.1] Adding getSupportedDrivers() (closes #1794)
+     * [r5341] Fixed issue with named parameters (closes #1741)
+     * [r5344] [1.1] Added checking for obj.field IN :named to prevent possible issues of DQL
+     * [r5345] [1.1] Fixed issue with temporary generated models not being cleaned up properly (closes #1736)
+
 1.1.0-BETA1
 -----------
      * [r5243] [1.1] Releasing 1.1.0-ALPHA1
