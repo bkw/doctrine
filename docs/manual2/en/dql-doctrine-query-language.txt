@@ -1,0 +1,1296 @@
+++ Introduction
+
+Doctrine Query Language (DQL) is an Object Query Language created for helping
+users in complex object retrieval. You should always consider using DQL
+(or raw SQL) when retrieving relational data efficiently (eg. when fetching
+users and their phonenumbers).
+
+When compared to using raw SQL, DQL has several benefits:
+
+* From the start it has been designed to retrieve records(objects) not result
+set rows
+* DQL understands relations so you don't have to type manually sql joins and
+join conditions
+* DQL is portable on different databases
+* DQL has some very complex built-in algorithms like (the record limit algorithm)
+which can help developer to efficiently retrieve objects
+* It supports some functions that can save time when dealing with one-to-many,
+many-to-many relational data with 
+conditional fetching.
+
+If the power of DQL isn't enough, you should consider using the RawSql API for
+object population.
+
+You may already be familiar with the following syntax:
+
+    [php]
+    // DO NOT USE THE FOLLOWING CODE
+    // (uses many sql queries for object population)
+
+    $users = Doctrine::getTable('User')->findAll();
+
+    foreach($users as $user) {
+        print $user->name . ' has phonenumbers: ';
+
+        foreach($user->Phonenumber as $phonenumber) {
+            print $phonenumber . ' ';
+        }
+    }
+
+However you should not use it. Below is the same behavior implemented much more
+efficiently:
+
+    [php]
+    // same thing implemented much more efficiently:
+    // (using only one sql query for object population)
+
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->leftJoin('u.Phonenumber p')
+              ->execute();
+
+    foreach($users as $user) {
+        print $user->name . ' has phonenumbers: ';
+
+        foreach($user->Phonenumber as $phonenumber) {
+            print $phonenumber . ' ';
+        }
+    }
+
+++ SELECT queries
+
+`SELECT` statement syntax:
+
+    [sql]
+    SELECT
+        [ALL | DISTINCT]
+        <select_expr>, ...
+        [FROM <components>
+        [WHERE <where_condition>]
+        [GROUP BY <groupby_expr>
+          [ASC | DESC], ... ]
+        [HAVING <where_condition>]
+        [ORDER BY <orderby_expr>
+          [ASC | DESC], ...]
+        [LIMIT <row_count> OFFSET <offset>}]
+
+The `SELECT` statement is used for the retrieval of data from one or more
+components.
+
+Each `select_expr` indicates a column or an aggregate function value that
+you want to retrieve. There must be at least one `select_expr` in every
+`SELECT` statement.
+
+    [sql]
+    SELECT a.name, a.amount FROM Account a
+
+An asterisk can be used for selecting all columns from given component. Even
+when using an asterisk the executed sql queries never actually use it
+(Doctrine converts asterisk to appropriate column names, hence leading to
+better performance on some databases).
+
+    [sql]
+    SELECT a.* FROM Account a
+
+`FROM` clause `components` indicates the component or components from which to
+retrieve records.
+
+    [sql]
+    SELECT a.* FROM Account a
+
+    SELECT u.*, p.*, g.* FROM User u LEFT JOIN u.Phonenumber p LEFT JOIN u.Group g
+
+The `WHERE` clause, if given, indicates the condition or conditions that the
+records must satisfy to be selected. `where_condition` is an expression that
+evaluates to true for each row to be selected. The statement selects all rows 
+if there is no `WHERE` clause.
+
+    [sql]
+    SELECT a.* FROM Account a WHERE a.amount > 2000
+
+
+In the `WHERE` clause, you can use any of the functions and operators that DQL
+supports, except for aggregate (summary) functions. The `HAVING` clause can be
+used for narrowing the results with aggregate functions.
+
+    [sql]
+    SELECT u.* FROM User u LEFT JOIN u.Phonenumber p HAVING COUNT(p.id) > 3
+
+The `ORDER BY` clause can be used for sorting the results:
+
+    [sql]
+    SELECT u.* FROM User u ORDER BY u.name
+
+The `LIMIT` and `OFFSET` clauses can be used for efficiently limiting the number
+of records to a given `row_count`.
+
+    [sql]
+    SELECT u.* FROM User u LIMIT 20
+
++++ DISTINCT keyword
+
++++ Aggregate values
+
+Aggregate value `SELECT` syntax:
+
+    [php]
+    // SELECT u.*, COUNT(p.id) num_posts FROM User u, u.Posts p WHERE u.id = 1 GROUP BY u.id
+
+    $query = Doctrine_Query::create();
+
+    $query->select('u.id, COUNT(p.id) num_posts')
+          ->from('User u, u.Posts p')
+          ->where('u.id = ?', 1)
+          ->groupby('u.id');
+
+    $users = $query->execute();
+
+    echo $users->num_posts . ' posts found';
+
+++ UPDATE queries
+
+`UPDATE` statement syntax:
+
+    [sql]
+    UPDATE //component_name//
+        SET //col_name1//=//expr1// [, //col_name2//=//expr2// ...]
+        [WHERE //where_condition//]
+        [ORDER BY ...]
+        [LIMIT //record_count//]
+
+* The `UPDATE` statement updates columns of existing records in `component_name`
+with new values and returns the number of affected records.
+* The `SET` clause indicates which columns to modify and the values they should
+be given.
+* The optional `WHERE` clause specifies the conditions that identify which 
+records to update. Without `WHERE` clause, all records are updated.
+* The optional `ORDER BY` clause specifies the order in which the records are
+being updated.
+* The `LIMIT` clause places a limit on the number of records that can be updated.
+You can use `LIMIT row_count` to restrict the scope of the `UPDATE`. A `LIMIT`
+clause is a **rows-matched restriction** not a rows-changed restriction. The
+statement stops as soon as it has found {{record_count}} rows that satisfy the
+`WHERE` clause, whether or not they actually were changed.
+
+Here is an example of a DQL update query:
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $rows = $q->update('Account')
+              ->set('amount', 'amount + ?', '200')
+              ->where('id > 200')
+              ->execute();
+          
+    print $rows; // the number of affected rows
+
+++ DELETE queries
+
+    [sql]
+    DELETE FROM <component_name>
+        [WHERE <where_condition>]
+        [ORDER BY ...]
+        [LIMIT <record_count>]
+
+* The `DELETE` statement deletes records from `component_name` and returns the
+number of records deleted.
+* The optional `WHERE` clause specifies the conditions that identify which
+records to delete. Without `WHERE` clause, all records are deleted.
+* If the `ORDER BY` clause is specified, the records are deleted in the order
+that is specified.
+* The `LIMIT` clause places a limit on the number of rows that can be deleted.
+The statement will stop as soon as it has deleted `record_count` records.
+
+Here is an example of a DQL delete query:
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $rows = $q->delete()
+              ->from('Account a')
+              ->where('a.id > ?', 3)
+              ->execute();
+
+    print $rows; // the number of affected rows
+
+++ FROM clause
+
+Below is the syntax for the `FROM` clause:
+
+    [sql]
+    FROM <component_reference> [[LEFT | INNER] JOIN <component_reference>] ...
+
+The `FROM` clause indicates the component or components from which to retrieve
+records. If you name more than one component, you are performing a join. For
+each table specified, you can optionally specify an alias.
+
+Consider the following DQL query:
+
+    [sql]
+    FROM User u
+
+Here 'User' is the name of the class (component) and 'u' is the alias. You
+should always use short aliases, since most of the time those make the query
+much shorther and also because when using for example caching the cached form
+of the query takes less space when short aliases are being used. 
+
+The following example shows how to fetch all records from class 'User'.
+
+    [php]
+    $users = Doctrine_Query::create()
+             ->from('User u')
+             ->execute();
+
+++ JOIN syntax
+
+DQL JOIN Syntax:
+
+    [[LEFT | INNER] JOIN <component_reference1>] [ON | WITH] <join_condition1> [INDEXBY] <map_condition1>,
+    [[LEFT | INNER] JOIN <component_reference2>] [ON | WITH] <join_condition2> [INDEXBY] <map_condition2>,
+    ...
+    [[LEFT | INNER] JOIN <component_referenceN>] [ON | WITH] <join_conditionN> [INDEXBY] <map_conditionN>
+
+DQL supports two kinds of joins INNER JOINs and LEFT JOINs. For each joined
+component, you can optionally specify an alias.
+
+>**NOTE**
+>The default join type is {{LEFT JOIN}}. This join can be indicated by the use
+>of either {{LEFT JOIN}} clause or simply '{{,}}', hence the following queries
+>are equal:
+>
+>     [sql]
+>     SELECT u.*, p.* FROM User u LEFT JOIN u.Phonenumber
+>     
+>     SELECT u.*, p.* FROM User u, u.Phonenumber p
+
+The recommended form is the first one.
+
+`INNER JOIN` produces an intersection between two specified components
+(that is, each and every record in the first component is joined to each and
+every record in the second component). So basically {{INNER JOIN}} can be used
+when you want to efficiently fetch for example all users which have one or more
+phonenumbers.
+
+    [sql]
+    SELECT u.*, p.* FROM User u INNER JOIN u.Phonenumber p
+
+By default DQL auto-adds the primary key join condition, so for DQL query:
+
+    [sql]
+    SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber
+
+Would have a SQL equivalent:
+
+    [sql]
+    SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id
+
++++ ON keyword
+
+If you want to override this behavior and add your own custom join condition
+you can do it with the {{ON}} keyword. Consider the following DQL query:
+
+    [sql]
+    SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber ON u.id = 2
+
+This query would be converted into SQL:
+
+    [sql]
+    SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = 2
+
++++ WITH keyword
+
+Most of the time you don't need to override the primary join condition, rather
+you may want to add some custom conditions. 
+
+This can be achieved with the `WITH` keyword.
+
+DQL:
+
+    [sql]
+    SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber WITH u.id = 2
+
+SQL:
+
+    [sql]
+    SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id AND u.id = 2
+
+The Doctrine_Query API offers two convenience methods for adding JOINS. These
+are called innerJoin() and leftJoin(), which usage should be quite intuitive
+as shown below:
+
+    [php]
+    $q = Doctrine_Query::create();
+    $q->from('User u')
+      ->leftJoin('u.Group g')
+      ->innerJoin('u.Phonenumber p WITH u.id > 3')
+      ->leftJoin('u.Email e');
+
+    $users = $q->execute();
+
+++ INDEXBY keyword
+
+The INDEXBY keyword offers a way of mapping certain columns as
+collection /array keys. By default Doctrine indexes multiple elements to
+numerically indexed arrays / collections. The mapping starts from zero.
+In order to override this behaviour you need to use INDEXBY keyword as shown
+above:
+
+    [php]
+    $q = Doctrine_Query::create()
+        ->from('User u INDEXBY u.name');
+
+    $users = $q->execute();
+
+Now the users in $users collection are accessible through their names.
+
+    [php]
+    print $user['jack daniels']->id;
+
+The INDEXBY keyword can be applied to any given JOIN. This means that any given
+component can have each own indexing behavior. In the following we use distinct
+indexing for both Users and Groups.
+
+    [php]
+    $q = Doctrine_Query::create();
+    $q->from('User u INDEXBY u.name')->innerJoin('u.Group g INDEXBY g.name');
+
+    $users = $q->execute();
+
+Now lets print out the drinkers club's creation date. 
+
+    [php]
+    print $users['jack daniels']->Group['drinkers club']->createdAt;
+
+++ WHERE clause
+
+Syntax:
+
+    [sql]
+    WHERE <where_condition>
+
+* The `WHERE` clause, if given, indicates the condition or conditions that the
+records must satisfy to be selected.
+* `where_condition` is an expression that evaluates to true for each row to be
+selected.
+* The statement selects all rows if there is no `WHERE` clause.
+* When narrowing results with aggregate function values `HAVING` clause should
+be used instead of `WHERE` clause.
+
+++ Conditional expressions
+
++++ Literals
+
+**Strings**
+
+A string literal is enclosed in single quotes; for example: 'literal'. A string
+literal that includes a single quote is represented by two single quotes;
+for example: 'literal''s'.
+
+    [sql]
+    FROM User u WHERE u.name = 'Vincent'
+
+**Integers**
+
+Integer literals support the use of PHP integer literal syntax.
+
+    [sql]
+    FROM User u WHERE u.id = 4
+
+**Floats**
+
+Float literals support the use of PHP float literal syntax.
+
+    [sql]
+    FROM Account WHERE Account.amount = 432.123
+
+**Booleans**
+
+The boolean literals are true and false.
+
+    [sql]
+    FROM User WHERE User.admin = true
+
+    FROM Session WHERE Session.is_authed = false
+
+**Enums**
+
+The enumerated values work in the same way as string literals.
+
+    [sql]
+    FROM User WHERE User.type = 'admin'
+
+Predefined reserved literals are case insensitive, although its a good standard
+to write them in uppercase.
+
++++ Input parameters
+
+    [php]
+    // POSITIONAL PARAMETERS:
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.name = ?', array('Arnold'))
+              ->execute();
+
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.id > ? AND u.name LIKE ?', array(50, 'A%'))
+              ->execute();
+
+    // NAMED PARAMETERS:
+
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.name = :name', array(':name' => 'Arnold'))
+              ->execute();
+
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.id > :id AND u.name LIKE :name', array(':id' => 50, ':name' => 'A%'))
+              ->execute();
+
++++ Operators and operator precedence
+
+The operators are listed below in order of decreasing precedence.
+
+| Operator  | Description        |
+|-----------|--------------------|
+| .         | Navigation operator |
+|           | //Arithmetic operators: // |
+| +, -      | unary               |
+| *, /      | multiplication and division | 
+| +, -      | addition and subtraction    | 
+| =, >, >=, <, <=, <> (not equal), | Comparison operators |
+| [NOT] LIKE, [NOT] IN, IS [NOT] NULL, IS [NOT] EMPTY | |
+| NOT       | | 
+| AND       | | 
+| OR        | |
+
+
++++ Between expressions
+
++++ In expressions
+
+Syntax:
+
+    <operand> IN (<subquery>|<value list>)
+
+An IN conditional expression returns true if the operand is found from
+result of the subquery or if its in the specificied comma separated
+value list, hence the IN expression is always false if the result of the
+subquery is empty.
+
+When value list is being used there must be at least one element in that list.
+
+    [sql]
+    FROM C1 WHERE C1.col1 IN (FROM C2(col1));
+
+    FROM User WHERE User.id IN (1,3,4,5)
+
+The keyword IN is an alias for = ANY. Thus, these two statements are equal:
+
+    [sql]
+    FROM C1 WHERE C1.col1 = ANY (FROM C2(col1));
+    FROM C1 WHERE C1.col1 IN    (FROM C2(col1));
+
++++ Like Expressions
+
+Syntax:
+
+    [sql]
+    string_expression [NOT] LIKE pattern_value [ESCAPE escape_character]
+
+The `string_expression` must have a string value. The `pattern_value` is a string
+literal or a string-valued input parameter in which an underscore (_) stands
+for any single character, a percent (%) character stands for any sequence of 
+characters (including the empty sequence), and all other characters stand for
+themselves. The optional `escape_character` is a single-character string literal
+or a character-valued input parameter (i.e., char or Character) and is used to
+escape the special meaning of the underscore and percent characters in `pattern_value`.
+
+Examples:
+
+    [sql]
+    address.phone LIKE '12%3' is true for '123' '12993' and false for '1234'
+    asentence.word LIKE 'l_se' is true for 'lose' and false for 'loose'
+    aword.underscored LIKE '\_%' ESCAPE '\' is true for '_foo' and false for 'bar'
+    address.phone NOT LIKE '12%3' is false for '123' and '12993' and true for '1234'
+
+If the value of the `string_expression` or `pattern_value` is `NULL` or unknown,
+the value of the `LIKE` expression is unknown. If the `escape_character` is
+specified and is NULL, the value of the LIKE expression is unknown.
+
+    [php]
+    // finding all users whose email ends with '@gmail.com'
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->leftJoin('u.Email e')
+              ->where('e.address LIKE ?', '%@gmail.com')
+              ->execute();
+
+    // finding all users whose name starts with letter 'A'
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.name LIKE ?', 'A%')
+              ->execute();
+
++++ Exists Expressions
+
+Syntax:
+
+    [sql]
+    <operand> [NOT ]EXISTS (<subquery>)
+
+The EXISTS operator returns TRUE if the subquery returns one or more rows and
+FALSE otherwise. The NOT EXISTS operator returns TRUE if the subquery returns 0
+rows and FALSE otherwise.
+
+Finding all articles which have readers:
+
+    [sql]
+    FROM Article a
+      WHERE EXISTS (SELECT r.id FROM ReaderLog r
+                    WHERE r.article_id = a.id)
+
+Finding all articles which don't have readers:
+
+    [sql]
+    FROM Article a
+      WHERE NOT EXISTS (SELECT r.id FROM ReaderLog r
+                    WHERE r.article_id = a.id)
+
++++ All and Any Expressions
+
+Syntax:
+
+    [sql]
+    operand comparison_operator ANY (subquery)
+    operand comparison_operator SOME (subquery)
+    operand comparison_operator ALL (subquery)
+
+An ALL conditional expression returns true if the comparison operation is true
+for all values in the result of the subquery or the result of the subquery is
+empty. An ALL conditional expression is false if the result of the comparison 
+is false for at least one row, and is unknown if neither true nor false.
+
+    [sql]
+    FROM C WHERE C.col1 < ALL (FROM C2(col1))
+
+An ANY conditional expression returns true if the comparison operation is true
+for some value in the result of the subquery. An ANY conditional expression is
+false if the result of the subquery is empty or if the comparison operation 
+is false for every value in the result of the subquery, and is unknown if
+neither true nor false. 
+
+    [sql]
+    FROM C WHERE C.col1 > ANY (FROM C2(col1))
+
+The keyword SOME is an alias for ANY.
+ 
+    [sql]
+    FROM C WHERE C.col1 > SOME (FROM C2(col1))
+
+The comparison operators that can be used with ALL or ANY conditional
+expressions are =, <, <=, >, >=, <>. The result of the subquery must be same
+type with the conditional expression.
+
+NOT IN is an alias for <> ALL. Thus, these two statements are equal:
+
+    [sql]
+    FROM C WHERE C.col1 <> ALL (FROM C2(col1));
+    FROM C WHERE C.col1 NOT IN (FROM C2(col1));
+
++++ Subqueries
+
+A subquery can contain any of the keywords or clauses that an ordinary SELECT
+query can contain.
+
+Some advantages of the subqueries:
+
+* They allow queries that are structured so that it is possible to isolate each part of a statement.
+* They provide alternative ways to perform operations that would otherwise require complex joins and unions.
+* They are, in many people's opinion, readable. Indeed, it was the innovation of subqueries that gave people the original 
+idea of calling the early SQL "Structured Query Language."
+
+Here is an example where we find all users which don't belong to any group:
+
+    [php]
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)')
+              ->execute();
+
+    // finding all users which don't belong to any groups
+    // Notice: 
+    // the usage of INNER JOIN
+    // the usage of empty brackets preceding the Group component
+
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g)')
+              ->execute();
+
+++ Functional Expressions
+
++++ String functions
+
+The `CONCAT` function returns a string that is a concatenation of its arguments.
+In the example above we map the concatenation of users firstname and lastname
+to a value called name
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $users = $q->select('CONCAT(u.firstname, u.lastname) name')->from('User u')->execute();
+
+    foreach($users as $user) {
+        // here 'name' is not a property of $user,
+        // its a mapped function value
+        print $user->name;
+    }
+
+The second and third arguments of the `SUBSTRING` function denote the starting
+position and length of the substring to be returned. These arguments are
+integers. The first position of a string is denoted by 1. The `SUBSTRING`
+function returns a string.
+
+    [php]
+    $q = Doctrine_Query::create();
+        ->select('u.name')
+        ->from('User u')
+        ->where("SUBSTRING(u.name, 0, 1) = 'z'");
+
+    $users = $q->execute();
+
+    foreach($users as $user) {
+        print $user->name;
+    }
+
+The `TRIM` function trims the specified character from a string. If the
+character to be trimmed is not specified, it is assumed to be space (or blank).
+The optional trim_character is a single-character string literal or a
+character-valued input parameter (i.e., char or Character)[30]. If a trim
+specification is not provided, BOTH is assumed. The `TRIM` function returns
+the trimmed string.
+
+    [php]
+    $q = Doctrine_Query::create();
+        ->select('u.name')
+        ->from('User u')
+        ->where("TRIM(u.name) = 'Someone'");
+
+    $users = $q->execute();
+
+    foreach($users as $user) {
+        print $user->name;
+    }  
+
+The `LOWER` and `UPPER` functions convert a string to lower and upper case,
+respectively. They return a string. 
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $users = $q->select('u.name')->from('User u')->where("LOWER(u.name) = 'someone'")->execute();
+
+    foreach($users as $user) {
+        print $user->name;
+    }
+
+The `LOCATE` function returns the position of a given string within a string,
+starting the search at a specified position. It returns the first position at
+which the string was found as an integer. The first argument is the string to 
+be located; the second argument is the string to be searched; the optional third
+argument is an integer that represents the string position at which the search
+is started (by default, the beginning of the string to be searched). The first
+position in a string is denoted by 1. If the string is not found, 0 is returned.
+
+The `LENGTH` function returns the length of the string in characters as an
+integer.
+
++++ Arithmetic functions
+
+Availible DQL arithmetic functions:
+
+    ABS(simple_arithmetic_expression)
+    SQRT(simple_arithmetic_expression)
+    MOD(simple_arithmetic_expression, simple_arithmetic_expression)
+
+* The `ABS` function returns the absolute value for given number. 
+* The `SQRT` function returns the square root for given number. 
+* The `MOD` function returns the modulus of first argument using the second
+argument.
+
+++ Subqueries
+
+Doctrine allows you to use sub-dql queries in the FROM, SELECT and WHERE
+statements. Below you will find examples for all the different types of
+subqueries Doctrine supports.
+
+Find all the users which are not in a specific group.
+
+    [php]
+    $users = Doctrine_Query::create()
+              ->from('User u')
+              ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)')
+              ->execute(1);
+
+Retrieve the users phonenumber in a subquery and include it in the resultset of user information.
+
+    [php]
+    $users = Doctrine_Query::create()
+              ->select('u.*, (SELECT p.phonenumber FROM Phonenumber p WHERE p.user_id = u.id LIMIT 1) as phonenumber')
+              ->from('User u')
+              ->execute();
+
+++ GROUP BY, HAVING clauses
+
+DQL GROUP BY syntax:
+
+    [sql]
+    GROUP BY groupby_item {, groupby_item}*
+
+DQL HAVING syntax:
+
+    [sql]
+    HAVING conditional_expression
+
+* `GROUP BY` and `HAVING` clauses can be used for dealing with aggregate functions
+* Following aggregate functions are available on DQL: `COUNT`, `MAX`, `MIN`, `AVG`, `SUM`
+
+Selecting alphabetically first user by name.
+
+    [sql]
+    SELECT MIN(u.name) FROM User u
+
+Selecting the sum of all Account amounts.
+
+    [sql]
+    SELECT SUM(a.amount) FROM Account a
+
+Using an aggregate function in a statement containing no GROUP BY clause,
+results in grouping on all rows. In the example above we fetch all users and
+the number of phonenumbers they have.
+
+    [sql]
+    SELECT u.*, COUNT(p.id) FROM User u, u.Phonenumber p GROUP BY u.id
+
+The `HAVING` clause can be used for narrowing the results using aggregate values.
+In the following example we fetch all users which have at least 2 phonenumbers.
+
+    [sql]
+    SELECT u.* FROM User u, u.Phonenumber p HAVING COUNT(p.id) >= 2
+
+-
+
+    [php]
+    // retrieve all users and the phonenumber count for each user
+
+    $users = Doctrine_Query::create()
+              ->select('u.*, COUNT(p.id) count')
+              ->from('User u')
+              ->leftJoin('u.Phonenumber p')
+              ->groupBy('u.id')
+              ->execute();
+
+    foreach($users as $user) {
+        print $user->name . ' has ' . $user->Phonenumber[0]->count . ' phonenumbers';
+    }
+
+++ ORDER BY clause
+
++++ Introduction
+
+Record collections can be sorted efficiently at the database level using the
+`ORDER BY` clause.
+
+Syntax:
+
+    [sql]
+    [ORDER BY {ComponentAlias.columnName}
+    [ASC | DESC], ...]
+
+Examples:
+
+    [sql]
+    FROM User u LEFT JOIN u.Phonenumber p
+      ORDER BY u.name, p.phonenumber
+
+    FROM User u, u.Email e
+      ORDER BY e.address, u.id
+
+In order to sort in reverse order you can add the DESC (descending) keyword to
+the name of the column in the ORDER BY clause that you are sorting by. The
+default is ascending order; this can be specified explicitly using the ASC
+keyword. 
+
+    [sql]
+    FROM User u LEFT JOIN u.Email e
+      ORDER BY e.address DESC, u.id ASC;
+
++++ Sorting by an aggregate value
+
+In the following example we fetch all users and sort those users by the number
+of phonenumbers they have.
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $users = $q->select('u.*, COUNT(p.id) count')
+               ->from('User u')
+               ->innerJoin('u.Phonenumber p')
+               ->orderby('count');
+
++++ Using random order
+
+In the following example we use random in the ORDER BY clause in order to fetch
+random post.
+
+    [php]
+    $q = Doctrine_Query::create();
+
+    $posts = $q->select('p.*, RANDOM() rand')
+               ->from('Post p')
+               ->orderby('rand')
+               ->limit(1)
+               ->execute();
+
+    $randomPost = $posts[0];
+
+++ LIMIT and OFFSET clauses
+
+Probably the most complex feature DQL parser has to offer is its LIMIT clause
+parser. Not only does the DQL LIMIT clause parser take care of LIMIT database
+portability it is capable of limiting the number of records instead of rows by
+using complex query analysis and subqueries.
+
+Retrieve the first 20 users and all their associated phonenumbers:
+
+    [php]
+    $users = Doctrine_Query::create()
+              ->select('u.*, p.*')
+              ->from('User u')
+              ->leftJoin('u.Phonenumber p')
+              ->limit(20)
+              ->execute();
+
+    foreach($users as $user) {
+        print ' --- '.$user->name.' --- \n';
+
+        foreach($user->Phonenumber as $p) {
+            print $p->phonenumber.'\n';
+        }
+    }
+
++++ Driver portability
+
+DQL LIMIT clause is portable on all supported databases. Special attention have
+been paid to following facts:
+
+* Only Mysql, Pgsql and Sqlite implement LIMIT / OFFSET clauses natively
+* In Oracle / Mssql / Firebird LIMIT / OFFSET clauses need to be emulated in driver specific way
+* The limit-subquery-algorithm needs to execute to subquery separately in mysql, since mysql doesn't yet support LIMIT 
+clause in subqueries
+* Pgsql needs the order by fields to be preserved in SELECT clause, hence limit-subquery-algorithm needs to take this 
+into consideration when pgsql driver is used
+* Oracle only allows < 30 object identifiers (= table/column names/aliases), hence the limit subquery must use as short 
+aliases as possible and it must avoid alias collisions with the main query.
+
++++ The limit-subquery-algorithm
+
+The limit-subquery-algorithm is an algorithm that DQL parser uses internally
+when one-to-many / many-to-many relational data is being fetched simultaneously.
+This kind of special algorithm is needed for the LIMIT clause to limit the
+number of records instead of sql result set rows.
+
+This behaviour can be overwritten using the configuration system (at global,
+connection or table level) using:
+
+    [php]
+    $table->setAttribute(Doctrine::ATTR_QUERY_LIMIT, Doctrine::LIMIT_ROWS);
+    $table->setAttribute(Doctrine::ATTR_QUERY_LIMIT, Doctrine::LIMIT_RECORDS); // revert
+
+In the following example we have users and phonenumbers with their relation
+being one-to-many. Now lets say we want fetch the first 20 users and all their
+related phonenumbers.
+
+Now one might consider that adding a simple driver specific LIMIT 20 at the end
+of query would return the correct results. Thats wrong, since we you might get
+anything between 1-20 users as the first user might have 20 phonenumbers and
+then record set would consist of 20 rows.
+
+DQL overcomes this problem with subqueries and with complex but efficient
+subquery analysis. In the next example we are going to fetch first 20 users
+and all their phonenumbers with single efficient query. Notice how the DQL
+parser is smart enough to use column aggregation inheritance even in the
+subquery and how it's smart enough to use different aliases for the tables in
+the subquery to avoid alias collisions.
+
+DQL QUERY:
+
+    [sql]
+    SELECT u.id, u.name, p.* FROM User u LEFT JOIN u.Phonenumber p LIMIT 20
+
+SQL QUERY:
+ 
+    [sql]
+    SELECT
+        e.id AS e__id,
+        e.name AS e__name,
+        p.id AS p__id,
+        p.phonenumber AS p__phonenumber,
+        p.entity_id AS p__entity_id
+    FROM entity e
+    LEFT JOIN phonenumber p ON e.id = p.entity_id
+    WHERE e.id IN (
+    SELECT DISTINCT e2.id
+    FROM entity e2
+    WHERE (e2.type = 0) LIMIT 20) AND (e.type = 0)
+
+In the next example we are going to fetch first 20 users and all their
+phonenumbers and only those users that actually have phonenumbers with single
+efficient query, hence we use an INNER JOIN. Notice how the DQL parser is smart
+enough to use the INNER JOIN in the subquery.
+
+DQL QUERY:
+
+    [sql]
+    SELECT u.id, u.name, p.* FROM User u LEFT JOIN u.Phonenumber p LIMIT 20
+
+SQL QUERY:
+
+    [sql]
+    SELECT 
+        e.id AS e__id,
+        e.name AS e__name,
+        p.id AS p__id,
+        p.phonenumber AS p__phonenumber,
+        p.entity_id AS p__entity_id
+    FROM entity e
+    LEFT JOIN phonenumber p ON e.id = p.entity_id
+    WHERE e.id IN (
+    SELECT DISTINCT e2.id
+    FROM entity e2
+    INNER JOIN phonenumber p2 ON e2.id = p2.entity_id
+    WHERE (e2.type = 0) LIMIT 20) AND (e.type = 0)
+
+++ Named Queries
+
+When you are dealing with a model that may change, but you need to keep your
+queries easily updated, you need to findan easy way to define queries. Imagine
+for example that you change one field and you need to follow all queries in
+your application to make sure it'll not break anything.
+
+Named Queries is a nice and effective way to solve this situation, allowing you
+to create Doctrine_Queries and reuse them without the need to keep rewritting
+them.
+
+The Named Query support is built at the top of Doctrine_Query_Registry support.
+Doctrine_Query_Registry is a class for registering and naming queries. It helps
+with the organization of your applications queries and along with that it offers 
+some very nice convenience stuff.
+
+The queries are added using the add() method of the registry object. It takes
+two parameters, the query name and the actual DQL query.
+
+    [php]
+    $r = Doctrine_Manager::getInstance()->getQueryRegistry();
+
+    $r->add('User/all', 'FROM User u');
+
+    $userTable = Doctrine::getTable('User');
+
+    // find all users
+    $users = $userTable->find('all');
+
+To simplify this support, Doctrine_Table support some accessors to
+Doctrine_Query_Registry.
+
++++ Creating a Named Query
+
+When you build your models with option `generateTableClasses` defined as true,
+each record class will also generate a `*Table` class, extending from {{Doctrine_Table}}.
+
+Then, you can implement the method construct() to include your Named Queries:
+
+    [php]
+    class MyFooTable extends Doctrine_Table
+    {
+        public function construct()
+        {
+            // Named Query defined using DQL string
+            $this->addNamedQuery('get.by.id', 'SELECT f.* FROM MyFoo f WHERE f.id = ?');
+
+            // Named Query defined using Doctrine_Query object
+            $this->addNamedQuery(
+                'get.by.similar.names', Doctrine_Query::create()
+                    ->select('f.id, f.value0')
+                    ->from('MyFoo f')
+                    ->where('LOWER(f.name) LIKE LOWER(?)')
+            );
+        }
+    }
+
++++ Accessing Named Query
+
+To reach the MyFooTable class, which is a subclass of Doctrine_Table, you can do the following:
+
+    [php]
+    $MyFooTableInstance = Doctrine::getTable('MyFoo');
+
+To access the Named Query (will return you a Doctrine_Query instance, always):
+
+    [php]
+    $query = $MyFooTableInstance->createNamedQuery('get.by.id');
+
++++ Executing a Named Query
+
+There are two ways to execute a Named Query. The first one is by retrieving the Doctrine_Query and then executing
+it normally, as a normal instance:
+
+    [php]
+    $fooItems = Doctrine::getTable('MyFoo')
+        ->createNamedQuery('get.by.similar.names')
+        ->execute(array('%jon%wage%'));
+
+You can also simplify the execution, by doing:
+
+    [php]
+    $fooItems = Doctrine::getTable('MyFoo')
+        ->find('get.by.similar.names', array('%jon%wage%'));
+
+The method {{find()}} also accepts a third parameter, which is the hydration mode.
+
++++ Cross-Acessing Named Query
+
+If that's not enough, Doctrine take advantage the Doctrine_Query_Registry and
+uses namespaced queries to enable cross-access of Named Queries between objects.
+Suppose you have the *Table class instance of record "MyBar". You want to call
+the "get.by.id" Named Query of record "MyFoo". To acess the Named Query, you
+have to do:
+
+    [php]
+    $MyBarTable = Doctrine::getTable('MyBar');
+
+    // ...
+
+    $MyFooItems = $MyBarTable->find('MyFoo/get.by.id', array(1, 2, 3), Doctrine::HYDRATE_RECORD);
+
+    // MyFooItems is a Doctrine_Collection, with MyFoo records (Doctrine_Record).
+
+++ BNF
+
+    QL_statement ::= select_statement | update_statement | delete_statement
+    select_statement ::= select_clause from_clause [where_clause] [groupby_clause]
+    [having_clause] [orderby_clause]
+    update_statement ::= update_clause [where_clause]
+    delete_statement ::= delete_clause [where_clause]
+    from_clause ::=
+    FROM identification_variable_declaration
+    {, {identification_variable_declaration | collection_member_declaration}}*
+    identification_variable_declaration ::= range_variable_declaration { join | fetch_join }*
+    range_variable_declaration ::= abstract_schema_name [AS ] identification_variable
+    join ::= join_spec join_association_path_expression [AS ] identification_variable
+    fetch_join ::= join_specFETCH join_association_path_expression
+    association_path_expression ::=
+    collection_valued_path_expression | single_valued_association_path_expression
+    join_spec::= [LEFT [OUTER ] |INNER ]JOIN
+    join_association_path_expression ::= join_collection_valued_path_expression |
+    join_single_valued_association_path_expression
+    join_collection_valued_path_expression::=
+    identification_variable.collection_valued_association_field
+    join_single_valued_association_path_expression::=
+    identification_variable.single_valued_association_field
+    collection_member_declaration ::=
+    IN ( collection_valued_path_expression) [AS ] identification_variable
+    single_valued_path_expression ::=
+    state_field_path_expression | single_valued_association_path_expression
+    state_field_path_expression ::=
+    {identification_variable | single_valued_association_path_expression}.state_field
+    single_valued_association_path_expression ::=
+    identification_variable.{single_valued_association_field.}* single_valued_association_field
+    collection_valued_path_expression ::=
+    identification_variable.{single_valued_association_field.}*collection_valued_association_field
+    state_field ::= {embedded_class_state_field.}*simple_state_field
+    update_clause ::=UPDATE abstract_schema_name [[AS ] identification_variable]
+    SET update_item {, update_item}*
+    update_item ::= [identification_variable.]{state_field | single_valued_association_field} =
+    new_value
+    new_value ::=
+    simple_arithmetic_expression |
+    string_primary |
+    datetime_primary |
+
+    boolean_primary |
+    enum_primary
+    simple_entity_expression |
+    NULL
+    delete_clause ::=DELETE FROM abstract_schema_name [[AS ] identification_variable]
+    select_clause ::=SELECT [DISTINCT ] select_expression {, select_expression}*
+    select_expression ::=
+    single_valued_path_expression |
+    aggregate_expression |
+    identification_variable |
+    OBJECT( identification_variable) |
+    constructor_expression
+    constructor_expression ::=
+    NEW constructor_name( constructor_item {, constructor_item}*)
+    constructor_item ::= single_valued_path_expression | aggregate_expression
+    aggregate_expression ::=
+    {AVG |MAX |MIN |SUM }( [DISTINCT ] state_field_path_expression) |
+    COUNT ( [DISTINCT ] identification_variable | state_field_path_expression |
+    single_valued_association_path_expression)
+    where_clause ::=WHERE conditional_expression
+    groupby_clause ::=GROUP BY groupby_item {, groupby_item}*
+    groupby_item ::= single_valued_path_expression | identification_variable
+    having_clause ::=HAVING conditional_expression
+    orderby_clause ::=ORDER BY orderby_item {, orderby_item}*
+    orderby_item ::= state_field_path_expression [ASC |DESC ]
+    subquery ::= simple_select_clause subquery_from_clause [where_clause]
+    [groupby_clause] [having_clause]
+    subquery_from_clause ::=
+    FROM subselect_identification_variable_declaration
+    {, subselect_identification_variable_declaration}*
+    subselect_identification_variable_declaration ::=
+    identification_variable_declaration |
+    association_path_expression [AS ] identification_variable |
+    collection_member_declaration
+    simple_select_clause ::=SELECT [DISTINCT ] simple_select_expression
+    simple_select_expression::=
+    single_valued_path_expression |
+    aggregate_expression |
+    identification_variable
+    conditional_expression ::= conditional_term | conditional_expressionOR conditional_term
+    conditional_term ::= conditional_factor | conditional_termAND conditional_factor
+    conditional_factor ::= [NOT ] conditional_primary
+    conditional_primary ::= simple_cond_expression |( conditional_expression)
+    simple_cond_expression ::=
+    comparison_expression |
+    between_expression |
+    like_expression |
+    in_expression |
+    null_comparison_expression |
+    empty_collection_comparison_expression |
+
+    collection_member_expression |
+    exists_expression
+    between_expression ::=
+    arithmetic_expression [NOT ]BETWEEN
+    arithmetic_expressionAND arithmetic_expression |
+    string_expression [NOT ]BETWEEN string_expressionAND string_expression |
+    datetime_expression [NOT ]BETWEEN
+    datetime_expressionAND datetime_expression
+    in_expression ::=
+    state_field_path_expression [NOT ]IN ( in_item {, in_item}* | subquery)
+    in_item ::= literal | input_parameter
+    like_expression ::=
+    string_expression [NOT ]LIKE pattern_value [ESCAPE escape_character]
+    null_comparison_expression ::=
+    {single_valued_path_expression | input_parameter}IS [NOT ] NULL
+    empty_collection_comparison_expression ::=
+    collection_valued_path_expressionIS [NOT] EMPTY
+    collection_member_expression ::= entity_expression
+    [NOT ]MEMBER [OF ] collection_valued_path_expression
+    exists_expression::= [NOT ]EXISTS (subquery)
+    all_or_any_expression ::= {ALL |ANY |SOME } (subquery)
+    comparison_expression ::=
+    string_expression comparison_operator {string_expression | all_or_any_expression} |
+    boolean_expression {= |<> } {boolean_expression | all_or_any_expression} |
+    enum_expression {= |<> } {enum_expression | all_or_any_expression} |
+    datetime_expression comparison_operator
+    {datetime_expression | all_or_any_expression} |
+    entity_expression {= |<> } {entity_expression | all_or_any_expression} |
+    arithmetic_expression comparison_operator
+    {arithmetic_expression | all_or_any_expression}
+    comparison_operator ::== |> |>= |< |<= |<>
+    arithmetic_expression ::= simple_arithmetic_expression | (subquery)
+    simple_arithmetic_expression ::=
+    arithmetic_term | simple_arithmetic_expression {+ |- } arithmetic_term
+    arithmetic_term ::= arithmetic_factor | arithmetic_term {* |/ } arithmetic_factor
+    arithmetic_factor ::= [{+ |- }] arithmetic_primary
+    arithmetic_primary ::=
+    state_field_path_expression |
+    numeric_literal |
+    (simple_arithmetic_expression) |
+    input_parameter |
+    functions_returning_numerics |
+    aggregate_expression
+    string_expression ::= string_primary | (subquery)
+    string_primary ::=
+    state_field_path_expression |
+    string_literal |
+    input_parameter |
+    functions_returning_strings |
+    aggregate_expression
+
+    datetime_expression ::= datetime_primary | (subquery)
+    datetime_primary ::=
+    state_field_path_expression |
+    input_parameter |
+    functions_returning_datetime |
+    aggregate_expression
+    boolean_expression ::= boolean_primary | (subquery)
+    boolean_primary ::=
+    state_field_path_expression |
+    boolean_literal |
+    input_parameter |
+    enum_expression ::= enum_primary | (subquery)
+    enum_primary ::=
+    state_field_path_expression |
+    enum_literal |
+    input_parameter |
+    entity_expression ::=
+    single_valued_association_path_expression | simple_entity_expression
+    simple_entity_expression ::=
+    identification_variable |
+    input_parameter
+    functions_returning_numerics::=
+    LENGTH( string_primary) |
+    LOCATE( string_primary, string_primary[, simple_arithmetic_expression]) |
+    ABS( simple_arithmetic_expression) |
+    SQRT( simple_arithmetic_expression) |
+    MOD( simple_arithmetic_expression, simple_arithmetic_expression) |
+    SIZE( collection_valued_path_expression)
+    functions_returning_datetime ::=
+      CURRENT_DATE |
+      CURRENT_TIME |
+      CURRENT_TIMESTAMP
+    functions_returning_strings ::=
+    CONCAT( string_primary, string_primary) |
+    SUBSTRING( string_primary,
+    simple_arithmetic_expression, simple_arithmetic_expression)|
+    TRIM( [[trim_specification] [trim_character]FROM ] string_primary) |
+    LOWER( string_primary) |
+    UPPER( string_primary)
+    trim_specification ::=LEADING | TRAILING | BOTH
+
+++ Magic Finders
+
+Doctrine offers some magic finders for your Doctrine models that allow you to
+find a record by any column that is present in the model. This is helpful for
+simply finding a user by their username, or finding a group by the name of it.
+Normally this would require writing a Doctrine_Query instance and storing this
+somewhere so it can be reused. That is no longer needed for simple situations like that.
+
+The basic pattern for the finder methods are as follows: findBy%s($value) or
+findOneBy%s($value). The %s can be a column name or a relation alias. If you
+give a column name you must give the value you are looking for. If you specify
+a relationship alias, you can either pass an instance of the relation class to
+find, or give the actual primary key value.
+
+Here are some examples of you can use the magic finders provided by Doctrine:
+
+    [php]
+    // The normal find by primary key method
+    $userTable = Doctrine::getTable('User');
+
+    $user = $userTable->find(1);
+
+    // Find one user by the username
+    $userTable = Doctrine::getTable('User');
+
+    $user = $userTable->findOneByUsername('jonwage');
+
+    // Find phonenumbers for the user above
+    $phoneTable = Doctrine::getTable('Phonenumber');
+
+    $phonenumbers = $phoneTable->findByUser($user);

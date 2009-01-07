@@ -1,30 +1,1456 @@
+As we mentioned before, at the lowest level in Doctrine your schema is represented
+by a set of php classes that map the schema meta data for your database tables.
+A simple `User` model might look something like this.
+
+    [php]
+    class User extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('username', 'string', 255);
+            $this->hasColumn('password', 'string', 255);
+        }
+    }
+
+Notice we map the `username` and `password` columns using the 
+{{Doctrine_Record::hasColumn}} function.
+
+In this chapter we will explain in detail how you can map your schema information
+using php code.
+
 ++ Columns
-++ Relationships
-+++ Introduction
-+++ Foreign Key Associations
-++++ One to Many
-++++ One to Many and Many to One
-++++ Tree Structure
-+++ Join Table Associations
-++++ Many to Many
-++++ Select Referencing (Nest Relations)
-+++++ Non-Equal Nest Relations
-+++++ Equal Nest Relations
-+++ Foreign Key Constraints
+
+One problem with database compatibility is that many databases differ in their 
+behaviour of how the result set of a query is returned. MySQL leaves the field 
+names unchanged, which means if you issue a query of the form 
+"SELECT myField FROM ..." then the result set will contain the field 'myField'.
+
+Unfortunately, this is just the way MySQL and some other databases do it.
+Postgres for example returns all field names in lowercase whilst Oracle returns
+all field names in uppercase. "So what? In what way does this influence me when
+using Doctrine?", you may ask. Fortunately, you don't have to bother about that 
+issue at all.
+
+Doctrine takes care of this problem transparently. That means if you define a 
+derived Record class and define a field called 'myField' you will always access 
+it through $record->myField (or $record['myField'], whatever you prefer) no 
+matter whether you're using MySQL or Postgres or Oracle etc.
+
+In short: You can name your fields however you want, using under_scores, 
+camelCase or whatever you prefer. 
+
++++ Column aliases
+
+Doctrine offers a way of setting column aliases. This can be very useful when
+you want to keep the application logic separate from the database logic. For 
+example if you want to change the name of the database field all you need to 
+change at your application is the column definition.
+
+    [php]
+    class Book extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('bookTitle as title', 'string');
+        }
+    }
+
+Now the column in the database is named `bookTitle` but you can access the 
+property on your objects using `title`.
+
+    [php]
+    $book = new Book();
+    $book->title = 'Some book';
+    $book->save();
+
++++ Default values
+
+Doctrine supports default values for all data types. When default value is 
+attached to a record column this means two things. First this value is 
+attached to every newly created Record and when Doctrine creates your database
+tables it includes the default value in the create table statement.
+
+    [php]
+    class User extends Doctrine_record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string', 50, array('default' => 'default name'));
+        } 
+    }
+
+    $user = new User();
+    print $user->name; // default name
+
++++ Data types
+
 ++++ Introduction
+
+All DBMS provide multiple choice of data types for the information that can be 
+stored in their database table fields. However, the set of data types made 
+available varies from DBMS to DBMS.
+
+To simplify the interface with the DBMS supported by Doctrine, it was defined 
+a base set of data types that applications may access independently of the 
+underlying DBMS.
+
+The Doctrine applications programming interface takes care of mapping data types
+when managing database options. It is also able to convert that is sent to and 
+received from the underlying DBMS using the respective driver.
+
+The following data type examples should be used with Doctrine's createTable() 
+method. The example array at the end of the data types section may be used with 
+createTable() to create a portable table on the DBMS of choice (please refer to the 
+main Doctrine documentation to find out what DBMS back ends are properly supported).
+It should also be noted that the following examples do not cover the creation 
+and maintenance of indices, this chapter is only concerned with data types and 
+the proper usage thereof.
+
+It should be noted that the length of the column affects in database level type 
+as well as application level validated length (the length that is validated 
+with Doctrine validators).
+
+Example 1. Column named 'content' with type 'string' and length 3000 results 
+in database type 'TEXT' of which has database level length of 4000. However when
+the record is validated it is only allowed to have 'content' -column with maximum 
+length of 3000.
+
+Example 2. Column with type 'integer' and length 1 results in 'TINYINT' on many
+databases.
+
+In general Doctrine is smart enough to know which integer/string type to use 
+depending on the specified length.
+
+++++ Type modifiers
+
+Within the Doctrine API there are a few modifiers that have been designed to 
+aid in optimal table design. These are:
+
+* The notnull modifiers
+* The length modifiers
+* The default modifiers
+* unsigned modifiers for some field definitions, although not all DBMS's support this modifier for integer field types.
+* zerofill modifiers (not supported by all drivers)
+* collation modifiers (not supported by all drivers)
+* fixed length modifiers for some field definitions.
+
+Building upon the above, we can say that the modifiers alter the field definition
+to create more specific field types for specific usage scenarios. The notnull
+modifier will be used in the following way to set the default DBMS NOT NULL Flag
+on the field to true or false, depending on the DBMS's definition of the field
+value: In PostgreSQL the "NOT NULL" definition will be set to "NOT NULL", whilst
+in MySQL (for example) the "NULL" option will be set to "NO". In order to define
+a "NOT NULL" field type, we simply add an extra parameter to our definition 
+array (See the examples in the following section)
+
+    [php]
+    'sometime' = array(
+        'type'    => 'time',
+        'default' => '12:34:05',
+        'notnull' => true,
+    ),
+
+Using the above example, we can also explore the default field operator. Default
+is set in the same way as the notnull operator to set a default value for the
+field. This value may be set in any character set that the DBMS supports for 
+text fields, and any other valid data for the field's data type. In the above 
+example, we have specified a valid time for the "Time" data type, '12:34:05'.
+Remember that when setting default dates and times, as well as datetimes, you
+should research and stay within the epoch of your chosen DBMS, otherwise you will
+encounter difficult to diagnose errors! 
+
+    [php]
+    'sometext' = array(
+        'type'   => 'string',
+        'length' => 12,
+    ),
+
+The above example will create a character varying field of length 12 characters
+in the database table. If the length definition is left out, Doctrine will
+create a length of the maximum allowable length for the data type specified, 
+which may create a problem with some field types and indexing. Best practice 
+is to define lengths for all or most of your fields. 
+
+++++ Boolean
+
+The boolean data type represents only two values that can be either 1 or 0. Do 
+not assume that these data types are stored as integers because some DBMS 
+drivers may implement this type with single character text fields for a matter 
+of efficiency. Ternary logic is possible by using null as the third possible 
+value that may be assigned to fields of this type.  
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('booltest', 'boolean');
+        }
+    }
+
+++++ Integer
+
+The integer type is the same as integer type in PHP. It may store integer 
+values as large as each DBMS may handle. 
+
+Fields of this type may be created optionally as unsigned integers but not all 
+DBMS support it. Therefore, such option may be ignored. Truly portable 
+applications should not rely on the availability of this option.
+
+The integer type maps to different database type depending on the column length.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('integertest', 'integer', 4, array('unsigned' => true));
+        }
+    }
+
+++++ Float
+
+The float data type may store floating point decimal numbers. This data type is
+suitable for representing numbers withina large scale range that do not require 
+high accuracy. The scale and the precision limits of the values that may be 
+stored in a database depends on the DBMS that it is used. 
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('floattest', 'float');
+        }
+    }
+
+++++ Decimal
+
+The decimal data type may store fixed precision decimal numbers. This data type
+is suitable for representing numbers that require high precision and accuracy.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('decimaltest', 'decimal');
+        }
+    }
+
+++++ String
+
+The text data type is available with two options for the length: one that is 
+explicitly length limited and another of undefined length that should be as 
+large as the database allows.
+
+The length limited option is the most recommended for efficiency reasons. The 
+undefined length option allows very large fields but may prevent the use of 
+indexes, nullability and may not allow sorting on fields of its type.
+
+The fields of this type should be able to handle 8 bit characters. Drivers take
+care of DBMS specific escaping of characters of special meaning with the values
+of the strings to be converted to this type.
+
+By default Doctrine will use variable length character types. If fixed length
+types should be used can be controlled via the fixed modifier.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('stringtest', 'string', 200, array('fixed' => true));
+        }
+    }
+
+++++ Array
+
+This is the same as the 'array' type in PHP.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('arraytest', 'array', 10000);
+        }
+    }
+
+++++ Object
+
+Doctrine supports objects as column types. Basically you can set an object to a
+field and Doctrine handles automatically the serialization / unserialization of
+that object.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('objecttest', 'object');
+        }
+    }
+
+>**NOTE**
+>The array and object types simply serialize the data when persisting to the 
+>database and unserialize the data when pulling from the database.
+
+++++ Blob
+
+Blob (Binary Large OBject) data type is meant to store data of undefined length
+that may be too large to store in text fields, like data that is usually stored
+in files.
+
+Blob fields are usually not meant to be used as parameters of query search 
+clause (WHERE) unless the underlying DBMS supports a feature usually known as 
+"full text search"
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('blobtest', 'blob');
+        }
+    }
+
+++++ Clob
+
+Clob (Character Large OBject) data type is meant to store data of undefined
+length that may be too large to store in text fields, like data that is usually
+stored in files.
+
+Clob fields are meant to store only data made of printable ASCII characters
+whereas blob fields are meant to store all 
+types of data.
+
+Clob fields are usually not meant to be used as parameters of query search
+clause (WHERE) unless the underlying DBMS supports a feature usually known
+as "full text search" 
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('clobtest', 'clob');
+        }
+    }
+
+++++ Timestamp
+
+The timestamp data type is a mere combination of the date and the time of the
+day data types. The representation of values of the time stamp type is 
+accomplished by joining the date and time string values in a single string 
+joined by a space. Therefore, the format template is YYYY-MM-DD HH:MI:SS. 
+The represented values obey the same rules and ranges described for the date 
+and time data types 
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('timestamptest', 'timestamp');
+        }
+    }
+
+++++ Time
+
+The time data type may represent the time of a given moment of the day. DBMS 
+independent representation of the time of the day is also accomplished by using 
+text strings formatted according to the ISO-8601 standard. 
+
+The format defined by the ISO-8601 standard for the time of the day is HH:MI:SS 
+where HH is the number of hour the day from00 to 23 and MI and SS are 
+respectively the number of the minute and of the second from 00 to 59. 
+Hours, minutes and seconds numbered below 10 should be padded on the left with 0. 
+
+Some DBMS have native support for time of the day formats, but for others the 
+DBMS driver may have to represent them as integers or text values. In any case,
+it is always possible to make comparisons between time values as well sort query 
+results by fields of this type. 
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('timetest', 'time');
+        }
+    }
+
+++++ Date
+
+The date data type may represent dates with year, month and day. DBMS 
+independent representation of dates is accomplished by using text strings 
+formatted according to the IS0-8601 standard. 
+
+The format defined by the ISO-8601 standard for dates is YYYY-MM-DD where YYYY
+is the number of the year (Gregorian calendar), MM is the number of the month 
+from 01 to 12 and DD is the number of the day from 01 to 31. Months or days 
+numbered below 10 should be padded on the left with 0. 
+
+Some DBMS have native support for date formats, but for others the DBMS driver 
+may have to represent them as integers or text values. In any case, it is 
+always possible to make comparisons between date values as well sort query 
+results by fields of this type. 
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('datetest', 'date');
+        }
+    }
+
+++++ Enum
+
+Doctrine has a unified enum type. The possible values for the column can be 
+specified can be specified on the column definition with 
+{{Doctrine_Record::hasColumn()}}
+
+Note: If you wish to use native enum types for your dbms if it supports it then
+you must set the following attribute:
+
+    [php]
+    $conn->setAttribute('use_native_enum', true);
+
+Here is an example of how to specify the enum values:
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('enumtest', 'enum', 4, 
+                array('values' => array('php', 'java', 'python'))
+            );
+        }
+    }
+
+++++ Gzip
+
+Gzip datatype is the same as string except that its automatically compressed 
+when persisted and uncompressed when fetched. This datatype can be useful when
+storing data with a large compressibility ratio, such as bitmap images.
+
+    [php]
+    class Test extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('gziptest', 'gzip');
+        }
+    }
+
++++ Examples
+
+Consider the following definition:
+
+    [php]
+    class Example extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumns(array(
+                            'id' => array(
+                                'type'     => 'string',
+                                'length'   => 32,
+                                'fixed' => true,
+                            ),
+                            'someint' => array(
+                                'type'     => 'integer',
+                                'length'   => 10,
+                                'unsigned' => true,
+                            ),
+                            'sometext' => array(
+                                'type'   => 'string',
+                                'length' => 12,
+                            ),
+                            'somedate' => array(
+                                'type' => 'date',
+                            ),
+                            'sometimestamp' => array(
+                                'type' => 'timestamp',
+                            ),
+                            'someboolean' => array(
+                                'type' => 'boolean',
+                            ),
+                            'somedecimal' => array(
+                                'type' => 'decimal',
+                            ),
+                            'somefloat' => array(
+                                'type' => 'float',
+                            ),
+                            'sometime' => array(
+                                'type'    => 'time',
+                                'default' => '12:34:05',
+                                'notnull' => true,
+                            ),
+                            'someclob' => array(
+                                'type' => 'clob',
+                            ),
+                            'someblob' => array(
+                                'type' => 'blob',
+                            ));
+    }
+
+The above example will create the following database table in Pgsql:
+
+
+| Column        | Type                         | Not Null | Default | comment |
+|---------------|------------------------------|----------|---------|---------|
+| id            | character(32)                |          |         |         |
+| somename      | character || varying(12)     |          |         |         |
+| somedate      | date                         |          |         |         |
+| sometimestamp | timestamp without time zone  |          |         |         |
+| someboolean   | boolean                      |          |         |         |
+| somedecimal   | numeric(18,2)                |          |         |         |
+| somefloat     | double precision             |          |         |         |
+| sometime      | time without time zone       | NOT NULL | '12:34:05' |      |
+| someclob      | text                         |          |         |         |
+| someblob      | bytea                        |          |         |         |
+
+The schema schema will create the following database table in Mysql:
+
+| Field            | Type                         | Collation         | Attributes | Null | Default  | comment |
+|------------------|------------------------------|-------------------|------------|------|----------|---------|
+| id               | char(32)                     |                   |            | YES  |          |         |
+| somename         | varchar(12)                  | latin1_swedish_ci |            | YES  |          |         |
+| somedate         | date                         |                   |            | YES  |          |         |
+| sometimestamp    | timestamp without time zone  |                   |            | YES  |          |         |
+| someboolean      | tinyint(1)                   |                   |            | YES  |          |         |
+| somedecimal      | decimal(18,2)                |                   |            | YES  |          |         |
+| somefloat        | double                       |                   |            | YES  |          |         |
+| sometime         | time                         |                   |            | NO   | 12:34:05 |         |
+| someclob         | longtext                     | latin1_swedish_ci |            | YES  |          |         |
+| someblob         | longblob                     |                   | binary     | YES  |          |         |
+
+++ Relationships
+
++++ Introduction
+
+In Doctrine all record relations are being set with {{Doctrine_Record::hasMany}},
+{{Doctrine_Record::hasOne}} methods. Doctrine supports almost all kinds of 
+database relations from simple one-to-one foreign key relations to join table self-referencing relations.
+
+Unlike the column definitions the {{Doctrine_Record::hasMany}} and 
+{{Doctrine_Record::hasOne}} methods are placed within a method called setUp(). Both 
+methods take two arguments: the first argument is a string containing the name 
+of the class and optional alias, the second argument is an array consisting of 
+relation options. The option array contains the following keys:
+
+| Name      | Optional | Description                                                         |
+|-----------|----------|----------------------------------------------------------|
+| local     | No       | The local field of the relation. Local field is the linked field in the defining class. |
+| foreign   | No       | The foreign field of the relation. Foreign field is the linked field in the linked class. |
+| refClass  | Yes      | The name of the association class. This is only needed for many-to-many associations. |
+| owningSide| Yes      | Set to boolean true to indicate the owning side of the relation. The owning side is the side that owns the foreign key. There can only be one owning side in an association between two classes. Note that this option is required if Doctrine can't guess the owning side or it's guess is wrong. An example where this is the case is when both 'local' and 'foreign' are part of the identifier (primary key). It never hurts to specify the owning side in this way.  |
+| onDelete  | Yes      | The onDelete integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
+| onUpdate  | Yes      | The onUpdate integrity action that is applied on the foreign key constraint when the tables are created by Doctrine.
+| cascade   | Yes      | Specify application level cascading operations. Currently only delete is supported |
+
+So lets take our first example, say we have two classes Forum_Board and Forum_Thread.
+Here Forum_Board has many Forum_Threads, hence their relation is one-to-many. 
+We don't want to write Forum_ when accessing relations, so we use relation 
+aliases and use the alias Threads.
+
+First lets take a look at the Forum_Board class. It has three columns: name, 
+description and since we didn't specify any primary key, Doctrine auto-creates 
+an id column for it.
+
+We define the relation to the Forum_Thread class by using the hasMany() method.
+Here the local field is the primary key of the board class whereas the foreign 
+field is the board_id field of the Forum_Thread class.
+
+    [php]
+    class Forum_Board extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string', 100);
+            $this->hasColumn('description', 'string', 5000);
+        }
+
+        public function setUp()
+        {
+            $this->hasMany('Forum_Thread as Threads', array('local' => 'id',
+                                                            'foreign' => 'board_id'));
+        }
+    }
+
+>**NOTE**
+>Notice the `as` keyword being used above. This means that the `Forum_Board` has
+>a many relationship defined to `Forum_Thread` but is aliased as `Threads`.
+
+Then lets have a peek at the `Forum_Thread` class. The columns here are irrelevant,
+but pay attention to how we define the relation. Since each Thread can have only
+one Board we are using the `hasOne()` method. Also notice how we once again use 
+aliases and how the local column here is board_id while the foreign column is 
+the id column.
+
+    [php]
+    class Forum_Thread extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('board_id', 'integer', 10);
+            $this->hasColumn('title', 'string', 200);
+            $this->hasColumn('updated', 'integer', 10);
+            $this->hasColumn('closed', 'integer', 1);
+        }
+
+        public function setUp() 
+        {
+            $this->hasOne('Forum_Board as Board', array('local' => 'board_id',
+                                                        'foreign' => 'id'));
+        }
+    }
+
+Now we can start using these classes. The same accessors that you've already 
+used for properties are all availible for relations.
+
+    [php]
+    // first create a board
+    $board = new Forum_Board();
+    $board->name = 'Some board';
+
+    // lets create a new thread
+    $board->Thread[0]->title = 'new thread';
+
+    // save the changes 
+    $board->save();
+
++++ Foreign Key Associations
+
+++++ One to One
+
+One-to-one relations are probably the most basic relations. In the following
+example we have two classes, User and Email with their relation being one-to-one. 
+
+First lets take a look at the Email class. Since we are binding a one-to-one
+relationship we are using the hasOne() method. Notice how we define the foreign
+key column (user_id) in the Email class. This is due to a fact that Email is 
+owned by the User class and not the other way around. In fact you should always
+follow this convention - always place the foreign key in the owned class.
+
+The recommended naming convention for foreign key columns is: [tableName]_[primaryKey].
+As here the foreign table is 'user' and its primary key is 'id' we have named
+the foreign key column as 'user_id'.
+
+    [php]
+    class Email extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('user_id', 'integer');
+            $this->hasColumn('address', 'string', 150);
+        }
+        public function setUp()
+        {
+            $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
+        }
+    }
+
+The User class is very similar to the Email class. Notice how the local and 
+foreign columns are switched in the hasOne() definition compared to the 
+definition of the Email class.
+
+    [php]
+    class User extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string',50);
+            $this->hasColumn('loginname', 'string',20);
+            $this->hasColumn('password', 'string',16);
+        }
+
+        public function setUp()
+        {
+            $this->hasOne('Email', array('local' => 'id', 'foreign' => 'user_id'));
+        }
+    }
+
+++++ One to Many and Many to One
+
+One-to-Many and Many-to-One relations are very similar to One-to-One relations.
+The recommended conventions you came in terms with in the previous chapter also
+apply to one-to-many and many-to-one relations.
+
+In the following example we have two classes: User and Phonenumber. We define
+their relation as one-to-many (a user can have many phonenumbers). Here once 
+again the Phonenumber is clearly owned by the User so we place the foreign key in 
+the Phonenumber class.
+
+    [php]
+    class User extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string', 50);
+            $this->hasColumn('loginname', 'string', 20);
+            $this->hasColumn('password', 'string', 16);
+        }
+
+        public function setUp()
+        {
+            $this->hasMany('Phonenumber', array('local' => 'id', 'foreign' => 'user_id'));
+        }
+    }
+
+    class Phonenumber extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('phonenumber', 'string', 50);
+            $this->hasColumn('user_id', 'integer');
+        }
+
+        public function setUp()
+        {
+            $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
+        }
+    }
+
+++++ Tree Structure
+
+A tree structure is a self-referencing foreign key relation. The following 
+definition is also called Adjacency List implementation in terms of hierarchical
+data concepts.
+
+    [php]
+    class Task extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string', 100);
+            $this->hasColumn('parent_id', 'integer');
+        }
+
+        public function setUp() 
+        {
+            $this->hasOne('Task as Parent', array('local' => 'parent_id', 'foreign' => 'id'));
+            $this->hasMany('Task as Subtasks', array('local' => 'id', 'foreign' => 'parent_id'));
+        }
+    }
+
+>**NOTE**
+>The above implementation is purely an example and is not the most efficient way to
+>store and retrieve hierarchical data. Check the NestedSet behavior included in
+>Doctrine for the recommended way to deal with hierarchical data.
+
++++ Join Table Associations
+
+++++ Many to Many
+
+If you are coming from relational database background it may be familiar to you
+how many-to-many associations are handled: an additional association table is 
+needed.
+
+In many-to-many relations the relation between the two components is always an 
+aggregate relation and the association table is owned by both ends. For example
+in the case of users and groups: when a user is being deleted, the groups 
+he/she belongs to are not being deleted. However, the associations between this
+user and the groups he/she belongs to are instead being deleted. This removes
+the relation between the user and the groups he/she belonged to, but does not
+remove the user nor the groups.
+
+Sometimes you may not want that association table rows are being deleted when 
+user / group is being deleted. You can override this behaviour by setting the
+relations to association component (in this case {{Groupuser}}) explicitly. 
+
+In the following example we have Groups and Users of which relation is defined
+as many-to-many. In this case we also need to define an additional class
+called {{Groupuser}}.
+
+    [php]
+    class User extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string', 30);
+        }
+
+        public function setUp() 
+        {
+            $this->hasMany('Group', array('local' => 'user_id',         // <- these are the column names
+                                          'foreign' => 'group_id',      // <- in the association table
+                                          'refClass' => 'GroupUser'));  // <- the following line is needed in many-to-many relations!
+        }
+    }
+
+    class Group extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string', 30);
+        }
+
+        public function setUp()
+        {
+            $this->hasMany('User', array('local' => 'group_id',       // <- these are the column names
+                                         'foreign' => 'user_id',      // <- in the association table
+                                         'refClass' => 'GroupUser')); // <- the following line is needed in many-to-many relations!
+
+            // group is reserved keyword so either do this or enable ATTR_QUOTE_IDENTIFIERS
+            $this->setTableName('my_group');
+        }
+    }
+
+    class GroupUser extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('user_id', 'integer', null, array('primary' => true));
+            $this->hasColumn('group_id', 'integer', null, array('primary' => true));
+        }
+    }
+
+Notice how the relationship is bi-directional. Both User hasMany Group and Group
+hasMany User. This is required by Doctrine in order for Many2Many relationships
+to fully work.
+
+Now lets play around with the new models and create a user and assign it some 
+groups.
+
+    [php]
+    $user = new User();
+
+    // add two groups
+    $user->Group[0]->name = 'First Group';
+
+    $user->Group[1]->name = 'Second Group';
+
+    // save changes into database
+    $user->save();
+
+    // deleting the associations between user and groups it belongs to
+
+    $user->Groupuser->delete();
+
+    $groups = new Doctrine_Collection(Doctrine::getTable('Group'));
+
+    $groups[0]->name = 'Third Group';
+
+    $groups[1]->name = 'Fourth Group';
+
+    $user->Group[2] = $groups[0];
+    // $user will now have 3 groups
+
+    $user->Group = $groups;
+    // $user will now have two groups 'Third Group' and 'Fourth Group'
+
+++++ Self Referencing (Nest Relations)
++++++ Non-Equal Nest Relations
+
+    [php]
+    class User extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string', 30);
+        }
+
+        public function setUp() 
+        {
+            $this->hasMany('User as Parents', array('local'    => 'parent_id',
+                                                    'foreign'  => 'child_id',
+                                                    'refClass' => 'UserReference'
+                                                    ));
+
+            $this->hasMany('User as Children', array('local'    => 'child_id',
+                                                     'foreign'  => 'parent_id',
+                                                     'refClass' => 'UserReference'
+                                                     ));
+
+        }
+    }
+
+    class UserReference extends Doctrine_Record 
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('parent_id', 'integer', null, array('primary' => true));
+            $this->hasColumn('child_id', 'integer', null, array('primary' => true));
+        }
+    }
+
++++++ Equal Nest Relations
+
+Equal nest relations are perfectly suitable for expressing relations where a
+class references to itself and the columns within the reference class are equal.
+
+This means that when fetching related records it doesn't matter which column in 
+the reference class has the primary key value of the main class.
+
+The previous clause maybe hard to understand so lets take an example. We define
+a class called `User` which can have many friends. Notice here how we use the 
+'equal' option.
+
+    [php]
+    class User extends Doctrine_Record 
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string', 30);
+        }
+
+        public function setUp() 
+        {
+            $this->hasMany('User as Friend', array('local'    => 'user1',
+                                                   'foreign'  => 'user2',
+                                                   'refClass' => 'UserReference',
+                                                   'equal'    => true,
+                                                    ));
+        }
+    }
+
+    class UserReference extends Doctrine_Record 
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('user1', 'integer', null, array('primary' => true));
+            $this->hasColumn('user2', 'integer', null, array('primary' => true));
+        }
+    }
+
+Now lets define 4 users: Jack Daniels, John Brandy, Mikko Koskenkorva and 
+Stefan Beer with Jack Daniels and John Brandy being buddies and 
+Mikko Koskenkorva being the friend of all of them.
+
+    [php]
+    $daniels = new User();
+    $daniels->name = 'Jack Daniels';
+
+    $brandy = new User();
+    $brandy->name = 'John Brandy';
+
+    $koskenkorva = new User();
+    $koskenkorva->name = 'Mikko Koskenkorva';
+
+    $beer = new User();
+    $beer->name = 'Stefan Beer';
+
+    $daniels->Friend[0] = $brandy;
+
+    $koskenkorva->Friend[0] = $daniels;
+    $koskenkorva->Friend[1] = $brandy;
+    $koskenkorva->Friend[2] = $beer;
+
+    $conn->flush();
+
+Now if we access for example the friends of John Beer it would return one user
+'Mikko Koskenkorva'.
+
++++ Foreign Key Constraints
+
+++++ Introduction
+
+A foreign key constraint specifies that the values in a column 
+(or a group of columns) must match the values appearing in some row of another 
+table. In other words foreign key constraints maintain the referential 
+integrity between two related tables.
+
+Say you have the product table with the following definition:
+
+    [php]
+    class Product extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('id', 'integer', null, 'primary');
+            $this->hasColumn('name', 'string');
+            $this->hasColumn('price', 'decimal', 18);
+        }
+    }
+
+Let's also assume you have a table storing orders of those products. We want to
+ensure that the order table only contains orders of products that actually exist.
+So we define a foreign key constraint in the orders table that references the 
+products table:
+
+    [php]
+    class Order extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('order_id', 'integer', null, 'primary');
+            $this->hasColumn('product_id', 'integer');
+            $this->hasColumn('quantity', 'integer');
+        }
+
+        public function setUp()
+        {
+            $this->hasOne('Product', array('local' => 'product_id', 'foreign' => 'id'));
+        }
+    }
+
+>**NOTE**
+>Foreign key columns are automatically indexed by Doctrine to ensure optimal 
+>performance when issuing queries involving the foreign key.
+
+When exported the class `Order` would execute the following SQL:
+
+    [sql]
+    CREATE TABLE orders (
+        order_id integer PRIMARY KEY,
+        product_id integer REFERENCES products (id),
+        quantity integer,
+        INDEX product_id_idx (product_id)
+    )
+
+Now it is impossible to create orders with product_no entries that do not appear
+in the products table.
+
+We say that in this situation the orders table is the referencing table and the
+products table is the referenced table. Similarly, there are referencing and 
+referenced columns.
+
 ++++ Integrity Actions
-+++ Transitive Persistence
-++++ Application-Level Cascadees
-+++++ Save Cascades
-+++++ Delete Cascades
-++++ Database-Level Cascades
+
+**CASCADE**
+
+Delete or update the row from the parent table and automatically delete or update
+the matching rows in the child table. Both ON DELETE CASCADE and ON UPDATE CASCADE
+are supported. Between two tables, you should not define several ON UPDATE CASCADE 
+clauses that act on the same column in the parent table or in the child table.
+
+**SET NULL**
+
+Delete or update the row from the parent table and set the foreign key column or
+columns in the child table to NULL. This is valid only if the foreign key columns
+do not have the NOT NULL qualifier specified. Both ON DELETE SET NULL and 
+ON UPDATE SET NULL clauses are supported.
+
+**NO ACTION**
+
+In standard SQL, NO ACTION means no action in the sense that an attempt to 
+delete or update a primary key value is not allowed to proceed if there is a
+related foreign key value in the referenced table.
+
+**RESTRICT**
+
+Rejects the delete or update operation for the parent table. NO ACTION and
+RESTRICT are the same as omitting the ON DELETE or ON UPDATE clause.
+
+**SET DEFAULT**
+
+In the following example we define two classes, User and Phonenumber with 
+their relation being one-to-many. We also add a foreign key constraint with 
+onDelete cascade action. This means that everytime a users is being deleted 
+its associated phonenumbers will also be deleted.
+
+    [php]
+    class User extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string', 50);
+            $this->hasColumn('loginname', 'string', 20);
+            $this->hasColumn('password', 'string', 16);
+        }
+
+        public function setUp()
+        {
+            $this->index('id', array('fields' => 'id'));
+
+            $this->hasMany('Phonenumber', array('local' => 'id', 
+                                                'foreign' => 'user_id'));
+        }
+    }
+
+    class Phonenumber extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('phonenumber', 'string', 50);
+            $this->hasColumn('user_id', 'integer');
+        }
+
+        public function setUp()
+        {
+            $this->index('user_id_idx', array('fields' => 'user_id'));
+
+            $this->hasOne('User', array('local' => 'user_id',
+                                        'foreign' => 'id',
+                                        'onDelete' => 'CASCADE'));
+        }
+    }
+
+>**NOTE**
+>Notice how the integrity constraints are placed on the side where the foreign 
+>key exists. This is required in order for the integrity constraints to be
+>exported to your database properly.
+
 ++ Indexes
-++ Behaviors
+
++++ Introduction
+
+Indexes are used to find rows with specific column values quickly. Without an
+index, the database must begin with the first row and then read through the
+entire table to find the relevant rows. 
+
+The larger the table, the more this consumes time. If the table has an index
+for the columns in question, the database can quickly determine the position
+to seek to in the middle of the data file without having to look at all the
+data. If a table has 1,000 rows, this is at least 100 times faster than reading
+rows one-by-one.
+
+Indexes come with a cost as they slow down the inserts and updates. However, in
+general you should **always** use indexes for the fields that are used in SQL
+where conditions.
+
++++ Adding indexes
+
+You can add indexes by using {{Doctrine_Record::index}}. An example of adding a
+simple index to field called `name`:
+
+    [php]
+    class IndexTest extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string');
+
+            $this->index('myindex', array('fields' => 'name'));
+        }
+    }
+
+An example of adding a multi-column index to field called {{name}}:
+
+    [php]
+    class MultiColumnIndexTest extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string');
+            $this->hasColumn('code', 'string');
+
+            $this->index('myindex', array('fields' => array('name', 'code')));
+        }
+    }
+
+An example of adding multiple indexes on same table:
+
+    [php]
+    class MultipleIndexTest extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string');
+            $this->hasColumn('code', 'string');
+            $this->hasColumn('age', 'integer');
+
+            $this->index('myindex', array('fields' => array('name', 'code')));
+            $this->index('ageindex', array('fields' => array('age')));
+        }
+    }
+
++++ Index options
+
+Doctrine offers many index options, some of them being database specific. Here is a
+full list of available options:
+
+* sorting - A string value that can be either 'ASC' or 'DESC'.
+* length - Index length (only some drivers support this)
+* primary - Whether or not the index is a primary index.
+* type - A string value that can be unique, fulltext, gist or gin.
+
+Here is an example of how to create a unique index on the `name` column.
+
+    [php]
+    class MultipleIndexTest extends Doctrine_Record
+    {
+        public function setTableDefinition() 
+        {
+            $this->hasColumn('name', 'string');
+            $this->hasColumn('code', 'string');
+            $this->hasColumn('age', 'integer');
+
+            $this->index('myindex', array(
+                          'fields' => array(
+                                      'name' =>
+                                      array('sorting' => 'ASC',
+                                            'length'  => 10),
+                                      'code'),
+                          'type' => 'unique',
+                          ));
+        }
+    }
+
++++ Special indexes
+
+Doctrine supports many special indexes. These include Mysql FULLTEXT and Pgsql
+GiST indexes. In the following example we define a Mysql FULLTEXT index for the
+field 'content'.
+
+    [php]
+    class Article 
+    {
+        public function setTableDefinition() 
+        {
+        	  $this->hasColumn('name', 'string');
+            $this->hasColumn('content', 'string');
+
+            $this->index('content', array('fields' => 'content',
+                                          'type'   => 'fulltext'));
+        }
+    }
+
 ++ Checks
-++ Options
-++ Attributes
-++ Listeners
-++ Inheritance
-+++ Simple
-+++ Concrete
-+++ Column Aggregation
+
+Some of the Doctrine validators also act as database level check constraints.
+When a record with these validators is exported additional CHECK constraints 
+are being added to CREATE TABLE statement.
+
+Consider the following example which uses 'min' validator:
+
+    [php]
+    class Product extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('id', 'integer', 4, 'primary');
+            $this->hasColumn('price', 'decimal', 18, array('min' => 0));
+        }
+    }
+
+When exported the given class definition would execute the following statement
+(in pgsql):
+
+    [sql]
+    CREATE TABLE product (
+        id INTEGER,
+        price NUMERIC,
+        PRIMARY KEY(id),
+        CHECK (price >= 0))
+
+So Doctrine optionally ensures even at the database level that the price of any
+product cannot be below zero.
+
+You can also set the maximum value of a column by using the 'max' validator.
+This also creates the equivalent CHECK constraint.
+
+    [php]
+    class Product extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('id', 'integer', 4, array('primary' => true));
+            $this->hasColumn('price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
+        }
+    }
+
+Generates (in pgsql):
+
+    [sql]
+    CREATE TABLE product (
+        id INTEGER,
+        price NUMERIC,
+        PRIMARY KEY(id),
+        CHECK (price >= 0),
+        CHECK (price <= 1000000))
+
+Lastly you can create any kind of CHECK constraints by using the check() method
+of the Doctrine_Record. In the last example we add constraint to ensure that 
+price is always higher than the discounted price.
+
+    [php]
+    class Product extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('id', 'integer', 4, array('primary' => true));
+            $this->hasColumn('price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
+            $this->hasColumn('discounted_price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
+        
+            $this->check('price > discounted_price');
+        }
+    }
+
+Generates (in pgsql):
+
+    [sql]
+    CREATE TABLE product (
+        id INTEGER,
+        price NUMERIC,
+        PRIMARY KEY(id),
+        CHECK (price >= 0),
+        CHECK (price <= 1000000),
+        CHECK (price > discounted_price))
+
+
+>**NOTE**
+>Some databases don't support CHECK constraints. When this is the case Doctrine
+>simply skips the creation of check constraints.
+
+If the Doctrine validators are turned on the given definition would also ensure
+that when a record is being saved its price is always greater than zero.
+
+If some of the prices of the saved products within a transaction is below zero,
+Doctrine throws Doctrine_Validator_Exception and automatically rolls back the
+transaction.
+
+++ Table Options
+
+Doctrine offers various table options. All table options can be set via the
+{{Doctrine_Record::option}} function.
+
+For example if you are using MySQL and want to use INNODB tables it can be done
+as follows:
+
+    [php]
+    class MyInnoDbRecord extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string');
+
+            $this->option('type', 'INNODB');
+        }
+    }
+
+In the following example we set the collate and character set options:
+
+    [php]
+    class MyCustomOptionRecord extends Doctrine_Record
+    {
+        public function setTableDefinition()
+        {
+            $this->hasColumn('name', 'string');
+
+            $this->option('collate', 'utf8_unicode_ci');
+            $this->option('charset', 'utf8');
+        }
+    }
+
+It is worth noting that for certain databases (Firebird, MySql and PostgreSQL)
+setting the charset option might not be enough for Doctrine to return data
+properly. For those databases, users are advised to also use the setCharset
+function of the database connection:
+
+    [php]
+    Doctrine_Manager::connection($name)->setCharset("utf8");
+
+++ Transitive Persistence
+
+Doctrine offers both database and application level cascading operations. This
+section will explain in detail how to setup both application and database level
+cascades.
+
++++ Application-Level Cascades
+
+Since it can be quite cumbersome to save and delete individual objects, 
+especially if you deal with an object graph, Doctrine provides application-level
+cascading of operations.
+
+++++ Save Cascades
+
+You may already have noticed that save() operations are already cascaded to
+associated objects by default.
+
+++++ Delete Cascades
+
+Starting with Doctrine 0.11, Doctrine provides a second application-level
+cascade style: delete. Unlike the save() cascade, the delete cascade needs to 
+be turned on explicitly as can be seen in the following code snippet:
+
+    [php]
+    class User extends Doctrine_Record
+    {
+        // ...
+        public function setUp()
+        {
+            $this->hasOne('Address as address', array(
+                    'local' => 'id',
+                    'foreign' => 'user_id',
+                    'cascade' => array('delete') // application-level delete cascade
+                    ));
+        }
+    }
+
+The 'cascade' option is used to specify the operations that are cascaded to the
+related objects on the application-level. Note that the only currently supported
+value is 'delete', more options will be added in future releases of Doctrine.
+
+In the example above, Doctrine would cascade the deletion of a User to it's
+associated Address. The following describes the generic procedure when you
+delete a record through $record->delete():
+
+**1.** Doctrine looks at the relations to see if there are any deletion cascades
+it needs to apply. If there are no deletion cascades, go to 3).
+
+**2.** For each relation that has a delete cascade specified, Doctrine verifies
+that the objects that are the target of the cascade are loaded. That usually 
+means that Doctrine fetches the related objects from the database if they're 
+not yet loaded.(Exception: many-valued associations are always re-fetched from
+the database, to make sure all objects are loaded). For each associated object,
+proceed with step 1).
+   
+**3.** Doctrine orders all deletions and executes them in the most efficient way,
+maintaining referential integrity.
+
+From this description one thing should be instantly clear:
+Application-level cascades happen on the object-level, meaning operations are
+cascaded from one object to another and in order to do that the participating
+objects need to be available.
+
+This has some important implications:
+
+* Application-level delete cascades don't perform well on many-valued
+associations when there are a lot of objects in the related collection
+(that is because they need to be fetched from the database, the actual
+deletion is pretty efficient).
+* Application-level delete cascades do not skip the object lifecycle as 
+database-level cascades do (see next chapter). Therefore all registered event
+listeners and other callback methods are properly executed in an application-level
+cascade.
+
++++ Database-Level Cascades
+
+Some cascading operations can be done much more efficiently at the database
+level. The best example is the delete cascade.
+
+Database-level delete cascades are generally preferrable over application-level
+delete cascades except:
+
+* Your database does not support database-level cascades (i.e. when using MySql
+with MYISAM tables).
+* You have listeners that listen on the object lifecycle and you want them to get
+invoked.
+
+Database-level delete cascades are applied on the foreign key constraint.
+Therefore they're specified on that side of the relation that owns the foreign
+key. Picking up the example from above, the definition of a database-level
+cascade would look as follows:
+
+    [php]
+    class Address extends Doctrine_Record
+    {
+        //...
+        public function setUp()
+        {
+            $this->hasOne('User as user', array(
+                    'local' => 'user_id', // this is the foreign key in the database
+                    'foreign' => 'id',
+                    'onDelete' => 'CASCADE' // database-level delete cascade, applied on the foreign key
+                    ));
+        }
+    }
+
+The 'onDelete' => 'CASCADE' option is translated to proper DDL/DML statements
+when Doctrine creates your tables.
+
+>**NOTE**
+>Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the
+>Address owns the foreign key (user_id) and database-level cascades are applied
+>on the foreign key.
+
+Currently, the only two supported database-level cascade styles are 
+'onDelete' => 'CASCADE' and 'onUpdate' => 'CASCADE'. Both are specified on the
+side that owns the foreign key and applied to your database schema when 
+Doctrine creates your tables.

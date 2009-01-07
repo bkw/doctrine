@@ -9,6 +9,7 @@
 + Native SQL
 + YAML Schema Files
 + Data Validation
++ Inheritance
 + Behaviors
 + Data Fixtures
 + Database Abstraction Layer
