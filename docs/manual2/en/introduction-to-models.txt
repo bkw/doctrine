@@ -1,213 +1,180 @@
 ++ Introduction
 
-At the lowest level, Doctrine represents your database schema with a set of PHP 
-classes. These classes define the schema and behavior of your model.
+At the lowest level, Doctrine represents your database schema with a set of PHP classes. These classes define the schema and behavior of your model.
 
-A basic model that represents a user in a web application might look something 
-like this.
+A basic model that represents a user in a web application might look something like this.
 
-    [php]
-    class User extends Doctrine_Record
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
     {
-        public function setTableDefinition()
-        {
-            $this->hasColumn('username', 'string', 255);
-            $this->hasColumn('password', 'string', 255);
-        }
-
-        public function setUp()
-        {
-            $this->actAs('Timestampable');
-        }
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
     }
 
-Each {{Doctrine_Record}} child class can have a `setTableDefinition()` and 
-`setUp()` method. The `setTableDefinition()` method is for defining columns, 
-indexes and other information about the schema of tables. The `setUp()` method 
-is for defining behaviors and relationships between {{Doctrine_Record}} child 
-classes. In the above example we are enabling the `Timestampable` behavior which
-adds some automagic functionality. You will learn more about what all can be used
-in these functions in a later chapter.
+    public function setUp()
+    {
+        $this->actAs('Timestampable');
+    }
+}
+</code>
+
+Each {{Doctrine_Record}} child class can have a setTableDefinition() and setUp() method. The setTableDefinition() method is for defining columns, indexes and other information about the schema of tables. The setUp() method is for defining behaviors and relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in a later chapter.
 
 ++ Generating Models
 
-Doctrine offers ways to generate these classes to make it easier to get started 
-using Doctrine.
+Doctrine offers ways to generate these classes to make it easier to get started using Doctrine.
 
->**NOTE**
->Generating from existing databases is only meant to be a convenience for getting
->started. After you generate from the database you will have to tweak it and clean
->things up as needed.
+**NOTE**
+Generating from existing databases is only meant to be a convenience for getting started. After you generate from the database you will have to tweak it and clean things up as needed.
 
 +++ Existing Databases
 
-A common case when looking for ORM tools like Doctrine is that the database and 
-the code that access it is growing large/complex. A more substantial tool is 
-needed than manual SQL code. 
+A common case when looking for ORM tools like Doctrine is that the database and the code that access it is growing large/complex. A more substantial tool is needed than manual SQL code. 
 
-Doctrine has support for generating {{Doctrine_Record}} classes from your existing 
-database. There is no need for you to manually write all the {{Doctrine_Record}} 
-classes for your domain model. 
+Doctrine has support for generating {{Doctrine_Record}} classes from your existing database. There is no need for you to manually write all the {{Doctrine_Record}} classes for your domain model. 
 
 ++++ Making the first import
 
-Let's consider we have a mysql database called test with a single table called 
-'file'.
+Let's consider we have a mysql database called test with a single table called 'file'.
 
 The file table has been created with the following sql statement:
 
-    [sql]
-    CREATE TABLE file (
-        id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-        name VARCHAR(150),
-        size BIGINT,
-        modified BIGINT,
-        type VARCHAR(10),
-        content TEXT,
-        path TEXT,
-        PRIMARY KEY(id))
+<code type="sql">
+CREATE TABLE file (
+    id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    name VARCHAR(150),
+    size BIGINT,
+    modified BIGINT,
+    type VARCHAR(10),
+    content TEXT,
+    path TEXT,
+    PRIMARY KEY(id))
+</code>
 
-Now we would like to convert it into {{Doctrine_Record}} class. It can be achieved 
-easily with the following code snippet:
+Now we would like to convert it into {{Doctrine_Record}} class. It can be achieved easily with the following code snippet:
 
-    [php]
-    require_once('path-to-doctrine/lib/Doctrine.php');
+<code type="php">
+require_once('path-to-doctrine/lib/Doctrine.php');
 
-    spl_autoload_register(array('Doctrine', 'autoload'));
-    Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
+spl_autoload_register(array('Doctrine', 'autoload'));
+Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
 
-    // import method takes one parameter: the import directory (the directory where
-    // the generated record files will be put in
-    Doctrine::generateModelsFromDb('myrecords', array('generateTableClasses' => true));
+// import method takes one parameter: the import directory (the directory where
+// the generated record files will be put in
+Doctrine::generateModelsFromDb('myrecords', array('generateTableClasses' => true));
+</code>
 
-That's it! Now there should be a file called BaseFile.php in your 
-myrecords/generated directory. The file should look like:
+That's it! Now there should be a file called BaseFile.php in your myrecords/generated directory. The file should look like:
 
-    [php]
-    /**
-     * This class has been auto-generated by the Doctrine ORM Framework
-     */
-    abstract class BaseFile extends Doctrine_Record
-    {
-      public function setTableDefinition()
-      {
-        $this->setTableName('file');
-        $this->hasColumn('id', 'integer', 4, array('unsigned' => 1, 'values' =>  array(), 'primary' => true, 'notnull' => true, 'autoincrement' => true));
-        $this->hasColumn('name', 'string', 150, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-        $this->hasColumn('size', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-        $this->hasColumn('modified', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-        $this->hasColumn('type', 'string', 10, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-        $this->hasColumn('content', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-        $this->hasColumn('path', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
-      }
-    }
+<code type="php">
+/**
+ * This class has been auto-generated by the Doctrine ORM Framework
+ */
+abstract class BaseFile extends Doctrine_Record
+{
+  public function setTableDefinition()
+  {
+    $this->setTableName('file');
+    $this->hasColumn('id', 'integer', 4, array('unsigned' => 1, 'values' =>  array(), 'primary' => true, 'notnull' => true, 'autoincrement' => true));
+    $this->hasColumn('name', 'string', 150, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('size', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('modified', 'integer', 8, array('unsigned' => 0, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('type', 'string', 10, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('content', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+    $this->hasColumn('path', 'string', null, array('fixed' => false, 'values' =>  array(), 'primary' => false, 'notnull' => false, 'autoincrement' => false));
+  }
+}
+</code>
 
-You should also have a file called File.php in your myrecords directory. The 
-file should look like:
+You should also have a file called File.php in your myrecords directory. The file should look like:
 
-    [php]
-    /**
-     * This class has been auto-generated by the Doctrine ORM Framework
-     */
-    class File extends BaseFile
-    {
-    }
+<code type="php">
+/**
+ * This class has been auto-generated by the Doctrine ORM Framework
+ */
+class File extends BaseFile
+{
+}
+</code>
 
-Doctrine will automatically generate a skeleton Doctrine_Table class for the 
-model at myrecords/UserTable.php. The file should look like:
+Doctrine will automatically generate a skeleton Doctrine_Table class for the model at myrecords/UserTable.php. The file should look like:
 
-    [php]
-    /**
-     * This class has been auto-generated by the Doctrine ORM Framework
-     */
-    class FileTable extends Doctrine_Table
-    {
-    }
+<code type="php">
+/**
+ * This class has been auto-generated by the Doctrine ORM Framework
+ */
+class FileTable extends Doctrine_Table
+{
+}
+</code>
 
-This is where you can put your custom finder methods which can be used by 
-calling Doctrine::getTable('User').
+This is where you can put your custom finder methods which can be used by calling Doctrine::getTable('User').
 
 +++ Schema Files
 
-You can alternatively manage your models with YAML schema files and generate 
-PHP classes from them.
+You can alternatively manage your models with YAML schema files and generate PHP classes from them.
 
-    [php]
-    require_once('path-to-doctrine/lib/Doctrine.php');
+<code type="php">
+require_once('path-to-doctrine/lib/Doctrine.php');
 
-    spl_autoload_register(array('Doctrine', 'autoload'));
-    Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
+spl_autoload_register(array('Doctrine', 'autoload'));
+Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
 
-    // import method takes one parameter: the import directory (the directory where
-    // the generated record files will be put in
-    Doctrine::generateModelsFromYaml('/path/to/yaml', '/path/to/generate/models');
+// import method takes one parameter: the import directory (the directory where
+// the generated record files will be put in
+Doctrine::generateModelsFromYaml('/path/to/yaml', '/path/to/generate/models');
+</code>
 
 ++ Manually Writing Models
 
-You can optionally skip all the convenience methods and write your models manually
-using nothing but your own PHP code.
+You can optionally skip all the convenience methods and write your models manually using nothing but your own PHP code.
 
 ++ Autoloading Models
 
-Doctrine offers two ways of loading models. We have conservative(lazy) loading, 
-and aggressive loading. Conservative loading will not require the PHP file 
-initially, instead it will cache the path to the class name and this path is 
-then used in the {{Doctrine::autoload()}} we registered earlier with 
-`spl_autoload_register()`. Below are some examples 
-using the both types of model loading.
+Doctrine offers two ways of loading models. We have conservative(lazy) loading, and aggressive loading. Conservative loading will not require the PHP file initially, instead it will cache the path to the class name and this path is then used in the {{Doctrine::autoload()}} we registered earlier with spl_autoload_register(). Below are some examples using the both types of model loading.
 
 +++ Conservative
 
-Conservative model loading is going to be the ideal model loading method for a 
-production environment. This method will lazy load all of the models instead of 
-loading them all when model loading is executed.
+Conservative model loading is going to be the ideal model loading method for a production environment. This method will lazy load all of the models instead of loading them all when model loading is executed.
 
-Conservative model loading requires that each file contain only one class, and 
-the file must be named after the class. For example, if you have a class named 
-User, it must be contained in a file named User.php
+Conservative model loading requires that each file contain only one class, and the file must be named after the class. For example, if you have a class named User, it must be contained in a file named User.php
 
-Here is an example of a basic Doctrine implementation using conservative model 
-loading.
+Here is an example of a basic Doctrine implementation using conservative model loading.
 
-    [php]
-    //require the base Doctrine class
-    require_once('path-to-doctrine/lib/Doctrine.php');
+<code type="php">
+//require the base Doctrine class
+require_once('path-to-doctrine/lib/Doctrine.php');
 
-    //register the autoloader
-    spl_autoload_register(array('Doctrine', 'autoload'));
+//register the autoloader
+spl_autoload_register(array('Doctrine', 'autoload'));
 
-    Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
-    Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
 
-    $user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+$user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+</code>
 
 +++ Aggressive
 
-Aggressive model loading is the default model loading method and is very 
-simple, it will look for all files with a .php extension and will include it. 
-Doctrine can not satisfy any inheritance and if your models extend another 
-model, it cannot include them in the correct order so it is up to you to make 
-sure all dependencies are satisfied in each class.
+Aggressive model loading is the default model loading method and is very simple, it will look for all files with a .php extension and will include it. Doctrine can not satisfy any inheritance and if your models extend another model, it cannot include them in the correct order so it is up to you to make sure all dependencies are satisfied in each class.
 
-With aggressive model loading you can have multiple classes per file and the 
-file name is not required to be related to the name of the class inside of the 
-file.
+With aggressive model loading you can have multiple classes per file and the file name is not required to be related to the name of the class inside of the file.
 
-The downside of aggressive model loading is that every php file is included in 
-every request, so if you have lots of models it is recommended you use 
-conservative model loading.
+The downside of aggressive model loading is that every php file is included in every request, so if you have lots of models it is recommended you use conservative model loading.
 
-Here is an example of a basic Doctrine implementation using aggressive model 
-loading.
+Here is an example of a basic Doctrine implementation using aggressive model loading.
 
-    [php]
-    //require the base Doctrine class
-    require_once('path-to-doctrine/lib/Doctrine.php');
+<code type="php">
+//require the base Doctrine class
+require_once('path-to-doctrine/lib/Doctrine.php');
 
-    //register the autoloader
-    spl_autoload_register(array('Doctrine', 'autoload'));
+//register the autoloader
+spl_autoload_register(array('Doctrine', 'autoload'));
 
-    Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive'); // Thi
-    Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive'); // Thi
+Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
 
-    $user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+$user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+</code>

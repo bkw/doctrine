@@ -1,36 +1,33 @@
-In this chapter will go over each of the main components that make up Doctrine
-and what each of their roles are so that in later chapters you will understand 
-terminology and the purpose of classes.
+In this chapter will go over each of the main components that make up Doctrine and what each of their roles are so that in later chapters you will understand terminology and the purpose of classes.
 
 ++ Manager
 
-The {{Doctrine_Manager}} class is a singleton and is the root of the 
-configuration hierarchy and is used as a facade for controlling several aspects 
-of Doctrine. You can retrieve the singleton instance with the following code.
+The {{Doctrine_Manager}} class is a singleton and is the root of the configuration hierarchy and is used as a facade for controlling several aspects of Doctrine. You can retrieve the singleton instance with the following code.
 
-    [php]
-    $manager = Doctrine_Manager::getInstance();
+<code type="php">
+$manager = Doctrine_Manager::getInstance();
+</code>
 
 +++ Retrieving Connections
 
-    [php]
-    $connections = $manager->getConnections();
-    foreach ($connections as $connection) {
-        echo $connection->getName() . '<br/>';
-    }
+<code type="php">
+$connections = $manager->getConnections();
+foreach ($connections as $connection) {
+  echo $connection->getName() . '<br/>';
+}
+</code>
 
-The {{Doctrine_Manager}} implements an iterator so you can simple loop over 
-the `$manager` variable to loop over the connections.
+The {{Doctrine_Manager}} implements an iterator so you can simple loop over the $manager variable to loop over the connections.
 
-    [php]
-    foreach ($manager as $connection) {
-      echo $connection->getName() . '<br/>';
-    }
+<code type="php">
+foreach ($manager as $connection) {
+  echo $connection->getName() . '<br/>';
+}
+</code>
 
 ++ Connection
 
-{{Doctrine_Connection}} is a wrapper for database connection. It handles 
-several things:
+{{Doctrine_Connection}} is a wrapper for database connection. It handles several things:
 
 * Handles database portability things missing from PDO (eg. LIMIT / OFFSET emulation)
 * Keeps track of Doctrine_Table objects
@@ -56,365 +53,335 @@ Doctrine has drivers for every PDO-supported database. The supported databases a
 
 +++ Creating Connections
 
-    [php]
-    $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
+<code type="php">
+$conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
+</code>
 
 +++ Flushing the Connection
 
-Creating new record (database row) is very easy. You can create new records 
-by creating a new instance of the child {{Doctrine_Record}} class.
+Creating new record (database row) is very easy. You can create new records by creating a new instance of the child {{Doctrine_Record}} class.
 
-    [php]
-    $user = new User();
-    $user->name = 'Jack';
+<code type="php">
+$user = new User();
+$user->name = 'Jack';
+</code>
 
 ++ Table
 
-{{Doctrine_Table}} holds the schema information specified by the given 
-component (record). For example if you have a User class that extends 
-{{Doctrine_Record}}, each schema definition call gets delegated to a unique 
-table object that holds the information for later use.
+{{Doctrine_Table}} holds the schema information specified by the given component (record). For example if you have a User class that extends {{Doctrine_Record}}, each schema definition call gets delegated to a unique table object that holds the information for later use.
 
-Each {{Doctrine_Table}} is registered by {{Doctrine_Connection}}, which means 
-you can retrieve the tables from the connection by calling the getTable() 
-method with the appropriate component name.
+Each {{Doctrine_Table}} is registered by {{Doctrine_Connection}}, which means you can retrieve the tables from the connection by calling the getTable() method with the appropriate component name.
 
-For example, lets say we want to retrieve the table object for the User class. 
-We can do this by simply giving the 'User' as the first argument for the 
-{{Doctrine::getTable()}} method.
+For example, lets say we want to retrieve the table object for the User class. We can do this by simply giving the 'User' as the first argument for the {{Doctrine::getTable()}} method.
 
 +++ Getting a Table Object
 
-In order to get table object for specified record just call 
-{{Doctrine_Record::getTable()}}.
+In order to get table object for specified record just call {{Doctrine_Record::getTable()}}.
 
-    [php]
-    // getting a table object
-    $table = Doctrine::getTable('User');
+<code type="php">
+// getting a table object
+$table = Doctrine::getTable('User');
+</code>
 
 +++ Getting Column Information
 
-You can retrieve the column definitions set in {{Doctrine_Record}} by using 
-the appropriate {{Doctrine_Table}} methods. If you need all information of all 
-columns you can simply use:
+You can retrieve the column definitions set in {{Doctrine_Record}} by using the appropriate {{Doctrine_Table}} methods. If you need all information of all columns you can simply use:
 
-    [php]
-    // getting all information of all columns
-    $columns = $table->getColumns();
+<code type="php">
+// getting all information of all columns
+$columns = $table->getColumns();
+</code>
 
-Sometimes this can be an overkill. The following example shows how to retrieve 
-the column names as an array:
+Sometimes this can be an overkill. The following example shows how to retrieve the column names as an array:
 
-    [php]
-    // getting column names
-    $names = $table->getColumnNames();
+<code type="php">
+// getting column names
+$names = $table->getColumnNames();
+</code>
 
 +++ Getting Relation Information
 
-    [php]
-    $relation = $table->getRelations();
-    foreach ($relations as $relation) {
-        echo $relation->getLocal();
-        $array = $relation->toArray();
-    }
+<code type="php">
+$relation = $table->getRelations();
+foreach ($relations as $relation) {
+    echo $relation->getLocal();
+    $array = $relation->toArray();
+}
+</code>
 
 +++ Finder Methods
 
-{{Doctrine_Table}} provides basic finder methods. These finder methods are very 
-fast to write and should be used if you only need to fetch data from one 
-database table. If you need queries that use several components (database tables) 
-use {{Doctrine_Connection::query()}}.
+{{Doctrine_Table}} provides basic finder methods. These finder methods are very fast to write and should be used if you only need to fetch data from one database table. If you need queries that use several components (database tables) use {{Doctrine_Connection::query()}}.
 
-    [php]
-    $table = Doctrine::getTable('User');
+<code type="php">
+$table = Doctrine::getTable('User');
 
-    // find by primary key
+// find by primary key
 
-    $user = $table->find(2);
+$user = $table->find(2);
 
-    if($user !== false)
-        print $user->name;
+if($user !== false)
+    print $user->name;
 
-    // get all users
-    foreach($table->findAll() as $user) {
-        print $user->name;
-    }
+// get all users
+foreach($table->findAll() as $user) {
+    print $user->name;
+}
 
-    // finding by dql
-    foreach($table->findByDql("name LIKE '%John%'") as $user) {
-        print $user->created;
-    }
+// finding by dql
+foreach($table->findByDql("name LIKE '%John%'") as $user) {
+    print $user->created;
+}
+</code>
 
 ++++ Custom Table Classes
 
-Adding custom table classes is very easy. Only thing you need to do is name the 
-classes as [componentName]Table and make them inherit {{Doctrine_Table}}.
+Adding custom table classes is very easy. Only thing you need to do is name the classes as [componentName]Table and make them inherit {{Doctrine_Table}}.
 
-    [php]
-    // valid table object
-    class UserTable extends Doctrine_Table
-    {
-    }
+<code type="php">
+// valid table object
+class UserTable extends Doctrine_Table
+{
+}
 
-    // not valid [doesn't extend Doctrine_Table]
-    class GroupTable
-    {
-    }
+// not valid [doesn't extend Doctrine_Table]
+class GroupTable
+{
+}
+</code>
 
 +++ Custom Finders
 
-You can add custom finder methods to your custom table object. These finder 
-methods may use fast {{Doctrine_Table}} finder methods or DQL API 
-({{Doctrine_Query::create()}}).
+You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} finder methods or DQL API ({{Doctrine_Query::create()}}).
 
-    [php]
-    class UserTable extends Doctrine_Table {
-        /**
-         * you can add your own finder methods here
-         */
-        public function findByName($name) {
-            return Doctrine_Query::create()
-                    ->from('User u')
-                    ->where('u.name LIKE ?', "%$name%")
-                    ->execute();
-        }
+<code type="php">
+class UserTable extends Doctrine_Table {
+    /**
+     * you can add your own finder methods here
+     */
+    public function findByName($name) {
+        return Doctrine_Query::create()
+                ->from('User u')
+                ->where('u.name LIKE ?', "%$name%")
+                ->execute();
     }
+}
 
-    class User extends Doctrine_Record { }
+class User extends Doctrine_Record { }
 
-    // doctrine will now check if a class called UserTable exists
-    // and if it inherits Doctrine_Table
+// doctrine will now check if a class called UserTable exists
+// and if it inherits Doctrine_Table
 
-    $table   = Doctrine::getTable('User');
+$table   = Doctrine::getTable('User');
 
-    print get_class($table); // UserTable
+print get_class($table); // UserTable
 
-    $users   = $table->findByName("Jack");
+$users   = $table->findByName("Jack");
+</code>
 
 ++ Record
 
-Doctrine represents tables in your RDBMS with child {{Doctrine_Record}} classes.
-These classes are where you define your schema information, options, attributes,
-etc. Instances of these child classes represents records in the database and
-you can get and set properties on these objects.
+Doctrine represents tables in your RDBMS with child {{Doctrine_Record}} classes. These classes are where you define your schema information, options, attributes, etc. Instances of these child classes represents records in the database and you can get and set properties on these objects.
 
 +++ Properties
 
-Each assigned column property of {{Doctrine_Record}} represents a database
-table column. As you've learned in the previous chapters the column definitions
-can be achieved with the {{hasColumn()}} method. Now accessing the columns is
-easy. You can use any of the means described above. The recommended way is
-using the ArrayAccess as it makes it easy to switch between record and array
-fetching when needed.
+Each assigned column property of {{Doctrine_Record}} represents a database table column. As you've learned in the previous chapters the column definitions can be achieved with the {{hasColumn()}} method. Now accessing the columns is easy. You can use any of the means described above. The recommended way is using the ArrayAccess as it makes it easy to switch between record and array fetching when needed.
 
-    [php]
-    $table = Doctrine::getTable('User');
+<code type="php">
+$table = Doctrine::getTable('User');
 
-    $user = $table->find(3);
+$user = $table->find(3);
 
-    // access property through overloading
+// access property through overloading
 
-    $name = $user->name;
+$name = $user->name;
 
-    // access property with get()
+// access property with get()
 
-    $name = $user->get("name");
+$name = $user->get("name");
 
-    // access property with ArrayAccess interface
+// access property with ArrayAccess interface
 
-    $name = $user['name'];
+$name = $user['name'];
+</code>
 
-Iterating trhough the properties of a record can be done in similar way as
-iterating through an array - by using the foreach construct. This is possible
-since {{Doctrine_Record}} implements a magic IteratorAggregate interface.
+Iterating trhough the properties of a record can be done in similar way as iterating through an array - by using the foreach construct. This is possible since {{Doctrine_Record}} implements a magic IteratorAggregate interface.
 
-    [php]
-    foreach ($user as $field => $value) {
+<code type="php">
+foreach ($user as $field => $value) {
 
-    }
+}
+</code>
 
-As with arrays you can use the `isset()` for checking if given property exists
-and `unset()` for setting given property to null.
+As with arrays you can use the isset() for checking if given property exists and unset() for setting given property to null.
 
-    [php]
-    // checking if property called 'name' exists
-    if (isset($user['name'])) {
+<code type="php">
+// checking if property called 'name' exists
+if (isset($user['name'])) {
 
-    }
+}
 
-    // unsetting name property
-    unset($user['name']);
+// unsetting name property
+unset($user['name']);
+</code>
 
-When you have set values for record properties you can get an array of the
-modified fields and values using {{Doctrine_Record::modifiedFields()}}
+When you have set values for record properties you can get an array of the modified fields and values using {{Doctrine_Record::modifiedFields()}}
 
-    [php]
-    $user['name'] = 'Jack Daniels';
+<code type="php">
+$user['name'] = 'Jack Daniels';
 
-    $user['age'] = 100;
+$user['age'] = 100;
 
-    print_r($user->getModified()); // array('name' => 'Jack Daniels', 'age' => 100);
+print_r($user->getModified()); // array('name' => 'Jack Daniels', 'age' => 100);
 
-    $user->isModified(); // true
+$user->isModified(); // true
+</code>
 
-Sometimes you may want to retrieve the column count of given record. In order
-to do this you can simply pass the record as an argument for the `count()`
-function. This is possible since {{Doctrine_Record}} implements a magic
-Countable interface. The other way would be calling the `count()` method.
+Sometimes you may want to retrieve the column count of given record. In order to do this you can simply pass the record as an argument for the count() function. This is possible since {{Doctrine_Record}} implements a magic Countable interface. The other way would be calling the count() method.
 
-    [php]
-    // get the number of columns
+<code type="php">
+// get the number of columns
 
-    $colCount = $record->count();
+$colCount = $record->count();
 
-    $colCount = count($record);
+$colCount = count($record);
+</code>
 
-{{Doctrine_Record}} offers a special method for accessing the identifier of 
-given record. This method is called {{identifier()}} and it returns an array
-with identifier field names as keys and values as the associated property values.
+{{Doctrine_Record}} offers a special method for accessing the identifier of given record. This method is called {{identifier()}} and it returns an array with identifier field names as keys and values as the associated property values.
 
-    [php]
-    $user['name'] = 'Jack Daniels';
+<code type="php">
+$user['name'] = 'Jack Daniels';
 
-    $user->save();
+$user->save();
 
-    $user->identifier(); // array('id' => 1)
+$user->identifier(); // array('id' => 1)
+</code>
 
-A common case is that you have an array of values which you need to assign to
-a given record. It may feel awkward and clumsy to set these values separately.
-No need to worry though, Doctrine_Record offers a way for merging given array
-to property values.
+A common case is that you have an array of values which you need to assign to a given record. It may feel awkward and clumsy to set these values separately. No need to worry though, Doctrine_Record offers a way for merging given array to property values.
 
-The {{merge()}} method iterates through the properties of given record and
-assigns the values of given array to the associated properties.
+The {{merge()}} method iterates through the properties of given record and assigns the values of given array to the associated properties.
 
-    [php]
-    $values = array('name' => 'someone',
-                    'age'  => 11,
-                    'unknownproperty' => '...');
+<code type="php">
+$values = array('name' => 'someone',
+                'age'  => 11,
+                'unknownproperty' => '...');
 
-    // notice that here the unknownproperty won't get assigned
-    // as the User class doesn't have a column with that name
-    $user->merge($values);
+// notice that here the unknownproperty won't get assigned
+// as the User class doesn't have a column with that name
+$user->merge($values);
 
-    print $user->name; // someone
-    print $user->age; // 11
+print $user->name; // someone
+print $user->age; // 11
 
-    print $user->unknownproperty; // throws exception
+print $user->unknownproperty; // throws exception
+</code>
 
 +++ Retrieving Existing Records
 
-Doctrine provides many ways for record retrieval. The fastest ways for
-retrieving existing records are the finder methods provided by {{Doctrine_Table}}.
-If you need to use more complex queries take a look at the DQL API.
+Doctrine provides many ways for record retrieval. The fastest ways for retrieving existing records are the finder methods provided by {{Doctrine_Table}}. If you need to use more complex queries take a look at the DQL API.
 
-    [php]
-    $table = Doctrine::getTable("User");
+<code type="php">
+$table = Doctrine::getTable("User");
 
-    // find by primary key
+// find by primary key
 
-    $user = $table->find(2);
-    if ($user !== false)
-        print $user->name;
+$user = $table->find(2);
+if ($user !== false)
+    print $user->name;
 
-    // get all users
-    $users = $table->findAll();
-    foreach($users as $user) {
-        print $user->name;
-    }
+// get all users
+$users = $table->findAll();
+foreach($users as $user) {
+    print $user->name;
+}
 
-    // finding by dql
-    $users = $table->findByDql("name LIKE '%John%'");
-    foreach($users as $user) {
-        print $user->created;
-    }
+// finding by dql
+$users = $table->findByDql("name LIKE '%John%'");
+foreach($users as $user) {
+    print $user->created;
+}
 
-    // finding with magic accessors
-    $user = $table->findOneByName('jon'); // find user named jon
-    $users = $table->findByAge(10); // find users with age of 10
+// finding with magic accessors
+$user = $table->findOneByName('jon'); // find user named jon
+$users = $table->findByAge(10); // find users with age of 10
 
-    // finding objects with DQL
+// finding objects with DQL
 
-    $users = Doctrine_Query::create()->from('User u')->where("u.name LIKE '%John%'")->execute();
+$users = Doctrine_Query::create()->from('User u')->where("u.name LIKE '%John%'")->execute();
+</code>
 
 +++ Updating Records
 
-Updating objects is very easy, you just call the {{Doctrine_Record::save()}}
-method. The other way is to call {{Doctrine_Connection::flush()}} which saves
-all objects. It should be noted though that flushing is a much heavier
-operation than just calling save method.
+Updating objects is very easy, you just call the {{Doctrine_Record::save()}} method. The other way is to call {{Doctrine_Connection::flush()}} which saves all objects. It should be noted though that flushing is a much heavier operation than just calling save method.
 
-    [php]
-    $table = Doctrine::getTable('User');
+<code type="php">
+$table = Doctrine::getTable('User');
 
-    $user = $table->find(2);
+$user = $table->find(2);
 
-    if($user !== false) {
-        $user->name = 'Jack Daniels';
+if($user !== false) {
+    $user->name = 'Jack Daniels';
 
-        $user->save();
-    }
+    $user->save();
+}
+</code>
 
-Sometimes you may want to do a direct update. In direct update the objects
-aren't loaded from database, rather the state of the database is directly
-updated. In the following example we use DQL UPDATE statement to update all users.
+Sometimes you may want to do a direct update. In direct update the objects aren't loaded from database, rather the state of the database is directly updated. In the following example we use DQL UPDATE statement to update all users.
 
-    [php]
-    // make all usernames lowercased
-    Doctrine_Query::create()
-      ->update('User u')
-      ->set('u.name', 'LOWER(u.name)')
-      ->execute();
+<code type="php">
+// make all usernames lowercased
+Doctrine_Query::create()
+  ->update('User u')
+  ->set('u.name', 'LOWER(u.name)')
+  ->execute();
+</code>
 
 +++ Replacing Records
 
-Replacing records is simple. If you instantiate a new object and save it and 
-then late instantiate another new object with the same primary key or unique 
-index value which already exists in the database, then it will replace/update 
-that row in the database instead of inserting a new one. Below is an example.
+Replacing records is simple. If you instantiate a new object and save it and then late instantiate another new object with the same primary key or unique index value which already exists in the database, then it will replace/update that row in the database instead of inserting a new one. Below is an example.
 
 First, imagine a User model where username is a unique index.
 
-    [php]
-    $user = new User();
-    $user->username = 'jwage';
-    $user->password = 'changeme';
-    $user->save();
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'changeme';
+$user->save();
 
-    // Issues the following query
-    // INSERT INTO user (username, password) VALUES (?,?) ('jwage', 'changeme')
+// Issues the following query
+// INSERT INTO user (username, password) VALUES (?,?) ('jwage', 'changeme')
+</code>
 
-Now lets create another new object and set the same username but a different 
-password.
+Now lets create another new object and set the same username but a different password.
 
-    [php]
-    $user = new User();
-    $user->username = 'jwage';
-    $user->password = 'newpassword';
-    $user->replace();
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'newpassword';
+$user->replace();
 
-    // Issues the following query
-    // REPLACE INTO user (id,username,password) VALUES (?,?,?)    (null, 'jwage', 'newpassword')
-    // The record is replaced/updated instead of a new one being inserted
+// Issues the following query
+// REPLACE INTO user (id,username,password) VALUES (?,?,?)    (null, 'jwage', 'newpassword')
+// The record is replaced/updated instead of a new one being inserted
+</code>
 
 +++ Refreshing Records
 
-Sometimes you may want to refresh your record with data from the database, 
-use {{Doctrine_Record::refresh()}}.
+Sometimes you may want to refresh your record with data from the database, use {{Doctrine_Record::refresh()}}.
 
-    [php]
-    $user = Doctrine::getTable('User')->find(2);
-    $user->name = 'New name';
-    // oups, I want to refresh the name
-    $user->refresh();
+<code type="php">
+$user = Doctrine::getTable('User')->find(2);
+$user->name = 'New name';
+// oups, I want to refresh the name
+$user->refresh();
+</code>
 
-7.1.5.1 Refreshing relationships
++++ Refreshing relationships
 
-The {{Doctrine_Record::refresh()}} method can also refresh the already loaded 
-record relationships, but you need to specify them on the original query.
+The {{Doctrine_Record::refresh()}} method can also refresh the already loaded record relationships, but you need to specify them on the original query.
 
-    [php]
-    $user = Doctrine_Query::create()
+<code type="php">
+$user = Doctrine_Query::create()
         ->from('User u')
         ->leftJoin('u.Groups')
         ->where('id = ?')
@@ -435,721 +402,625 @@ record relationships, but you need to specify them on the original query.
     $user->refresh(true);
     // get new user on group
     $group->refresh(true);
+</code>
 
-You can also lazily refresh individual relationships or all defined 
-relationships of a model using {{Doctrine_Record::refreshRelated()}}.
+You can also lazily refresh individual relationships or all defined relationships of a model using {{Doctrine_Record::refreshRelated()}}.
 
-    [php]
-    $user = Doctrine::getTable('User')->findOneByName('jon');
-    $user->refreshRelated(); // Will lazily load all defined relationships
+<code type="php">
+$user = Doctrine::getTable('User')->findOneByName('jon');
+$user->refreshRelated(); // Will lazily load all defined relationships
 
-    $user->refreshRelated('Phonenumber'); // Will lazily load the Phonenumber relationship
+$user->refreshRelated('Phonenumber'); // Will lazily load the Phonenumber relationship
+</code>
 
 +++ Deleting Records
 
-Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, 
-{{Doctrine_Collection::delete()}} and {{Doctrine_Connection::delete()}} methods.
+Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, {{Doctrine_Collection::delete()}} and {{Doctrine_Connection::delete()}} methods.
 
-    [php]
-    $table = Doctrine::getTable("User");
+<code type="php">
+$table = Doctrine::getTable("User");
 
-    $user = $table->find(2);
+$user = $table->find(2);
 
-    // deletes user and all related composite objects
-    if($user !== false) {
-        $user->delete();
-    }
+// deletes user and all related composite objects
+if($user !== false) {
+    $user->delete();
+}
 
-    $users = $table->findAll();
+$users = $table->findAll();
 
-    // delete all users and their related composite objects
-    $users->delete();
+// delete all users and their related composite objects
+$users->delete();
+</code>
 
 +++ Using Expression Values
 
-There might be situations where you need to use SQL expressions as values of 
-columns. This can be achieved by using {{Doctrine_Expression}} which converts 
-portable DQL expressions to your native SQL expressions.
+There might be situations where you need to use SQL expressions as values of columns. This can be achieved by using {{Doctrine_Expression}} which converts portable DQL expressions to your native SQL expressions.
 
-Lets say we have a class called event with columns timepoint(datetime) and 
-name(string). Saving the record with the current timepoint can be achieved 
-as follows:
+Lets say we have a class called event with columns timepoint(datetime) and name(string). Saving the record with the current timepoint can be achieved as follows:
 
-    [php]
-    $event = new Event();
-    $event->name = 'Rock festival';
-    $event->timepoint = new Doctrine_Expression('NOW()');
+<code type="php">
+$event = new Event();
+$event->name = 'Rock festival';
+$event->timepoint = new Doctrine_Expression('NOW()');
 
-    $event->save();
+$event->save();
+</code>
 
 The last line would execute sql (in sqlite):
 
-    INSERT INTO event (name, timepoint) VALUES ('Rock festival', NOW())
+<code type="sql">
+INSERT INTO event (name, timepoint) VALUES ('Rock festival', NOW())
+</code>
 
 +++ Getting Record State
 
-Every {{Doctrine_Record}} has a state. First of all records can be transient 
-or persistent. Every record that is retrieved from database is persistent and 
-every newly created record is considered transient. If a {{Doctrine_Record}} 
-is retrieved from database but the only loaded property is its primary key, 
-then this record has a state called proxy.
+Every {{Doctrine_Record}} has a state. First of all records can be transient or persistent. Every record that is retrieved from database is persistent and every newly created record is considered transient. If a {{Doctrine_Record}} is retrieved from database but the only loaded property is its primary key, then this record has a state called proxy.
 
-Every transient and persistent {{Doctrine_Record}} is either clean or dirty. 
-{{Doctrine_Record}} is clean when none of its properties are changed and dirty 
-when atleast one of its properties has changed.
+Every transient and persistent {{Doctrine_Record}} is either clean or dirty. {{Doctrine_Record}} is clean when none of its properties are changed and dirty when atleast one of its properties has changed.
 
-A record can also have a state called locked. In order to avoid infinite 
-recursion in some rare circular reference cases Doctrine uses this state 
-internally to indicate that a record is currently under a manipulation operation.
+A record can also have a state called locked. In order to avoid infinite recursion in some rare circular reference cases Doctrine uses this state internally to indicate that a record is currently under a manipulation operation.
 
-    [php]
-    $state = $record->state();
+<code type="php">
+$state = $record->state();
 
-    switch($state):
-        case Doctrine_Record::STATE_PROXY:
-            // record is in proxy state,
-            // meaning its persistent but not all of its properties are
-            // loaded from the database
-        break;
-        case Doctrine_Record::STATE_TCLEAN:
-            // record is transient clean,
-            // meaning its transient and
-            // none of its properties are changed
-        break;
-        case Doctrine_Record::STATE_TDIRTY:
-            // record is transient dirty,
-            // meaning its transient and
-            // some of its properties are changed
-        break;
-        case Doctrine_Record::STATE_DIRTY:
-            // record is dirty,
-            // meaning its persistent and
-            // some of its properties are changed
-        break;
-        case Doctrine_Record::STATE_CLEAN:
-            // record is clean,
-            // meaning its persistent and
-            // none of its properties are changed
-        break;
-        case Doctrine_Record::STATE_LOCKED:
-            // record is locked
-        break;
-    endswitch;
+switch($state):
+    case Doctrine_Record::STATE_PROXY:
+        // record is in proxy state,
+        // meaning its persistent but not all of its properties are
+        // loaded from the database
+    break;
+    case Doctrine_Record::STATE_TCLEAN:
+        // record is transient clean,
+        // meaning its transient and
+        // none of its properties are changed
+    break;
+    case Doctrine_Record::STATE_TDIRTY:
+        // record is transient dirty,
+        // meaning its transient and
+        // some of its properties are changed
+    break;
+    case Doctrine_Record::STATE_DIRTY:
+        // record is dirty,
+        // meaning its persistent and
+        // some of its properties are changed
+    break;
+    case Doctrine_Record::STATE_CLEAN:
+        // record is clean,
+        // meaning its persistent and
+        // none of its properties are changed
+    break;
+    case Doctrine_Record::STATE_LOCKED:
+        // record is locked
+    break;
+endswitch;
+</code>
 
 +++ Getting Object Copy
 
-Sometimes you may want to get a copy of your object (a new object with all 
-properties copied). Doctrine provides a simple method for this: Doctrine_Record::copy().
+Sometimes you may want to get a copy of your object (a new object with all properties copied). Doctrine provides a simple method for this: Doctrine_Record::copy().
 
-    [php]
-    $copy = $user->copy();
+<code type="php">
+$copy = $user->copy();
+</code>
 
-Notice that copying the record with `copy()` returns a new record (state TDIRTY) 
-with the values of the old record, and it copies the relations of that record. 
-If you do not want to copy the relations too, you need to use copy(false).
+Notice that copying the record with copy() returns a new record (state TDIRTY) with the values of the old record, and it copies the relations of that record. If you do not want to copy the relations too, you need to use copy(false).
 
-    [php]
-    // get a copy of user without the relations
-    $copy = $user->copy(false);
+<code type="php">
+// get a copy of user without the relations
+$copy = $user->copy(false);
+</code>
 
 +++ Saving a Blank Record
 
-By default Doctrine doesn't execute when save() is being called on an unmodified 
-record. There might be situations where you want to force-insert the record even 
-if it has not been modified. This can be achieved by assigning the state of the 
-record to `Doctrine_Record::STATE_TDIRTY`.
+By default Doctrine doesn't execute when save() is being called on an unmodified record. There might be situations where you want to force-insert the record even if it has not been modified. This can be achieved by assigning the state of the record to Doctrine_Record::STATE_TDIRTY.
 
-    [php]
-    $user = new User();
-    $user->state('TDIRTY');
-    $user->save();
+<code type="php">
+$user = new User();
+$user->state('TDIRTY');
+$user->save();
 
-    $user->id; // 1
+$user->id; // 1
+</code>
 
 +++ Mapping Custom Values
 
-There might be situations where you want to map custom values to records. For 
-example values that depend on some outer sources and you only want these values 
-to be availible at runtime not persisting those values into database. This can 
-be achieved as follows:
+There might be situations where you want to map custom values to records. For example values that depend on some outer sources and you only want these values to be availible at runtime not persisting those values into database. This can be achieved as follows:
 
-    [php]
-    $user->mapValue('isRegistered', true);
+<code type="php">
+$user->mapValue('isRegistered', true);
 
-    $user->isRegistered; // true
+$user->isRegistered; // true
+</code>
 
 +++ Serializing
 
-Sometimes you may want to serialize your record objects (possibly for caching 
-purposes). Records can be serialized, but remember: Doctrine cleans all relations, 
-before doing this. So remember to persist your objects into database before 
-serializing them.
+Sometimes you may want to serialize your record objects (possibly for caching purposes). Records can be serialized, but remember: Doctrine cleans all relations, before doing this. So remember to persist your objects into database before serializing them.
 
-    [php]
-    $string = serialize($user);
+<code type="php">
+$string = serialize($user);
 
-    $user = unserialize($string);
+$user = unserialize($string);
+</code>
 
 +++ Checking Existence
 
-Very commonly you'll need to know if given record exists in the database. You 
-can use the `exists()` method for checking if given record has a database row 
-equivalent.
+Very commonly you'll need to know if given record exists in the database. You can use the exists() method for checking if given record has a database row equivalent.
 
-    [php]
-    $record = new User();
+<code type="php">
+$record = new User();
 
-    $record->exists(); // false
+$record->exists(); // false
 
-    $record->name = 'someone';
-    $record->save();
+$record->name = 'someone';
+$record->save();
 
-    $record->exists(); // true
+$record->exists(); // true
+</code>
 
 +++ Function Callbacks for Columns
 
-{{Doctrine_Record}} offers a way for attaching callback calls for column values. 
-For example if you want to trim certain column, you can simply type:
+{{Doctrine_Record}} offers a way for attaching callback calls for column values. For example if you want to trim certain column, you can simply type:
 
-    [php]
-    $record->call('trim', 'column1');
+<code type="php">
+$record->call('trim', 'column1');
+</code>
 
 ++ Collection
 
-{{Doctrine_Collection}} is a collection of records (see Doctrine_Record). 
-As with records the collections can be deleted and saved using 
-{{Doctrine_Collection::delete()}} and {{Doctrine_Collection::save()}} accordingly.
+{{Doctrine_Collection}} is a collection of records (see Doctrine_Record). As with records the collections can be deleted and saved using {{Doctrine_Collection::delete()}} and {{Doctrine_Collection::save()}} accordingly.
 
-When fetching data from database with either DQL API (see {{Doctrine_Query}}) 
-or rawSql API (see {{Doctrine_RawSql}}) the methods return an instance of 
-{{Doctrine_Collection}} by default.
+When fetching data from database with either DQL API (see {{Doctrine_Query}}) or rawSql API (see {{Doctrine_RawSql}}) the methods return an instance of {{Doctrine_Collection}} by default.
 
 The following example shows how to initialize a new collection:
 
-    [php]
-    $users = new Doctrine_Collection('User');
+<code type="php">
+$users = new Doctrine_Collection('User');
 
-    // adding some data
-    $users[0]->name = 'Arnold';
+// adding some data
+$users[0]->name = 'Arnold';
 
-    $users[1]->name = 'Somebody';
+$users[1]->name = 'Somebody';
 
-    // finally save it!
-    $users->save();
+// finally save it!
+$users->save();
+</code>
 
 +++ Accessing Elements
 
-You can access the elements of {{Doctrine_Collection}} with {{set()}} and 
-{{get()}} methods or with ArrayAccess interface.
+You can access the elements of {{Doctrine_Collection}} with {{set()}} and {{get()}} methods or with ArrayAccess interface.
 
-    [php]
-    $table = Doctrine::getTable("User");
+<code type="php">
+$table = Doctrine::getTable("User");
 
-    $users = $table->findAll();
+$users = $table->findAll();
 
-    // accessing elements with ArrayAccess interface
+// accessing elements with ArrayAccess interface
 
-    $users[0]->name = "Jack Daniels";
+$users[0]->name = "Jack Daniels";
 
-    $users[1]->name = "John Locke";
+$users[1]->name = "John Locke";
 
-    // accessing elements with get()
+// accessing elements with get()
 
-    print $users->get(1)->name;
+print $users->get(1)->name;
+</code>
 
 +++ Adding new Elements
 
-When accessing single elements of the collection and those elements (records) 
-don't exist Doctrine auto-adds them.
+When accessing single elements of the collection and those elements (records) don't exist Doctrine auto-adds them.
 
-In the following example we fetch all users from database (there are 5) and then 
-add couple of users in the collection.
+In the following example we fetch all users from database (there are 5) and then add couple of users in the collection.
 
 As with PHP arrays the indexes start from zero.
 
-    [php]
-    $users = $table->findAll();
+<code type="php">
+$users = $table->findAll();
 
-    print count($users); // 5
+print count($users); // 5
 
-    $users[5]->name = "new user 1";
-    $users[6]->name = "new user 2";
+$users[5]->name = "new user 1";
+$users[6]->name = "new user 2";
+</code>
 
 +++ Getting Collection Count
 
-The {{Doctrine_Collection::count()}} method returns the number of elements 
-currently in the collection.
+The {{Doctrine_Collection::count()}} method returns the number of elements currently in the collection.
 
-    [php]
-    $users = $table->findAll();
+<code type="php">
+$users = $table->findAll();
 
-    print $users->count();
+print $users->count();
+</code>
 
-Since {{Doctrine_Collection}} implements Countable interface a valid alternative 
-for the previous example is to simply pass the collection as an argument for the 
-`count()` function.
+Since {{Doctrine_Collection}} implements Countable interface a valid alternative for the previous example is to simply pass the collection as an argument for the count() function.
 
-    echo count($users); // Doctrine_Collection implements Countable interface
+<code type="php">
+echo count($users); // Doctrine_Collection implements Countable interface
+</code>
 
 +++ Saving the Collection
 
-Similar to Doctrine_Record the collection can be saved by calling the save() 
-method. When save() gets called Doctrine issues save() operations an all 
-records and wraps the whole procedure in a transaction.
+Similar to Doctrine_Record the collection can be saved by calling the save() method. When save() gets called Doctrine issues save() operations an all records and wraps the whole procedure in a transaction.
 
-    [php]
-    $users = $table->findAll();
+<code type="php">
+$users = $table->findAll();
 
-    $users[0]->name = 'Jack Daniels';
+$users[0]->name = 'Jack Daniels';
 
-    $users[1]->name = 'John Locke';
+$users[1]->name = 'John Locke';
 
-    $users->save();
+$users->save();
+</code>
 
 +++ Deleting the Collection
 
-Doctrine Collections can be deleted in very same way is Doctrine Records you 
-just call delete() method. As for all collections Doctrine knows how to perform 
-single-shot-delete meaning it only performs one database query for the each collection.
+Doctrine Collections can be deleted in very same way is Doctrine Records you just call delete() method. As for all collections Doctrine knows how to perform single-shot-delete meaning it only performs one database query for the each collection.
 
-For example if we have collection of users. When deleting the collection of users 
-doctrine only performs one query for this whole transaction. The query would 
-look something like:
+For example if we have collection of users. When deleting the collection of users doctrine only performs one query for this whole transaction. The query would look something like:
 
-    DELETE FROM user WHERE id IN (1,2,3, ... ,N)
+<code type="sql">
+DELETE FROM user WHERE id IN (1,2,3, ... ,N)
+</code>
 
 +++ Key Mapping
 
-Sometimes you may not want to use normal indexing for collection elements. For 
-example in some cases mapping primary keys as collection keys might be useful. 
-The following example demonstrates how this can be achieved.
+Sometimes you may not want to use normal indexing for collection elements. For example in some cases mapping primary keys as collection keys might be useful. The following example demonstrates how this can be achieved.
 
-    [php]
-    // mapping id column
+<code type="php">
+// mapping id column
 
-    $user = new User();
+$user = new User();
 
-    $user->setAttribute(Doctrine::ATTR_COLL_KEY, 'id');
+$user->setAttribute(Doctrine::ATTR_COLL_KEY, 'id');
 
-    // now user collections will use the values of
-    // id column as element indexes
+// now user collections will use the values of
+// id column as element indexes
 
-    $users = Doctrine::getTable('User')->findAll();
+$users = Doctrine::getTable('User')->findAll();
 
-    foreach($users as $id => $user) {
-        print $id . $user->name;
-    }
+foreach($users as $id => $user) {
+    print $id . $user->name;
+}
 
-    // mapping name column
+// mapping name column
 
-    $user = new User();
+$user = new User();
 
-    $user->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
+$user->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
 
-    // now user collections will use the values of
-    // name column as element indexes
+// now user collections will use the values of
+// name column as element indexes
 
-    $users = Doctrine::getTable('User')->findAll();
+$users = Doctrine::getTable('User')->findAll();
 
-    foreach($users as $name => $user) {
-        print $name . $user->type;
-    }
+foreach($users as $name => $user) {
+    print $name . $user->type;
+}
+</code>
 
 +++ Loading Related Records
 
-Doctrine provides means for efficiently retrieving all related records for all 
-record elements. That means when you have for example a collection of users you 
-can load all phonenumbers for all users by simple calling the {{loadRelated()}} 
-method.
+Doctrine provides means for efficiently retrieving all related records for all record elements. That means when you have for example a collection of users you can load all phonenumbers for all users by simple calling the {{loadRelated()}} method.
 
-However, in most cases you don't need to load related elements explicitly, 
-rather what you should do is try to load everything at once by using the 
-DQL API and JOINS.
+However, in most cases you don't need to load related elements explicitly, rather what you should do is try to load everything at once by using the DQL API and JOINS.
 
-The following example uses three queries for retrieving users, their 
-phonenumbers and the groups they belong to.
+The following example uses three queries for retrieving users, their phonenumbers and the groups they belong to.
 
-    [php]
-    $users = Doctrine_Query::create()
-              ->from('User u')
-              ->execute();
+<code type="php">
+$users = Doctrine_Query::create()
+    ->from('User u')
+    ->execute();
 
-    // now lets load phonenumbers for all users
+// now lets load phonenumbers for all users
 
-    $users->loadRelated('Phonenumber');
+$users->loadRelated('Phonenumber');
 
-    foreach($users as $user) {
-        print $user->Phonenumber[0]->phonenumber;
-        // no additional db queries needed here
-    }
+foreach($users as $user) {
+    print $user->Phonenumber[0]->phonenumber;
+    // no additional db queries needed here
+}
 
-    // the loadRelated works an any relation, even associations:
+// the loadRelated works an any relation, even associations:
 
-    $users->loadRelated('Group');
+$users->loadRelated('Group');
 
-    foreach($users as $user) {
-        print $user->Group[0]->name;
-    }
+foreach($users as $user) {
+    print $user->Group[0]->name;
+}
+</code>
 
 The example below shows how to do this more efficiently by using the DQL API.
 
-    [php]
-    // load everything here
-    $users = Doctrine_Query::create()
-              ->from('User u')
-              ->leftJoin('u.Phonenumber p')
-              ->leftJoin('u.Group g')
-              ->execute();
+<code type="php">
+// load everything here
+$users = Doctrine_Query::create()
+          ->from('User u')
+          ->leftJoin('u.Phonenumber p')
+          ->leftJoin('u.Group g')
+          ->execute();
 
-    foreach($users as $user) {
-        // no additional db queries needed here
-        print $user->Phonenumber->phonenumber;
+foreach($users as $user) {
+    // no additional db queries needed here
+    print $user->Phonenumber->phonenumber;
 
-        print $user->Group->name;
-    }
+    print $user->Group->name;
+}
+</code>
 
 ++ Validator
 
-Validation in Doctrine is a way to enforce your business rules in the model 
-part of the MVC architecture. You can think of this validation as a gateway 
-that needs to be passed right before data gets into the persistent data store. 
-The definition of these business rules takes place at the record level, that 
-means in your active record model classes (classes derived from Doctrine_Record).
-The first thing you need to do to be able to use this kind of validation is to 
-enable it globally. This is done through the {{Doctrine_Manager}} (see the code below).
+Validation in Doctrine is a way to enforce your business rules in the model part of the MVC architecture. You can think of this validation as a gateway that needs to be passed right before data gets into the persistent data store. The definition of these business rules takes place at the record level, that means in your active record model classes (classes derived from Doctrine_Record). The first thing you need to do to be able to use this kind of validation is to enable it globally. This is done through the {{Doctrine_Manager}} (see the code below).
 
 Once you enabled validation, you'll get a bunch of validations automatically:
 
-* Data type validations: All values assigned to columns are checked for the 
-right type. That means if you specified
+* Data type validations: All values assigned to columns are checked for the right type. That means if you specified
 
-a column of your record as type 'integer', Doctrine will validate that any 
-values assigned to that column are of this type. This kind of type validation 
-tries to be as smart as possible since PHP is a loosely typed language. For 
-example 2 as well as "7" are both valid integers whilst "3f" is not. Type 
-validations occur on every column (since every column definition needs a type).
+A column of your record as type 'integer', Doctrine will validate that any values assigned to that column are of this type. This kind of type validation tries to be as smart as possible since PHP is a loosely typed language. For example 2 as well as "7" are both valid integers whilst "3f" is not. Type validations occur on every column (since every column definition needs a type).
 
-* Length validation: As the name implies, all values assigned to columns are 
-validated to make sure that the value
+* Length validation: As the name implies, all values assigned to columns are validated to make sure that the value does not exceed the maximum length.
 
-does not exceed the maximum length.
+<code type="php">
+$manager = Doctrine_Manager::getInstance()
+// turning on validation
+$manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+</code>
 
-    [php]
-    $manager = Doctrine_Manager::getInstance()
-    // turning on validation
-    $manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+You can combine the following constants by using bitwise operations: VALIDATE_ALL, VALIDATE_TYPES, VALIDATE_LENGTHS, VALIDATE_CONSTRAINTS, VALIDATE_NONE. For example to enable all validations except length validations you would use:
 
-You can combine the following constants by using bitwise 
-operations: `VALIDATE_ALL`, `VALIDATE_TYPES`, `VALIDATE_LENGTHS`, `VALIDATE_CONSTRAINTS`, `VALIDATE_NONE`. 
-For example to enable all validations except length validations you would use:
-
-    $manager->setAttribute(Doctrine::ATTR_VALIDATE, VALIDATE_ALL & ~VALIDATE_LENGTHS);
+<code>
+$manager->setAttribute(Doctrine::ATTR_VALIDATE, VALIDATE_ALL & ~VALIDATE_LENGTHS);
+</code>
 
 +++ More Validation
 
-The type and length validations are handy but most of the time they're not enough.
-Therefore Doctrine provides some mechanisms that can be used to validate your
-data in more detail.
+The type and length validations are handy but most of the time they're not enough. Therefore Doctrine provides some mechanisms that can be used to validate your data in more detail.
 
-Validators are an easy way to specify further validations. Doctrine has a lot
-of predefined validators that are frequently needed such as email, country,
-ip, range and regexp validators. You find a full list of available validators
-at the bottom of this page. You can specify which validators apply to which
-column through the 4th argument of the {{hasColumn()}} method. If that is still
-not enough and you need some specialized validation that is not yet available as
-a predefined validator you have three options:
+Validators are an easy way to specify further validations. Doctrine has a lot of predefined validators that are frequently needed such as email, country, ip, range and regexp validators. You find a full list of available validators at the bottom of this page. You can specify which validators apply to which column through the 4th argument of the {{hasColumn()}} method. If that is still not enough and you need some specialized validation that is not yet available as a predefined validator you have three options:
 
 * You can write the validator on your own.
 * You can propose your need for a new validator to a Doctrine developer.
 * You can use validation hooks.
 
-The first two options are advisable if it is likely that the validation is of general 
-use and is potentially applicable in many situations. In that case it is a good 
-idea to implement a new validator. However if the validation is special it is 
-better to use hooks provided by Doctrine:
+The first two options are advisable if it is likely that the validation is of general use and is potentially applicable in many situations. In that case it is a good idea to implement a new validator. However if the validation is special it is better to use hooks provided by Doctrine:
 
 * {{validate()}} (Executed every time the record gets validated)
 * {{validateOnInsert()}} (Executed when the record is new and gets validated)
 * {{validateOnUpdate()}} (Executed when the record is not new and gets validated)
 
-If you need a special validation in your active record you can simply override 
-one of these methods in your active record class (a descendant of 
-Doctrine_Record). Within thess methods you can use all the power of PHP to 
-validate your fields. When a field doesnt pass your validation you can then add 
-errors to the record's error stack. The following code snippet shows an example of 
-how to define validators together with custom validation:
+If you need a special validation in your active record you can simply override one of these methods in your active record class (a descendant of Doctrine_Record). Within thess methods you can use all the power of PHP to validate your fields. When a field doesnt pass your validation you can then add errors to the record's error stack. The following code snippet shows an example of how to define validators together with custom validation:
 
-    [php]
-    class User extends Doctrine_Record
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setUp()
     {
-        public function setUp()
-        {
-            $this->ownsOne('Email', array('local' => 'email_id'));
-        }
-
-        public function setTableDefinition()
-        {
-            // no special validators used only types
-            // and lengths will be validated
-            $this->hasColumn('name', 'string', 15);
-            $this->hasColumn('email_id', 'integer');
-            $this->hasColumn('created', 'integer', 11);
-        }
-
-        // Our own validation
-        protected function validate()
-        {
-            if ($this->name == 'God') {
-                // Blasphemy! Stop that! ;-)
-                // syntax: add(<fieldName>, <error code/identifier>)
-                $this->getErrorStack()->add('name', 'forbiddenName');
-            }
-        }
+        $this->ownsOne('Email', array('local' => 'email_id'));
     }
 
-    class Email extends Doctrine_Record
+    public function setTableDefinition()
     {
-        public function setTableDefinition()
-        {
-            // validators 'email' and 'unique' used
-            $this->hasColumn('address','string', 150, array('email', 'unique'));
+        // no special validators used only types
+        // and lengths will be validated
+        $this->hasColumn('name', 'string', 15);
+        $this->hasColumn('email_id', 'integer');
+        $this->hasColumn('created', 'integer', 11);
+    }
+
+    // Our own validation
+    protected function validate()
+    {
+        if ($this->name == 'God') {
+            // Blasphemy! Stop that! ;-)
+            // syntax: add(<fieldName>, <error code/identifier>)
+            $this->getErrorStack()->add('name', 'forbiddenName');
         }
     }
+}
+
+class Email extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        // validators 'email' and 'unique' used
+        $this->hasColumn('address','string', 150, array('email', 'unique'));
+    }
+}
+</code>
 
 +++ Valid or Not Valid
 
-Now that you know how to specify your business rules in your models, it is time 
-to look at how to deal with these rules in the rest of your application.
+Now that you know how to specify your business rules in your models, it is time to look at how to deal with these rules in the rest of your application.
 
 ++++ Implicit Validation
 
-Whenever a record is going to be saved to the persistent data store (i.e. through 
-calling $record->save()) the full validation procedure is executed. If errors 
-occur during that process an exception of the type {{Doctrine_Validator_Exception}} 
-will be thrown. You can catch that exception and analyze the errors by using the 
-instance method {{Doctrine_Validator_Exception::getInvalidRecords()}}. This method 
-returns an ordinary array with references to all records that did not pass validation. 
-You can then further explore the errors of each record by analyzing the error 
-stack of each record. The error stack of a record can be obtained with the 
-instance method {{Doctrine_Record::getErrorStack()}}. Each error stack is 
-an instance of the class {{Doctrine_Validator_ErrorStack}}. The error stack 
-provides an easy to use interface to inspect the errors.
+Whenever a record is going to be saved to the persistent data store (i.e. through calling $record->save()) the full validation procedure is executed. If errors occur during that process an exception of the type {{Doctrine_Validator_Exception}} will be thrown. You can catch that exception and analyze the errors by using the instance method {{Doctrine_Validator_Exception::getInvalidRecords()}}. This method returns an ordinary array with references to all records that did not pass validation. You can then further explore the errors of each record by analyzing the error stack of each record. The error stack of a record can be obtained with the instance method {{Doctrine_Record::getErrorStack()}}. Each error stack is an instance of the class {{Doctrine_Validator_ErrorStack}}. The error stack provides an easy to use interface to inspect the errors.
 
 ++++ Explicit Validation
 
-You can explicitly trigger the validation for any record at any time. For this 
-purpose {{Doctrine_Record}} provides the instance method 
-{{Doctrine_Record::isValid()}}. This method returns a boolean value indicating 
-the result of the validation. If the method returns false, you can inspect the 
-error stack in the same way as seen above except that no exception is thrown, 
-so you simply obtain the error stack of the record that didnt pass validation 
-through {{Doctrine_Record::getErrorStack()}}.
+You can explicitly trigger the validation for any record at any time. For this purpose {{Doctrine_Record}} provides the instance method {{Doctrine_Record::isValid()}}. This method returns a boolean value indicating the result of the validation. If the method returns false, you can inspect the error stack in the same way as seen above except that no exception is thrown, so you simply obtain the error stack of the record that didnt pass validation through {{Doctrine_Record::getErrorStack()}}.
 
-The following code snippet shows an example of handling implicit validation 
-which caused a {{Doctrine_Validator_Exception}}.
+The following code snippet shows an example of handling implicit validation which caused a {{Doctrine_Validator_Exception}}.
 
-    [php]
-    try {
-        $user->name = "this is an example of too long name";
-        $user->Email->address = "drink@@notvalid..";
-        $user->save();
-    } catch(Doctrine_Validator_Exception $e) {
-        // Note: you could also use $e->getInvalidRecords(). The direct way
-        // used here is just more simple when you know the records you're dealing with.
-        $userErrors = $user->getErrorStack();
-        $emailErrors = $user->Email->getErrorStack();
+<code type="php">
+try {
+    $user->name = "this is an example of too long name";
+    $user->Email->address = "drink@@notvalid..";
+    $user->save();
+} catch(Doctrine_Validator_Exception $e) {
+    // Note: you could also use $e->getInvalidRecords(). The direct way
+    // used here is just more simple when you know the records you're dealing with.
+    $userErrors = $user->getErrorStack();
+    $emailErrors = $user->Email->getErrorStack();
 
-        /* Inspect user errors */
-        foreach($userErrors as $fieldName => $errorCodes) {
-            switch ($fieldName) {
-                case 'name':
-                    // $user->name is invalid. inspect the error codes if needed.
-                break;
-            }
-        }
-
-        /* Inspect email errors */
-        foreach($emailErrors as $fieldName => $errorCodes) {
-            switch ($fieldName) {
-                case 'address':
-                    // $user->Email->address is invalid. inspect the error codes if needed.
-                break;
-            }
+    /* Inspect user errors */
+    foreach($userErrors as $fieldName => $errorCodes) {
+        switch ($fieldName) {
+            case 'name':
+                // $user->name is invalid. inspect the error codes if needed.
+            break;
         }
     }
+
+    /* Inspect email errors */
+    foreach($emailErrors as $fieldName => $errorCodes) {
+        switch ($fieldName) {
+            case 'address':
+                // $user->Email->address is invalid. inspect the error codes if needed.
+            break;
+        }
+    }
+}
+</code>
 
 ++ Profiler
 
-{{Doctrine_Connection_Profiler}} is an eventlistener for {{Doctrine_Connection}}.
-It provides flexible query profiling. Besides the SQL strings the query profiles
-include elapsed time to run the queries. This allows inspection of the queries that 
-have been performed without the need for adding extra debugging code to model classes.
+{{Doctrine_Connection_Profiler}} is an eventlistener for {{Doctrine_Connection}}. It provides flexible query profiling. Besides the SQL strings the query profiles include elapsed time to run the queries. This allows inspection of the queries that have been performed without the need for adding extra debugging code to model classes.
 
-{{Doctrine_Connection_Profiler}} can be enabled by adding it as an eventlistener 
-for Doctrine_Connection.
+{{Doctrine_Connection_Profiler}} can be enabled by adding it as an eventlistener for Doctrine_Connection.
 
-    [php]
-    $profiler = new Doctrine_Connection_Profiler();
+<code type="php">
+$profiler = new Doctrine_Connection_Profiler();
 
-    $conn->setListener($profiler);
+$conn->setListener($profiler);
+</code>
 
 +++ Basic Usage
 
-Perhaps some of your pages is loading slowly. The following shows how to build 
-a complete profiler report from the connection:
+Perhaps some of your pages is loading slowly. The following shows how to build a complete profiler report from the connection:
 
-    [php]
-    $time = 0;
-    foreach ($profiler as $event) {
-        $time += $event->getElapsedSecs();
-        echo $event->getName() . " " . sprintf("%f", $event->getElapsedSecs()) . "<br>\n";
-        echo $event->getQuery() . "<br>\n";
-        $params = $event->getParams();
-        if( ! empty($params)) {
-            var_dump($params);
-        }
+<code type="php">
+$time = 0;
+foreach ($profiler as $event) {
+    $time += $event->getElapsedSecs();
+    echo $event->getName() . " " . sprintf("%f", $event->getElapsedSecs()) . "<br>\n";
+    echo $event->getQuery() . "<br>\n";
+    $params = $event->getParams();
+    if( ! empty($params)) {
+        var_dump($params);
     }
-    echo "Total time: " . $time  . "<br>\n";
+}
+echo "Total time: " . $time  . "<br>\n";
+</code>
 
 ++ Locking Manager
 
-[Note: The term 'Transaction' doesnt refer to database transactions here but to 
-the general meaning of this term]
+**NOTE**
+The term 'Transaction' does not refer to database transactions here but to the general meaning of this term.
 
-[Note: This component is in Alpha State]
+Locking is a mechanism to control concurrency. The two most well known locking strategies are optimistic and pessimistic locking. The following is a short description of these two strategies from which only pessimistic locking is currently supported by Doctrine.
 
-Locking is a mechanism to control concurrency. The two most well known locking 
-strategies are optimistic and pessimistic locking. The following is a short 
-description of these two strategies from which only pessimistic locking is 
-currently supported by Doctrine.
++++ Optimistic Locking
 
-Optimistic Locking:
+The state/version of the object(s) is noted when the transaction begins. When the transaction finishes the noted state/version of the participating objects is compared to the current state/version. When the states/versions differ the objects have been modified by another transaction and the current transaction should fail. This approach is called 'optimistic' because it is assumed that it is unlikely that several users will participate in transactions on the same objects at the same time.
 
-The state/version of the object(s) is noted when the transaction begins. When 
-the transaction finishes the noted state/version of the participating objects 
-is compared to the current state/version. When the states/versions differ the 
-objects have been modified by another transaction and the current transaction 
-should fail. This approach is called 'optimistic' because it is assumed that it 
-is unlikely that several users will participate in transactions on the same 
-objects at the same time.
++++ Pessimistic Locking
 
-Pessimistic Locking:
+The objects that need to participate in the transaction are locked at the moment the user starts the transaction. No other user can start a transaction that operates on these objects while the locks are active. This ensures that the user who starts the transaction can be sure that noone else modifies the same objects until he has finished his work.
 
-The objects that need to participate in the transaction are locked at the moment 
-the user starts the transaction. No other user can start a transaction that 
-operates on these objects while the locks are active. This ensures that the 
-user who starts the transaction can be sure that noone else modifies the same 
-objects until he has finished his work.
-
-Doctrine's pessimistic offline locking capabilities can be used to control 
-concurrency during actions or procedures that take several HTTP request and 
-response cycles and/or a lot of time to complete.
+Doctrine's pessimistic offline locking capabilities can be used to control concurrency during actions or procedures that take several HTTP request and response cycles and/or a lot of time to complete.
 
 +++ Examples
 
-The following code snippet demonstrates the use of Doctrine's pessimistic 
-offline locking capabilities.
+The following code snippet demonstrates the use of Doctrine's pessimistic offline locking capabilities.
 
 At the page where the lock is requested...
 
-    [php]
-    // Get a locking manager instance
-    $lockingMngr = new Doctrine_Locking_Manager_Pessimistic();
+<code type="php">
+// Get a locking manager instance
+$lockingMngr = new Doctrine_Locking_Manager_Pessimistic();
 
-    try
+try
+{
+    // Ensure that old locks which timed out are released
+    // before we try to acquire our lock
+    // 300 seconds = 5 minutes timeout
+    $lockingMngr->releaseAgedLocks(300);
+
+    // Try to get the lock on a record
+    $gotLock = $lockingMngr->getLock(
+     // The record to lock. This can be any Doctrine_Record
+                        $myRecordToLock,
+    // The unique identifier of the user who is trying to get the lock
+                       'Bart Simpson'
+               );
+
+    if($gotLock)
     {
-        // Ensure that old locks which timed out are released
-        // before we try to acquire our lock
-        // 300 seconds = 5 minutes timeout
-        $lockingMngr->releaseAgedLocks(300);
-
-        // Try to get the lock on a record
-        $gotLock = $lockingMngr->getLock(
-         // The record to lock. This can be any Doctrine_Record
-                            $myRecordToLock,
-        // The unique identifier of the user who is trying to get the lock
-                           'Bart Simpson'
-                   );
-
-        if($gotLock)
-        {
-            echo "Got lock!";
-            // ... proceed
-        }
-        else
-        {
-            echo "Sorry, someone else is currently working on this record";
-        }
-    } catch(Doctrine_Locking_Exception $dle) {
-        echo $dle->getMessage();
-        // handle the error
+        echo "Got lock!";
+        // ... proceed
     }
+    else
+    {
+        echo "Sorry, someone else is currently working on this record";
+    }
+} catch(Doctrine_Locking_Exception $dle) {
+    echo $dle->getMessage();
+    // handle the error
+}
+</code>
 
 At the page where the transaction finishes...
 
-    [php]
-    // Get a locking manager instance
-    $lockingMngr = new Doctrine_Locking_Manager_Pessimistic();
+<code type="php">
+// Get a locking manager instance
+$lockingMngr = new Doctrine_Locking_Manager_Pessimistic();
 
-    try
+try
+{
+    if($lockingMngr->releaseLock($myRecordToUnlock, 'Bart Simpson'))
     {
-        if($lockingMngr->releaseLock($myRecordToUnlock, 'Bart Simpson'))
-        {
-            echo "Lock released";
-        }
-        else
-        {
-            echo "Record was not locked. No locks released.";
-        }
+        echo "Lock released";
     }
-    catch(Doctrine_Locking_Exception $dle)
+    else
     {
-        echo $dle->getMessage();
-        // handle the error
+        echo "Record was not locked. No locks released.";
     }
+}
+catch(Doctrine_Locking_Exception $dle)
+{
+    echo $dle->getMessage();
+    // handle the error
+}
+</code>
 
 +++ Technical Details
 
-The pessimistic offline locking manager stores the locks in the database 
-(therefore 'offline'). The required locking table is automatically created when 
-you try to instantiate an instance of the manager and the `ATTR_CREATE_TABLES` 
-is set to TRUE. This behaviour may change in the future to provide a centralised 
-and consistent table creation procedure for installation purposes.
+The pessimistic offline locking manager stores the locks in the database (therefore 'offline'). The required locking table is automatically created when you try to instantiate an instance of the manager and the ATTR_CREATE_TABLES is set to TRUE. This behaviour may change in the future to provide a centralised and consistent table creation procedure for installation purposes.
 
 ++ Views
 
-Database views can greatly increase the performance of complex queries. 
-You can think of them as cached queries. {{Doctrine_View` provides integration
-between database views and DQL queries.
+Database views can greatly increase the performance of complex queries. You can think of them as cached queries. {{Doctrine_View provides integration between database views and DQL queries.
 
 +++ Managing Views
 
 You can easily create and drop views with the following syntax.
 
-    [php]
-    $query = Doctrine_Query::create($conn);
-    $query->from('User.Phonenumber')->limit(20);
+<code type="php">
+$query = Doctrine_Query::create($conn);
+$query->from('User.Phonenumber')->limit(20);
 
-    $view  = new Doctrine_View($query, 'MyView');
+$view  = new Doctrine_View($query, 'MyView');
 
-    // creating a database view
-    $view->create();
+// creating a database view
+$view->create();
 
-    // dropping the view from the database
-    $view->drop();
+// dropping the view from the database
+$view->drop();
+</code>
 
 +++ Using Views
 
-Using views are extremely use. You can define your query like normal and pass it
-to a {{Doctrine_View}} instance.
+Using views are extremely use. You can define your query like normal and pass it to a {{Doctrine_View}} instance.
 
-    [php]
-    $query = Doctrine_Query::create($conn);
-    $query->from('User u, u.Phonenumber')->limit(20);
+<code type="php">
+$query = Doctrine_Query::create($conn);
+$query->from('User u, u.Phonenumber')->limit(20);
 
-    // hook the query into appropriate view
-    $view  = new Doctrine_View($query, 'MyView');
-    $view->create();
+// hook the query into appropriate view
+$view  = new Doctrine_View($query, 'MyView');
+$view->create();
 
-    // now fetch the data from the view
-    $coll  = $view->execute();
+// now fetch the data from the view
+$coll  = $view->execute();
+</code>
