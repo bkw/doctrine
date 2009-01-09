@@ -905,8 +905,8 @@ echo "Total time: " . $time  . "<br>\n";
 
 ++ Locking Manager
 
-**NOTE**
-The term 'Transaction' does not refer to database transactions here but to the general meaning of this term.
+> **NOTE**
+> The term 'Transaction' does not refer to database transactions here but to the general meaning of this term.
 
 Locking is a mechanism to control concurrency. The two most well known locking strategies are optimistic and pessimistic locking. The following is a short description of these two strategies from which only pessimistic locking is currently supported by Doctrine.
 

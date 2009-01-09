@@ -127,8 +127,8 @@ try {
 }
 </code>
 
-**NOTE**
-Directly passing a PDO instance to {{Doctrine_Manager::connection()}} will not allow Doctrine to be aware of the username and password for the connection, since their is no way to retrieve it from an existing PDO instance. The username and password is required in order for Doctrine to be able to create and drop databases. To get around this you can manually set the username and password option directly on the $conn object.
+> **NOTE**
+> Directly passing a PDO instance to {{Doctrine_Manager::connection()}} will not allow Doctrine to be aware of the username and password for the connection, since their is no way to retrieve it from an existing PDO instance. The username and password is required in order for Doctrine to be able to create and drop databases. To get around this you can manually set the username and password option directly on the $conn object.
 
 <code type="php">
 $conn->setOption('username', 'username');

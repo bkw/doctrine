@@ -50,8 +50,8 @@ ResourceType hasMany Resource as Resources
 Tag hasMany Resource as Resources
 </code>
 
-**NOTE**
-All row keys across all yaml data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
+> **NOTE**
+> All row keys across all yaml data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
 
 <code type="yaml">
 ---

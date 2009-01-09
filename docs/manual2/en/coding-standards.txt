@@ -4,8 +4,8 @@
 
 For files that contain only PHP code, the closing tag ("?>") is never permitted. It is not required by PHP. Not including it prevents trailing whitespace from being accidentally injected into the output.
 
-**NOTE**
-Inclusion of arbitrary binary data as permitted by __HALT_COMPILER() is prohibited from any Doctrine framework PHP file or files derived from them. Use of this feature is only permitted for special installation scripts. 
+> **NOTE**
+> Inclusion of arbitrary binary data as permitted by __HALT_COMPILER() is prohibited from any Doctrine framework PHP file or files derived from them. Use of this feature is only permitted for special installation scripts. 
 
 +++ Indentation
 
@@ -59,8 +59,8 @@ Function names may only contain alphanumeric characters and underscores are not 
 
 For object-oriented programming, accessors for objects should always be prefixed with either "get" or "set". This applies to all classes except for {{Doctrine_Record}} which has some accessor methods prefixed with 'obtain' and 'assign'. The reason for this is that since all user defined ActiveRecords inherit Doctrine_Record, it should populate the get / set namespace as little as possible. 
 
-**NOTE**
-Functions in the global scope ("floating functions") are NOT permmitted. All static functions should be wrapped in a static class.
+> **NOTE**
+> Functions in the global scope ("floating functions") are NOT permmitted. All static functions should be wrapped in a static class.
 
 +++ Variables
 

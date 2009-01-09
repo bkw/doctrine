@@ -35,8 +35,8 @@ If you wish to just try out Doctrine in under 5 minutes, the sandbox package is 
 
 Doctrine also provides a special package which is a zero configuration Doctrine implementation for you to test Doctrine without writing one line of code. You can download it from the [download page](http://www.doctrine-project.org/download).
 
-**NOTE**
-The sandbox implementation is not a recommend implementation for a production application. It's only purpose is for exploring Doctrine and running small tests.
+> **NOTE**
+> The sandbox implementation is not a recommend implementation for a production application. It's only purpose is for exploring Doctrine and running small tests.
 
 +++ SVN
 

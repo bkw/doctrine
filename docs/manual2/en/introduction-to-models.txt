@@ -26,8 +26,8 @@ Each {{Doctrine_Record}} child class can have a setTableDefinition() and setUp()
 
 Doctrine offers ways to generate these classes to make it easier to get started using Doctrine.
 
-**NOTE**
-Generating from existing databases is only meant to be a convenience for getting started. After you generate from the database you will have to tweak it and clean things up as needed.
+> **NOTE**
+> Generating from existing databases is only meant to be a convenience for getting started. After you generate from the database you will have to tweak it and clean things up as needed.
 
 +++ Existing Databases
 

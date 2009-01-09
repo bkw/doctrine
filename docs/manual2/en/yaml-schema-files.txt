@@ -8,8 +8,8 @@ Schema files support all the normal things you would write with manual php code.
 
 Doctrine offers the ability to specify schema in a short hand syntax. A lot of the schema parameters have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its defaults. Below is an example of schema taking advantage of all the shorthand features.
 
-**NOTE**
-The detect_relations option will attempt to guess relationships based on column names. In the example below Doctrine knows that User hasOne Contact and will automatically define the relationship.
+> **NOTE**
+> The detect_relations option will attempt to guess relationships based on column names. In the example below Doctrine knows that User hasOne Contact and will automatically define the relationship.
 
 <code type="yaml">
 detect_relations: true

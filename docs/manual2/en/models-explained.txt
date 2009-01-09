@@ -225,8 +225,8 @@ class Test extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-The array and object types simply serialize the data when persisting to the database and unserialize the data when pulling from the database.
+> **NOTE**
+> The array and object types simply serialize the data when persisting to the database and unserialize the data when pulling from the database.
 
 ++++ Blob
 
@@ -316,8 +316,8 @@ class Test extends Doctrine_Record
 
 Doctrine has a unified enum type. The possible values for the column can be specified can be specified on the column definition with {{Doctrine_Record::hasColumn()}}
 
-**NOTE**
-If you wish to use native enum types for your dbms if it supports it then you must set the following attribute:
+> **NOTE**
+> If you wish to use native enum types for your dbms if it supports it then you must set the following attribute:
 
 <code type="php">
 $conn->setAttribute('use_native_enum', true);
@@ -473,8 +473,8 @@ class Forum_Board extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-Notice the as keyword being used above. This means that the Forum_Board has a many relationship defined to Forum_Thread but is aliased as Threads.
+> **NOTE**
+> Notice the as keyword being used above. This means that the Forum_Board has a many relationship defined to Forum_Thread but is aliased as Threads.
 
 Then lets have a peek at the Forum_Thread class. The columns here are irrelevant, but pay attention to how we define the relation. Since each Thread can have only one Board we are using the hasOne() method. Also notice how we once again use aliases and how the local column here is board_id while the foreign column is the id column.
 
@@ -612,8 +612,8 @@ class Task extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-The above implementation is purely an example and is not the most efficient way to store and retrieve hierarchical data. Check the NestedSet behavior included in Doctrine for the recommended way to deal with hierarchical data.
+> **NOTE**
+> The above implementation is purely an example and is not the most efficient way to store and retrieve hierarchical data. Check the NestedSet behavior included in Doctrine for the recommended way to deal with hierarchical data.
 
 +++ Join Table Associations
 
@@ -841,8 +841,8 @@ class Order extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-Foreign key columns are automatically indexed by Doctrine to ensure optimal performance when issuing queries involving the foreign key.
+> **NOTE**
+> Foreign key columns are automatically indexed by Doctrine to ensure optimal performance when issuing queries involving the foreign key.
 
 When exported the class Order would execute the following SQL:
 
@@ -919,8 +919,8 @@ class Phonenumber extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-Notice how the integrity constraints are placed on the side where the foreign key exists. This is required in order for the integrity constraints to be exported to your database properly.
+> **NOTE**
+> Notice how the integrity constraints are placed on the side where the foreign key exists. This is required in order for the integrity constraints to be exported to your database properly.
 
 ++ Indexes
 
@@ -1111,8 +1111,8 @@ CREATE TABLE product (
     CHECK (price > discounted_price))
 </code>
 
-**NOTE**
-Some databases don't support CHECK constraints. When this is the case Doctrine simply skips the creation of check constraints.
+> **NOTE**
+> Some databases don't support CHECK constraints. When this is the case Doctrine simply skips the creation of check constraints.
 
 If the Doctrine validators are turned on the given definition would also ensure that when a record is being saved its price is always greater than zero.
 
@@ -1233,7 +1233,7 @@ class Address extends Doctrine_Record
 
 The 'onDelete' => 'CASCADE' option is translated to proper DDL/DML statements when Doctrine creates your tables.
 
-**NOTE**
-Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the Address owns the foreign key (user_id) and database-level cascades are applied on the foreign key.
+> **NOTE**
+> Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the Address owns the foreign key (user_id) and database-level cascades are applied on the foreign key.
 
 Currently, the only two supported database-level cascade styles are 'onDelete' => 'CASCADE' and 'onUpdate' => 'CASCADE'. Both are specified on the side that owns the foreign key and applied to your database schema when Doctrine creates your tables.

@@ -133,8 +133,8 @@ $conn->export->createForeignKey('event_participants', $definition);
 
 Doctrine_Export drivers provide an easy database portable way of altering existing database tables.
 
-**NOTE**
-If you only want to get the generated sql (and not execute it) use Doctrine_Export::alterTableSql() 
+> **NOTE**
+> If you only want to get the generated sql (and not execute it) use Doctrine_Export::alterTableSql() 
 
 <code type="php">
 $dbh  = new PDO('dsn','username','pw');

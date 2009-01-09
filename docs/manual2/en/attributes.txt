@@ -1,3 +1,0 @@
-++ General Attributes
-++ Naming Convention Attributes
-++ Validation Attributes

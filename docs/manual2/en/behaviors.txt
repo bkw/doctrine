@@ -2,9 +2,9 @@
 
 Many times you may find classes having similar things within your models. These things may contain anything related to the schema of the component itself (relations, column definitions, index definitions etc.). One obvious way of refactoring the code is having a base class with some classes extending it.
 
-However inheritance solves only a fraction of things. The following subchapters show how many times using Doctrine_Template is much more powerful and flexible than using inheritance.
+However inheritance solves only a fraction of things. The following subchapters show how many times using {{Doctrine_Template}} is much more powerful and flexible than using inheritance.
 
-Doctrine_Template is a class templating system. Templates are basically ready-to-use little components that your Record classes can load. When a template is being loaded its setTableDefinition() and setUp() methods are being invoked and the method calls inside them are being directed into the class in question.
+{{Doctrine_Template}} is a class templating system. Templates are basically ready-to-use little components that your Record classes can load. When a template is being loaded its {{setTableDefinition()}} and {{setUp()}} methods are being invoked and the method calls inside them are being directed into the class in question.
 
 ++ Core Behaviors
 
@@ -166,7 +166,7 @@ The canUpdate flag will allow the users to manually set the slug value to be use
 
 +++ I18n
 
-Doctrine_I18n package is a plugin for Doctrine that provides internationalization support for record classes. In the following example we have a NewsItem class with two fields 'title' and 'content'. We want to have the field 'title' with different languages support. This can be achieved as follows:
+{{Doctrine_I18n}} package is a plugin for Doctrine that provides internationalization support for record classes. In the following example we have a NewsItem class with two fields 'title' and 'content'. We want to have the field 'title' with different languages support. This can be achieved as follows:
 
 <code type="php">
 class NewsItem extends Doctrine_Record
@@ -395,9 +395,9 @@ foreach ($array as $key => $value) {
 }
 </code>
 
-This chapter describes the usage of various plugins availible for Doctrine. You'll also learn how to create your own plugins. In order to grasp the concepts of this chapter you should already be familiar with the theory behind Doctrine_Template and Doctrine_Record_Generator. When refering to plugins we refer to class packages that use templates, generators and listeners extensively. All the introduced components in this chapter can be considered 'core' plugins, that means they reside at the Doctrine main repository. There are other official plugins too which can be found at the homesite of the Sensei project (www.sensei-project.org).
+This chapter describes the usage of various plugins availible for Doctrine. You'll also learn how to create your own plugins. In order to grasp the concepts of this chapter you should already be familiar with the theory behind {{Doctrine_Template}} and {{Doctrine_Record_Generator}}. When refering to plugins we refer to class packages that use templates, generators and listeners extensively. All the introduced components in this chapter can be considered 'core' plugins, that means they reside at the Doctrine main repository. There are other official plugins too which can be found at the homesite of the Sensei project (www.sensei-project.org).
 
-Usually plugins use generators side-to-side with template classes (classes that extend Doctrine_Template). The common workflow is:
+Usually plugins use generators side-to-side with template classes (classes that extend {{Doctrine_Template}}). The common workflow is:
 
 * A new template is being initiliazed
 * The template creates the generator and calls initialize() method
@@ -467,7 +467,7 @@ $newsItem->version; // 2
 
 ++++ Reverting changes
 
-Doctrine_Record provides a method called revert() which can be used for reverting to specified version. Internally Doctrine queries the version table and fetches the data for given version. If the given version is not found a Doctrine_Record_Exception is being thrown.
+{{Doctrine_Record}} provides a method called revert() which can be used for reverting to specified version. Internally Doctrine queries the version table and fetches the data for given version. If the given version is not found a {{Doctrine_Record_Exception}} is being thrown.
 
 <code type="php">
 $newsItem->revert(1);
@@ -530,8 +530,8 @@ SoftDeleteTest:
 
 Now lets put the plugin in action.
 
-**NOTE**
-You are required to enable DQL callbacks in order for all executed queries to have the dql callbacks executed on them. In the SoftDelete behavior they are used to filter the select statements to exclude all records where the deleted flag is set with an additional WHERE condition.
+> **NOTE**
+> You are required to enable DQL callbacks in order for all executed queries to have the dql callbacks executed on them. In the SoftDelete behavior they are used to filter the select statements to exclude all records where the deleted flag is set with an additional WHERE condition.
 
 <code type="php">
 // Enable dql callbacks.
@@ -609,7 +609,7 @@ class Blog extends Doctrine_Record
 
 Many times the situations tend to be much more complex than the situation in the previous chapter. You may have model classes with relations to other model classes and you may want to replace given class with some extended class.
 
-Consider we have two classes, User and Email, with the following definitions:
+Consider we have two classes, {{User}} and {{Email}}, with the following definitions:
 
 <code type="php">
 class User extends Doctrine_Record

@@ -151,10 +151,8 @@ class MyTransactionListener extends Doctrine_EventListener
 || preFetchAll(Doctrine_Event $event) || Doctrine_Connection::fetchAll() || query, data ||
 || postFetchAll(Doctrine_Event $event) || Doctrine_Connection::fetchAll() || query, data ||
 
-**NOTE**
-preExecute() and postExecute() only get invoked when Doctrine_Connection::execute() is being called without prepared 
-statement parameters. Otherwise Doctrine_Connection::execute() invokes prePrepare, postPrepare, preStmtExecute and 
-postStmtExecute.
+> **NOTE**
+> preExecute() and postExecute() only get invoked when Doctrine_Connection::execute() is being called without prepared statement parameters. Otherwise Doctrine_Connection::execute() invokes prePrepare, postPrepare, preStmtExecute and postStmtExecute.
 
 ++ Query listeners
 
@@ -459,8 +457,8 @@ Doctrine allows you to attach record listeners globally, on each connection, or 
 
 Below is an example record listener attached directly to the model which will implement the SoftDelete functionality for the User model.
 
-**NOTE**
-The SoftDelete functionality is included in Doctrine as a behavior. This code is used to demonstrate how to use the select, delete, and update DQL listeners to modify executed queries. You can use the SoftDelete behavior by specifying $this->actAs('SoftDelete') in your Doctrine_Record::setUp() definition.
+> **NOTE**
+> The SoftDelete functionality is included in Doctrine as a behavior. This code is used to demonstrate how to use the select, delete, and update DQL listeners to modify executed queries. You can use the SoftDelete behavior by specifying $this->actAs('SoftDelete') in your Doctrine_Record::setUp() definition.
 
 <code type="php">
 class UserListener extends Doctrine_EventListener

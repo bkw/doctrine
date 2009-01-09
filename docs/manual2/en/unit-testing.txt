@@ -106,8 +106,8 @@ class Model2 extends Doctrine_Record
 }
 </code>
 
-**NOTE**
-The model definitions can be included directly in the test case file or they can be put in /path/to/co/doctrine/tests/models and they will be autoloaded for you.
+> **NOTE**
+> The model definitions can be included directly in the test case file or they can be put in /path/to/co/doctrine/tests/models and they will be autoloaded for you.
 
 Once you are finished writing your test be sure to add it to run.php like the following.
 
@@ -178,5 +178,5 @@ Example: Doctrine_Export_Pgsql_TestCase::testCreateTableSupportsAutoincPks() is 
 
 Test method names can be long, but the method content should not be.  If you need several assert-calls, divide the method into smaller methods. There should never be assertions within any loops, and rarely within functions.
 
-**NOTE**
-Commonly used testing method naming convention TestCase::test[methodName] is **not** allowed in Doctrine. So in this case Doctrine_Export_Pgsql_TestCase::testCreateTable() would not be allowed!
+> **NOTE**
+> Commonly used testing method naming convention TestCase::test[methodName] is **not** allowed in Doctrine. So in this case Doctrine_Export_Pgsql_TestCase::testCreateTable() would not be allowed!
