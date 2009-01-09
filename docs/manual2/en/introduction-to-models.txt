@@ -20,7 +20,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Each {{Doctrine_Record}} child class can have a setTableDefinition() and setUp() method. The setTableDefinition() method is for defining columns, indexes and other information about the schema of tables. The setUp() method is for defining behaviors and relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in a later chapter.
+Each {{Doctrine_Record}} child class can have a {{setTableDefinition()}} and {{setUp()}} method. The {{setTableDefinition()}} method is for defining columns, indexes and other information about the schema of tables. The {{setUp()}} method is for attaching behaviors and defining relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in the [doc models-explained :name] chapter.
 
 ++ Generating Models
 
@@ -61,12 +61,13 @@ require_once('path-to-doctrine/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
 
-// import method takes one parameter: the import directory (the directory where
-// the generated record files will be put in
 Doctrine::generateModelsFromDb('myrecords', array('generateTableClasses' => true));
 </code>
 
-That's it! Now there should be a file called BaseFile.php in your myrecords/generated directory. The file should look like:
+> **NOTE**
+> The import method takes one parameter and it is the import directory (the directory where the generated record files will be put in).
+
+That's it! Now there should be a file called {{BaseFile.php}} in your {{myrecords/generated}} directory. The file should look like the following:
 
 <code type="php">
 /**
@@ -88,7 +89,7 @@ abstract class BaseFile extends Doctrine_Record
 }
 </code>
 
-You should also have a file called File.php in your myrecords directory. The file should look like:
+You should also have a file called File.php in your myrecords directory. The file should look like the following:
 
 <code type="php">
 /**
@@ -99,7 +100,7 @@ class File extends BaseFile
 }
 </code>
 
-Doctrine will automatically generate a skeleton Doctrine_Table class for the model at myrecords/UserTable.php. The file should look like:
+Doctrine will automatically generate a skeleton {{Doctrine_Table}} class for the model at {{myrecords/UserTable.php}}. The file should look like the following:
 
 <code type="php">
 /**
@@ -110,7 +111,54 @@ class FileTable extends Doctrine_Table
 }
 </code>
 
-This is where you can put your custom finder methods which can be used by calling Doctrine::getTable('User').
+You can place custom functions inside the {{File}} and {{FileTable}} classes to customize the functionality of your models. Below are some examples:
+
+<code type="php">
+class File extends BaseFile
+{
+    public function fileExists()
+    {
+        return ($this->path && file_exists($this->path));
+    }
+
+    public function deleteFile()
+    {
+        unlink($this->path);
+    }
+}
+</code>
+
+Now you can use the function to check that the file actually exists and delete it if it does:
+
+<code type="php">
+$file = new File();
+$file->path = '/path/to/file.txt';
+
+if ($file->fileExists()) {
+    $file->deleteFile();
+}
+</code>
+
+Here is an example of some custom functions you might add to the {{FileTable}} class:
+
+<code type="php">
+class FileTable extends Doctrine_Table
+{
+    public function getGifFiles()
+    {
+        return $this->createQuery('f')
+          ->select('f.id, f.name')
+          ->where('f.type = ?', 'gif')
+          ->execute();
+    }
+}
+</code>
+
+Now you have access to this function when you are working with the {{FileTable}} instance:
+
+<code type="php">
+$gifFiles = Doctrine::getTable('File')->getGifFiles();
+</code>
 
 +++ Schema Files
 
@@ -127,9 +175,11 @@ Doctrine_Manager::connection('mysql://root:dc34@localhost/test');
 Doctrine::generateModelsFromYaml('/path/to/yaml', '/path/to/generate/models');
 </code>
 
+You can learn more about this subject in the [doc yaml-schema-files :name] chapter.
+
 ++ Manually Writing Models
 
-You can optionally skip all the convenience methods and write your models manually using nothing but your own PHP code.
+You can optionally skip all the convenience methods and write your models manually using nothing but your own PHP code. You can learn all about the models syntax in the [doc models-explained :name] chapter.
 
 ++ Autoloading Models
 
@@ -155,6 +205,9 @@ Doctrine::loadModels('/path/to/models'); // This call will not require the found
 
 $user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
 </code>
+
+> **NOTE**
+> Conservative model loading is recommended in most cases, specifically for production environments as you do not want to require every single model class even when it is not needed as this is unnecessary overhead. You only want to require it when it is needed.
 
 +++ Aggressive
 

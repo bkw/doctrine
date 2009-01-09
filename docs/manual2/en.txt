@@ -1,9 +1,10 @@
 + Introduction
++ Acknowledgements
 + Getting Started
 + Configuration
++ Component Overview
 + Connections
 + Introduction to Models
-+ Component Overview
 + Models Explained
 + DQL (Doctrine Query Language)
 + Native SQL

@@ -1,8 +1,15 @@
-++ Requirements
+++ What is it?
 
-Doctrine requires PHP >= 5.2.3+. it doesn't require any external libraries. For database function call abstraction Doctrine uses PDO which comes bundled with the PHP official release that you get from www.php.net. If you use a 3 in 1 package under windows like Uniform Server, MAMP or any other non official package, you may be required to perform additional configurations.
+Doctrine is an object relational mapper (ORM) for PHP 5.2.3 and later that sits on top of a powerful database abstraction layer (DBAL). One of its key features is the option to write database queries in a proprietary object oriented SQL dialect called Doctrine Query Language (DQL), inspired by Hibernates HQL. This provides developers with a powerful alternative to SQL that maintains flexibility without requiring unnecessary code duplication.
 
-++ Overview
+++ Minimum Requirements
+
+Doctrine requires PHP >= 5.2.3+. it doesn't require any external libraries. For database function call abstraction Doctrine uses PDO which comes bundled with the PHP official release that you get from www.php.net.
+
+> **NOTE**
+> If you use a 3 in 1 package under windows like Uniform Server, MAMP or any other non official package, you may be required to perform additional configurations.
+
+++ Basic Overview
 
 Doctrine is a tool for object-relational mapping in PHP. It sits on top of PDO and is itself divided into two main layers, The DBAL and the ORM. The picture below shows how the layers of Doctrine work together.
 
@@ -10,7 +17,7 @@ Doctrine is a tool for object-relational mapping in PHP. It sits on top of PDO a
 
 The DBAL(Database Abstraction Layer) completes and extends the basic database abstraction/independance that is already provided by PDO. The DBAL library can be used standalone, if all you want is a powerful database abstraction layer on top of PDO. The ORM layer depends on the DBAL and therefore, when you load the ORM package the DBAL is already included.
 
-++ About Doctrine
+++ Doctrine Explained
 
 The following section tries to explain where Doctrine stands in the world of ORM tools. The Doctrine ORM is mainly built around the [http://www.martinfowler.com/eaaCatalog/activeRecord.html Active Record], [http://www.martinfowler.com/eaaCatalog/dataMapper.html Data Mapper] and [http://www.martinfowler.com/eaaCatalog/metadataMapping.html Meta Data Mapping] patterns.
 
@@ -34,7 +41,7 @@ Doctrine is a great tool to drive the persistence of simple or moderately comple
 
 Now you already know a lot about what Doctrine is and what it is not. If you would like to dive in now and get started right away, jump straight to the next chapter "Getting Started".
 
-++ Key Concept
+++ Key Concepts
 
 The Doctrine Query Language (DQL) is an object query language. It let's you express queries for single objects or full object graphs, using the terminology of your domain model: class names, field names, relations between classes, etc. This is a powerful tool for retrieving or even manipulating objects without breaking the separation of the domain model (field names, class names, ..) from the relational model (table names, column names, ...).DQL looks very much like SQL and this is intended because it makes it relatively easy to grasp for people knowing SQL. There are, however, a few very important differences you should always keep in mind:
 

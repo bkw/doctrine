@@ -1,12 +1,12 @@
 ++ DSN, the Data Source Name
 
-In order to connect to a database through Doctrine, you have to create a valid DSN - data source name. 
+In order to connect to a database through Doctrine, you have to create a valid DSN(Data Source Name).
 
-Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style data source names. The following section deals with PEAR like data source names. If you need more info about the PDO-style data source names see the documentation on pdo: http://www.php.net/pdo.
+Doctrine supports both PEAR DB/MDB2 like data source names as well as PDO style data source names. The following section deals with PEAR like data source names. If you need more info about the PDO-style data source names see the documentation on [http://www.php.net/pdo pdo].
 
 The DSN consists in the following parts:
 
-|| ~ DSN part || ~ Description ||
+||~ DSN part ||~ Description ||
 || phptype    ||  Database backend used in PHP (i.e. mysql , pgsql etc.) ||
 || dbsyntax   ||  Database used with regards to SQL syntax etc. ||
 || protocol   ||  Communication protocol to use ( i.e. tcp, unix etc.) ||
@@ -19,7 +19,7 @@ The DSN consists in the following parts:
 
 **List of options**
 
-|| ~ Name   || ~ Description ||
+||~ Name   ||~ Description ||
 || charset  || Some backends support setting the client charset. ||
 || new_link || Some RDBMS do not create new connections when connecting to the same host multiple times. This option will attempt to force a new connection. ||
 
@@ -44,18 +44,18 @@ phptype(dbsyntax)
 phptype
 </code>
 
-The currently supported database backends are: 
+The currently supported PDO database drivers are: 
 
-|| ~ Driver name || ~ Supported databases ||
-|| fbsql       ||  FrontBase ||
-|| ibase       ||  InterBase / Firebird (requires PHP 5) ||
-|| mssql       ||  Microsoft SQL Server (NOT for Sybase. Compile PHP --with-mssql) ||
-|| mysql       ||  MySQL ||
-|| mysqli      ||  MySQL (supports new authentication protocol) (requires PHP 5) ||
-|| oci8        ||  Oracle 7/8/9/10  ||
-|| pgsql       ||  PostgreSQL  ||
-|| querysim    ||  QuerySim   ||
-|| sqlite      ||  SQLite 2 ||
+||~ Driver name ||~ Supported databases ||
+|| fbsql        ||  FrontBase ||
+|| ibase        ||  InterBase / Firebird (requires PHP 5) ||
+|| mssql        ||  Microsoft SQL Server (NOT for Sybase. Compile PHP --with-mssql)   ||
+|| mysql        ||  MySQL ||
+|| mysqli       ||  MySQL (supports new authentication protocol) (requires PHP 5) ||
+|| oci8         ||  Oracle 7/8/9/10  ||
+|| pgsql        ||  PostgreSQL  ||
+|| querysim     ||  QuerySim   ||
+|| sqlite       ||  SQLite 2 ||
 
 A second DSN format supported is
 
@@ -65,7 +65,7 @@ phptype(syntax)://user:pass@protocol(proto_opts)/database
 
 If your database, option values, username or password contain characters used to delineate DSN parts, you can escape them via URI hex encodings:  
 
-|| ~ Character  || ~ Hex Code  ||
+||~ Character ||~ Hex Code ||
 || :          ||  %3a      ||
 || /          ||  %2f      || 
 || @          ||  %40      || 
@@ -76,7 +76,7 @@ If your database, option values, username or password contain characters used to
 || =          ||  %3d      || 
 || &          ||  %26      || 
 
-Please note, that some features may be not supported by all database backends. 
+Please note, that some features may be not supported by all database drivers. 
 
 +++ Examples
 
@@ -112,23 +112,19 @@ mysqli://user:pass@localhost/pear?key=client-key.pem&cert=client-cert.pem
 
 ++ Opening New Connections
 
-Opening a new database connection in Doctrine is very easy. If you wish to use www.php.net/PDO you can just initalize a new PDO object:
+Opening a new database connection in Doctrine is very easy. If you wish to use [www.php.net/PDO PDO] you can just initialize a new PDO object:
 
 <code type="php">
 $dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 $user = 'dbuser';
 $password = 'dbpass';
 
-try {
-    $dbh = new PDO($dsn, $user, $password);
-    $conn = Doctrine_Manager::connection($dbh);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-}
+$dbh = new PDO($dsn, $user, $password);
+$conn = Doctrine_Manager::connection($dbh);
 </code>
 
-> **NOTE**
-> Directly passing a PDO instance to {{Doctrine_Manager::connection()}} will not allow Doctrine to be aware of the username and password for the connection, since their is no way to retrieve it from an existing PDO instance. The username and password is required in order for Doctrine to be able to create and drop databases. To get around this you can manually set the username and password option directly on the $conn object.
+> **TIP**
+> Directly passing a PDO instance to {{Doctrine_Manager::connection()}} will not allow Doctrine to be aware of the username and password for the connection, since their is no way to retrieve it from an existing PDO instance. The username and password is required in order for Doctrine to be able to create and drop databases. To get around this you can manually set the username and password option directly on the {{$conn}} object.
 
 <code type="php">
 $conn->setOption('username', 'username');
@@ -137,16 +133,17 @@ $conn->setOption('password', 'password');
 
 ++ Lazy Database Connecting
 
-Lazy-connecting to database can save a lot of resources. There might be many pages where you don't need an actual database connection, hence its always recommended to use lazy-connecting (that means Doctrine will only connect to database when needed).
+Lazy-connecting to database can save a lot of resources. There might be many times where you don't need an actual database connection, hence its always recommended to use lazy-connecting (that means Doctrine will only connect to database when needed).
 
 This feature can be very useful when using for example page caching, hence not actually needing a database connection on every request. Remember connecting to database is an expensive operation.
 
-<code type="php">
-// initalize a new Doctrine_Connection
-$conn = Doctrine_Manager::connection('mysql://username:password@localhost/test');
-// !! no actual database connection yet !!
+In the example below we will show you when you create a new Doctrine connection, the connection to the database isn't created until it is actually needed.
 
-// connects database and performs a query
+<code type="php">
+// At this point no actual connection to the database is created
+$conn = Doctrine_Manager::connection('mysql://username:password@localhost/test');
+
+// Issuing this query will create the connection
 $users = Doctrine_Query::create()
     ->from('User u')
     ->execute();
@@ -156,27 +153,31 @@ $users = Doctrine_Query::create()
 
 From the start Doctrine has been designed to work with multiple connections. Unless separately specified Doctrine always uses the current connection for executing the queries.
 
-{{Doctrine_Manager}} provides static method {{Doctrine_Manager::connection()}} which opens new connection when arguments are given to it and returns the current connection when no arguments have been speficied.
+**Opening and Retrieving Connections**
+
+{{Doctrine_Manager}} provides the static method {{Doctrine_Manager::connection()}} which opens new connection when arguments are given to it and returns the current connection when no arguments have been speficied.
+
+In this example we will show you to open a new connection and how you can retrieve the current connection:
 
 <code type="php">
-// open first connection 
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
 
 $conn2 = Doctrine_Manager::connection();
 
-// $conn2 == $conn
+// $conn2 === $conn
 </code>
 
-The current connection is the lastly opened connection. 
+The current connection is the last opened connection. In the next example we will show how you can get the current connection from the {{Doctrine_Manager}} instance:
 
 <code type="php">
-// open second connection
 $conn2 = Doctrine_Manager::connection('mysql://username2:password2@localhost/test2', 'connection 2');
 
-$manager->getCurrentConnection(); // $conn2
+$conn2 === $manager->getCurrentConnection();
 </code>
 
-You can change the current connection by calling {{setCurrentConnection()}}. 
+**Change Current Connection**
+
+You can change the current connection by calling {{Doctrine_Manager::setCurrentConnection()}}. 
 
 <code type="php">
 $manager->setCurrentConnection('connection 1');
@@ -184,12 +185,100 @@ $manager->setCurrentConnection('connection 1');
 $manager->getCurrentConnection(); // $conn
 </code>
 
-You can iterate over the opened connection by simple passing the manager object to foreach clause. This is possible since {{Doctrine_Manager}} implements special {{IteratorAggregate}} interface.
+**Iterate over Connections**
+
+You can iterate over the opened connection by simply passing the manager object to a foreach clause. This is possible since {{Doctrine_Manager}} implements special {{IteratorAggregate}} interface.
 
 <code type="php">
-// iterating through connections
-
 foreach($manager as $conn) {
 
 }
+</code>
+
+**Get name of Connection Instance**
+
+You can easily get the name of a {{Doctrine_Connection}} instance with the following code:
+
+<code type="php">
+$conn = Doctrine_Manager::connection();
+
+$name = $manager->getConnectionName($conn);
+</code>
+
+**Close a Connection**
+
+You can easily close a connection and remove it from the Doctrine connection registry with the following code:
+
+<code type="php">
+$conn = Doctrine_Manager::connection();
+
+$manager->closeConnection($conn);
+</code>
+
+If you wish to close the connection but not remove it from the Doctrine connection registry you can use the following code instead:
+
+<code type="php">
+$conn = Doctrine_Manager::connection();
+$conn->close();
+</code>
+
+**Get all Connections**
+
+You can retrieve an array of all the registered connections by using the {{Doctrine_Manager::getConnections()}} method like below:
+
+<code type="php">
+$conns = $manager->getConnections();
+foreach ($conns as $conn) {
+  
+}
+</code>
+
+The above is essentially the same as iterating over the {{Doctrine_Manager}} object like we did earlier. Here it is again:
+
+<code type="php">
+foreach ($manager as $conn) {
+  
+}
+</code>
+
+**Count the number of Connections**
+
+You can easily get the number of connections from a {{Doctrine_Manager}} object since it implements the {{Countable}} interface.
+
+<code type="php">
+$num = count($manager);
+</code>
+
+The above is the same as doing:
+
+<code type="php">
+$num = $manager->count();
+</code>
+
+**Creating/Dropping Databases**
+
+When you create connections using Doctrine, you gain the ability to easily create and drop the databases related to those connections.
+
+This is as simple as using some functions provided in the {{Doctrine_Manager}} or {{Doctrine_Connection}} classes.
+
+**Drop/create database for all connections**
+
+The following code will iterate over all instantiated connections and call the {{dropDatabases()}}/{{createDatabases()}} function on each one:
+
+<code type="php">
+$manager->createDatabases();
+
+$manager->dropDatabases();
+</code>
+
+**Drop/create database for specific connection**
+
+You can easily drop or create the database for a specific {{Doctrine_Connection}} instance by calling the {{dropDatabase()}}/{{createDatabase()}} function on the connection instance with the following code:
+
+<code type="php">
+$conn = Doctrine_Manager::connection(); // Gets the current connection
+
+$conn->createDatabase();
+
+$conn->dropDatabase();
 </code>
