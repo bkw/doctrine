@@ -150,7 +150,7 @@ $this->createForeignKey($tableName, $definition);
 
 The valid options for the $definition are:
 
-|| key          || description ||
+||~ Name        ||~ Description ||
 || name         || optional constraint name ||
 || local        || the local field(s) ||
 || foreign      || the foreign reference field(s) ||
