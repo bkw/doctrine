@@ -272,7 +272,7 @@ Doctrine_Record::getLastModified() method
     $user->save();
 
     // getModified() returns the current modified properties and in this case 
-    now no propeties are modified.
+    // now no propeties are modified.
     print_r($user->getModified()); // array()
 
     // you can retrieve the last modified properties like the following
