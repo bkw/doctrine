@@ -520,6 +520,7 @@ incremented integer.
 * Added possibility for automation of up/down methods.
 * Re-ordered arguments for addColumn() so that type is first before length.
 * Added `Doctrine_Migration_Diff` tool.
+* Migration classes should now extend a class named `Doctrine_Migration_Base` instead of `Doctrine_Migration`.
 
 Here is an example of how you can automate the opposite up or down of a migration
 api method.
