@@ -1,3 +1,10 @@
+1.1.0-RC1
+---------
+     * [r5346] [1.1] Releasing Doctrine 1.1.0-BETA2
+     * [r5347] [1.0, 1.1] Moving new manual to 1.0 branch
+     * [r5360] [1.1] Adding note to Upgrade file about migration classes needing to extend Doctrine_Migration_Base.
+     * [r5361] [1.0, 1,1] Fixing NestedSet to not create column for root column if it already exists (closes #1817)
+
 1.1.0-BETA2
 -----------
      * [r5284] [1.1] Releasing 1.1.0-BETA1
