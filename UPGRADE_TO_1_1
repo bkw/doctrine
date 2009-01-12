@@ -32,7 +32,7 @@ Here is an example using `isValid()`:
     $user = new User();
     $mail = new Email();
 
-    $user->name = "floriank";
+    $user->name = 'floriank';
     $user->emails[] = $mail;
 
     // Returns false because the referenced Email object does not have an address set
