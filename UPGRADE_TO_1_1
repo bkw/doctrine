@@ -410,8 +410,11 @@ Doctrine_Table.
         password:
           type: string(255)
 
-          $username = Doctrine::getTable('User')->getDefinitionOf('username');
-          echo $username['extra']['test']; // 123
+You can now access the data with the following php code:
+
+    [php]
+    $username = Doctrine::getTable('User')->getDefinitionOf('username');
+    echo $username['extra']['test']; // 123
 
 Generated Models
 ----------------
