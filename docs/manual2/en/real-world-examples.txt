@@ -153,8 +153,8 @@ class Forum_Category extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasMany('Forum_Category as Subcategory', array('local' => 'parent_category_id', 'foreign' => id'));
-        $this->hasOne('Forum_Category as Rootcategory', array('local' => 'root_category_id', 'foreign' => id'));
+        $this->hasMany('Forum_Category as Subcategory', array('local' => 'parent_category_id', 'foreign' => 'id'));
+        $this->hasOne('Forum_Category as Rootcategory', array('local' => 'root_category_id', 'foreign' => 'id'));
     }
 }
 
@@ -169,7 +169,7 @@ class Forum_Board extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Category as Category', array('local' => 'category_id', 'foreign' => id'));
+        $this->hasOne('Forum_Category as Category', array('local' => 'category_id', 'foreign' => 'id'));
         $this->hasMany('Forum_Thread as Threads',  array('local' => 'id', 'foreign' => 'board_id'));
     } 
 }
@@ -188,8 +188,8 @@ class Forum_Entry extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Entry as Parent',  array('local' => 'parent_entry_id', 'foreign' => id'));
-        $this->hasOne('Forum_Thread as Thread', array('local' => 'thread_id', 'foreign' => id'));
+        $this->hasOne('Forum_Entry as Parent',  array('local' => 'parent_entry_id', 'foreign' => 'id'));
+        $this->hasOne('Forum_Thread as Thread', array('local' => 'thread_id', 'foreign' => 'id'));
     }
 }
 
@@ -204,7 +204,7 @@ class Forum_Thread extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Board as Board', array('local' => 'board_id', 'foreign' => id'));
+        $this->hasOne('Forum_Board as Board', array('local' => 'board_id', 'foreign' => 'id'));
         $this->ownsMany('Forum_Entry as Entries', array('local' => 'id', 'foreign' => thread_id'));
     }
 }

@@ -10,7 +10,7 @@ When compared to using raw SQL, DQL has several benefits:
 * DQL has some very complex built-in algorithms like (the record limit algorithm) which can help developer to efficiently retrieve objects
 * It supports some functions that can save time when dealing with one-to-many, many-to-many relational data with conditional fetching.
 
-If the power of DQL isn't enough, you should consider using the rawSql API for object population.
+If the power of DQL isn't enough, you should consider using the [doc native-sql RawSql API] for object population.
 
 You may already be familiar with the following syntax:
 
@@ -72,47 +72,66 @@ The {{SELECT}} statement is used for the retrieval of data from one or more comp
 
 * Each {{select_expr}} indicates a column or an aggregate function value that you want to retrieve. There must be at least one {{select_expr}} in every {{SELECT}} statement.
 
-<code type="sql">
-SELECT a.name, a.amount FROM Account a
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('a.name, a.amount')
+    ->from('Account a');
 </code>
 
 * An asterisk can be used for selecting all columns from given component. Even when using an asterisk the executed sql queries never actually use it (Doctrine converts asterisk to appropriate column names, hence leading to better performance on some databases).
 
-<code type="sql">
-SELECT a.* FROM Account a
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('a.*')
+    ->from('Account a');
 </code>
 
 * {{FROM}} clause {{components}} indicates the component or components from which to retrieve records.
 
-<code type="sql">
-SELECT a.* FROM Account a
-
-SELECT u.*, p.*, g.* FROM User u LEFT JOIN u.Phonenumber p LEFT JOIN u.Group g
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*, p.*, g.*')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Group g');
 </code>
 
 * The {{WHERE}} clause, if given, indicates the condition or conditions that the records must satisfy to be selected. {{where_condition}} is an expression that evaluates to true for each row to be selected. The statement selects all rows if there is no {{WHERE}} clause.
 
-<code type="sql">
-SELECT a.* FROM Account a WHERE a.amount > 2000
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('a.*')
+    ->from('Account a')
+    ->where('a.amount > 2000');
 </code>
 
 * In the {{WHERE}} clause, you can use any of the functions and operators that DQL supports, except for aggregate (summary) functions
 * The {{HAVING}} clause can be used for narrowing the results with aggregate functions
 
-<code type="sql">
-SELECT u.* FROM User u LEFT JOIN u.Phonenumber p HAVING COUNT(p.id) > 3
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->having('COUNT(p.id) > 3');
 </code>
 
 * The {{ORDER BY}} clause can be used for sorting the results
 
-<code type="sql">
-SELECT u.* FROM User u ORDER BY u.name
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*')
+    ->from('User u')
+    ->orderBy('u.name');
 </code>
 
 * The {{LIMIT}} and {{OFFSET}} clauses can be used for efficiently limiting the number of records to a given {{row_count}}
 
-<code type="sql">
-SELECT u.* FROM User u LIMIT 20
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*')
+    ->from('User u')
+    ->limit(20);
 </code>
 
 +++ DISTINCT keyword
@@ -122,18 +141,19 @@ SELECT u.* FROM User u LIMIT 20
 Aggregate value {{SELECT}} syntax:
 
 <code type="php">
-// SELECT u.*, COUNT(p.id) num_posts FROM User u, u.Posts p WHERE u.id = 1 GROUP BY u.id
+$q = Doctrine_Query::create()
+    ->select('u.id, COUNT(p.id) num_posts')
+    ->from('User u, u.Posts p')
+    ->where('u.id = ?', 1)
+    ->groupby('u.id');
 
-$query = Doctrine_Query::create();
+$users = $q->execute();
+</code>
 
-$query->select('u.id, COUNT(p.id) num_posts')
-      ->from('User u, u.Posts p')
-      ->where('u.id = ?', 1)
-      ->groupby('u.id');
+Now you can easily access the {{num_posts}} data with the following code:
 
-$users = $query->execute();
-
-echo $users->Posts[0]->num_posts . ' posts found';
+<code type="php">
+echo $users->num_posts . ' posts found';
 </code>
 
 ++ UPDATE queries
@@ -157,7 +177,7 @@ UPDATE //component_name//
 <code type="php">
 $q = Doctrine_Query::create()
     ->update('Account')
-    ->set('amount', 'amount + ?', '200')
+    ->set('amount', 'amount + 200')
     ->where('id > 200');
 
 $rows = $q->execute();
@@ -183,7 +203,7 @@ DELETE FROM <component_name>
 $q = Doctrine_Query::create()
     ->delete()
     ->from('Account a')
-    ->where('a.id > ?', 3);
+    ->where('a.id > 3');
 
 $rows = $q->execute();
 
@@ -202,19 +222,12 @@ The {{FROM}} clause indicates the component or components from which to retrieve
 
 Consider the following DQL query:
 
-<code type="sql">
-FROM User u
-</code>
-
-Here 'User' is the name of the class (component) and 'u' is the alias. You should always use short aliases, since most of the time those make the query much shorther and also because when using for example caching the cached form of the query takes less space when short aliases are being used. 
-
-The following example shows how to fetch all records from class 'User'.
-
 <code type="php">
-$users = Doctrine_Query::create()
-         ->from('User u')
-         ->execute();
+$q = Doctrine_Query::create()
+  ->from('User u');
 </code>
+
+Here {{User}} is the name of the class (component) and {{u}} is the alias. You should always use short aliases, since most of the time those make the query much shorther and also because when using for example caching the cached form of the query takes less space when short aliases are being used. 
 
 ++ JOIN syntax
 
@@ -231,27 +244,41 @@ DQL supports two kinds of joins INNER JOINs and LEFT JOINs. For each joined comp
 
 * The default join type is {{LEFT JOIN}}. This join can be indicated by the use of either {{LEFT JOIN}} clause or simply '{{,}}', hence the following queries are equal:
 
-<code type="sql">
-SELECT u.*, p.* FROM User u LEFT JOIN u.Phonenumber
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*, p.*')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p');
 
-SELECT u.*, p.* FROM User u, u.Phonenumber p
+$q = Doctrine_Query::create()
+    ->select('u.*, p.*')
+    ->from('User u, u.Phonenumber p');
 </code>
 
-The recommended form is the first one.
+> **TIP**
+> The recommended form is the first because it is more verbose and easier to read and understand what is being done.
 
 * {{INNER JOIN}} produces an intersection between two specified components (that is, each and every record in the first component is joined to each and every record in the second component). So basically {{INNER JOIN}} can be used when you want to efficiently fetch for example all users which have one or more phonenumbers.
 
-<code type="sql">
-SELECT u.*, p.* FROM User u INNER JOIN u.Phonenumber p
+<code type="php">
+$q = Doctrine_Query::create()
+  ->select('u.*, p.*')
+  ->from('User u')
+  ->innerJoin('u.Phonenumber p');
 </code>
 
 By default DQL auto-adds the primary key join condition, so for DQL query:
 
-<code type="sql">
-SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber
+<code type="php">
+$q = Doctrine_Query::create()
+  ->select('u.id, p.id')
+  ->from('User u')
+  ->leftJoin('u.Phonenumber p');
+
+echo $q->getSql();
 </code>
 
-Would have a SQL equivalent:
+The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
 SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id
@@ -261,11 +288,16 @@ SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id 
 
 If you want to override this behavior and add your own custom join condition you can do it with the {{ON}} keyword. Consider the following DQL query:
 
-<code type="sql">
-SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber ON u.id = 2
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.id, p.id')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p ON u.id = 2');
+
+echo $q->getSql();
 </code>
 
-This query would be converted into SQL:
+The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
 SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = 2
@@ -275,29 +307,29 @@ SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id 
 
 Most of the time you don't need to override the primary join condition, rather you may want to add some custom conditions. This can be achieved with the {{WITH}} keyword.
 
-DQL:
+<code type="php">
+$q = Doctrine_Query::create()
+  ->select('u.id, p.id')
+  ->from('User u')
+  ->leftJoin('u.Phonenumber p WITH u.id = 2');
 
-<code type="sql">
-SELECT u.id, p.id FROM User u LEFT JOIN u.Phonenumber WITH u.id = 2
+echo $q->getSql();
 </code>
 
-SQL:
+The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
 SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id AND u.id = 2
 </code>
 
-
-The Doctrine_Query API offers two convenience methods for adding JOINS. These are called innerJoin() and leftJoin(), which usage should be quite intuitive as shown below:
+The Doctrine_Query API offers two convenience methods for adding JOINS. These are called {{innerJoin()}} and {{leftJoin()}}, which usage should be quite intuitive as shown below:
 
 <code type="php">
-$q = Doctrine_Query::create();
-$q->from('User u')
-  ->leftJoin('u.Group g')
-  ->innerJoin('u.Phonenumber p WITH u.id > 3')
-  ->leftJoin('u.Email e');
-
-$users = $q->execute();
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Group g')
+    ->innerJoin('u.Phonenumber p WITH u.id > 3')
+    ->leftJoin('u.Email e');
 </code>
 
 ++ INDEXBY keyword
@@ -305,8 +337,8 @@ $users = $q->execute();
 The INDEXBY keyword offers a way of mapping certain columns as collection / array keys. By default Doctrine indexes multiple elements to numerically indexed arrays / collections. The mapping starts from zero. In order to override this behavior you need to use INDEXBY keyword as shown above:
 
 <code type="php">
-$q = Doctrine_Query::create();
-$q->from('User u INDEXBY u.name');
+$q = Doctrine_Query::create()
+  ->from('User u INDEXBY u.name');
 
 $users = $q->execute();
 </code>
@@ -320,8 +352,9 @@ echo $user['jack daniels']->id;
 The INDEXBY keyword can be applied to any given JOIN. This means that any given component can have each own indexing behavior. In the following we use distinct indexing for both Users and Groups.
 
 <code type="php">
-$q = Doctrine_Query::create();
-$q->from('User u INDEXBY u.name')->innerJoin('u.Group g INDEXBY g.name');
+$q = Doctrine_Query::create()
+    ->from('User u INDEXBY u.name')
+    ->innerJoin('u.Group g INDEXBY g.name');
 
 $users = $q->execute();
 </code>
@@ -345,6 +378,18 @@ WHERE <where_condition>
 * The statement selects all rows if there is no {{WHERE}} clause.
 * When narrowing results with aggregate function values {{HAVING}} clause should be used instead of {{WHERE}} clause
 
+You can use the {{where()}}, {{andWhere()}}, and {{orWhere()}} functions for building complex where conditions using {{Doctrine_Query}} objects.
+
+Here is an example where we retrieve all active registered users or super administrators:
+ 
+<code type="php">
+$q = Doctrine_Query::create()
+  ->from('User u')
+  ->where('u.type = ?', 'registered')
+  ->andWhere('u.is_active = ?', 1)
+  ->orWhere('u.is_super_admin = ?', 1);
+</code>
+
 ++ Conditional expressions
 
 +++ Literals
@@ -353,73 +398,84 @@ WHERE <where_condition>
 
 A string literal is enclosed in single quotes; for example: 'literal'. A string literal that includes a single quote is represented by two single quotes; for example: 'literal''s'.
 
-<code type="sql">
-FROM User WHERE User.name = 'Vincent'
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.name = ?', 'Vincent')
 </code>
 
 **Integers**
 
 Integer literals support the use of PHP integer literal syntax.
 
-<code type="sql">
-FROM User WHERE User.id = 4
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id = 4');
 </code>
 
 **Floats**
 
 Float literals support the use of PHP float literal syntax.
 
-<code type="sql">
-FROM Account WHERE Account.amount = 432.123
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('Amount a')
+    ->where('a.amount = 432.123');
 </code>
 
 **Booleans**
 
 The boolean literals are true and false.
 
-<code type="sql">
-FROM User WHERE User.admin = true
-
-FROM Session WHERE Session.is_authed = false
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.is_super_admin = true');
 </code>
 
 **Enums**
 
 The enumerated values work in the same way as string literals.
 
-<code type="sql">
-FROM User WHERE User.type = 'admin'
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where("u.type = 'admin'");
 </code>
 
 Predefined reserved literals are case insensitive, although its a good standard to write them in uppercase.
 
 +++ Input parameters
 
+Here are some examples of using positional parameters:
+
 <code type="php">
-// POSITIONAL PARAMETERS:
 $users = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.name = ?', array('Arnold'))
-          ->execute();
+    ->from('User u')
+    ->where('u.name = ?', array('Arnold'))
+    ->execute();
 
 $users = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.id > ? AND u.name LIKE ?', array(50, 'A%'))
-          ->execute();
-
-// NAMED PARAMETERS:
-
-$users = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.name = :name', array(':name' => 'Arnold'))
-          ->execute();
-
-$users = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.id > :id AND u.name LIKE :name', array(':id' => 50, ':name' => 'A%'))
-          ->execute();
+    ->from('User u')
+    ->where('u.id > ? AND u.name LIKE ?', array(50, 'A%'))
+    ->execute();
 </code>
 
+Here are some examples of using named parameters:
+
+<code type="php">
+$users = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.name = :name', array(':name' => 'Arnold'))
+    ->execute();
+
+$users = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id > :id', array(':id' => 50))
+    ->andWhere('u.name LIKE :name', array(':name' => 'A%'))
+    ->execute();
+</code>
 
 +++ Operators and operator precedence
 
@@ -438,9 +494,6 @@ The operators are listed below in order of decreasing precedence.
 || AND       || || 
 || OR        || ||
 
-
-+++ Between expressions
-
 +++ In expressions
 
 Syntax:
@@ -453,17 +506,20 @@ An IN conditional expression returns true if the //operand// is found from resul
 
 When //value list// is being used there must be at least one element in that list.
 
-<code type="sql">
-FROM C1 WHERE C1.col1 IN (FROM C2(col1));
+Here is an example where we use a subquery for the {{IN}}:
 
-FROM User WHERE User.id IN (1,3,4,5)
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)', 1);
 </code>
 
-The keyword IN is an alias for = ANY. Thus, these two statements are equal:
+Here is an example where we just use a list of integers:
 
-<code type="sql">
-FROM C1 WHERE C1.col1 = ANY (FROM C2(col1));
-FROM C1 WHERE C1.col1 IN    (FROM C2(col1));
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->whereIn('u.id', array(1, 3, 4, 5));
 </code>
 
 +++ Like Expressions
@@ -514,19 +570,19 @@ The NOT EXISTS operator returns TRUE if the subquery returns 0 rows and FALSE ot
 
 Finding all articles which have readers:
 
-<code type="sql">
-FROM Article a
-  WHERE EXISTS (SELECT r.id FROM ReaderLog r
-                WHERE r.article_id = a.id)
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('Article a')
+    ->where('EXIST (SELECT r.id FROM ReaderLog r WHERE r.article_id = a.id)')
 </code>
 
 Finding all articles which don't have readers:
 
-<code type="sql">
-FROM Article a
-  WHERE NOT EXISTS (SELECT r.id FROM ReaderLog r
-                WHERE r.article_id = a.id)
-</code>     
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('Article a')
+    ->where('NOT EXISTS (SELECT r.id FROM ReaderLog r WHERE r.article_id = a.id));
+</code>
 
 +++ All and Any Expressions
 
@@ -540,20 +596,26 @@ operand comparison_operator ALL (subquery)
 
 An ALL conditional expression returns true if the comparison operation is true for all values in the result of the subquery or the result of the subquery is empty. An ALL conditional expression is false if the result of the comparison is false for at least one row, and is unknown if neither true nor false.
 
-<code type="sql">
-FROM C WHERE C.col1 < ALL (FROM C2(col1))
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('C')
+    ->where('C.col1 < ALL (FROM C2(col1))');
 </code>
 
 An ANY conditional expression returns true if the comparison operation is true for some value in the result of the subquery. An ANY conditional expression is false if the result of the subquery is empty or if the comparison operation is false for every value in the result of the subquery, and is unknown if neither true nor false. 
 
-<code type="sql">
-FROM C WHERE C.col1 > ANY (FROM C2(col1))
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('C')
+    ->where('C.col1 > ANY (FROM C2(col1))');
 </code>
 
 The keyword SOME is an alias for ANY.
- 
-<code type="sql">
-FROM C WHERE C.col1 > SOME (FROM C2(col1))
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('C')
+    ->where('C.col1 > SOME (FROM C2(col1))');
 </code>
 
 The comparison operators that can be used with ALL or ANY conditional expressions are =, <, <=, >, >=, <>. The result of the subquery must be same type with the conditional expression.
@@ -563,6 +625,16 @@ NOT IN is an alias for <> ALL. Thus, these two statements are equal:
 <code type="sql">
 FROM C WHERE C.col1 <> ALL (FROM C2(col1));
 FROM C WHERE C.col1 NOT IN (FROM C2(col1));
+</code>
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('C')
+    ->where('C.col1 <> ALL (FROM C2(col1))');
+
+$q = Doctrine_Query::create()
+    ->from('C')
+    ->where('C.col1 NOT IN (FROM C2(col1))');
 </code>
 
 +++ Subqueries
@@ -575,18 +647,18 @@ Some advantages of the subqueries:
 * They provide alternative ways to perform operations that would otherwise require complex joins and unions.
 * They are, in many people's opinion, readable. Indeed, it was the innovation of subqueries that gave people the original idea of calling the early SQL "Structured Query Language."
 
+Here is an example where we find all users which don't belong to the group id 1:
+
 <code type="php">
-// finding all users which don't belong to any group 1
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)')
+          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)', 1)
           ->execute();
+</code>
 
-// finding all users which don't belong to any groups
-// Notice: 
-// the usage of INNER JOIN
-// the usage of empty brackets preceding the Group component
+Here is an example where we find all users which don't belong to any groups
 
+<code type="php">
 $users = Doctrine_Query::create()
           ->from('User u')
           ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g)')
@@ -600,9 +672,11 @@ $users = Doctrine_Query::create()
 * The //CONCAT// function returns a string that is a concatenation of its arguments. In the example above we map the concatenation of users firstname and lastname to a value called name
 
 <code type="php">
-$q = Doctrine_Query::create();
+$q = Doctrine_Query::create()
+    ->select('CONCAT(u.firstname, u.lastname) AS name')
+    ->from('User u');
 
-$users = $q->select('CONCAT(u.firstname, u.lastname) name')->from('User u')->execute();
+$users = $q->execute();
 
 foreach($users as $user) {
     // here 'name' is not a property of $user,
@@ -615,8 +689,11 @@ foreach($users as $user) {
 
 <code type="php">
 $q = Doctrine_Query::create();
+    ->select('u.name')
+    ->from('User u')
+    ->where("SUBSTRING(u.name, 0, 1) = 'z'");
 
-$users = $q->select('u.name')->from('User u')->where("SUBSTRING(u.name, 0, 1) = 'z'")->execute();
+$users = $q->execute();
 
 foreach($users as $user) {
     echo $user->name;
@@ -627,8 +704,8 @@ foreach($users as $user) {
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.name')-
-    >from('User u')
+    ->select('u.name')
+    ->from('User u')
     ->where('TRIM(u.name) = ?', 'Someone');
 
 $users = $q->execute();
@@ -642,8 +719,11 @@ foreach($users as $user) {
 
 <code type="php">
 $q = Doctrine_Query::create();
+    ->select('u.name')
+    ->from('User u')
+    ->where("LOWER(u.name) = 'someone'");
 
-$users = $q->select('u.name')->from('User u')->where("LOWER(u.name) = 'someone'")->execute();
+$users = $q->execute();
 
 foreach($users as $user) {
     echo $user->name;
@@ -678,19 +758,21 @@ Doctrine allows you to use sub-dql queries in the FROM, SELECT and WHERE stateme
 Find all the users which are not in a specific group.
 
 <code type="php">
-$users = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)')
-          ->execute(1);
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)');
+
+$users = $q->execute();
 </code>
 
 Retrieve the users phonenumber in a subquery and include it in the resultset of user information.
 
 <code type="php">
-$users = Doctrine_Query::create()
-          ->select('u.*, (SELECT p.phonenumber FROM Phonenumber p WHERE p.user_id = u.id LIMIT 1) as phonenumber')
-          ->from('User u')
-          ->execute();
+$q = Doctrine_Query::create()
+    ->select('u.*, (SELECT p.phonenumber FROM Phonenumber p WHERE p.user_id = u.id LIMIT 1) as phonenumber')
+          ->from('User u');
+
+$users = $q->execute();
 </code>
 
 ++ GROUP BY, HAVING clauses
@@ -707,45 +789,58 @@ DQL HAVING syntax:
 HAVING conditional_expression
 </code> 
 
-* GROUP BY and HAVING clauses can be used for dealing with aggregate functions
-* Following aggregate functions are available on DQL: COUNT, MAX, MIN, AVG, SUM
+{{GROUP BY}} and {{HAVING}} clauses can be used for dealing with aggregate functions. The Following aggregate functions are available on DQL: {{COUNT}}, {{MAX}}, {{MIN}}, {{AVG}}, {{SUM}}
 
 Selecting alphabetically first user by name.
 
-<code type="sql">
-SELECT MIN(u.name) FROM User u
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('MIN(u.name)')
+    ->from('User u');
 </code>
 
 Selecting the sum of all Account amounts.
 
-<code type="sql">
-SELECT SUM(a.amount) FROM Account a
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('SUM(a.amount)')
+    ->from('Account a');
 </code>
 
-* Using an aggregate function in a statement containing no GROUP BY clause, results in grouping on all rows. In the example above we fetch all users and the number of phonenumbers they have.
+Using an aggregate function in a statement containing no GROUP BY clause, results in grouping on all rows. In the example below we fetch all users and the number of phonenumbers they have.
 
-<code type="sql">
-SELECT u.*, COUNT(p.id) FROM User u, u.Phonenumber p GROUP BY u.id
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*')
+    ->addSelect('COUNT(p.id) as num_phonenumbers')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->groupBy('u.id');
 </code>
 
-* The HAVING clause can be used for narrowing the results using aggregate values. In the following example we fetch all users which have atleast 2 phonenumbers
+The HAVING clause can be used for narrowing the results using aggregate values. In the following example we fetch all users which have atleast 2 phonenumbers
 
 <code type="sql">
 SELECT u.* FROM User u, u.Phonenumber p HAVING COUNT(p.id) >= 2
 </code>
 
 <code type="php">
-// retrieve all users and the phonenumber count for each user
+$q = Doctrine_Query::create()
+    ->select('u.*')
+    ->addSelect('COUNT(p.id) as num_phonenumbers')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->groupBy('u.id')
+    ->having('num_phonenumbers >= 2');
+</code>
 
-$users = Doctrine_Query::create()
-          ->select('u.*, COUNT(p.id) count')
-          ->from('User u')
-          ->leftJoin('u.Phonenumber p')
-          ->groupBy('u.id')
-          ->execute();
+You can access the number of phonenumbers with the following code:
+
+<code type="php">
+$users = $q->execute();
 
 foreach($users as $user) {
-    echo $user->name . ' has ' . $user->Phonenumber[0]->count . ' phonenumbers';
+    echo $user->name . ' has ' . $user->num_phonenumbers . ' phonenumbers';
 }
 </code>
 
@@ -764,19 +859,25 @@ Syntax:
 
 Examples:
 
-<code type="sql">
-FROM User u LEFT JOIN u.Phonenumber p
-  ORDER BY u.name, p.phonenumber
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->orderBy('u.name, p.phonenumber');
 
-FROM User u, u.Email e
-  ORDER BY e.address, u.id
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Email e')
+    ->orderBy('e.address, u.id');
 </code>
 
 In order to sort in reverse order you can add the DESC (descending) keyword to the name of the column in the ORDER BY clause that you are sorting by. The default is ascending order; this can be specified explicitly using the ASC keyword. 
 
-<code type="sql">
-FROM User u LEFT JOIN u.Email e
-  ORDER BY e.address DESC, u.id ASC;
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Email e')
+    ->orderBy('e.address DESC, u.id ASC');
 </code>
 
 +++ Sorting by an aggregate value
@@ -784,12 +885,13 @@ FROM User u LEFT JOIN u.Email e
 In the following example we fetch all users and sort those users by the number of phonenumbers they have.
 
 <code type="php">
-$q = Doctrine_Query::create();
+$q = Doctrine_Query::create()
+    ->select('u.*, COUNT(p.id) count')
+    ->from('User u')
+    ->innerJoin('u.Phonenumber p')
+    ->orderby('count');
 
-$users = $q->select('u.*, COUNT(p.id) count')
-           ->from('User u')
-           ->innerJoin('u.Phonenumber p')
-           ->orderby('count');
+$users = $q->execute();
 </code>
 
 +++ Using random order
@@ -797,30 +899,29 @@ $users = $q->select('u.*, COUNT(p.id) count')
 In the following example we use random in the ORDER BY clause in order to fetch random post.
 
 <code type="php">
-$q = Doctrine_Query::create();
+$q = Doctrine_Query::create()
+    ->select('p.*, RANDOM() AS rand')
+    ->from('Post p')
+    ->orderby('rand')
+    ->limit(1);
 
-$posts = $q->select('p.*, RANDOM() rand')
-           ->from('Post p')
-           ->orderby('rand')
-           ->limit(1)
-           ->execute();
-
-$randomPost = $posts[0];
+$randomPost = $q->fetchOne();
 </code>
 
 ++ LIMIT and OFFSET clauses
 
 Propably the most complex feature DQL parser has to offer is its LIMIT clause parser. Not only does the DQL LIMIT clause parser take care of LIMIT database portability it is capable of limiting the number of records instead of rows by using complex query analysis and subqueries.
 
-<code type="php">
-// retrieve the first 20 users and all their associated phonenumbers
+Retrieve the first 20 users and all their associated phonenumbers:
 
-$users = Doctrine_Query::create()
-          ->select('u.*, p.*')
-          ->from('User u')
-          ->leftJoin('u.Phonenumber p')
-          ->limit(20)
-          ->execute();
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.*, p.*')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->limit(20);
+
+$users = $q->execute();
 
 foreach($users as $user) {
     echo ' --- '.$user->name.' --- \n';
@@ -860,11 +961,17 @@ DQL overcomes this problem with subqueries and with complex but efficient subque
 
 DQL QUERY:
 
-<code type="sql">
-SELECT u.id, u.name, p.* FROM User u LEFT JOIN u.Phonenumber p LIMIT 20
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.id, u.name, p.*')
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->limit(20);
+
+echo $q->getSql();
 </code>
 
-SQL QUERY:
+The above call to {{getSql()}} would output the following SQL query:
  
 <code type="sql">
 SELECT
@@ -885,11 +992,17 @@ In the next example we are going to fetch first 20 users and all their phonenumb
 
 DQL QUERY:
 
-<code type="sql">
-SELECT u.id, u.name, p.* FROM User u LEFT JOIN u.Phonenumber p LIMIT 20
+<code type="php">
+$q = Doctrine_Query::create()
+    ->select('u.id, u.name, p.*')
+    ->from('User u')
+    ->innerJoin('u.Phonenumber p')
+    ->limit(20);
+
+echo $q->getSql();
 </code>
 
-SQL QUERY:
+The above call to {{getSql()}} would output the following SQL query:
  
 <code type="sql">
 SELECT 
@@ -899,7 +1012,7 @@ SELECT
     p.phonenumber AS p__phonenumber,
     p.entity_id AS p__entity_id
 FROM entity e
-LEFT JOIN phonenumber p ON e.id = p.entity_id
+INNER JOIN phonenumber p ON e.id = p.entity_id
 WHERE e.id IN (
 SELECT DISTINCT e2.id
 FROM entity e2
@@ -913,7 +1026,7 @@ When you are dealing with a model that may change, but you need to keep your que
 
 Named Queries is a nice and effective way to solve this situation, allowing you to create Doctrine_Queries and reuse them without the need to keep rewritting them.
 
-The Named Query support is built at the top of Doctrine_Query_Registry support. Doctrine_Query_Registry is a class for registering and naming queries. It helps with the organization of your applications queries and along with that it offers some very nice convenience stuff.
+The Named Query support is built at the top of {{Doctrine_Query_Registry}} support. {{Doctrine_Query_Registry}} is a class for registering and naming queries. It helps with the organization of your applications queries and along with that it offers some very nice convenience stuff.
 
 The queries are added using the add() method of the registry object. It takes two parameters, the query name and the actual DQL query.
 
@@ -928,13 +1041,13 @@ $userTable = Doctrine::getTable('User');
 $users = $userTable->find('all');
 </code>
 
-To simplify this support, Doctrine_Table support some accessors to Doctrine_Query_Registry.
+To simplify this support, {{Doctrine_Table}} support some accessors to {{Doctrine_Query_Registry}}.
 
 +++ Creating a Named Query
 
-When you build your models with option generateTableClasses defined as true, each record class will also generate a *Table class, extending from Doctrine_Table.
+When you build your models with option {{generateTableClasses}} defined as true, each record class will also generate a *Table class, extending from {{Doctrine_Table}}.
 
-Then, you can implement the method construct() to include your Named Queries:
+Then, you can implement the method {{construct()}} to include your Named Queries:
 
 <code type="php">
 class MyFooTable extends Doctrine_Table
@@ -966,7 +1079,7 @@ $MyFooTableInstance = Doctrine::getTable('MyFoo');
 To access the Named Query (will return you a Doctrine_Query instance, always):
 
 <code type="php">
-$query = $MyFooTableInstance->createNamedQuery('get.by.id');
+$q = $MyFooTableInstance->createNamedQuery('get.by.id');
 </code>
 
 +++ Executing a Named Query
@@ -988,7 +1101,7 @@ $fooItems = Doctrine::getTable('MyFoo')
 
 The method find() also accepts a third parameter, which is the hydration mode.
 
-+++ Cross-Acessing Named Query
++++ Cross-Accessing Named Query
 
 If that's not enough, Doctrine take advantage the Doctrine_Query_Registry and uses namespaced queries to enable cross-access of Named Queries between objects. Suppose you have the *Table class instance of record "MyBar". You want to call the "get.by.id" Named Query of record "MyFoo". To acess the Named Query, you have to do:
 

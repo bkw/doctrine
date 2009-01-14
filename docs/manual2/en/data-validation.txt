@@ -48,7 +48,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -80,7 +80,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -118,7 +118,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -163,7 +163,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -198,7 +198,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -234,7 +234,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -263,7 +263,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -292,7 +292,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -330,7 +330,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -368,7 +368,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -406,7 +406,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -444,7 +444,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -514,7 +514,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -544,7 +544,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -580,7 +580,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -609,7 +609,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -640,7 +640,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -678,7 +678,7 @@ class State extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 State:

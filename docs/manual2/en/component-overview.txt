@@ -13,7 +13,7 @@ $manager = Doctrine_Manager::getInstance();
 <code type="php">
 $connections = $manager->getConnections();
 foreach ($connections as $connection) {
-  echo $connection->getName() . '<br/>';
+    echo $connection->getName() . '<br/>';
 }
 </code>
 
@@ -21,7 +21,7 @@ The {{Doctrine_Manager}} implements an iterator so you can simple loop over the 
 
 <code type="php">
 foreach ($manager as $connection) {
-  echo $connection->getName() . '<br/>';
+    echo $connection->getName() . '<br/>';
 }
 </code>
 
@@ -74,6 +74,14 @@ class User extends Doctrine_Record
         $this->hasColumn('name', 'string', 255);
     }
 }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+User:
+  columns:
+    name: string(255)
 </code>
 
 Now you can create new records easily:
@@ -131,6 +139,7 @@ You can also get an array of all the {{Doctrine_Relation}} objects by simply cal
 
 <code type="php">
 $relations = $userTable->getRelations();
+
 foreach ($relations as $relation) {
     echo $relation->getLocal();
     echo $relation->getForeign();
@@ -178,6 +187,22 @@ class Phonenumber extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+User:
+  columns:
+    name: string(255)
+
+Phonenumber:
+  columns:
+    user_id: integer
+    phonenumber: string(55)
+  relations:
+    User:
+      foreignAlias: Phonenumbers
+</code>
+
 Now you can retrieve the relationship object for the {{Phonenumbers}} relationship:
 
 <code type="php">
@@ -198,13 +223,13 @@ print_r($array);
 You can easily find an individual user by its primary key by using the {{find()}} method:
 
 <code type="php">
-$user = $table->find(2);
+$user = $userTable->find(2);
 </code>
 
 You can also use the {{findAll()}} method to retrieve a collection of all {{User}} records in the database:
 
 <code type="php">
-foreach($table->findAll() as $user) {
+foreach($userTable->findAll() as $user) {
     echo $user->name;
 }
 </code>
@@ -215,7 +240,7 @@ foreach($table->findAll() as $user) {
 You can also retrieve a set of records with a DQL where condition by using the {{findByDql()}} method:
 
 <code type="php">
-foreach($table->findByDql("name LIKE '%?%'", 'John') as $user) {
+foreach($userTable->findByDql("name LIKE '%?%'", 'John') as $user) {
     echo $user->created;
 }
 </code>
@@ -273,9 +298,9 @@ Each assigned column property of {{Doctrine_Record}} represents a database table
 Now accessing the columns is easy:
 
 <code type="php">
-$table = Doctrine::getTable('User');
+$userTable = Doctrine::getTable('User');
 
-$user = $table->find(3);
+$user = $userTable->find(3);
 </code>
 
 Access property through overloading
@@ -359,9 +384,11 @@ A common case is that you have an array of values which you need to assign to a 
 The {{merge()}} method iterates through the properties of the given record or array and assigns the values to the object
 
 <code type="php">
-$values = array('name' => 'someone',
-                'age'  => 11,
-                'unknownproperty' => '...');
+$values = array(
+    'name' => 'someone',
+    'age'  => 11,
+    'unknownproperty' => '...'
+);
 
 // notice that here the unknownproperty won't get assigned
 // as the User class doesn't have a column with that name
@@ -413,13 +440,13 @@ $userTable = Doctrine::getTable("User");
 Now you can find a {{User}} record by its primary key:
 
 <code type="php">
-$user = $table->find(2);
+$user = $userTable->find(2);
 </code>
 
 Get all the users from the {{User}} model:
 
 <code type="php">
-$users = $table->findAll();
+$users = $userTable->findAll();
 foreach($users as $user) {
     echo $user->name;
 }
@@ -428,7 +455,7 @@ foreach($users as $user) {
 Find {{User}} records with a specified DQL where condition:
 
 <code type="php">
-$users = $table->findByDql("name LIKE '%?%'", 'John');
+$users = $userTable->findByDql("name LIKE '%?%'", 'John');
 foreach($users as $user) {
     echo $user->created;
 }
@@ -437,8 +464,8 @@ foreach($users as $user) {
 Doctrine also provides some magic finders where you can find one or a collection of records by any specified column in the model.
 
 <code type="php">
-$user = $table->findOneByName('jon'); // find user named jon
-$users = $table->findByAge(10); // find users with age of 10
+$user = $userTable->findOneByName('jon'); // find user named jon
+$users = $userTable->findByAge(10); // find users with age of 10
 </code>
 
 > **NOTE**
@@ -449,9 +476,9 @@ $users = $table->findByAge(10); // find users with age of 10
 Updating objects is very easy, you just call the {{Doctrine_Record::save()}} method. The other way is to call {{Doctrine_Connection::flush()}} which saves all objects. It should be noted though that flushing is a much heavier operation than just calling save method.
 
 <code type="php">
-$table = Doctrine::getTable('User');
+$userTable = Doctrine::getTable('User');
 
-$user = $table->find(2);
+$user = $userTable->find(2);
 
 if ($user !== false) {
     $user->name = 'Jack Daniels';
@@ -466,9 +493,9 @@ Run a query to make all user names lowercase:
 
 <code type="php">
 Doctrine_Query::create()
-  ->update('User u')
-  ->set('u.name', 'LOWER(u.name)')
-  ->execute();
+    ->update('User u')
+    ->set('u.name', 'LOWER(u.name)')
+    ->execute();
 </code>
 
 You can also run an update using objects if you already know the identifier of the record. When you use the {{Doctrine_Record::assignIdentifier()}} method it sets the record identifier and changes the state so that calling {{Doctrine_Record::save()}} performs an update instead of insert.
@@ -539,10 +566,10 @@ First lets retrieve a {{User}} with its associated {{Groups}} and a {{Group}} wi
 
 <code type="php">
 $user = Doctrine_Query::create()
-        ->from('User u')
-        ->leftJoin('u.Groups')
-        ->where('id = ?')
-        ->fetchOne(array(1));
+    ->from('User u')
+    ->leftJoin('u.Groups')
+    ->where('id = ?')
+    ->fetchOne(array(1));
 
 $group = Doctrine_Query::create()
     ->from('Group g')
@@ -585,9 +612,9 @@ $user->refreshRelated('Phonenumber');
 Deleting records in Doctrine is handled by {{Doctrine_Record::delete()}}, {{Doctrine_Collection::delete()}} and {{Doctrine_Connection::delete()}} methods.
 
 <code type="php">
-$table = Doctrine::getTable("User");
+$userTable = Doctrine::getTable("User");
 
-$user = $table->find(2);
+$user = $userTable->find(2);
 
 // deletes user and all related composite objects
 if($user !== false) {
@@ -598,7 +625,7 @@ if($user !== false) {
 If you have a {{Doctrine_Collection}} of {{User}} records you can call {{delete()}} and it will loop over all records calling {{Doctrine_Record::delete()}} for you.
 
 <code type="php">
-$users = $table->findAll();
+$users = $userTable->findAll();
 
 // delete all users and their related composite objects
 $users->delete();
@@ -752,8 +779,8 @@ $users->save();
 You can access the elements of {{Doctrine_Collection}} with {{set()}} and {{get()}} methods or with ArrayAccess interface.
 
 <code type="php">
-$table = Doctrine::getTable("User");
-$users = $table->findAll();
+$userTable = Doctrine::getTable("User");
+$users = $userTable->findAll();
 </code>
 
 Accessing elements with ArrayAccess interface
@@ -779,7 +806,7 @@ In the following example we fetch all users from database (there are 5) and then
 As with PHP arrays the indexes start from zero.
 
 <code type="php">
-$users = $table->findAll();
+$users = $userTable->findAll();
 
 echo count($users); // 5
 
@@ -799,7 +826,7 @@ $users[]->name = 'new user 4'; // key is 8
 The {{Doctrine_Collection::count()}} method returns the number of elements currently in the collection.
 
 <code type="php">
-$users = $table->findAll();
+$users = $userTable->findAll();
 
 echo $users->count();
 </code>
@@ -815,7 +842,7 @@ echo count($users);
 Similar to {{Doctrine_Record}} the collection can be saved by calling the {{save()}} method. When {{save()}} gets called Doctrine issues {{save()}} operations an all records and wraps the whole procedure in a transaction.
 
 <code type="php">
-$users = $table->findAll();
+$users = $userTable->findAll();
 
 $users[0]->name = 'Jack Daniels';
 
@@ -846,7 +873,6 @@ $user = new User();
 $user->setAttribute(Doctrine::ATTR_COLL_KEY, 'id');
 </code>
 
-
 Now user collections will use the values of id column as element indexes:
 
 <code type="php">
@@ -857,8 +883,7 @@ foreach($users as $id => $user) {
 }
 </code>
 
-
-Map the name column
+You may want to map the name column:
 
 <code type="php">
 $user = new User();
@@ -875,6 +900,9 @@ foreach($users as $name => $user) {
     echo $name . $user->type;
 }
 </code>
+
+> **CAUTION**
+> Note this would only be advisable if the {{name}} column is unique otherwise you will have cases where data cannot be hydrated properly.
 
 +++ Loading Related Records
 
@@ -917,10 +945,10 @@ Write a {{Doctrine_Query}} that loads everything in one query:
 
 <code type="php">
 $users = Doctrine_Query::create()
-          ->from('User u')
-          ->leftJoin('u.Phonenumber p')
-          ->leftJoin('u.Group g')
-          ->execute();
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Group g')
+    ->execute();
 </code>
 
 Now when we use the Phonenumbers and Groups no additional database queries are needed:
@@ -1200,35 +1228,45 @@ The pessimistic offline locking manager stores the locks in the database (theref
 
 Database views can greatly increase the performance of complex queries. You can think of them as cached queries. {{Doctrine_View}} provides integration between database views and DQL queries.
 
-+++ Managing Views
++++ Using Views
 
-You can easily create and drop views with the following syntax.
+Using views on your database using Doctrine is easy. We provide a nice {{Doctrine_View}} class which provides functionality for creating, dropping and executing views.
+
+The {{Doctrine_View}} class integrates with the {{Doctrine_Query}} class by saving the SQL that would be executed by {{Doctrine_Query}}.
+
+First lets create a new {{Doctrine_Query}} instance to work with:
 
 <code type="php">
-$query = Doctrine_Query::create($conn);
-$query->from('User.Phonenumber')->limit(20);
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Phonenumber p')
+    ->limit(20);
+</code>
 
-$view  = new Doctrine_View($query, 'MyView');
+Now lets create the {{Doctrine_View}} instance and pass it the {{Doctrine_Query}} instance as well as a {{name}} for identifying that database view:
 
-// creating a database view
+<code type="php">
+$view  = new Doctrine_View($q, 'MyView');
+</code>
+
+Now we can easily create the view by using the {{Doctrine_View::create()}} method:
+
+<code type="php">
 $view->create();
+</code>
 
-// dropping the view from the database
+Alternatively if you want to drop the database view you use the {{Doctrine_View::drop()}} method:
+
+<code type="php">
 $view->drop();
 </code>
 
-+++ Using Views
-
-Using views are extremely use. You can define your query like normal and pass it to a {{Doctrine_View}} instance.
+Using views are extremely easy. Just use the {{Doctrine_View::execute()}} for executing the view and returning the results just as a normal {{Doctrine_Query}} object would do.
 
 <code type="php">
-$query = Doctrine_Query::create($conn);
-$query->from('User u, u.Phonenumber')->limit(20);
-
-// hook the query into appropriate view
-$view  = new Doctrine_View($query, 'MyView');
-$view->create();
-
-// now fetch the data from the view
 $coll  = $view->execute();
+
+foreach ($coll as $record) {
+    print_r($record->toArray());
+}
 </code>

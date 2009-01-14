@@ -191,20 +191,37 @@ Conservative model loading is going to be the ideal model loading method for a p
 
 Conservative model loading requires that each file contain only one class, and the file must be named after the class. For example, if you have a class named User, it must be contained in a file named User.php
 
-Here is an example of a basic Doctrine implementation using conservative model loading.
+Here is an example of a basic Doctrine implementation using conservative model loading. First we need to require {{Doctrine.php}}:
 
 <code type="php">
-//require the base Doctrine class
 require_once('path-to-doctrine/lib/Doctrine.php');
-
-//register the autoloader
-spl_autoload_register(array('Doctrine', 'autoload'));
-
-Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
-Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
-
-$user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
 </code>
+
+Now we need to register the {{Doctrine::autoload()}} function as a php class autoloader:
+
+<code type="php">
+spl_autoload_register(array('Doctrine', 'autoload'));
+</code>
+
+Now we need to set the model loading attribute to be aggressive:
+
+<code type="php">
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive');
+</code>
+
+When we use the {{Doctrine::loadModels()}} functionality all found classes will be cached internally so the autoloader can require them later.
+
+<code type="php">
+Doctrine::loadModels('/path/to/models');
+</code>
+
+Now when we instantiate a new class, for example a {{User}} class, the autoloader will be triggered and the class is required.
+
+<code type="php">
+$user = new User();
+</code>
+
+Instantiating the class above triggers a call to {{Doctrine::autoload()}} and the class that was found in the call to {{Doctrine::loadModels()}} will be required and made available.
 
 > **NOTE**
 > Conservative model loading is recommended in most cases, specifically for production environments as you do not want to require every single model class even when it is not needed as this is unnecessary overhead. You only want to require it when it is needed.
@@ -217,17 +234,26 @@ With aggressive model loading you can have multiple classes per file and the fil
 
 The downside of aggressive model loading is that every php file is included in every request, so if you have lots of models it is recommended you use conservative model loading.
 
-Here is an example of a basic Doctrine implementation using aggressive model loading.
+Here is an example of a basic Doctrine implementation using aggressive model loading. First we need to require {{Doctrine.php}}:
 
 <code type="php">
-//require the base Doctrine class
 require_once('path-to-doctrine/lib/Doctrine.php');
+</code>
 
-//register the autoloader
+Now we need to register the {{Doctrine::autoload()}} function as a php class autoloader:
+
+<code type="php">
 spl_autoload_register(array('Doctrine', 'autoload'));
+</code>
 
-Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive'); // Thi
-Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
+Now we need to set the model loading attribute to be aggressive:
 
-$user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
+<code type="php">
+Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive');
+</code>
+
+When we use the {{Doctrine::loadModels()}} functionality all the classes found will be included right away:
+
+<code type="php">
+Doctrine::loadModels('/path/to/models');
 </code>

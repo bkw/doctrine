@@ -15,6 +15,7 @@ class Blog extends Doctrine_Record
         $this->hasColumn('content', 'string');
         $this->hasColumn('created', 'date');
     }
+
     public function preInsert($event)
     {
         $this->created = date('Y-m-d', time());

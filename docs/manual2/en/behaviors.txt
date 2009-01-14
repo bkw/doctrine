@@ -43,7 +43,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -83,7 +83,7 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -154,6 +154,8 @@ class User extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
 <code type="yaml">
 User:
   actAs:
@@ -209,6 +211,18 @@ class NewsItem extends Doctrine_Record
         );
     }
 }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+NewsItem:
+  actAs:
+    I18n:
+      fields: [title]
+  columns:
+    title: string(200)
+    content: string
 </code>
 
 Now the first time you initialize a new {{NewsItem}} record Doctrine initializes the behavior that builds the followings things:
@@ -287,6 +301,8 @@ class User extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
 <code type="yaml">
 User:
   actAs:
@@ -313,10 +329,15 @@ class User extends Doctrine_Record
 
     public function setUp()
     {
-        $this->actAs('Searchable', array('fields' => array('title', 'content')));
+        $this->actAs('Searchable', array(
+                'fields' => array('title', 'content')
+            )
+        );
     }
 }
 </code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -355,6 +376,8 @@ class Zipcode extends Doctrine_Record
   }
 }
 </code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Zipcode:
@@ -463,6 +486,16 @@ class NewsItem extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+NewsItem:
+  actAs: [Versionable]
+  columns:
+    title: string(200)
+    content: string
+</code>
+
 Now when we have defined this record to be versionable, Doctrine does internally the following things:
 
 * It creates a class called {{NewsItemVersion}} on-the-fly, the table this record is pointing at is {{news_item_version}}
@@ -534,6 +567,18 @@ class NewsItem extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+NewsItem:
+  actAs:
+    Versionable:
+      versionColumn: news_version
+  columns:
+    title: string(200)
+    content: string
+</code>
+
 You can also control the name of the versioning record and the name of the version table with option attributes {{className}} and {{tableName}}.
 
 +++ SoftDelete
@@ -558,7 +603,7 @@ class SoftDeleteTest extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 SoftDeleteTest:
@@ -662,6 +707,16 @@ class Blog extends Doctrine_Record
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+Blog:
+  actAs: [TimestampTemplate]
+  columns:
+    title: string(200)
+    content: string
+</code>
+
 > **NOTE**
 > The above described functionality is available via the {{Timestampable}} behavior that. You can read more about it in the [doc behaviors:core-behaviors:timestampable :name] section of this chapter.
 
@@ -706,6 +761,21 @@ class Email extends Doctrine_Record
         );
     }
 }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+User:
+  columns:
+    name: string(255)
+
+Email:
+  columns:
+    address: string
+    user_id: integer
+  relations:
+    User:
 </code>
 
 Now if we extend the {{User}} and {{Email}} classes and create, for example, classes {{ExtendedUser}} and {{ExtendedEmail}}, the {{ExtendedUser}} will still have a relation to the {{Email}} class and not the {{ExtendedEmail}} class. We could of course override the {{setUp()}} method of the {{User}} class and define relation to the {{ExtendedEmail}} class, but then we lose the whole point of inheritance. {{Doctrine_Template}} can solve this problem elegantly with its dependency injection solution.
@@ -928,7 +998,7 @@ class Wiki extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format:
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 WikiTest:
@@ -971,6 +1041,21 @@ class NewsArticle extends Doctrine_Record
         );
     }
 }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+NewsArticle:
+  actAs:
+    I18n:
+      fields: [title, body]
+      generateFiles: true
+      generatePath: /path/to/generate
+  columns:
+    title: string(255)
+    body: string(255)
+    author: string(255)
 </code>
 
 Now the behavior will generate a file instead of generating the code and using {{[http://www.php.net/eval eval()]}} to evaluate it at runtime.

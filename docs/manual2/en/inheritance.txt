@@ -23,6 +23,31 @@ class Group extends Entity
 { }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+Entity:
+  columns:
+    name: string(30)
+    username: string(20)
+    password: string(16)
+    created: integer(11)
+
+User:
+  inheritance:
+    extends: Entity
+    type: column_aggregation
+    keyField: type
+    keyValue: 1
+
+Group:
+  inheritance:
+    extends: Entity
+    type: column_aggregation
+    keyField: type
+    keyValue: 2
+</code>
+
 ++ Concrete
 
 Concrete inheritance creates separate tables for child classes. However in concrete inheritance each class generates a table which contains all columns (including inherited columns). In order to use concrete inheritance you'll need to add explicit {{parent::setTableDefinition()}} calls to child classes as shown below.
@@ -45,6 +70,21 @@ class Comment extends TextItem
         $this->hasColumn('content', 'string', 300);
     }
 }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+TextItem:
+  columns:
+    topic: string(100)
+
+Comment:
+  inheritance:
+    extends: TextItem
+    type: concrete
+  columns:
+    content: string(300)
 </code>
 
 In concrete inheritance you don't necessarily have to define additional columns, but in order to make Doctrine create separate tables for each class you'll have to make iterative {{setTableDefinition()}} calls.
@@ -84,6 +124,28 @@ class Group extends Entity
 }
 </code>
 
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+Entity:
+  columns:
+    name: string(30)
+    username: string(20)
+    password: string(16)
+    created: integer(11)
+
+User:
+  inheritance:
+    extends: Entity
+    type: concrete
+
+Group:
+  tableName: groups
+  inheritance:
+    extends: Entity
+    type: concrete
+</code>
+
 ++ Column Aggregation
 
 In the following example we have one database table called {{entity}}. {{Users}} and {{groups}} are both {{entities}} and they share the same database table.
@@ -119,6 +181,31 @@ class User extends Entity
 
 class Group extends Entity
 { }
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+Entity:
+  columns:
+    name: string(30)
+    username: string(20)
+    password: string(16)
+    created: integer(11)
+
+User:
+  inheritance:
+    extends: Entity
+    type: column_aggregation
+    keyField: type
+    keyValue: 1
+
+Group:
+  inheritance:
+    extends: Entity
+    type: column_aggregation
+    keyField: type
+    keyValue: 2
 </code>
 
 This feature also enable us to query the {{Entity}} table and get a {{User}} or {{Group}} object back if the returned object matches the constraints set in the parent class.

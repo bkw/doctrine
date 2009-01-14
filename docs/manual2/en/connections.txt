@@ -52,7 +52,7 @@ The currently supported PDO database drivers are:
 || mssql        ||  Microsoft SQL Server (NOT for Sybase. Compile PHP --with-mssql)   ||
 || mysql        ||  MySQL ||
 || mysqli       ||  MySQL (supports new authentication protocol) (requires PHP 5) ||
-|| oci8         ||  Oracle 7/8/9/10  ||
+|| oci          ||  Oracle 7/8/9/10  ||
 || pgsql        ||  PostgreSQL  ||
 || querysim     ||  QuerySim   ||
 || sqlite       ||  SQLite 2 ||
@@ -91,6 +91,9 @@ mysql://user@unix(/path/to/socket)/pear
 <code>
 pgsql://user:pass@tcp(localhost:5555)/pear
 </code>
+
+> **NOTE**
+> If you use, the ip address {{{127.0.0.1}}}, the port parameter is ignored (default: 3306).
 
 **Example 3.** Connect to SQLite on a Unix machine using options
 
