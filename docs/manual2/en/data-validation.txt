@@ -464,6 +464,35 @@ $user->age = '3';
 echo $user->isValid(); // false because '3' is less than the minimum of '10'
 </code>
 
+You can use the {{range}} validator to validate max and min values by omitting either one of the {{0}} or {{1}} keys of the range array. Below is an example:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('age', 'integer', 3, array(
+                'range' => array(1 => 100)
+            )
+        );
+    }
+}
+</code>
+
+The above would make it so that age has a max of 100. To have a minimum value simple specify {{0}} instead of {{1}} in the range array.
+
+The yaml syntax for this would look like the following:
+
+<code type="yaml">
+User:
+  columns:
+    username: string(255)
+    age:
+      type: integer(3)
+      range: { 1: 100 }
+</code>
+
 +++ Unique
 
 Unique constraints ensure that the data contained in a column or a group of columns is unique with respect to all the rows in the table.

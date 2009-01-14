@@ -25,6 +25,9 @@ Doctrine takes care of this problem transparently. That means if you define a de
 
 In short: You can name your fields however you want, using under_scores, camelCase or whatever you prefer. 
 
+> **NOTE**
+> In Doctrine columns and column aliases are case sensitive. So when you are using columns in your DQL queries, the column/field names must match the case in your model definition.
+
 +++ Column aliases
 
 Doctrine offers a way of setting column aliases. This can be very useful when you want to keep the application logic separate from the database logic. For example if you want to change the name of the database field all you need to change at your application is the column definition.
@@ -505,7 +508,7 @@ $board = new Forum_Board();
 $board->name = 'Some board';
 
 // lets create a new thread
-$board->Thread[0]->title = 'new thread';
+$board->Threads[0]->title = 'new thread';
 
 // save the changes 
 $board->save();

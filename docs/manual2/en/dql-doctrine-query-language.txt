@@ -47,6 +47,9 @@ foreach($users as $user) {
 }
 </code>
 
+> **CAUTION**
+> Using double quotes (") in DQL strings is discouraged. This is sensible in MySQL standard but in DQL it can be confused as an identifier. Instead it is recommended to use prepared statements for your values and it will be escaped properly.
+
 ++ SELECT queries
 
 {{SELECT}} statement syntax:
@@ -1209,4 +1212,45 @@ $user = $userTable->findOneByUsername('jonwage');
 $phoneTable = Doctrine::getTable('Phonenumber');
 
 $phonenumbers = $phoneTable->findByUser($user);
+</code>
+
+++ Debugging Queries
+
+The {{Doctrine_Query}} object has a few functions that can be used to help debug problems with the query:
+
+Sometimes you may want to see the complete DQL string of your {{Doctrine_Query}} object:
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->orderBy('u.username');
+
+echo $q->getDql();
+</code>
+
+This would output the following DQL:
+
+<code type="sql">
+FROM User u ORDER BY u.name
+</code>
+
+Or you may want to get the execute the DQL parsing process and get the SQL that would be sent to PDO:
+
+<code type="php">
+echo $q->getSql();
+</code>
+
+This would output the following SQL:
+
+<code type="sql">
+SELECT u.id AS u__id, u.name as u__name FROM user u ORDER BY u__name
+</code?>
+
+> **NOTE**
+> The SQL returned above by the {{Doctrine_Query::getSql()}} function does not replace the tokens with the parameters. This is the job of PDO and when we execute the query we pass the parameters to PDO where the replacement is executed. You can retrieve the array of parameters with the {{Doctrine_Query::getParams()}} method.
+
+Get the array of parameters for the {{Doctrine_Query}} instance:
+
+<code type="php">
+print_r($q->getParams());
 </code>

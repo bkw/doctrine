@@ -53,7 +53,7 @@ Sometimes you may want to alter the search object options afterwards. The search
 
 <code type="php">
 $search = Doctrine::getTable('NewsItem')
-    ->getTemplate('Searchable')
+    ->getTemplate('Doctrine_Template_Searchable')
     ->getPlugin();
 </code>
 
@@ -122,7 +122,8 @@ Doctrine_Search provides a query language similar to Apache Lucene. The parsed b
 Here is a simple example to retrieve the record ids and relevance data.
 
 <code type="php">
-$results = Doctrine::getTable('Article a')->search('php orm');
+$results = Doctrine::getTable('Article a')
+    ->search('php orm');
 </code>
 
 The above code executes the following query and returns an associative array:
@@ -143,7 +144,7 @@ You can optionally pass the {{search()}} function a query object to modify with 
 $query = Doctrine_Query::create()
 	->from('Article a');
 
-$articles = Doctrine::getTable('Article a')
+$articles = Doctrine::getTable('Article')
     ->search('php orm', $query)
     ->fetchArray();
 </code>

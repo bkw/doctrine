@@ -93,10 +93,22 @@ Array fetching is the best choice whenever you need data read-only like passing 
 Sometimes, you may want the direct output from PDO instead of an object or an array.  To do this, set the hydration mode to **Doctrine::HYDRATE_NONE**.  Here's an example:
 
 <code type="php">
-$total = Doctrine_Query::create()
+$results = Doctrine_Query::create()
   ->select('SUM(d.amount)')
   ->from('Donation d')
   ->execute(array(), Doctrine::HYDRATE_NONE);
+</code>
+
+You will need to print the results and find the value in the array depending on your DQL query:
+
+<code type="php">
+print_r($results);
+</code>
+
+In this example the result would be accessible with the following code:
+
+<code type="php">
+$total = $results[0][1];
 </code>
 
 ++ Bundle your class files

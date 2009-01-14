@@ -104,7 +104,7 @@ User:
       created:
         name: created_at
         type: timestamp
-        format:Y-m-d H:i:s
+        format: Y-m-d H:i:s
       updated:
         disabled: true
   columns:
@@ -628,7 +628,6 @@ class TimestampListener extends Doctrine_Record_Listener
 
     public function preUpdate(Doctrine_Event $event)
     {
-        $event->getInvoker()->created = date('Y-m-d', time());
         $event->getInvoker()->updated = date('Y-m-d', time());
     }
 }
@@ -975,3 +974,19 @@ class NewsArticle extends Doctrine_Record
 </code>
 
 Now the behavior will generate a file instead of generating the code and using {{[http://www.php.net/eval eval()]}} to evaluate it at runtime.
+
+++ Querying Generated Classes
+
+If you want to query the auto generated models you will need to make sure the model with the behavior attached is loaded and initialized. You can do this by using the static {{Doctrine::initializeModels()}} method.
+
+For example if you want to query the translation table for a {{BlogPost}} model you will need to run the following code:
+
+<code type="php">
+Doctrine::initializeModels(array('BlogPost'));
+
+$q = Doctrine_Query::create()
+    ->from('BlogPostTranslation t')
+    ->where('t.id = ? AND t.lang = ?', array(1, 'en'));
+
+$translations = $q->execute();
+</code>

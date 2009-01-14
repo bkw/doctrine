@@ -30,6 +30,8 @@ $conn->commit(); // all the queries are executed here
 
 ++ Nesting
 
+You can easily nest transactions with the Doctrine DBAL. Check the code below for a simple example demonstrating nested transactions:
+
 <code type="php">
 function saveUserAndGroup(Doctrine_Connection $conn, User $user, Group $group) {
     $conn->beginTransaction();
@@ -53,6 +55,9 @@ try {
     $conn->rollback();
 }
 </code>
+
+> **NOTE**
+> Notice how the three calls to {{saveUserAndGroup()}} are wrapped in a transaction, and each call to the function starts its own nested transaction.
 
 ++ Savepoints
 

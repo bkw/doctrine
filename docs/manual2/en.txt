@@ -13,6 +13,7 @@
 + Inheritance
 + Behaviors
 + Searching
++ Hierarchical Data
 + Data Fixtures
 + Database Abstraction Layer
 + Event Listeners

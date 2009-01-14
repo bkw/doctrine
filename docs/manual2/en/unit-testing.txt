@@ -60,6 +60,9 @@ For example:
 * http://localhost/doctrine/tests/run.php
 * http://localhost/doctrine/tests/run.php?filter=Limit&group[]=query&group[]=record
 
+> **CAUTION**
+> Please note that test results may very depending on your environment. For example if {{php.ini}} {{apc.enable_cli}} is set to 0 then some additional tests may fail.
+
 ++ Writing Tests
 
 When writing your test case, you can copy TemplateTestCase.php to start off. Here is a sample test case:
