@@ -4,12 +4,12 @@ The purpose of schema files is to allow you to manage your model definitions dir
 
 Schema files support all the normal things you would write with manual php code. Component to connection binding, relationships, attributes, templates/behaviors, indexes, etc.
 
-++ Short Hand Syntax
+++ Abbreviated Syntax
 
-Doctrine offers the ability to specify schema in a short hand syntax. A lot of the schema parameters have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its defaults. Below is an example of schema taking advantage of all the shorthand features.
+Doctrine offers the ability to specify schema in an abbreviated syntax. A lot of the schema parameters have values they default to, this allows us to abbreviate the syntax and let Doctrine just use its defaults. Below is an example of schema taking advantage of all the abbreviations.
 
 > **NOTE**
-> The detect_relations option will attempt to guess relationships based on column names. In the example below Doctrine knows that User hasOne Contact and will automatically define the relationship.
+> The {{detect_relations}} option will attempt to guess relationships based on column names. In the example below Doctrine knows that {{User}} has one {{Contact}} and will automatically define the relationship between the models.
 
 <code type="yaml">
 detect_relations: true
@@ -29,9 +29,9 @@ Contact:
     address: string
 </code>
 
-++ Expanded Syntax
+++ Verbose Syntax
 
-Here is the none short hand form of the above schema.
+Here is the 100% verbose form of the above schema:
 
 <code type="yaml">
 User:
@@ -73,19 +73,19 @@ Contact:
       type: one
 </code>
 
-In the above example we do not define the detect_relations option, instead we manually define the relationships so we have complete control over the configuration of the local and foreign key, the type and alias of relationship on each end of the relationship.
+In the above example we do not define the {{detect_relations}} option, instead we manually define the relationships so we have complete control over the configuration of the local/foreign key, type and alias of the relationship on each side.
 
 ++ Relationships
 
-When specifying relationships it is only necessary to specify the relationship on the end where the foreign key exists. When the schema file is parsed, it inflects the relationship and builds the opposite end automatically. If you specify the other end of the relationship manually, the auto generation will have no effect.
+When specifying relationships it is only necessary to specify the relationship on the end where the foreign key exists. When the schema file is parsed, it reflects the relationship and builds the opposite end automatically. If you specify the other end of the relationship manually, the auto generation will have no effect.
 
 +++ Detect Relations
 
-Doctrine offers the ability to specify a detect_relations options. This feature provides automatic relationship building based on column names. If you have a User model with a contact_id and a class with the name Contact exists, it will automatically create the relationships between the two.
+Doctrine offers the ability to specify a {{detect_relations}} option as you saw earlier. This feature provides automatic relationship building based on column names. If you have a {{User}} model with a {{contact_id}} and a class with the name {{Contact}} exists, it will automatically create the relationships between the two.
 
 +++ Customizing Relationships
 
-Doctrine only requires that you specify the relationship on the end where the foreign key exists. The opposite end of the relationship will be inflected and built on the opposite end. The schema syntax offers the ability to customize the relationship alias and type of the opposite end. This is good news because it means you can maintain all the relevant relationship information in one place. Below is an example of how to customize the alias and type of the opposite end of the relationship. It demonstrates the relationships User hasOne Contact and Contact hasOne User as UserModel. Normally it would have automatically generated User hasOne Contact and Contact hasMany User. The foreignType and foreignAlias keywords allow you to customize the foreign relationship.
+Doctrine only requires that you specify the relationship on the end where the foreign key exists. The opposite end of the relationship will be reflected and built on the opposite end. The schema syntax offers the ability to customize the relationship alias and type of the opposite end. This is good news because it means you can maintain all the relevant relationship information in one place. Below is an example of how to customize the alias and type of the opposite end of the relationship. It demonstrates the relationships {{User}} has one {{Contact}} and {{Contact}} has one {{User}} as {{UserModel}}. Normally it would have automatically generated {{User}} has one {{Contact}} and {{Contact}} has many {{User}}. The {{foreignType}} and {{foreignAlias}} options allow you to customize the opposite end of the relationship.
 
 <code type="yaml">
 User:
@@ -145,7 +145,7 @@ Avatar:
       type: string(255)
 </code>
 
-The resulting relationships will be User hasOne Avatar and Avatar hasMany User. 
+The resulting relationships would be {{User}} has one {{Avatar}} and {{Avatar}} has many {{User}}. 
 
 +++ One to One
 
@@ -254,7 +254,7 @@ GroupUser:
       foreignAlias: GroupUsers
 </code>
 
-This creates a set of models where User hasMany Groups, Group hasMany Users, GroupUser hasOne User and GroupUser hasOne Group.
+This creates a set of models where {{User}} has many {{Groups}}, {{Group}} has many {{Users}}, {{GroupUser}} has one {{User}} and {{GroupUser}} has one {{Group}}.
 
 ++ Features & Examples
 
@@ -268,13 +268,13 @@ Create a connection with code like below:
 Doctrine_Manager::connection('mysql://jwage:pass@localhost/connection1', 'connection1');
 </code>
 
-Now somewhere in your Doctrine bootstrapping of Doctrine oyu would bind the model to that connection
+Now somewhere in your Doctrine bootstrapping of Doctrine you would bind the model to that connection:
 
 <code type="php">
 Doctrine_Manager::connection()->bindComponent('User', 'conn1');
 </code>
 
-Schema files offer the ability to bind it to a specific connection by specifying the connection parameter. If you do not specify the connection the model will just use the current connection instance.
+Schema files offer the ability to bind it to a specific connection by specifying the connection parameter. If you do not specify the connection the model will just use the current connection set on the {{Doctrine_Manager}} instance.
 
 <code type="yaml">
 User:
@@ -336,9 +336,10 @@ TvListing:
      values: ['US', 'CA']
 </code>
 
-+++ ActAs
++++ ActAs Behaviors
 
-You can attach behaviors to your models with the actAs option. You can specify
+You can attach behaviors to your models with the {{actAs}} option. You can specify something like the following:
+
 <code type="yaml">
 User:
   connection: connection1
@@ -353,9 +354,6 @@ User:
       type: string(255)
     password:
       type: string(255)
-# This is an optional syntax which will just use the the defaults which are specified below
-# Since they are defaults it is not necessary to type it out
-#  actAs: [Timestampable, Sluggable]
   actAs:
     Timestampable:
     Sluggable:
@@ -363,6 +361,17 @@ User:
       name: slug    # defaults to 'slug'
       type: string  # defaults to 'clob'
       length: 255   # defaults to null. clob doesn't require a length
+</code>
+
+> **NOTE**
+> The options specified on the Sluggable behavior above are optional as they will use defaults values if you do not specify anything. Since they are defaults it is not necessary to type it out all the time.
+
+<code type="yaml">
+User:
+  connection: connection1
+  columns:
+# ...
+  actAs: [Timestampable, Sluggable]
 </code>
 
 +++ Listeners
@@ -385,16 +394,16 @@ User:
       type: string(255)
 </code>
 
-The above syntax will generated a base class as follows.
+The above syntax will generated a base class that looks something like the following:
 
 <code type="php">
 class BaseUser extends Doctrine_Record
 {
-   ...
+   // ...
    
    public setUp()
    {
-       ...
+       // ...
        $this->addListener(new MyCustomListener());
    }
 }
@@ -426,9 +435,8 @@ User:
 
 +++ Indexes
 
-Please see chapter [doc basic-schema-mapping :index :name] for more information about indexes and their options.
+Please see the [doc models-explained:indexes :name] section of the [doc models-explained chapter] for more information about indexes and their options.
 
-schema.yml
 <code type="yml">
 UserProfile:
   columns:
@@ -454,19 +462,27 @@ UserProfile:
       type: unique
 </code>
 
-This is the PHP line of code that is auto-generated inside setTableDefinition() inside your base model class.
+This is the PHP line of code that is auto-generated inside {{setTableDefinition()}} inside your base model class for the index definition used above:
 
 <code type="php">
-$this->index('name_index', array('fields' => array('first_name' => array('sorting'  => 'ASC',
-                                                                         'length'   => '10',
-                                                                         'primary'  => true ),
-                                                   'last_name' => array()),
-                                 'type' => 'unique'));
+$this->index('name_index', array(
+        'fields' => array(
+            'first_name' => array(
+                'sorting'  => 'ASC',                                                                        
+                'length'   => '10',
+                'primary'  => true
+            ),
+            'last_name' => array()),
+        'type' => 'unique'
+    )
+);
 </code>
 
 +++ Inheritance
 
-Simple inheritance. Read about more about [doc relations:inheritance:simple-inheritance :index :name]. Any columns or relations added to the children classes will be moved to the parent.
+Below we will demonstrate how you can setup the different types of inheritance using yaml schema files.
+
+++++ Simple Inheritance
 
 <code type="yaml">
 Entity:
@@ -486,7 +502,12 @@ Group:
     type: simple
 </code>
 
-Concrete inheritance. Read about more about [doc relations:inheritance:concrete-inheritance :index :name]
+> **NOTE**
+> Any columns or relationships defined in models that extend another in simple inheritance will be moved to the parent when the PHP classes are built.
+
+You can read more about this topic in the [doc inheritance:simple-inheritance :name] chapter.
+
+++++ Concrete Inheritance
 
 <code type="yaml">
 TextItem:
@@ -501,24 +522,45 @@ Comment:
     content: string(300)
 </code>
 
-Column aggregation inheritance. Read about more about [doc relations:inheritance:column-aggregation-inheritance :index :name]. Like simple inheritance, any columns or relationships added to the children will be automatically removed and moved to the parent.
+You can read more about this topic in the [doc inheritance:concrete :name] chapter.
+
+++++ Column Aggregation Inheritance
+
+> **NOTE**
+> Like simple inheritance, any columns or relationships added to the children will be automatically removed and moved to the parent when the PHP classes are built.
+
+First lets defined a model named {{Entity}} that our other models will extend from:
 
 <code type="yaml">
 Entity:
   columns:
     name: string(255)
-    type: string(255)         # Optional, will be automatically added when it is specified in the child class
+    type: string(255)
+</code>
 
+> **NOTE**
+> The type column above is optional. It will be automatically added when it is specified in the child class.
+
+Now lets create a {{User}} model that extends the {{Entity}} model:
+
+<code type="yaml">
 User:
   inheritance:
     extends: Entity
-    type: column_aggregation  # Optional, it is implied if a keyField or keyValue is present
-    keyField: type            # Optional, will default to 'type' and add it to the parent class if type is column aggregation
-    keyValue: User            # Optional, will default to the name of the child class if type is column aggregation
+    type: column_aggregation
+    keyField: type
+    keyValue: User
   columns:
     username: string(255)
     password: string(255)
+</code>
 
+> **NOTE**
+> The {{type}} option under the {{inheritance}} definition is optional as it is implied if you specify a {{keyField}} or {{keyValue}}. If the {{keyField}} is not specified it will default to add a column named {{type}}. The {{keyValue}} will default to the name of the model if you do not specify anything.
+
+Again lets create another model that extends {{Entity}} named {{Group}}:
+
+<code type="yaml">
 Group:
   inheritance:
     extends: Entity
@@ -529,11 +571,15 @@ Group:
     description: string(255)
 </code>
 
+> **NOTE**
+> The {{User}} {{username}} and {{password}} and the {{Group}} {{description}} columns will be automatically moved to the parent {{Entity}}.
+
+You can read more about this topic in the [doc inheritance:column-aggregation :name].
+
 +++ Column Aliases
 
-If you want the ability alias a column name as something other than the column name in the database this is possible with the " as alias_name" string after the column name.
+If you want the ability alias a column name as something other than the column name in the database this is easy to accomplish with Doctrine. We simple use the syntax "{{column_name as field_name}}" in the name of our column:
 
-Example:
 <code type="yaml">
 User:
   columns:
@@ -544,7 +590,7 @@ User:
       type: string(255)
 </code>
 
-The above example would allow you to access the login column name from the alias "username".
+The above example would allow you to access the column named {{login}} from the alias {{username}}.
 
 +++ Packages
 
@@ -558,6 +604,18 @@ User:
 </code>
 
 The model files from this schema file would be put in a folder named User. You can specify more sub folders by doing "package: User.Models" and the models would be in User/Models
+
+++++ Package Custom Path
+
+You can also completely by pass the automatic generation of packages to the appropriate path by specifying a completely custom path to generate the package files:
+
+<code type="yaml">
+User:
+  package: User
+  package_custom_path: /path/to/generate/package
+  columns:
+    username: string(255)
+</code>
 
 +++ Global Schema Information
 
@@ -611,20 +669,7 @@ All of the settings at the top will be applied to every model which is defined i
 
 ++ Using Schema Files
 
-Once you have defined your schema files you need some code to 
-
-You can use the following set of options when building models:
-
-||~ Name                  ||~ Default               ||~ Description                               ||
-|| packagesPrefix         || Package                || What to prefix the middle package models with. ||
-|| packagesPath           || #models_path#/packages || Path to write package files. ||
-|| generateBaseClasses    || true                   || Whether or not to generate abstract base models containing the definition and a top level class which is empty extends the base. ||
-|| generateTableClasses   || true                   || Whether or not to generate a table class for each model. ||
-|| baseClassesDirectory   || generated              || Name of the folder to generate the base class definitions in. ||
-|| baseClassName          || {{Doctrine_Record}}    || Name of the base Doctrine_Record class. ||
-|| suffix                 || .php                   || Extension for your generated models. ||
-
-Now we can use some of the above options to configure our model generation to be slightly different.
+Once you have defined your schema files you need some code to build the models from the yaml definition.
 
 <code type="php">
 $options = array(
@@ -633,6 +678,18 @@ $options = array(
   'suffix'          =>  '.class.php'
 );
 
-// This code will generate the models for schema.yml at /path/to/generate/models
-Doctrine::generateModelsFromYaml('/path/to/directory/with/yaml/schema/files', '/path/to/generate/models', $options);
+Doctrine::generateModelsFromYaml('/path/to/yaml', '/path/to/model', $options);
 </code>
+
+The above code will generate the models for {{schema.yml}} at {{/path/to/generate/models}}.
+
+Below is a table containing the different options you can use to customize the building of models. Notice we use the {{packagesPrefix}}, {{baseClassName}} and {{suffix}} options above.
+
+||~ Name                  ||~ Default               ||~ Description                               ||
+|| packagesPrefix         || Package                || What to prefix the middle package models with. ||
+|| packagesPath           || #models_path#/packages || Path to write package files. ||
+|| generateBaseClasses    || true                   || Whether or not to generate abstract base models containing the definition and a top level class which is empty extends the base. ||
+|| generateTableClasses   || true                   || Whether or not to generate a table class for each model. ||
+|| baseClassesDirectory   || generated              || Name of the folder to generate the base class definitions in. ||
+|| baseClassName          || Doctrine_Record    || Name of the base Doctrine_Record class. ||
+|| suffix                 || .php                   || Extension for your generated models. ||

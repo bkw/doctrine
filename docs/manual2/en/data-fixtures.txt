@@ -1,60 +1,56 @@
-Doctrine Data uses the Doctrine Parser for the dumping and loading of fixtures data so it is possible to use any of the formats available in the Parser. Currently yml is the only fully supported format but xml and others are next.
+Data fixtures are meant for loading small sets of test data through your models to populate your database with data to test against. The data fixtures are often used side by side with some kind of unit/functional testing suite.
 
-++ Exporting
+++ Dumping
 
-You can export data to fixtures file in many different formats
+You can dump data to fixtures file in many different formats to help you get started with writing your data fixtures. You can dump your data fixtures to one big yaml file like the following:
 
 <code type="php">
-// A few ways exist for specifying where you export the data
+Doctrine::dumpData('data.yml');
+</code>
 
-// Dump to one large fixture file
-$data = new Doctrine_Data();
-$data->exportData('data.yml', 'yml');
+Or you can optionally dump all data to individual files. One yaml file per model like the following:
 
-// Dump to individual files. One file per model. 4th argument true specifies to dump to individual files
-$data = new Doctrine_Data();
-$data->exportData('path/to/directory', 'yml', true);
+<code type="php">
+Doctrine::dumpData('directory', true);
 </code>
 
 ++ Importing
 
-You can import data from fixtures files in many different formats
+Importing data fixtures is just as easy as dumping. You can use the {{loadData()}} function:
 
 <code type="php">
-// Path can be in a few different formats
-$path = 'path/to/data.yml'; // Path directly to one yml file
-$path = array('data.yml', 'data2.yml', 'more.yml'); // Array of yml file paths
-$path = array('directory1', 'directory2', 'directory3'); // Array of directories which contain yml files. It will find 
-all files with an extension of .yml
+Doctrine::loadData('data.yml');
+</code>
 
-// Specify the format of the data you are importing
-$format = 'yml'; // xml, yml, json
+You can either specify an individual yml file like we have done above, or you can specify an entire directory:
 
-$models = array('User', 'Phonenumber'); // you can optionally specify an array of the models you wish to import the data 
-for, by default it loads data for all the available loaded models and the data that exists
+<code type="php">
+Doctrine::loadData('directory');
+</code>
 
-$data = new Doctrine_Data();
-$data->importData($path, $format, $models);
+If you want to append the imported data to the already existing data then you need to use the second argument of the {{loadData()}} function. If you don't specify the second argument as true then the data will be purged before importing.
+
+Here is how you can append instead of purging:
+
+<code type="php">
+Doctrine::loadData('data.yml', true);
 </code>
 
 ++ Writing
 
-You can write your fixtures files manually and load them in to your applications. Below is a sample data.yml fixtures file. You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, then load all data.
+You can write your fixtures files manually and load them in to your applications. Below is a sample {{data.yml}} fixtures file. You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, then load all data.
 
 Imagine a schema with the following relationships:
 
-<code type="php">
-Resource hasMany Tag as Tags
-Resource hasOne ResourceType as Type
-ResourceType hasMany Resource as Resources
-Tag hasMany Resource as Resources
-</code>
+* Resource hasMany Tag as Tags
+* Resource hasOne ResourceType as Type
+* ResourceType hasMany Resource as Resources
+* Tag hasMany Resource as Resources
 
 > **NOTE**
 > All row keys across all yaml data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
 
 <code type="yaml">
----
 Resource:
   Resource_1:
     name: Doctrine Video Tutorial
@@ -100,19 +96,17 @@ Tag:
     Resources: [Resource_1]
 </code>
 
-Here is how you would write code to load the data from that data.yml file
+Now you can load those data fixtures by simply calling {{loadData()}} and give it the path to the above {{data.yml}}.
 
 <code type="php">
-$data = new Doctrine_Data();
-$data->importData('data.yml', 'yml');
+Doctrine::loadData('/path/to/data.yml');
 </code>
 
 ++ Fixtures For Nested Sets
 
-Writing a fixtures file for a nested set tree is slightly different from writing regular fixtures files. The structure of the tree is defined like this:
+Writing a fixtures file for a nested set tree is slightly different from writing regular fixtures files. The structure of the tree is defined like the following:
 
 <code type="yaml">
----
 Category:
   Category_1:
     title: Categories # the root node
@@ -126,7 +120,12 @@ Category:
             title: Subcategory of Category 2
 </code>
 
+> **NOTE**
+> Notice how the children of each node is specified under a key named {{children}}. This is a special syntax that models with the {{NestedSet}} behavior enabled on look for.
+
 ++ Fixtures For I18n
+
+The fixtures for the {{I18n}} aren't anything custom since the {{I18n}} really is just a normal set of relationships that are built on the fly dynamically:
 
 <code type="yaml">
 Article:

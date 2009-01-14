@@ -407,7 +407,7 @@ class Example extends Doctrine_Record
 The above example will create the following database table in Pgsql:
 
 
-|| ~ Column      || ~ Type                       || ~ Not Null || ~ Default   || ~ comment ||
+||~ Column      ||~ Type                       ||~ Not Null ||~ Default   ||~ comment ||
 || id            || character(32)                ||            ||             ||         ||
 || somename      || character || varying(12)     ||            ||             ||         ||
 || somedate      || date                         ||            ||             ||         ||
@@ -421,7 +421,7 @@ The above example will create the following database table in Pgsql:
 
 The schema schema will create the following database table in Mysql:
 
-|| ~ Field          || ~ Type                       || ~ Collation       || ~ Attributes || ~ Null || ~ Default  || ~ comment ||
+||~ Field          ||~ Type                       ||~ Collation       ||~ Attributes ||~ Null ||~ Default  ||~ comment ||
 || id               || char(32)                     ||                   ||            || YES  ||          ||         ||
 || somename         || varchar(12)                  || latin1_swedish_ci ||            || YES  ||          ||         ||
 || somedate         || date                         ||                   ||            || YES  ||          ||         ||
@@ -441,7 +441,7 @@ In Doctrine all record relations are being set with {{Doctrine_Record::hasMany}}
 
 Unlike the column definitions the {{Doctrine_Record::hasMany}} and {{Doctrine_Record::hasOne}} methods are placed within a method called setUp(). Both methods take two arguments: the first argument is a string containing the name of the class and optional alias, the second argument is an array consisting of relation options. The option array contains the following keys:
 
-|| ~ Name    || ~ Optional || ~ Description                                                         ||
+||~ Name    ||~ Optional ||~ Description                                                         ||
 || local     || No         || The local field of the relation. Local field is the linked field in the defining class. ||
 || foreign   || No         || The foreign field of the relation. Foreign field is the linked field in the linked class. ||
 || refClass  || Yes        || The name of the association class. This is only needed for many-to-many associations. ||
@@ -529,13 +529,19 @@ class Email extends Doctrine_Record
         $this->hasColumn('user_id', 'integer');
         $this->hasColumn('address', 'string', 150);
     }
+
     public function setUp()
     {
-        $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
+</code>
 
-The User class is very similar to the Email class. Notice how the local and foreign columns are switched in the hasOne() definition compared to the definition of the Email class.
+The User class is very similar to the Email class. Notice how the local and foreign columns are switched in the {{hasOne()}} definition compared to the definition of the {{Email}} class.
 
 <code type="php">
 class User extends Doctrine_Record
@@ -549,7 +555,11 @@ class User extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Email', array('local' => 'id', 'foreign' => 'user_id'));
+        $this->hasOne('Email', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
     }
 }
 </code>
@@ -572,7 +582,11 @@ class User extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasMany('Phonenumber', array('local' => 'id', 'foreign' => 'user_id'));
+        $this->hasMany('Phonenumber', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
     }
 }
 
@@ -586,7 +600,11 @@ class Phonenumber extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 </code>
@@ -606,8 +624,17 @@ class Task extends Doctrine_Record
 
     public function setUp() 
     {
-        $this->hasOne('Task as Parent', array('local' => 'parent_id', 'foreign' => 'id'));
-        $this->hasMany('Task as Subtasks', array('local' => 'id', 'foreign' => 'parent_id'));
+        $this->hasOne('Task as Parent', array(
+                'local' => 'parent_id',
+                'foreign' => 'id'
+            )
+        );
+
+        $this->hasMany('Task as Subtasks', array(
+                'local' => 'id',
+                'foreign' => 'parent_id'
+            )
+        );
     }
 }
 </code>
@@ -623,7 +650,7 @@ If you are coming from relational database background it may be familiar to you 
 
 In many-to-many relations the relation between the two components is always an aggregate relation and the association table is owned by both ends. For example in the case of users and groups: when a user is being deleted, the groups he/she belongs to are not being deleted. However, the associations between this user and the groups he/she belongs to are instead being deleted. This removes the relation between the user and the groups he/she belonged to, but does not remove the user nor the groups.
 
-Sometimes you may not want that association table rows are being deleted when user / group is being deleted. You can override this behaviour by setting the relations to association component (in this case {{Groupuser}}) explicitly. 
+Sometimes you may not want that association table rows are being deleted when user / group is being deleted. You can override this behavior by setting the relations to association component (in this case {{Groupuser}}) explicitly. 
 
 In the following example we have Groups and Users of which relation is defined as many-to-many. In this case we also need to define an additional class called {{Groupuser}}.
 
@@ -637,12 +664,20 @@ class User extends Doctrine_Record
 
     public function setUp() 
     {
-        $this->hasMany('Group', array('local' => 'user_id',         // <- these are the column names
-                                      'foreign' => 'group_id',      // <- in the association table
-                                      'refClass' => 'GroupUser'));  // <- the following line is needed in many-to-many relations!
+        $this->hasMany('Group', array(
+                'local' => 'user_id',
+                'foreign' => 'group_id',
+                'refClass' => 'GroupUser'
+            )
+        );
     }
 }
+</code>
 
+> **NOTE**
+> The above {{refClass}} option is required when setting up many-to-many relationships.
+
+<code type="php">
 class Group extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -652,42 +687,69 @@ class Group extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasMany('User', array('local' => 'group_id',       // <- these are the column names
-                                     'foreign' => 'user_id',      // <- in the association table
-                                     'refClass' => 'GroupUser')); // <- the following line is needed in many-to-many relations!
+        $this->hasMany('User', array(
+                'local' => 'group_id',
+                'foreign' => 'user_id',
+                'refClass' => 'GroupUser'
+            )
+        );
 
-        // group is reserved keyword so either do this or enable ATTR_QUOTE_IDENTIFIERS
         $this->setTableName('my_group');
-    }
-}
-
-class GroupUser extends Doctrine_Record
-{
-    public function setTableDefinition() 
-    {
-        $this->hasColumn('user_id', 'integer', null, array('primary' => true));
-        $this->hasColumn('group_id', 'integer', null, array('primary' => true));
     }
 }
 </code>
 
-Notice how the relationship is bi-directional. Both User hasMany Group and Group hasMany User. This is required by Doctrine in order for Many2Many relationships to fully work.
+> **NOTE**
+> {{group}} is a reserved keyword so that is why we renamed the table to {{my_group}} using the {{setTableName}} method. The only other option is to turn on identifier quoting using the {{Doctrine::ATTR_QUOTE_IDENTIFIERS}} attribute.
 
-Now lets play around with the new models and create a user and assign it some groups.
+<code type="php">
+$manager->setAttribute(Doctrine::Doctrine::ATTR_QUOTE_IDENTIFIERS, true);
+</code>
+
+<code type="php">
+class GroupUser extends Doctrine_Record
+{
+    public function setTableDefinition() 
+    {
+        $this->hasColumn('user_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('group_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+    }
+}
+</code>
+
+Notice how the relationship is bi-directional. Both {{User}} has many {{Group}} and {{Group}} has many {{User}}. This is required by Doctrine in order for many-to-many relationships to fully work.
+
+Now lets play around with the new models and create a user and assign it some groups. First create a new {{User}} instance:
 
 <code type="php">
 $user = new User();
+</code>
 
-// add two groups
+Now add two new groups to the {{User}}:
+
+<code type="php">
 $user->Group[0]->name = 'First Group';
 
 $user->Group[1]->name = 'Second Group';
+</code>
 
-// save changes into database
+Now you can save the groups to the database:
+
+<code type="php">
 $user->save();
+</code>
 
-// deleting the associations between user and groups it belongs to
 
+Now you can delete the associations between user and groups it belongs to:
+
+<code type="php">
 $user->Groupuser->delete();
 
 $groups = new Doctrine_Collection(Doctrine::getTable('Group'));
@@ -717,16 +779,19 @@ class User extends Doctrine_Record
 
     public function setUp() 
     {
-        $this->hasMany('User as Parents', array('local'    => 'parent_id',
-                                                'foreign'  => 'child_id',
-                                                'refClass' => 'UserReference'
-                                                ));
+        $this->hasMany('User as Parents', array(
+                'local'    => 'parent_id',
+                'foreign'  => 'child_id',
+                'refClass' => 'UserReference'
+            )
+        );
 
-        $this->hasMany('User as Children', array('local'    => 'child_id',
-                                                 'foreign'  => 'parent_id',
-                                                 'refClass' => 'UserReference'
-                                                 ));
-
+        $this->hasMany('User as Children', array(
+                'local'    => 'child_id',
+                'foreign'  => 'parent_id',
+                'refClass' => 'UserReference'
+            )
+        );
     }
 }
 
@@ -734,8 +799,15 @@ class UserReference extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('parent_id', 'integer', null, array('primary' => true));
-        $this->hasColumn('child_id', 'integer', null, array('primary' => true));
+        $this->hasColumn('parent_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('child_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
     }
 }
 </code>
@@ -758,11 +830,13 @@ class User extends Doctrine_Record
 
     public function setUp() 
     {
-        $this->hasMany('User as Friend', array('local'    => 'user1',
-                                               'foreign'  => 'user2',
-                                               'refClass' => 'UserReference',
-                                               'equal'    => true,
-                                                ));
+        $this->hasMany('User as Friend', array(
+                'local'    => 'user1',
+                'foreign'  => 'user2',
+                'refClass' => 'UserReference',
+                'equal'    => true,
+            )
+        );
     }
 }
 
@@ -770,8 +844,15 @@ class UserReference extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('user1', 'integer', null, array('primary' => true));
-        $this->hasColumn('user2', 'integer', null, array('primary' => true));
+        $this->hasColumn('user1', 'integer', null, array(
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('user2', 'integer', null, array(
+                'primary' => true
+            )
+        );
     }
 }
 </code>
@@ -800,6 +881,9 @@ $koskenkorva->Friend[2] = $beer;
 $conn->flush();
 </code>
 
+> **NOTE**
+> Calling {{Doctrine_Connection::flush()}} will trigger an operation that saved all unsaved objects and wraps it all in a single transaction.
+
 Now if we access for example the friends of John Beer it would return one user 'Mikko Koskenkorva'.
 
 +++ Foreign Key Constraints
@@ -815,7 +899,10 @@ class Product extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('id', 'integer', null, 'primary');
+        $this->hasColumn('id', 'integer', null, array(
+                'primary' => true
+            )
+        );
         $this->hasColumn('name', 'string');
         $this->hasColumn('price', 'decimal', 18);
     }
@@ -836,7 +923,11 @@ class Order extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Product', array('local' => 'product_id', 'foreign' => 'id'));
+        $this->hasOne('Product', array(
+                'local' => 'product_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 </code>
@@ -895,8 +986,11 @@ class User extends Doctrine_Record
     {
         $this->index('id', array('fields' => 'id'));
 
-        $this->hasMany('Phonenumber', array('local' => 'id', 
-                                            'foreign' => 'user_id'));
+        $this->hasMany('Phonenumber', array(
+                'local' => 'id', 
+                'foreign' => 'user_id'
+            )
+        );
     }
 }
 
@@ -910,11 +1004,17 @@ class Phonenumber extends Doctrine_Record
 
     public function setUp()
     {
-        $this->index('user_id_idx', array('fields' => 'user_id'));
+        $this->index('user_id_idx', array(
+                'fields' => 'user_id'
+            )
+        );
 
-        $this->hasOne('User', array('local' => 'user_id',
-                                    'foreign' => 'id',
-                                    'onDelete' => 'CASCADE'));
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id',
+                'onDelete' => 'CASCADE'
+            )
+        );
     }
 }
 </code>
@@ -943,7 +1043,10 @@ class IndexTest extends Doctrine_Record
     {
         $this->hasColumn('name', 'string');
 
-        $this->index('myindex', array('fields' => 'name'));
+        $this->index('myindex', array(
+                'fields' => 'name'
+            )
+        );
     }
 }
 </code>
@@ -958,7 +1061,10 @@ class MultiColumnIndexTest extends Doctrine_Record
         $this->hasColumn('name', 'string');
         $this->hasColumn('code', 'string');
 
-        $this->index('myindex', array('fields' => array('name', 'code')));
+        $this->index('myindex', array(
+                'fields' => array('name', 'code')
+            )
+        );
     }
 }
 </code>
@@ -974,8 +1080,15 @@ class MultipleIndexTest extends Doctrine_Record
         $this->hasColumn('code', 'string');
         $this->hasColumn('age', 'integer');
 
-        $this->index('myindex', array('fields' => array('name', 'code')));
-        $this->index('ageindex', array('fields' => array('age')));
+        $this->index('myindex', array(
+                'fields' => array('name', 'code')
+            )
+        );
+
+        $this->index('ageindex', array(
+                'fields' => array('age')
+            )
+        );
     }
 }
 </code>
@@ -984,11 +1097,12 @@ class MultipleIndexTest extends Doctrine_Record
 
 Doctrine offers many index options, some of them being database specific. Here is a full list of available options:
 
-* sorting - A string value that can be either 'ASC' or 'DESC'.
-* length - Index length (only some drivers support this)
-* primary - Whether or not the index is a primary index.
-* type - A string value that can be unique, fulltext, gist or gin.
-
+||~ Name    ||~ Description                                              ||
+|| sorting  || A string value that can be either 'ASC' or 'DESC'.        ||
+|| length   || Index length (only some drivers support this).            ||
+|| primary  || Whether or not the index is a primary index.              ||
+|| type     || A string value that can be unique, fulltext, gist or gin. ||
+  
 Here is an example of how to create a unique index on the name column.
 
 <code type="php">
@@ -1001,13 +1115,15 @@ class MultipleIndexTest extends Doctrine_Record
         $this->hasColumn('age', 'integer');
 
         $this->index('myindex', array(
-                      'fields' => array(
-                                  'name' =>
-                                  array('sorting' => 'ASC',
-                                        'length'  => 10),
-                                  'code'),
-                      'type' => 'unique',
-                      ));
+                'fields' => array(
+                    'name' => array(
+                        'sorting' => 'ASC',
+                        'length'  => 10),
+                        'code'
+                    ),
+                'type' => 'unique',
+            )
+        );
     }
 }
 </code>
@@ -1024,8 +1140,11 @@ class Article
     	  $this->hasColumn('name', 'string');
         $this->hasColumn('content', 'string');
 
-        $this->index('content', array('fields' => 'content',
-                                      'type'   => 'fulltext'));
+        $this->index('content', array(
+                'fields' => array('content'),
+                'type'   => 'fulltext'
+            )
+        );
     }
 }
 </code>
@@ -1042,7 +1161,10 @@ class Product extends Doctrine_Record
     public function setTableDefinition()
     {
         $this->hasColumn('id', 'integer', 4, 'primary');
-        $this->hasColumn('price', 'decimal', 18, array('min' => 0));
+        $this->hasColumn('price', 'decimal', 18, array(
+                'min' => 0
+            )
+        );
     }
 }
 </code>
@@ -1066,8 +1188,16 @@ class Product extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('id', 'integer', 4, array('primary' => true));
-        $this->hasColumn('price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
+        $this->hasColumn('id', 'integer', 4, array(
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('price', 'decimal', 18, array(
+                'min' => 0,
+                'max' => 1000000
+            )
+        );
     }
 }
 </code>
@@ -1090,9 +1220,22 @@ class Product extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('id', 'integer', 4, array('primary' => true));
-        $this->hasColumn('price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
-        $this->hasColumn('discounted_price', 'decimal', 18, array('min' => 0, 'max' => 1000000));
+        $this->hasColumn('id', 'integer', 4, array(
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('price', 'decimal', 18, array(
+                'min' => 0,
+                'max' => 1000000
+            )
+        );
+  
+        $this->hasColumn('discounted_price', 'decimal', 18, array(
+                'min' => 0,
+                'max' => 1000000
+            )
+        );
     
         $this->check('price > discounted_price');
     }
@@ -1182,8 +1325,9 @@ class User extends Doctrine_Record
         $this->hasOne('Address as address', array(
                 'local' => 'id',
                 'foreign' => 'user_id',
-                'cascade' => array('delete') // application-level delete cascade
-                ));
+                'cascade' => array('delete')
+            )
+        );
     }
 }
 </code>
@@ -1223,17 +1367,18 @@ class Address extends Doctrine_Record
     public function setUp()
     {
         $this->hasOne('User as user', array(
-                'local' => 'user_id', // this is the foreign key in the database
+                'local' => 'user_id',
                 'foreign' => 'id',
-                'onDelete' => 'CASCADE' // database-level delete cascade, applied on the foreign key
-                ));
+                'onDelete' => 'CASCADE'
+            )
+        );
     }
 }
 </code>
 
-The 'onDelete' => 'CASCADE' option is translated to proper DDL/DML statements when Doctrine creates your tables.
+The {{'onDelete' => 'CASCADE'}} option is translated to proper DDL/DML statements when Doctrine creates your tables.
 
 > **NOTE**
 > Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the Address owns the foreign key (user_id) and database-level cascades are applied on the foreign key.
 
-Currently, the only two supported database-level cascade styles are 'onDelete' => 'CASCADE' and 'onUpdate' => 'CASCADE'. Both are specified on the side that owns the foreign key and applied to your database schema when Doctrine creates your tables.
+Currently, the only two supported database-level cascade styles are for {{onDelete}} and {{onUpdate}}. Both are specified on the side that owns the foreign key and applied to your database schema when Doctrine creates your tables.

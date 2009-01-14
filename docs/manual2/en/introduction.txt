@@ -56,10 +56,7 @@ The things to notice about this query:
 * We select from **classes** and not **tables**. We are selecting from the {{User}} class/model.
 * We join along **associations** (u.Phonenumbers)
 * We can reference **fields** (u.level)
-* There is no join condition (ON x.y = y.x). The associations between your 
-classes and how these are expressed in the database are known to Doctrine (You 
-need to make this mapping known to Doctrine, of course. How to do that is 
-explained later.).
+* There is no join condition (ON x.y = y.x). The associations between your classes and how these are expressed in the database are known to Doctrine (You need to make this mapping known to Doctrine, of course. How to do that is explained later in the [doc models-explained :name] chapter.).
 
 > **NOTE**
 > DQL expresses a query in the terms of your domain model (your classes, the attributes they have, the relations they have to other classes, etc.)

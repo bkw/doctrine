@@ -12,6 +12,7 @@
 + Data Validation
 + Inheritance
 + Behaviors
++ Searching
 + Data Fixtures
 + Database Abstraction Layer
 + Event Listeners

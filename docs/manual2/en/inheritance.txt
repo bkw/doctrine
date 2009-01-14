@@ -1,8 +1,8 @@
-Doctrine supports 3 types of inheritance strategies which can be mixed together.
+Doctrine supports three types of inheritance strategies which can be mixed together. The three types are simple, concrete and column aggregation. You will learn about these three different types of inheritance and how to use them in this chapter.
 
 ++ Simple
 
-Simple inheritance is the simplest inheritance. In simple inheritance all the child classes share the same columns as the parent.
+Simple inheritance is the easiest and simplest inheritance to use. In simple inheritance all the child classes share the same columns as the parent and all information is stored in the parent table.
 
 <code type="php">
 class Entity extends Doctrine_Record 
@@ -25,7 +25,7 @@ class Group extends Entity
 
 ++ Concrete
 
-Concrete inheritance creates separate tables for child classes. However in concrete inheritance each class generates a table which contains all columns (including inherited columns). In order to use concrete inheritance you'll need to add explicit parent::setTableDefinition() calls to child classes as shown above.
+Concrete inheritance creates separate tables for child classes. However in concrete inheritance each class generates a table which contains all columns (including inherited columns). In order to use concrete inheritance you'll need to add explicit {{parent::setTableDefinition()}} calls to child classes as shown below.
 
 <code type="php">
 class TextItem extends Doctrine_Record
@@ -47,9 +47,9 @@ class Comment extends TextItem
 }
 </code>
 
-In concrete inheritance you don't necessarily have to define additional columns, but in order to make Doctrine create separate tables for each class you'll have to make iterative setTableDefinition() calls.
+In concrete inheritance you don't necessarily have to define additional columns, but in order to make Doctrine create separate tables for each class you'll have to make iterative {{setTableDefinition()}} calls.
 
-In the following example we have three database tables called entity, user and group. Users and groups are both entities. The only thing we have to do is write 3 classes (Entity, Group and User) and make iterative setTableDefinition method calls.
+In the following example we have three database tables called {{entity}}, {{user}} and {{group}}. {{Users}} and {{groups}} are both {{entities}}. The only thing we have to do is write 3 classes ({{Entity}}, {{Group}} and {{User}}) and make iterative {{setTableDefinition()}} method calls.
 
 <code type="php">
 class Entity extends Doctrine_Record 
@@ -68,7 +68,7 @@ class User extends Entity
     public function setTableDefinition() 
     {
         // the following method call is needed in
-        // one-table-one-class inheritance
+        // concrete inheritance
         parent::setTableDefinition();
     }
 }
@@ -78,7 +78,7 @@ class Group extends Entity
     public function setTableDefinition() 
     {
         // the following method call is needed in
-        // one-table-one-class inheritance
+        // concrete inheritance
         parent::setTableDefinition();
     }
 }
@@ -86,11 +86,11 @@ class Group extends Entity
 
 ++ Column Aggregation
 
-In the following example we have one database table called entity. Users and groups are both entities and they share the same database table.
+In the following example we have one database table called {{entity}}. {{Users}} and {{groups}} are both {{entities}} and they share the same database table.
 
-The entity table has a column called type which tells whether an entity is a group or a user. Then we decide that users are type 1 and groups type 2.
+The {{entity}} table has a column called {{type}} which tells whether an {{entity}} is a {{group}} or a {{user}}. Then we decide that {{users}} are type 1 and groups type 2.
 
-The only thing we have to do is to create 3 records (the same as before) and add call the {{Doctrine_Table::setSubclasses()}} method from the parent class.
+The only thing we have to do is to create 3 records (the same as before) and add the call to the {{Doctrine_Table::setSubclasses()}} method from the parent class.
 
 <code type="php">
 class Entity extends Doctrine_Record 
@@ -105,23 +105,25 @@ class Entity extends Doctrine_Record
         // this column is used for column
         // aggregation inheritance
         $this->hasColumn('type', 'integer', 11);
+
         $this->setSubclasses(array(
-            'User'  => array('type' => 1),
-            'Group' => array('type' => 2)
-        ));
+                'User'  => array('type' => 1),
+                'Group' => array('type' => 2)
+            )
+        );
     }
 }
 
 class User extends Entity
-{
-}
+{ }
 
 class Group extends Entity
-{
-}
+{ }
 </code>
 
-This feature also enable us to query the Entity table and get a User or Group object back if the returned object matches the constraints set in the parent class. See the code example below for an example of this.
+This feature also enable us to query the {{Entity}} table and get a {{User}} or {{Group}} object back if the returned object matches the constraints set in the parent class.
+
+See the code example below for an example of this. First lets save a new {{User}} object:
 
 <code type="php">
 $user = new User();
@@ -129,19 +131,40 @@ $user->name = 'Bjarte S. Karlsen';
 $user->username = 'meus';
 $user->password = 'rat';
 $user->save();
+</code>
 
+Now lets save a new {{Group}} object:
+
+<code type="php">
 $group = new Group();
 $group->name = 'Users';
 $group->username = 'users';
 $group->password = 'password';
 $group->save();
-
-$q = Doctrine_Query::create();
-$user = $q->from('Entity')->where('id = ?')->fetchOne(array($user->id));
-assert($user instanceOf User);
-
-$q = Doctrine_Query::create();
-$group = $q->from('Entity')->where('id = ?')->fetchOne(array($group->id));
-
-echo get_class($group); // prints 'Group'
 </code>
+
+Now if we query the {{Entity}} model for the id of the {{User}} we created, the {{Doctrine_Query}} will return an instance of {{User}}.
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('Entity e')
+    ->where('e.id = ?');
+
+$user = $q->fetchOne(array($user->id));
+echo get_class($user); // User
+</code>
+
+If we do the same thing as above but for the {{Group}} record, it will return an instance of {{Group}}.
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('Entity e')
+    ->where('e.id = ?');
+
+$group = $q->fetchOne(array($group->id));
+
+echo get_class($group); // Group
+</code>
+
+> **NOTE**
+> The above is possible because of the {{type}} column. Doctrine knows which class each record was created by, so when data is being hydrated it can be hydrated in to the appropriate sub-class.
