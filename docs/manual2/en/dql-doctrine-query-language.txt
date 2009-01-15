@@ -2,6 +2,29 @@
 
 Doctrine Query Language (DQL) is an Object Query Language created for helping users in complex object retrieval. You should always consider using DQL (or raw SQL) when retrieving relational data efficiently (eg. when fetching users and their phonenumbers).
 
+> **NOTE**
+> In this chapter we will execute dozens of examples of how to use the Doctrine Query Language. All of these examples assume you are using the schemas defined in the previous chapters, primarily the [doc models-explained :name] chapter. We will define one additional model for our testing purposes which can be found right below this note.
+
+<code type="php">
+class Account extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+        $this->hasColumn('amount', 'decimal');
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+Account:
+  columns:
+    name: string(255)
+    amount: decimal
+</code>
+
 When compared to using raw SQL, DQL has several benefits: 
     
 * From the start it has been designed to retrieve records(objects) not result set rows
@@ -23,7 +46,7 @@ $users = Doctrine::getTable('User')->findAll();
 foreach($users as $user) {
     echo $user->name . ' has phonenumbers: ';
 
-    foreach($user->Phonenumber as $phonenumber) {
+    foreach($user->Phonenumbers as $phonenumber) {
         echo $phonenumber . ' ';
     }
 }
@@ -35,13 +58,13 @@ foreach($users as $user) {
 <code type="php">
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->leftJoin('u.Phonenumber p')
+          ->leftJoin('u.Phonenumbers p')
           ->execute();
 
 foreach($users as $user) {
     echo $user->name . ' has phonenumbers: ';
 
-    foreach($user->Phonenumber as $phonenumber) {
+    foreach($user->Phonenumbers as $phonenumber) {
         echo $phonenumber . ' ';
     }
 }
@@ -92,8 +115,8 @@ $q = Doctrine_Query::create()
 $q = Doctrine_Query::create()
     ->select('u.*, p.*, g.*')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
-    ->leftJoin('u.Group g');
+    ->leftJoin('u.Phonenumbers p')
+    ->leftJoin('u.Groups g');
 </code>
 
 * The {{WHERE}} clause, if given, indicates the condition or conditions that the records must satisfy to be selected. {{where_condition}} is an expression that evaluates to true for each row to be selected. The statement selects all rows if there is no {{WHERE}} clause.
@@ -112,7 +135,7 @@ $q = Doctrine_Query::create()
 $q = Doctrine_Query::create()
     ->select('u.*')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Phonenumbers p')
     ->having('COUNT(p.id) > 3');
 </code>
 
@@ -122,7 +145,7 @@ $q = Doctrine_Query::create()
 $q = Doctrine_Query::create()
     ->select('u.*')
     ->from('User u')
-    ->orderBy('u.name');
+    ->orderBy('u.username');
 </code>
 
 * The {{LIMIT}} and {{OFFSET}} clauses can be used for efficiently limiting the number of records to a given {{row_count}}
@@ -142,18 +165,18 @@ Aggregate value {{SELECT}} syntax:
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.id, COUNT(p.id) num_posts')
-    ->from('User u, u.Posts p')
+    ->select('u.id, COUNT(t.id) AS num_threads')
+    ->from('User u, u.Threads t')
     ->where('u.id = ?', 1)
     ->groupby('u.id');
 
 $users = $q->execute();
 </code>
 
-Now you can easily access the {{num_posts}} data with the following code:
+Now you can easily access the {{num_threads}} data with the following code:
 
 <code type="php">
-echo $users->num_posts . ' posts found';
+echo $users->num_threads . ' threads found';
 </code>
 
 ++ UPDATE queries
@@ -248,11 +271,11 @@ DQL supports two kinds of joins INNER JOINs and LEFT JOINs. For each joined comp
 $q = Doctrine_Query::create()
     ->select('u.*, p.*')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p');
+    ->leftJoin('u.Phonenumbers p');
 
 $q = Doctrine_Query::create()
     ->select('u.*, p.*')
-    ->from('User u, u.Phonenumber p');
+    ->from('User u, u.Phonenumbers p');
 </code>
 
 > **TIP**
@@ -264,7 +287,7 @@ $q = Doctrine_Query::create()
 $q = Doctrine_Query::create()
   ->select('u.*, p.*')
   ->from('User u')
-  ->innerJoin('u.Phonenumber p');
+  ->innerJoin('u.Phonenumbers p');
 </code>
 
 By default DQL auto-adds the primary key join condition, so for DQL query:
@@ -273,7 +296,7 @@ By default DQL auto-adds the primary key join condition, so for DQL query:
 $q = Doctrine_Query::create()
   ->select('u.id, p.id')
   ->from('User u')
-  ->leftJoin('u.Phonenumber p');
+  ->leftJoin('u.Phonenumbers p');
 
 echo $q->getSql();
 </code>
@@ -281,7 +304,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
-SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id
+SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumbers p ON u.id = p.user_id
 </code>
 
 +++ ON keyword
@@ -292,7 +315,7 @@ If you want to override this behavior and add your own custom join condition you
 $q = Doctrine_Query::create()
     ->select('u.id, p.id')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p ON u.id = 2');
+    ->leftJoin('u.Phonenumbers p ON u.id = 2');
 
 echo $q->getSql();
 </code>
@@ -300,7 +323,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
-SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = 2
+SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumbers p ON u.id = 2
 </code>
 
 +++ WITH keyword
@@ -311,7 +334,7 @@ Most of the time you don't need to override the primary join condition, rather y
 $q = Doctrine_Query::create()
   ->select('u.id, p.id')
   ->from('User u')
-  ->leftJoin('u.Phonenumber p WITH u.id = 2');
+  ->leftJoin('u.Phonenumbers p WITH u.id = 2');
 
 echo $q->getSql();
 </code>
@@ -319,7 +342,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
-SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumber p ON u.id = p.user_id AND u.id = 2
+SELECT u.id AS u__id, p.id AS p__id FROM User u LEFT JOIN Phonenumbers p ON u.id = p.user_id AND u.id = 2
 </code>
 
 The Doctrine_Query API offers two convenience methods for adding JOINS. These are called {{innerJoin()}} and {{leftJoin()}}, which usage should be quite intuitive as shown below:
@@ -327,8 +350,8 @@ The Doctrine_Query API offers two convenience methods for adding JOINS. These ar
 <code type="php">
 $q = Doctrine_Query::create()
     ->from('User u')
-    ->leftJoin('u.Group g')
-    ->innerJoin('u.Phonenumber p WITH u.id > 3')
+    ->leftJoin('u.Groups g')
+    ->innerJoin('u.Phonenumbers p WITH u.id > 3')
     ->leftJoin('u.Email e');
 </code>
 
@@ -338,7 +361,7 @@ The INDEXBY keyword offers a way of mapping certain columns as collection / arra
 
 <code type="php">
 $q = Doctrine_Query::create()
-  ->from('User u INDEXBY u.name');
+  ->from('User u INDEXBY u.username');
 
 $users = $q->execute();
 </code>
@@ -349,12 +372,12 @@ Now the users in $users collection are accessible through their names.
 echo $user['jack daniels']->id;
 </code>
 
-The INDEXBY keyword can be applied to any given JOIN. This means that any given component can have each own indexing behavior. In the following we use distinct indexing for both Users and Groups.
+The {{INDEXBY}} keyword can be applied to any given JOIN. This means that any given component can have each own indexing behavior. In the following we use distinct indexing for both {{Users}} and {{Groups}}.
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->from('User u INDEXBY u.name')
-    ->innerJoin('u.Group g INDEXBY g.name');
+    ->from('User u INDEXBY u.username')
+    ->innerJoin('u.Groups g INDEXBY g.name');
 
 $users = $q->execute();
 </code>
@@ -362,7 +385,7 @@ $users = $q->execute();
 Now lets print out the drinkers club's creation date. 
 
 <code type="php">
-echo $users['jack daniels']->Group['drinkers club']->createdAt;
+echo $users['jack daniels']->Groups['drinkers club']->createdAt;
 </code>
 
 ++ WHERE clause
@@ -401,7 +424,7 @@ A string literal is enclosed in single quotes; for example: 'literal'. A string 
 <code type="php">
 $q = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.name = ?', 'Vincent')
+    ->where('u.username = ?', 'Vincent')
 </code>
 
 **Integers**
@@ -420,7 +443,7 @@ Float literals support the use of PHP float literal syntax.
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->from('Amount a')
+    ->from('Account a')
     ->where('a.amount = 432.123');
 </code>
 
@@ -453,12 +476,12 @@ Here are some examples of using positional parameters:
 <code type="php">
 $users = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.name = ?', array('Arnold'))
+    ->where('u.username = ?', array('Arnold'))
     ->execute();
 
 $users = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.id > ? AND u.name LIKE ?', array(50, 'A%'))
+    ->where('u.id > ? AND u.username LIKE ?', array(50, 'A%'))
     ->execute();
 </code>
 
@@ -467,13 +490,13 @@ Here are some examples of using named parameters:
 <code type="php">
 $users = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.name = :name', array(':name' => 'Arnold'))
+    ->where('u.username = :name', array(':name' => 'Arnold'))
     ->execute();
 
 $users = Doctrine_Query::create()
     ->from('User u')
     ->where('u.id > :id', array(':id' => 50))
-    ->andWhere('u.name LIKE :name', array(':name' => 'A%'))
+    ->andWhere('u.username LIKE :name', array(':name' => 'A%'))
     ->execute();
 </code>
 
@@ -511,7 +534,7 @@ Here is an example where we use a subquery for the {{IN}}:
 <code type="php">
 $q = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.id IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)', 1);
+    ->where('u.id IN (SELECT u.id FROM User u INNER JOIN u.Groups g WHERE g.id = ?)', 1);
 </code>
 
 Here is an example where we just use a list of integers:
@@ -541,18 +564,22 @@ Examples:
 
 If the value of the string_expression or pattern_value is NULL or unknown, the value of the LIKE expression is unknown. If the escape_characteris specified and is NULL, the value of the LIKE expression is unknown.
 
+Find all users whose email ends with '@gmail.com':
+
 <code type="php">
-// finding all users whose email ends with '@gmail.com'
 $users = Doctrine_Query::create()
           ->from('User u')
           ->leftJoin('u.Email e')
           ->where('e.address LIKE ?', '%@gmail.com')
           ->execute();
+</code>
 
-// finding all users whose name starts with letter 'A'
+Find all users whose name starts with letter 'A':
+
+<code type="php">
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.name LIKE ?', 'A%')
+          ->where('u.username LIKE ?', 'A%')
           ->execute();
 </code>
 
@@ -652,7 +679,7 @@ Here is an example where we find all users which don't belong to the group id 1:
 <code type="php">
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)', 1)
+          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Groups g WHERE g.id = ?)', 1)
           ->execute();
 </code>
 
@@ -661,7 +688,7 @@ Here is an example where we find all users which don't belong to any groups
 <code type="php">
 $users = Doctrine_Query::create()
           ->from('User u')
-          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g)')
+          ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Groups g)')
           ->execute();
 </code>
 
@@ -669,11 +696,11 @@ $users = Doctrine_Query::create()
 
 +++ String functions
 
-* The //CONCAT// function returns a string that is a concatenation of its arguments. In the example above we map the concatenation of users firstname and lastname to a value called name
+The //CONCAT// function returns a string that is a concatenation of its arguments. In the example above we map the concatenation of users first_name and last_name to a value called name
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('CONCAT(u.firstname, u.lastname) AS name')
+    ->select('CONCAT(u.first_name, u.last_name) AS name')
     ->from('User u');
 
 $users = $q->execute();
@@ -685,13 +712,13 @@ foreach($users as $user) {
 }
 </code>
 
-* The second and third arguments of the //SUBSTRING// function denote the starting position and length of the substring to be returned. These arguments are integers. The first position of a string is denoted by 1. The //SUBSTRING// function returns a string.
+The second and third arguments of the //SUBSTRING// function denote the starting position and length of the substring to be returned. These arguments are integers. The first position of a string is denoted by 1. The //SUBSTRING// function returns a string.
 
 <code type="php">
 $q = Doctrine_Query::create();
-    ->select('u.name')
+    ->select('u.username')
     ->from('User u')
-    ->where("SUBSTRING(u.name, 0, 1) = 'z'");
+    ->where("SUBSTRING(u.username, 0, 1) = 'z'");
 
 $users = $q->execute();
 
@@ -700,13 +727,13 @@ foreach($users as $user) {
 }
 </code>
 
-* The //TRIM// function trims the specified character from a string. If the character to be trimmed is not specified, it is assumed to be space (or blank). The optional trim_character is a single-character string literal or a character-valued input parameter (i.e., char or Character)[30]. If a trim specification is not provided, BOTH is assumed. The //TRIM// function returns the trimmed string.
+The //TRIM// function trims the specified character from a string. If the character to be trimmed is not specified, it is assumed to be space (or blank). The optional trim_character is a single-character string literal or a character-valued input parameter (i.e., char or Character)[30]. If a trim specification is not provided, BOTH is assumed. The //TRIM// function returns the trimmed string.
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.name')
+    ->select('u.username')
     ->from('User u')
-    ->where('TRIM(u.name) = ?', 'Someone');
+    ->where('TRIM(u.username) = ?', 'Someone');
 
 $users = $q->execute();
 
@@ -715,13 +742,13 @@ foreach($users as $user) {
 }
 </code>    
 
-* The //LOWER// and //UPPER// functions convert a string to lower and upper case, respectively. They return a string. 
+The //LOWER// and //UPPER// functions convert a string to lower and upper case, respectively. They return a string. 
 
 <code type="php">
 $q = Doctrine_Query::create();
-    ->select('u.name')
+    ->select('u.username')
     ->from('User u')
-    ->where("LOWER(u.name) = 'someone'");
+    ->where("LOWER(u.username) = 'someone'");
 
 $users = $q->execute();
 
@@ -730,8 +757,9 @@ foreach($users as $user) {
 }
 </code>  
 
-* The //LOCATE// function returns the position of a given string within a string, starting the search at a specified position. It returns the first position at which the string was found as an integer. The first argument is the string to be located; the second argument is the string to be searched; the optional third argument is an integer that represents the string position at which the search is started (by default, the beginning of the string to be searched). The first position in a string is denoted by 1. If the string is not found, 0 is returned.
-* The //LENGTH// function returns the length of the string in characters as an integer.
+The //LOCATE// function returns the position of a given string within a string, starting the search at a specified position. It returns the first position at which the string was found as an integer. The first argument is the string to be located; the second argument is the string to be searched; the optional third argument is an integer that represents the string position at which the search is started (by default, the beginning of the string to be searched). The first position in a string is denoted by 1. If the string is not found, 0 is returned.
+
+The //LENGTH// function returns the length of the string in characters as an integer.
 
 +++ Arithmetic functions
 
@@ -760,7 +788,7 @@ Find all the users which are not in a specific group.
 <code type="php">
 $q = Doctrine_Query::create()
     ->from('User u')
-    ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Group g WHERE g.id = ?)');
+    ->where('u.id NOT IN (SELECT u.id FROM User u INNER JOIN u.Groups g WHERE g.id = ?)');
 
 $users = $q->execute();
 </code>
@@ -769,7 +797,7 @@ Retrieve the users phonenumber in a subquery and include it in the resultset of 
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.*, (SELECT p.phonenumber FROM Phonenumber p WHERE p.user_id = u.id LIMIT 1) as phonenumber')
+    ->select('u.*, (SELECT p.phonenumber FROM Phonenumbers p WHERE p.user_id = u.id LIMIT 1) as phonenumber')
           ->from('User u');
 
 $users = $q->execute();
@@ -795,7 +823,7 @@ Selecting alphabetically first user by name.
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('MIN(u.name)')
+    ->select('MIN(u.username)')
     ->from('User u');
 </code>
 
@@ -814,14 +842,14 @@ $q = Doctrine_Query::create()
     ->select('u.*')
     ->addSelect('COUNT(p.id) as num_phonenumbers')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Phonenumbers p')
     ->groupBy('u.id');
 </code>
 
 The HAVING clause can be used for narrowing the results using aggregate values. In the following example we fetch all users which have atleast 2 phonenumbers
 
 <code type="sql">
-SELECT u.* FROM User u, u.Phonenumber p HAVING COUNT(p.id) >= 2
+SELECT u.* FROM User u, u.Phonenumbers p HAVING COUNT(p.id) >= 2
 </code>
 
 <code type="php">
@@ -829,7 +857,7 @@ $q = Doctrine_Query::create()
     ->select('u.*')
     ->addSelect('COUNT(p.id) as num_phonenumbers')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Phonenumbers p')
     ->groupBy('u.id')
     ->having('num_phonenumbers >= 2');
 </code>
@@ -862,8 +890,8 @@ Examples:
 <code type="php">
 $q = Doctrine_Query::create()
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
-    ->orderBy('u.name, p.phonenumber');
+    ->leftJoin('u.Phonenumbers p')
+    ->orderBy('u.username, p.phonenumber');
 
 $q = Doctrine_Query::create()
     ->from('User u')
@@ -888,7 +916,7 @@ In the following example we fetch all users and sort those users by the number o
 $q = Doctrine_Query::create()
     ->select('u.*, COUNT(p.id) count')
     ->from('User u')
-    ->innerJoin('u.Phonenumber p')
+    ->innerJoin('u.Phonenumbers p')
     ->orderby('count');
 
 $users = $q->execute();
@@ -918,7 +946,7 @@ Retrieve the first 20 users and all their associated phonenumbers:
 $q = Doctrine_Query::create()
     ->select('u.*, p.*')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Phonenumbers p')
     ->limit(20);
 
 $users = $q->execute();
@@ -926,7 +954,7 @@ $users = $q->execute();
 foreach($users as $user) {
     echo ' --- '.$user->name.' --- \n';
 
-    foreach($user->Phonenumber as $p) {
+    foreach($user->Phonenumbers as $p) {
         echo $p->phonenumber.'\n';
     }
 }
@@ -963,9 +991,9 @@ DQL QUERY:
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.id, u.name, p.*')
+    ->select('u.id, u.username, p.*')
     ->from('User u')
-    ->leftJoin('u.Phonenumber p')
+    ->leftJoin('u.Phonenumbers p')
     ->limit(20);
 
 echo $q->getSql();
@@ -994,9 +1022,9 @@ DQL QUERY:
 
 <code type="php">
 $q = Doctrine_Query::create()
-    ->select('u.id, u.name, p.*')
+    ->select('u.id, u.username, p.*')
     ->from('User u')
-    ->innerJoin('u.Phonenumber p')
+    ->innerJoin('u.Phonenumbers p')
     ->limit(20);
 
 echo $q->getSql();
@@ -1344,7 +1372,7 @@ echo $q->getDql();
 This would output the following DQL:
 
 <code type="sql">
-FROM User u ORDER BY u.name
+FROM User u ORDER BY u.username
 </code>
 
 Or you may want to get the execute the DQL parsing process and get the SQL that would be sent to PDO:
@@ -1356,7 +1384,7 @@ echo $q->getSql();
 This would output the following SQL:
 
 <code type="sql">
-SELECT u.id AS u__id, u.name as u__name FROM user u ORDER BY u__name
+SELECT u.id AS u__id, u.username as u__name FROM user u ORDER BY u__name
 </code>
 
 > **NOTE**
