@@ -238,6 +238,7 @@ $q = Doctrine_Query::create()
     ->where('e.id = ?');
 
 $user = $q->fetchOne(array($user->id));
+
 echo get_class($user); // User
 </code>
 
