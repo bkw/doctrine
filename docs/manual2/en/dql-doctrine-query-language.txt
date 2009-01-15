@@ -1357,7 +1357,7 @@ This would output the following SQL:
 
 <code type="sql">
 SELECT u.id AS u__id, u.name as u__name FROM user u ORDER BY u__name
-</code?>
+</code>
 
 > **NOTE**
 > The SQL returned above by the {{Doctrine_Query::getSql()}} function does not replace the tokens with the parameters. This is the job of PDO and when we execute the query we pass the parameters to PDO where the replacement is executed. You can retrieve the array of parameters with the {{Doctrine_Query::getParams()}} method.
