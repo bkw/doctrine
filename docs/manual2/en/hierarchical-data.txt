@@ -263,7 +263,6 @@ class Category extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
----
 Category:
   actAs: [NestedSet]
   columns:

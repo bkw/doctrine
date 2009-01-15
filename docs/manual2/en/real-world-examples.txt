@@ -73,7 +73,6 @@ class UserPermission extends Doctrine_Record
 </code>
 
 <code type="yaml">
----
 User:
   columns:
     username: string(255)
@@ -211,7 +210,6 @@ class Forum_Thread extends Doctrine_Record
 </code>
 
 <code type="yaml">
----
 Forum_Category:
   columns:
     root_category_id: integer(10)

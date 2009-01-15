@@ -927,7 +927,6 @@ class Product extends Doctrine_Record
 </code>
 
 <code type="yaml">
----
 Product:
   columns:
     id:
@@ -963,7 +962,6 @@ class Order extends Doctrine_Record
 </code>
 
 <code type="yaml">
----
 Order:
   columns:
     order_id:
