@@ -136,21 +136,41 @@ Now that you have Doctrine in your hands, we are ready to implement Doctrine in 
 
 +++ Require Doctrine Base Class
 
-The first thing we must do is find the {{Doctrine.php}} file containing the core class so that we can require it in to our application.
+The first thing we must do is find the {{Doctrine.php}} file containing the core class so that we can require it in to our application. The Doctrine.php file is in the lib folder from when you downloaded Doctrine in the previous section.
 
-The Doctrine.php file is in the lib folder from when you downloaded Doctrine in the previous section.
+We need to create a php script for bootstrapping Doctrine and all the configuration for it. Create a file named {{bootstrap.php}} and place the following code in the file:
 
 <code type="php">
+// bootstrap.php
+
+/**
+ * Bootstrap Doctrine.php, register autoloader and specify 
+ * configuration attributes
+ */
 require_once('/path/to/doctrine/lib/Doctrine.php');
 </code>
 
 +++ Register Autoloader
 
-Now that we have the {{Doctrine}} class present, we need to register the class autoloader function defined inside.
+Now that we have the {{Doctrine}} class present, we need to register the class autoloader function in the bootstrap file:
 
 <code type="php">
+// bootstrap.php
+
+// ...
 spl_autoload_register(array('Doctrine', 'autoload'));
 </code>
+
+Lets also create the singleton {{Doctrine_Manager}} instance and assign it to a variable named {{$manager}}:
+
+<code type="php">
+// bootstrap.php
+
+// ...
+$manager = Doctrine_Manager::getInstance();
+</code>
+
+++++ Autoloading Explained
 
 > **NOTE**
 > You can read about the PHP autoloading on the php website [http://www.php.net/spl_autoload_register here]. Using the autoloader allows us to lazily load classes as they are requested instead of pre-loading all classes. This is a huge benefit to performance.
@@ -182,3 +202,50 @@ In the above example the {{Doctrine_Some_Class}} can be found at {{/path/to/doct
 
 > **NOTE**
 > Obviously the real {{Doctrine::autoload()}} function is a bit more complex and has some error checking to ensure the file exists but the above code demonstrates how it works.
+
++++ Bootstrap File
+
+The bootstrap file we have created should now look like the following:
+
+<code type="php">
+// bootstrap.php
+
+/**
+ * Bootstrap Doctrine.php, register autoloader and specify 
+ * configuration attributes
+ */
+
+require_once('/path/to/doctrine/lib/Doctrine.php');
+spl_autoload_register(array('Doctrine', 'autoload'));
+$manager = Doctrine_Manager::getInstance();
+</code>
+
+This new bootstrapping file will be referenced several times in this book as it is where we will make changes to our implementation as we learn how to use Doctrine step by step.
+
+> **NOTE**
+> The configuration attributes mentioned above are a feature in Doctrine used for configuring and controlling functionality. You will learn more about attributes and how to get/set them in the [doc configuration :name] chapter.
+
++++ Test Script
+
+Now lets create a simple test script that we can use to run various tests as we learn about the features of Doctrine. Create a directory named {{doctrine_test}} and copy your {{bootstrap.php}} file there:
+
+<code>
+$ mkdir doctrine_test
+$ cp /path/to/bootstrap.php doctrine_test
+</code>
+
+Create a new file in the {{doctrine_test}} directory named {{test.php}} and place the following code inside:
+
+<code type="php">
+// doctrine_test/test.php
+
+require_once('bootstrap.php');
+
+echo Doctrine::getPath();
+</code>
+
+Now you can execute the test script from your command line. This is how we will perform tests with Doctrine throughout the chapters so make sure it is working for you! It should output the path to your Doctrine installation.
+
+<code>
+$ php test.php
+</code>

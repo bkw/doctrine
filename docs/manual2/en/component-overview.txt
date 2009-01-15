@@ -1,3 +1,5 @@
+In the previous chapters we have just barely began to skim the surface. We created a very simple bootstrap and test script where we have been performing small tests as we learn more and more about Doctrine.
+
 In this chapter will go over each of the main components that make up Doctrine and what each of their roles are so that in later chapters you will understand terminology and the purpose of the mentioned classes.
 
 ++ Manager
@@ -1270,3 +1272,9 @@ foreach ($coll as $record) {
     print_r($record->toArray());
 }
 </code>
+
+++ Conclusion
+
+So now we have gone over almost all of the major components that make up Doctrine as well as introducing some of the common API operations encountered when using Doctrine on a day-to-day basis.
+
+The examples used in this chapter aren't meant for you to be testing in your bootstrap/test environment. Their only purpose is for you to be introduced to the API of the major components. We will start again with real code examples you can test in the [doc introduction-to-models :name] chapter. First we will take a deeper look at connections in the [doc connections next chapter].

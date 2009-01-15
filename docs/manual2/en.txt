@@ -1,6 +1,7 @@
 + Introduction
 + Acknowledgements
 + Getting Started
++ Introduction to Connections
 + Configuration
 + Component Overview
 + Connections
