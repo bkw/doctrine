@@ -237,7 +237,7 @@ $ cp /path/to/bootstrap.php doctrine_test
 Create a new file in the {{doctrine_test}} directory named {{test.php}} and place the following code inside:
 
 <code type="php">
-// doctrine_test/test.php
+// test.php
 
 require_once('bootstrap.php');
 
@@ -247,5 +247,6 @@ echo Doctrine::getPath();
 Now you can execute the test script from your command line. This is how we will perform tests with Doctrine throughout the chapters so make sure it is working for you! It should output the path to your Doctrine installation.
 
 <code>
-$ php test.php
+$ php test.php 
+/path/to/doctrine/lib
 </code>
