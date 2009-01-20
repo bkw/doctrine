@@ -140,7 +140,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
      *
      *      -- checks                       the check constraints of this table, eg. 'price > dicounted_price'
      *
-     *      -- collation                    collation attribute
+     *      -- collate                      collate attribute
      *
      *      -- indexes                      the index definitions of this table
      *
@@ -159,7 +159,7 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                                      'enumMap'        => array(),
                                      'type'           => null,
                                      'charset'        => null,
-                                     'collation'      => null,
+                                     'collate'        => null,
                                      'treeImpl'       => null,
                                      'treeOptions'    => array(),
                                      'indexes'        => array(),
