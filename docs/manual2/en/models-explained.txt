@@ -1,43 +1,4 @@
-As we mentioned before, at the lowest level in Doctrine your schema is represented by a set of php classes that map the schema meta data for your database tables. A simple User model might look something like this.
-
-<code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('first_name', 'string', 255);
-        $this->hasColumn('last_name', 'string', 255);
-        $this->hasColumn('username', 'string', 255);
-        $this->hasColumn('password', 'string', 255);
-        $this->hasColumn('type', 'string', 255);
-        $this->hasColumn('is_active', 'boolean', null, array(
-                'default' => true
-            )
-        );
-        $this->hasColumn('is_super_admin', 'boolean', null, array(
-                'default' => false
-            )
-        );
-    }
-
-    public function setUp()
-    {
-        $this->actAs('Timestampable');
-    }
-}
-</code>
-
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
-
-<code type="yaml">
-User:
-  actAs: [Timestampable]
-  columns:
-    username: string(255)
-    password: string(255)
-</code>
-
-Notice we map the username and password columns using the {{Doctrine_Record::hasColumn}} function.
+As we mentioned before, at the lowest level in Doctrine your schema is represented by a set of php classes that map the schema meta data for your database tables.
 
 In this chapter we will explain in detail how you can map your schema information using php code.
 
@@ -47,7 +8,7 @@ One problem with database compatibility is that many databases differ in their b
 
 Unfortunately, this is just the way MySQL and some other databases do it. Postgres for example returns all field names in lowercase whilst Oracle returns all field names in uppercase. "So what? In what way does this influence me when using Doctrine?", you may ask. Fortunately, you don't have to bother about that issue at all.
 
-Doctrine takes care of this problem transparently. That means if you define a derived Record class and define a field called 'myField' you will always access it through $record->myField (or $record['myField'], whatever you prefer) no matter whether you're using MySQL or Postgres or Oracle etc.
+Doctrine takes care of this problem transparently. That means if you define a derived Record class and define a field called {{myField}} you will always access it through {{$record->myField}} (or {{$record['myField']}}, whatever you prefer) no matter whether you're using MySQL or Postgres or Oracle etc.
 
 In short: You can name your fields however you want, using under_scores, camelCase or whatever you prefer. 
 
@@ -59,6 +20,8 @@ In short: You can name your fields however you want, using under_scores, camelCa
 Doctrine offers a way of setting column aliases. This can be very useful when you want to keep the application logic separate from the database logic. For example if you want to change the name of the database field all you need to change at your application is the column definition.
 
 <code type="php">
+// models/Book.class.php
+
 class Book extends Doctrine_Record 
 {
     public function setTableDefinition() 
@@ -71,6 +34,9 @@ class Book extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Book:
   columns:
     bookTitle:
@@ -94,7 +60,9 @@ $book->save();
 Doctrine supports default values for all data types. When default value is attached to a record column this means two things. First this value isattached to every newly created Record and when Doctrine creates your database tables it includes the default value in the create table statement.
 
 <code type="php">
-class User extends Doctrine_record
+// models/generated/BaseUser.class.php
+
+class User extends BaseUser
 {
     public function setTableDefinition()
     {
@@ -110,6 +78,9 @@ class User extends Doctrine_record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   columns:
@@ -122,6 +93,9 @@ User:
 Now when you print the name on a brand new User record it will print the default value:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 print $user->username; // default username
 </code>
@@ -182,6 +156,9 @@ The above example will create a character varying field of length 12 characters 
 ++++ Boolean
 
 The boolean data type represents only two values that can be either 1 or 0. Do not assume that these data types are stored as integers because some DBMS drivers may implement this type with single character text fields for a matter of efficiency. Ternary logic is possible by using null as the third possible value that may be assigned to fields of this type.
+
+> **NOTE**
+> The next several examples are not meant for you to use and give them a try. They are simply for demonstrating purposes to show you how to use the different Doctrine data types using PHP code or YAML schema files.
 
 <code type="php">
 class Test extends Doctrine_Record
@@ -513,7 +490,7 @@ Doctrine has a unified enum type. The possible values for the column can be spec
 > If you wish to use native enum types for your dbms if it supports it then you must set the following attribute:
 
 <code type="php">
-$conn->setAttribute('use_native_enum', true);
+$conn->setAttribute(Doctrine::ATTR_USE_NATIVE_ENUM, true);
 </code>
 
 Here is an example of how to specify the enum values:
@@ -574,38 +551,76 @@ class Example extends Doctrine_Record
 {
     public function setTableDefinition() 
     {
-        $this->hasColumn('id', 'string', 32,
-            array('type' => 'string', 'fixed' => 1, 'primary' => true, 'length' => '32'));
+        $this->hasColumn('id', 'string', 32, array(
+                'type' => 'string',
+                'fixed' => 1,
+                'primary' => true,
+                'length' => '32'
+            )
+        );
 
-        $this->hasColumn('someint', 'integer', 10,
-            array('type' => 'integer', 'unsigned' => true, 'length' => '10'));
+        $this->hasColumn('someint', 'integer', 10, array(
+                'type' => 'integer',
+                'unsigned' => true,
+                'length' => '10'
+            )
+        );
 
-        $this->hasColumn('sometime', 'time', 25,
-            array('type' => 'time', 'default' => '12:34:05', 'notnull' => true, 'length' => '25'));
+        $this->hasColumn('sometime', 'time', 25, array(
+                'type' => 'time',
+                'default' => '12:34:05',
+                'notnull' => true,
+                'length' => '25'
+            )
+        );
 
-        $this->hasColumn('sometext', 'string', 12,
-            array('type' => 'string', 'length' => '12'));
+        $this->hasColumn('sometext', 'string', 12, array(
+                'type' => 'string',
+                'length' => '12'
+            )
+        );
 
-        $this->hasColumn('somedate', 'date', 25,
-            array('type' => 'date', 'length' => '25'));
+        $this->hasColumn('somedate', 'date', 25, array(
+                'type' => 'date',
+                'length' => '25'
+            )
+        );
 
-        $this->hasColumn('sometimestamp', 'timestamp', 25,
-            array('type' => 'timestamp', 'length' => '25'));
+        $this->hasColumn('sometimestamp', 'timestamp', 25, array(
+                'type' => 'timestamp',
+                'length' => '25'
+            )
+        );
 
-        $this->hasColumn('someboolean', 'boolean', 25,
-            array('type' => 'boolean', 'length' => '25'));
+        $this->hasColumn('someboolean', 'boolean', 25, array(
+                'type' => 'boolean',
+                'length' => '25'
+            )
+        );
 
-        $this->hasColumn('somedecimal', 'decimal', 18,
-            array('type' => 'decimal', 'length' => '18'));
+        $this->hasColumn('somedecimal', 'decimal', 18, array(
+                'type' => 'decimal',
+                'length' => '18'
+            )
+        );
 
-        $this->hasColumn('somefloat', 'float', 2147483647,
-            array('type' => 'float', 'length' => '2147483647'));
+        $this->hasColumn('somefloat', 'float', 2147483647, array(
+                'type' => 'float',
+                'length' => '2147483647'
+            )
+        );
 
-        $this->hasColumn('someclob', 'clob', 2147483647,
-            array('type' => 'clob', 'length' => '2147483647'));
+        $this->hasColumn('someclob', 'clob', 2147483647, array(
+                'type' => 'clob',
+                'length' => '2147483647'
+            )
+        );
 
-        $this->hasColumn('someblob', 'blob', 2147483647,
-            array('type' => 'blob', 'length' => '2147483647'));
+        $this->hasColumn('someblob', 'blob', 2147483647, array(
+                'type' => 'blob',
+                'length' => '2147483647'
+            )
+        );
     }
 }
 </code>
@@ -689,6 +704,8 @@ First lets take a look at the Forum_Board class. It has three columns: name, des
 We define the relation to the Forum_Thread class by using the hasMany() method. Here the local field is the primary key of the board class whereas the foreign field is the board_id field of the Forum_Thread class.
 
 <code type="php">
+// models/Forum_Board.class.php
+
 class Forum_Board extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -714,6 +731,9 @@ class Forum_Board extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Forum_Board:
   columns:
     name: string(100)
@@ -723,6 +743,8 @@ Forum_Board:
 Then lets have a peek at the Forum_Thread class. The columns here are irrelevant, but pay attention to how we define the relation. Since each Thread can have only one Board we are using the hasOne() method. Also notice how we once again use aliases and how the local column here is board_id while the foreign column is the id column.
 
 <code type="php">
+// models/Forum_Thread.class.php
+
 class Forum_Thread extends Doctrine_Record
 {
     public function setTableDefinition() 
@@ -748,6 +770,9 @@ class Forum_Thread extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Forum_Thread:
   columns:
     user_id: integer
@@ -772,6 +797,9 @@ Now we can start using these classes. The same accessors that you've already use
 First lets create a new board:
 
 <code type="php">
+// test.php
+
+// ...
 $board = new Forum_Board();
 $board->name = 'Some board';
 </code>
@@ -779,14 +807,106 @@ $board->name = 'Some board';
 Now lets create a new thread under the board:
 
 <code type="php">
-$board->Threads[0]->title = 'new thread';
+// test.php
+
+// ...
+$board->Threads[0]->title = 'new thread 1';
+$board->Threads[1]->title = 'new thread 2';
+</code>
+
+Each {{Thread}} needs to be associated to a user so lets create a new {{User}} and associate it to each {{Thread}}:
+
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$board->Threads[0]->User = $user;
+$board->Threads[1]->User = $user;
 </code>
 
 Now we can save all the changes with one call. It will save the new board as well as its threads:
 
 <code type="php">
+// test.php
+
+// ...
 $board->save();
 </code>
+
+Lets do a little inspecting and see the data structure that is created when you use the code from above. Add some code to {{test.php}} to output an array of the object graph we've just populated:
+
+<code type="php">
+print_r($board->toArray(true));
+</code>
+
+> **TIP**
+> The {{Doctrine_Record::toArray()}} takes all the data of a {{Doctrine_Record}} instance and converts it to an array so you can easily inspect the data of a record. It accepts an argument named {{$deep}} telling it whether or not to include relationships. In this example we have specified {[true]} because we want to include the {{Threads}} data.
+
+Now when you execute {{test.php}} with PHP from your terminal you should see the following:
+
+<code>
+$ php test.php 
+Array
+(
+    [id] => 2
+    [name] => Some board
+    [description] => 
+    [Threads] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [user_id] => 1
+                    [board_id] => 2
+                    [title] => new thread 1
+                    [updated] => 
+                    [closed] => 
+                    [User] => Array
+                        (
+                            [id] => 1
+                            [is_active] => 1
+                            [is_super_admin] => 0
+                            [first_name] => 
+                            [last_name] => 
+                            [username] => jwage
+                            [password] => 
+                            [type] => 
+                            [created_at] => 2009-01-20 16:41:57
+                            [updated_at] => 2009-01-20 16:41:57
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [id] => 4
+                    [user_id] => 1
+                    [board_id] => 2
+                    [title] => new thread 2
+                    [updated] => 
+                    [closed] => 
+                    [User] => Array
+                        (
+                            [id] => 1
+                            [is_active] => 1
+                            [is_super_admin] => 0
+                            [first_name] => 
+                            [last_name] => 
+                            [username] => jwage
+                            [password] => 
+                            [type] => 
+                            [created_at] => 2009-01-20 16:41:57
+                            [updated_at] => 2009-01-20 16:41:57
+                        )
+
+                )
+
+        )
+
+)
+</code>
+
+> **NOTE**
+> Notice how the auto increment primary key and foreign keys are automatically set by Doctrine internally. You don't have to worry about the setting of primary keys and foreign keys at all!
 
 +++ Foreign Key Associations
 
@@ -799,6 +919,8 @@ First lets take a look at the Email class. Since we are binding a one-to-one rel
 The recommended naming convention for foreign key columns is: [tableName]_[primaryKey]. As here the foreign table is 'user' and its primary key is 'id' we have named the foreign key column as 'user_id'.
 
 <code type="php">
+// models/Email.class.php
+
 class Email extends Doctrine_Record 
 {
     public function setTableDefinition() 
@@ -821,6 +943,9 @@ class Email extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Email:
   columns:
     user_id: integer
@@ -837,13 +962,13 @@ Email:
 The {{Email}} class is very similar to the {{User}} class. Notice how the local and foreign columns are switched in the {{hasOne()}} definition compared to the definition of the {{Email}} class.
 
 <code type="php">
-class User extends Doctrine_Record
-{
-    // ...
+// models/User.class.php
 
+class User extends BaseUser
+{
     public function setUp()
     {
-        // ...
+        parent::setUp();
 
         $this->hasOne('Email', array(
                 'local' => 'id',
@@ -854,9 +979,15 @@ class User extends Doctrine_Record
 }
 </code>
 
+> **NOTE**
+> Notice how we override the {{setUp()}} method and call {{parent::setUp()}}. This is because the {{BaseUser}} class which is generated from YAML or from an existing database contains the main {{setUp()}} method and we override it in the {{User}} class to add an additional relationship.
+
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   relations:
@@ -873,12 +1004,14 @@ One-to-Many and Many-to-One relations are very similar to One-to-One relations. 
 In the following example we have two classes: User and Phonenumber. We define their relation as one-to-many (a user can have many phonenumbers). Here once again the Phonenumber is clearly owned by the User so we place the foreign key in the Phonenumber class.
 
 <code type="php">
-class User extends Doctrine_Record 
-{
-    // ...
+// models/User.class.php
 
+class User extends BaseUser 
+{
     public function setUp()
     {
+        parent::setUp();
+
         // ...
 
         $this->hasMany('Phonenumber as Phonenumbers', array(
@@ -888,6 +1021,8 @@ class User extends Doctrine_Record
         );
     }
 }
+
+// models/Phonenumber.class.php
 
 class Phonenumber extends Doctrine_Record 
 {
@@ -911,11 +1046,15 @@ class Phonenumber extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   relations:
     # ...
     Phonenumbers:
+      type: many
       class: Phonenumber
       local: id
       foreign: user_id
@@ -935,6 +1074,8 @@ Phonenumber:
 A tree structure is a self-referencing foreign key relation. The following definition is also called Adjacency List implementation in terms of hierarchical data concepts.
 
 <code type="php">
+// models/Task.class.php
+
 class Task extends Doctrine_Record 
 {
     public function setTableDefinition() 
@@ -963,6 +1104,9 @@ class Task extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Task:
   columns:
     name: string(100)
@@ -991,12 +1135,12 @@ Sometimes you may not want that association table rows are being deleted when us
 In the following example we have Groups and Users of which relation is defined as many-to-many. In this case we also need to define an additional class called {{Groupuser}}.
 
 <code type="php">
-class User extends Doctrine_Record 
+class User extends BaseUser 
 {
-    // ...
-
-    public function setUp() 
+    public function setUp()
     {
+        parent::setUp();
+
         // ...
 
         $this->hasMany('Group as Groups', array(
@@ -1027,6 +1171,8 @@ User:
 > The above {{refClass}} option is required when setting up many-to-many relationships.
 
 <code type="php">
+// models/Group.class.php
+
 class Group extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -1050,6 +1196,9 @@ class Group extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Group:
   tableName: groups
   columns:
@@ -1063,13 +1212,15 @@ Group:
 </code>
 
 > **NOTE**
-> Please note that {{group}} is a reserved keyword so that is why we renamed the table to {{groups}} using the {{setTableName}} method. The other option is to turn on identifier quoting using the {{Doctrine::ATTR_QUOTE_IDENTIFIERS}} attribute.
+> Please note that {{group}} is a reserved keyword so that is why we renamed the table to {{groups}} using the {{setTableName}} method. The other option is to turn on identifier quoting using the {{Doctrine::ATTR_QUOTE_IDENTIFIERS}} attribute so that the reserved word is escaped with quotes.
 
 <code type="php">
 $manager->setAttribute(Doctrine::Doctrine::ATTR_QUOTE_IDENTIFIERS, true);
 </code>
 
 <code type="php">
+// models/UserGroup.class.php
+
 class UserGroup extends Doctrine_Record
 {
     public function setTableDefinition() 
@@ -1090,6 +1241,9 @@ class UserGroup extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 UserGroup:
   columns:
     user_id:
@@ -1105,12 +1259,18 @@ Notice how the relationship is bi-directional. Both {{User}} has many {{Group}} 
 Now lets play around with the new models and create a user and assign it some groups. First create a new {{User}} instance:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 </code>
 
 Now add two new groups to the {{User}}:
 
 <code type="php">
+// test.php
+
+// ...
 $user->Groups[0]->name = 'First Group';
 
 $user->Groups[1]->name = 'Second Group';
@@ -1119,12 +1279,18 @@ $user->Groups[1]->name = 'Second Group';
 Now you can save the groups to the database:
 
 <code type="php">
+// test.php
+
+// ...
 $user->save();
 </code>
 
 Now you can delete the associations between user and groups it belongs to:
 
 <code type="php">
+// test.php
+
+// ...
 $user->UserGroup->delete();
 
 $groups = new Doctrine_Collection(Doctrine::getTable('Group'));
@@ -1138,6 +1304,54 @@ $user->Groups[2] = $groups[0];
 
 $user->Groups = $groups;
 // $user will now have two groups 'Third Group' and 'Fourth Group'
+
+$user->save();
+</code>
+
+Now if we inspect the {{$user}} object data with the {{Doctrine_Record::toArray()}}:
+
+<code type="php">
+// test.php
+
+// ...
+print_r($user->toArray(true));
+</code>
+
+<code>
+$ php test.php 
+Array
+(
+    [id] => 1
+    [is_active] => 1
+    [is_super_admin] => 0
+    [first_name] => 
+    [last_name] => 
+    [username] => default username
+    [password] => 
+    [type] => 
+    [created_at] => 2009-01-20 16:48:57
+    [updated_at] => 2009-01-20 16:48:57
+    [Groups] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => Third Group
+                )
+
+            [1] => Array
+                (
+                    [id] => 4
+                    [name] => Fourth Group
+                )
+
+        )
+
+    [UserGroup] => Array
+        (
+        )
+
+)
 </code>
 
 ++++ Self Referencing (Nest Relations)
@@ -1145,12 +1359,14 @@ $user->Groups = $groups;
 +++++ Non-Equal Nest Relations
 
 <code type="php">
-class User extends Doctrine_Record 
-{
-    // ...
+// models/User.class.php
 
-    public function setUp() 
+class User extends BaseUser 
+{
+    public function setUp()
     {
+        parent::setUp();
+
         // ...
 
         $this->hasMany('User as Parents', array(
@@ -1168,6 +1384,8 @@ class User extends Doctrine_Record
         );
     }
 }
+
+// models/UserReference.class.php
 
 class UserReference extends Doctrine_Record 
 {
@@ -1189,6 +1407,9 @@ class UserReference extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   relations:
@@ -1219,12 +1440,14 @@ This means that when fetching related records it doesn't matter which column in 
 The previous clause maybe hard to understand so lets take an example. We define a class called User which can have many friends. Notice here how we use the 'equal' option.
 
 <code type="php">
-class User extends Doctrine_Record 
-{
-    // ...
+// models/User.class.php
 
-    public function setUp() 
+class User extends BaseUser 
+{
+    public function setUp()
     {
+        parent::setUp();
+
         // ...
 
         $this->hasMany('User as Friends', array(
@@ -1236,6 +1459,8 @@ class User extends Doctrine_Record
         );
     }
 }
+
+// models/UserReference.class.php
 
 class UserReference extends Doctrine_Record 
 {
@@ -1257,6 +1482,9 @@ class UserReference extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   relations:
@@ -1281,17 +1509,20 @@ UserReference:
 Now lets define 4 users: Jack Daniels, John Brandy, Mikko Koskenkorva and Stefan Beer with Jack Daniels and John Brandy being buddies and Mikko Koskenkorva being the friend of all of them.
 
 <code type="php">
+// test.php
+
+// ...
 $daniels = new User();
-$daniels->name = 'Jack Daniels';
+$daniels->username = 'Jack Daniels';
 
 $brandy = new User();
-$brandy->name = 'John Brandy';
+$brandy->username = 'John Brandy';
 
 $koskenkorva = new User();
-$koskenkorva->name = 'Mikko Koskenkorva';
+$koskenkorva->username = 'Mikko Koskenkorva';
 
 $beer = new User();
-$beer->name = 'Stefan Beer';
+$beer->username = 'Stefan Beer';
 
 $daniels->Friends[0] = $brandy;
 
@@ -1305,7 +1536,41 @@ $conn->flush();
 > **NOTE**
 > Calling {{Doctrine_Connection::flush()}} will trigger an operation that saves all unsaved objects and wraps it in a single transaction.
 
-Now if we access for example the friends of John Beer it would return one user 'Mikko Koskenkorva'.
+Now if we access for example the friends of Stefan Beer it would return one user 'Mikko Koskenkorva':
+
+<code type="php">
+// test.php
+
+// ...
+$beer->free();
+unset($beer);
+$user = Doctrine::getTable('User')->findOneByUsername('Stefan Beer');
+
+print_r($user->Friends->toArray());
+</code>
+
+Now when you execute {{test.php}} you will see the following:
+
+<code>
+$ php test.php 
+Array
+(
+    [0] => Array
+        (
+            [id] => 4
+            [is_active] => 1
+            [is_super_admin] => 0
+            [first_name] => 
+            [last_name] => 
+            [username] => Mikko Koskenkorva
+            [password] => 
+            [type] => 
+            [created_at] => 2009-01-20 16:53:13
+            [updated_at] => 2009-01-20 16:53:13
+        )
+
+)
+</code>
 
 +++ Foreign Key Constraints
 
@@ -1316,12 +1581,15 @@ A foreign key constraint specifies that the values in a column (or a group of co
 Say you have the product table with the following definition:
 
 <code type="php">
+// models/Product.class.php
+
 class Product extends Doctrine_Record
 {
     public function setTableDefinition()
     {
         $this->hasColumn('name', 'string');
         $this->hasColumn('price', 'decimal', 18);
+        $this->hasColumn('discounted_price', 'decimal', 18);
     }
 
     public function setUp()
@@ -1338,11 +1606,16 @@ class Product extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Product:
   columns:
     name:
       type: string
     price:
+      type: decimal(18)
+    discounted_price:
       type: decimal(18)
   relations:
     Orders:
@@ -1354,6 +1627,8 @@ Product:
 Let's also assume you have a table storing orders of those products. We want to ensure that the order table only contains orders of products that actually exist. So we define a foreign key constraint in the orders table that references the products table:
 
 <code type="php">
+// models/Order.class.php
+
 class Order extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -1377,6 +1652,9 @@ class Order extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Order:
   tableName: orders
   columns:
@@ -1391,7 +1669,7 @@ Order:
 > **NOTE**
 > Foreign key columns are automatically indexed by Doctrine to ensure optimal performance when issuing queries involving the foreign key.
 
-When exported the class Order would execute the following SQL:
+When exported the class {{Order}} would execute the following SQL:
 
 <code type="sql">
 CREATE TABLE orders (
@@ -1438,6 +1716,8 @@ class Phonenumber extends Doctrine_Record
 
     public function setUp()
     {
+        parent::setUp();
+
         // ...
 
         $this->hasOne('User', array(
@@ -1453,6 +1733,9 @@ class Phonenumber extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Phonenumber:
 # ...
   relations:
@@ -1479,6 +1762,9 @@ Indexes come with a cost as they slow down the inserts and updates. However, in 
 +++ Adding indexes
 
 You can add indexes by using {{Doctrine_Record::index}}. An example of adding a simple index to field called name:
+
+> **NOTE**
+> The following index examples are not meant for you to actually add to your test Doctrine environment. They are only meant to demonstrate the API for adding indexes.
 
 <code type="php">
 class IndexTest extends Doctrine_Record
@@ -1633,12 +1919,16 @@ MultipleIndexTest:
 Doctrine supports many special indexes. These include Mysql FULLTEXT and Pgsql GiST indexes. In the following example we define a Mysql FULLTEXT index for the field 'content'.
 
 <code type="php">
-class Article 
+// models/Article.class.php
+
+class Article extends Doctrine_Record
 {
     public function setTableDefinition() 
     {
     	  $this->hasColumn('name', 'string', 255);
         $this->hasColumn('content', 'string');
+
+        $this->option('type', 'MyISAM');
 
         $this->index('content', array(
                 'fields' => array('content'),
@@ -1649,10 +1939,15 @@ class Article
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Article:
+  options:
+    type: MyISAM
   columns:
     name: string(255)
     content: string
@@ -1662,29 +1957,37 @@ Article:
       type: fulltext
 </code>
 
+> **NOTE**
+> Notice how we set the table type to {{MyISAM}}. This is because the {{fulltext}} index type is only supported in {{MyISAM}} so you will receive an error if you use something like {{InnoDB}}.
+
 ++ Checks
 
 You can create any kind of CHECK constraints by using the check() method of the Doctrine_Record. In the last example we add constraint to ensure that price is always higher than the discounted price.
 
 <code type="php">
+// models/Product.class.php
+
 class Product extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('price', 'decimal', 18);
-        $this->hasColumn('discounted_price', 'decimal', 18);
+        // ...
+
         $this->check('price > discounted_price');
     }
+
+    // ...
 }
 </code>
 
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Product:
-  columns:
-    price: decimal(18)
-    discounted_price: decimal(18)
+# ...
   checks:
     price_check: price > discounted_price
 </code>
@@ -1695,6 +1998,7 @@ Generates (in pgsql):
 CREATE TABLE product (
     id INTEGER,
     price NUMERIC,
+    discounted_price NUMERIC,
     PRIMARY KEY(id),
     CHECK (price >= 0),
     CHECK (price <= 1000000),
@@ -1765,7 +2069,8 @@ MyCustomOptionRecord:
 It is worth noting that for certain databases (Firebird, MySql and PostgreSQL) setting the charset option might not be enough for Doctrine to return data properly. For those databases, users are advised to also use the setCharset function of the database connection:
 
 <code type="php">
-Doctrine_Manager::connection($name)->setCharset("utf8");
+$conn = Doctrine_Manager::connection();
+$conn->setCharset('utf8');
 </code>
 
 ++ Transitive Persistence
@@ -1785,12 +2090,16 @@ You may already have noticed that save() operations are already cascaded to asso
 Doctrine provides a second application-level cascade style: delete. Unlike the save() cascade, the delete cascade needs to be turned on explicitly as can be seen in the following code snippet:
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
     // ...
 
     public function setUp()
     {
+        parent::setup();
+
         // ...
 
         $this->hasMany('Address as Addresses', array(
@@ -1806,6 +2115,9 @@ class User extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
 # ...
   relations:
@@ -1849,6 +2161,8 @@ Database-level delete cascades are generally preferrable over application-level 
 Database-level delete cascades are applied on the foreign key constraint. Therefore they're specified on that side of the relation that owns the foreign key. Picking up the example from above, the definition of a database-level cascade would look as follows:
 
 <code type="php">
+// models/Address.class.php
+
 class Address extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -1876,6 +2190,9 @@ class Address extends Doctrine_Record
 Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 Address:
   columns:
     user_id: integer

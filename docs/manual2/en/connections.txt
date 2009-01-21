@@ -9,19 +9,29 @@ From the start Doctrine has been designed to work with multiple connections. Unl
 In this example we will show you to open a new connection and how you can retrieve the current connection:
 
 <code type="php">
+// test.php
+
+// ...
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
 
 $conn2 = Doctrine_Manager::connection();
 
-// $conn2 === $conn
+if ($conn === $conn2) {
+    echo 'Doctrine_Manager::connection() returns the current connection';
+}
 </code>
 
 The current connection is the last opened connection. In the next example we will show how you can get the current connection from the {{Doctrine_Manager}} instance:
 
 <code type="php">
+// test.php
+
+// ...
 $conn2 = Doctrine_Manager::connection('mysql://username2:password2@localhost/test2', 'connection 2');
 
-$conn2 === $manager->getCurrentConnection();
+if ($conn2 === $manager->getCurrentConnection()) {
+    echo 'Current connection is the connection we just created!';
+}
 </code>
 
 **Change Current Connection**
@@ -29,9 +39,12 @@ $conn2 === $manager->getCurrentConnection();
 You can change the current connection by calling {{Doctrine_Manager::setCurrentConnection()}}. 
 
 <code type="php">
+// test.php
+
+// ...
 $manager->setCurrentConnection('connection 1');
 
-$manager->getCurrentConnection(); // $conn
+echo $manager->getCurrentConnection()->getName(); // connection 1
 </code>
 
 **Iterate over Connections**
@@ -39,8 +52,11 @@ $manager->getCurrentConnection(); // $conn
 You can iterate over the opened connection by simply passing the manager object to a foreach clause. This is possible since {{Doctrine_Manager}} implements special {{IteratorAggregate}} interface.
 
 <code type="php">
-foreach($manager as $conn) {
+// test.php
 
+// ...
+foreach($manager as $conn) {
+    echo $conn->getName() . "\n";
 }
 </code>
 
@@ -49,9 +65,14 @@ foreach($manager as $conn) {
 You can easily get the name of a {{Doctrine_Connection}} instance with the following code:
 
 <code type="php">
+// test.php
+
+// ...
 $conn = Doctrine_Manager::connection();
 
 $name = $manager->getConnectionName($conn);
+
+echo $name; // connection 1
 </code>
 
 **Close a Connection**
@@ -59,6 +80,9 @@ $name = $manager->getConnectionName($conn);
 You can easily close a connection and remove it from the Doctrine connection registry with the following code:
 
 <code type="php">
+// test.php
+
+// ...
 $conn = Doctrine_Manager::connection();
 
 $manager->closeConnection($conn);
@@ -67,6 +91,9 @@ $manager->closeConnection($conn);
 If you wish to close the connection but not remove it from the Doctrine connection registry you can use the following code instead:
 
 <code type="php">
+// test.php
+
+// ...
 $conn = Doctrine_Manager::connection();
 $conn->close();
 </code>
@@ -76,17 +103,23 @@ $conn->close();
 You can retrieve an array of all the registered connections by using the {{Doctrine_Manager::getConnections()}} method like below:
 
 <code type="php">
+// test.php
+
+// ...
 $conns = $manager->getConnections();
 foreach ($conns as $conn) {
-  
+    echo $conn->getName() . "\n";
 }
 </code>
 
 The above is essentially the same as iterating over the {{Doctrine_Manager}} object like we did earlier. Here it is again:
 
 <code type="php">
+// test.php
+
+// ...
 foreach ($manager as $conn) {
-  
+    echo $conn->getName() . "\n";
 }
 </code>
 
@@ -95,12 +128,20 @@ foreach ($manager as $conn) {
 You can easily get the number of connections from a {{Doctrine_Manager}} object since it implements the {{Countable}} interface.
 
 <code type="php">
+// test.php
+
+// ...
 $num = count($manager);
+
+echo $num;
 </code>
 
 The above is the same as doing:
 
 <code type="php">
+// test.php
+
+// ...
 $num = $manager->count();
 </code>
 
@@ -115,6 +156,9 @@ This is as simple as using some functions provided in the {{Doctrine_Manager}} o
 The following code will iterate over all instantiated connections and call the {{dropDatabases()}}/{{createDatabases()}} function on each one:
 
 <code type="php">
+// test.php
+
+// ...
 $manager->createDatabases();
 
 $manager->dropDatabases();
@@ -125,6 +169,9 @@ $manager->dropDatabases();
 You can easily drop or create the database for a specific {{Doctrine_Connection}} instance by calling the {{dropDatabase()}}/{{createDatabase()}} function on the connection instance with the following code:
 
 <code type="php">
+// test.php
+
+// ...
 $conn = Doctrine_Manager::connection(); // Gets the current connection
 
 $conn->createDatabase();

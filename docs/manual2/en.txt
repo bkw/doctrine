@@ -3,11 +3,11 @@
 + Getting Started
 + Introduction to Connections
 + Configuration
-+ Component Overview
 + Connections
 + Introduction to Models
 + Models Explained
 + DQL (Doctrine Query Language)
++ Component Overview
 + Native SQL
 + YAML Schema Files
 + Data Validation

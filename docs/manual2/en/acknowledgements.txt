@@ -32,9 +32,10 @@ As Doctrine is an open source project, the names mentioned above are only the pe
 
 Before working for [http://www.sensiolabs.com SensioLabs], Jonathan Wage was one of the original employees at [http://www.centresource.com centre{source}]. The great people at this company saw the need for a powerful ORM in the PHP world and got behind the project right away. Jonathan was permitted to spend countless hours of company time on the project to help move things forward.
 
-Without these contributions, the project would not have been able to make the jump from a small starting open source project to a large and trusted project. Now Doctrine is known across the globe and companies rely on the project to assist with building of their high end web applications.
+Without these contributions, the project would not have been able to make the jump from a small starting open source project to a large and trusted project. Now Doctrine is known across the globe and companies rely on the project to assist with the building of their high end web applications.
 
-[http://www.centresource.com centre{source}] is a full-service interactive firm assisting organizations that view the web as a strategic asset. They provide their clients four essential services: strategy, planning, execution, and on-going management.
+> **NOTE**
+> [http://www.centresource.com centre{source}] is a full-service interactive firm assisting organizations that view the web as a strategic asset. They provide their clients four essential services: strategy, planning, execution, and on-going management.
 
 +++ SensioLabs
 
@@ -44,7 +45,8 @@ In September of 2008, SensioLabs officially got behind the Doctrine project and 
 
 With this change, lots of new things became possible such as Doctrine trainings, certifications, this book and much more.
 
-[http://www.sensio.com Sensio] created [http://www.symfony-project.com symfony], a PHP Web application framework. Sensio has over 10 years of experience developing high value web applications and is a major player in the open source world.
+> **NOTE**
+> [http://www.sensio.com Sensio] created [http://www.symfony-project.com symfony], a PHP Web application framework. Sensio has over 10 years of experience developing high value web applications and is a major player in the open source world.
 
 ++ Other Contributors
 

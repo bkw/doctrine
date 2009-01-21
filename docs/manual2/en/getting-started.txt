@@ -144,8 +144,8 @@ We need to create a php script for bootstrapping Doctrine and all the configurat
 // bootstrap.php
 
 /**
- * Bootstrap Doctrine.php, register autoloader and specify 
- * configuration attributes
+ * Bootstrap Doctrine.php, register autoloader specify
+ * configuration attributes and load models.
  */
 require_once('/path/to/doctrine/lib/Doctrine.php');
 </code>
@@ -211,10 +211,9 @@ The bootstrap file we have created should now look like the following:
 // bootstrap.php
 
 /**
- * Bootstrap Doctrine.php, register autoloader and specify 
- * configuration attributes
+ * Bootstrap Doctrine.php, register autoloader specify
+ * configuration attributes and load models.
  */
-
 require_once('/path/to/doctrine/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 $manager = Doctrine_Manager::getInstance();

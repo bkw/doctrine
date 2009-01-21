@@ -7,12 +7,18 @@ In this chapter will go over each of the main components that make up Doctrine a
 The {{Doctrine_Manager}} class is a singleton and is the root of the configuration hierarchy and is used as a facade for controlling several aspects of Doctrine. You can retrieve the singleton instance with the following code.
 
 <code type="php">
+// test.php
+
+// ...
 $manager = Doctrine_Manager::getInstance();
 </code>
 
 +++ Retrieving Connections
 
 <code type="php">
+// test.php
+
+// ...
 $connections = $manager->getConnections();
 foreach ($connections as $connection) {
     echo $connection->getName() . '<br/>';
@@ -22,6 +28,9 @@ foreach ($connections as $connection) {
 The {{Doctrine_Manager}} implements an iterator so you can simple loop over the $manager variable to loop over the connections.
 
 <code type="php">
+// test.php
+
+// ...
 foreach ($manager as $connection) {
     echo $connection->getName() . '<br/>';
 }
@@ -61,39 +70,25 @@ Doctrine has drivers for every PDO-supported database. The supported databases a
 +++ Creating Connections
 
 <code type="php">
+// bootstrap.php
+
+// ...
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
 </code>
 
 +++ Flushing the Connection
 
-Creating new record (database row) is very easy. You can create new records by creating a new instance of the child {{Doctrine_Record}} class.
+When you create new {{User}} records you can flush the connection and save all un-saved objects for that connection. Below is an example:
 
 <code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string', 255);
-    }
-}
-</code>
+// test.php
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
-
-<code type="yaml">
-User:
-  columns:
-    name: string(255)
-</code>
-
-Now you can create new records easily:
-
-<code type="php">
+// ...
 $user1 = new User();
-$user1->name = 'Jack';
+$user1->username = 'Jack';
 
 $user2 = new User();
-$user2->name = 'jwage';
+$user2->username = 'jwage';
 
 $conn->flush();
 </code>
@@ -118,6 +113,9 @@ For example, lets say we want to retrieve the table object for the User class. W
 In order to get table object for specified record just call {{Doctrine_Record::getTable()}}.
 
 <code type="php">
+// test.php
+
+// ...
 $userTable = Doctrine::getTable('User');
 </code>
 
@@ -126,12 +124,18 @@ $userTable = Doctrine::getTable('User');
 You can retrieve the column definitions set in {{Doctrine_Record}} by using the appropriate {{Doctrine_Table}} methods. If you need all information of all columns you can simply use:
 
 <code type="php">
+// test.php
+
+// ...
 $columns = $userTable->getColumns();
 </code>
 
 Sometimes this can be an overkill. The following example shows how to retrieve the column names as an array:
 
 <code type="php">
+// test.php
+
+// ...
 $names = $userTable->getColumnNames();
 </code>
 
@@ -140,6 +144,9 @@ $names = $userTable->getColumnNames();
 You can also get an array of all the {{Doctrine_Relation}} objects by simply calling {{Doctrine_Table::getRelations()}} like the following:
 
 <code type="php">
+// test.php
+
+// ...
 $relations = $userTable->getRelations();
 
 foreach ($relations as $relation) {

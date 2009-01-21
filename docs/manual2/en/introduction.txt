@@ -4,11 +4,11 @@ Doctrine is an object relational mapper (ORM) for PHP 5.2.3+ that sits on top of
 
 ++ What is an ORM?
 
-**Pulled from [http://en.wikipedia.org/wiki/Object-relational_mapping Wikipedia]:**
-
-Object-relational mapping (aka ORM, O/RM, and O/R mapping) is a programming technique for converting data between incompatible type systems in relational databases and object-oriented programming languages. This creates, in effect, a "virtual object database," which can be used from within the programming language. There are both free and commercial packages available that perform object-relational mapping, although some programmers opt to create their own ORM tools.
+Object relational mapping is a technique used in programming languages when dealing with databases for translating incompatible data types in relational databases. This essentially allows for us to have a "virtual object database," that can be used from the programming language. Lots of free and commercial packages exist that allow this but sometimes developers chose to create their own ORM.
 
 ++ What is the Problem?
+
+We are faced with many problems when building web applications. Instead of trying to explain it all it is best to read what Wikipedia has to say about object relational mappers.
 
 **Pulled from [http://en.wikipedia.org/wiki/Object-relational_mapping Wikipedia]:**
 

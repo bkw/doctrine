@@ -20,6 +20,9 @@ class User extends Doctrine_Record
 }
 </code>
 
+> **NOTE**
+> We aren't actually going to use the above class definition, it is only meant to be an example. We will generate our first class definition from an existing database table later in this chapter.
+
 Each {{Doctrine_Record}} child class can have a {{setTableDefinition()}} and {{setUp()}} method. The {{setTableDefinition()}} method is for defining columns, indexes and other information about the schema of tables. The {{setUp()}} method is for attaching behaviors and defining relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in the [doc models-explained :name] chapter.
 
 ++ Generating Models
@@ -41,12 +44,18 @@ Let's consider we have a mysql database called {{doctrine_test}} with a single t
 
 <code type="sql">
 CREATE TABLE user (
-    id INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    username VARCHAR(255),
-    password VARCHAR(255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    PRIMARY KEY(id))
+   id bigint(20) NOT NULL auto_increment,
+   first_name varchar(255) default NULL,
+   last_name varchar(255) default NULL,
+   username varchar(255) default NULL,
+   password varchar(255) default NULL,
+   type varchar(255) default NULL,
+   is_active tinyint(1) default '1',
+   is_super_admin tinyint(1) default '0',
+   created_at TIMESTAMP,
+   updated_at TIMESTAMP,
+   PRIMARY KEY  (id)
+) ENGINE=InnoDB
 </code>
 
 Now we would like to convert it into {{Doctrine_Record}} class. With Doctrine this is easy! Remember our test script we created in the [doc getting-started :name] chapter? We're going to use that generate our models.
@@ -75,13 +84,12 @@ Now we just need to add the code to our {{test.php}} script to generate the mode
 <code type="php">
 // test.php
 
-require_once('bootstrap.php');
-
+// ...
 Doctrine::generateModelsFromDb('models', array('doctrine'), array('generateTableClasses' => true));
 </code>
 
 > **NOTE**
-> The {{generateModelsFromDb}} method only requires one parameter and it is the import directory (the directory where the generated record files will be put in). The second argument is an array of database names to generate models for, and the third is the array of options to use for the model building.
+> The {{generateModelsFromDb}} method only requires one parameter and it is the import directory (the directory where the generated record files will be written to). The second argument is an array of database connection names to generate models for, and the third is the array of options to use for the model building.
 
 That's it! Now there should be a file called {{BaseUser.php}} in your {{doctrine_test/models/generated}} directory. The file should look like the following:
 
@@ -96,11 +104,16 @@ abstract class BaseUser extends Doctrine_Record
   public function setTableDefinition()
   {
     $this->setTableName('user');
-    $this->hasColumn('id', 'integer', 4, array('type' => 'integer', 'length' => 4, 'unsigned' => 1, 'primary' => true, 'autoincrement' => true));
+    $this->hasColumn('id', 'integer', 8, array('type' => 'integer', 'length' => 8, 'primary' => true, 'autoincrement' => true));
+    $this->hasColumn('first_name', 'string', 255, array('type' => 'string', 'length' => 255));
+    $this->hasColumn('last_name', 'string', 255, array('type' => 'string', 'length' => 255));
     $this->hasColumn('username', 'string', 255, array('type' => 'string', 'length' => 255));
     $this->hasColumn('password', 'string', 255, array('type' => 'string', 'length' => 255));
+    $this->hasColumn('type', 'string', 255, array('type' => 'string', 'length' => 255));
+    $this->hasColumn('is_active', 'integer', 1, array('type' => 'integer', 'length' => 1, 'default' => '1'));
+    $this->hasColumn('is_super_admin', 'integer', 1, array('type' => 'integer', 'length' => 1, 'default' => '0'));
     $this->hasColumn('created_at', 'timestamp', null, array('type' => 'timestamp', 'notnull' => true));
-    $this->hasColumn('updated_at', 'timestamp', null, array('type' => 'timestamp', 'default' => '0000-00-00 00:00:00', 'notnull' => true));
+    $this->hasColumn('updated_at', 'timestamp', null, array('type' => 'timestamp', 'notnull' => true));
   }
 }
 </code>
@@ -133,7 +146,7 @@ class UserTable extends Doctrine_Table
 }
 </code>
 
-You can place custom functions inside the {{File}} and {{UserTable}} classes to customize the functionality of your models. Below are some examples:
+You can place custom functions inside the {{User}} and {{UserTable}} classes to customize the functionality of your models. Below are some examples:
 
 <code type="php">
 // models/User.php
@@ -175,7 +188,7 @@ Now we can modify {{test.php}} to include some code which will test the changes 
 <code type="php">
 // test.php
 
-require_once('bootstrap.php');
+// ...
 
 $user = new User();
 $user->username = 'jwage';
@@ -230,12 +243,12 @@ $usersCreatedToday = Doctrine::getTable('User')->getCreatedToday();
 
 +++ Schema Files
 
-You can alternatively manage your models with YAML schema files and generate PHP classes from them. First lets generate a YAML schema file from the existing models we already have to make things easier. Change the contents of the {{test.php}} file with the code from below:
+You can alternatively manage your models with YAML schema files and generate PHP classes from them. First lets generate a YAML schema file from the existing models we already have to make things easier. Change {{test.php}} to have the following code inside:
 
 <code type="php">
 // test.php
 
-require_once('bootstrap.php');
+// ...
 
 Doctrine::generateYamlFromModels('schema.yml', 'models');
 </code>
@@ -253,28 +266,37 @@ User:
   tableName: user
   columns:
     id:
-      type: integer(4)
-      unsigned: 1
+      type: integer(8)
       primary: true
       autoincrement: true
+    is_active:
+      type: integer(1)
+      default: '1'
+    is_super_admin:
+      type: integer(1)
+      default: '0'
     created_at:
       type: timestamp(25)
       notnull: true
     updated_at:
       type: timestamp(25)
-      default: '0000-00-00 00:00:00'
       notnull: true
+    first_name: string(255)
+    last_name: string(255)
     username: string(255)
     password: string(255)
+    type: string(255)
 </code>
 
-So now that we have a valid YAML schema file, we can now maintain our schema from here and generate the PHP classes from here. Lets create a new php script called {{generate_models.php}}. This script will re-generate the models from your YAML and also create the tables for the models in your database:
+So now that we have a valid YAML schema file, we can now maintain our schema from here and generate the PHP classes from here. Lets create a new php script called {{generate.php}}. This script will re-generate everything and make sure the database is reinstantiated each time the script is called:
 
 <code type="php">
-// generate_models.php
+// generate.php
 
 require_once('bootstrap.php');
 
+Doctrine::dropDatabases();
+Doctrine::createDatabases();
 Doctrine::generateModelsFromYaml('schema.yml', 'models');
 Doctrine::createTablesFromModels('models');
 </code>
@@ -282,7 +304,7 @@ Doctrine::createTablesFromModels('models');
 Now you can alter your {{schema.yml}} and re-generate your models by running the following command from your terminal:
 
 <code>
-$ php generate_models.php
+$ php generate.php
 </code>
 
 Now that we have our YAML schema file setup and we can re-generate our models from the schema files lets cleanup the file a little and take advantage of some of the power of Doctrine:
@@ -291,8 +313,17 @@ Now that we have our YAML schema file setup and we can re-generate our models fr
 User:
   actAs: [Timestampable]
   columns:
+    is_active:
+      type: integer(1)
+      default: '1'
+    is_super_admin:
+      type: integer(1)
+      default: '0'
+    first_name: string(255)
+    last_name: string(255)
     username: string(255)
     password: string(255)
+    type: string(255)
 </code>
 
 > **NOTE**
@@ -302,11 +333,13 @@ User:
 > * Attached the {{Timestampable}} behavior.
 > * Removed {{id}} column as it is automatically added if no primary key is defined.
 > * Removed {{updated_at}} and {{created_at}} columns as they can be handled automatically by the {{Timestampable}} behavior.
+>
+> Now look how much cleaner the yaml is and is because we take advantage of defaults and utilize core behaviors it is much less work we have to do ourselves.
 
 Now re-generate your models from the YAML schema file:
 
 <code>
-$ php generate_models.php
+$ php generate.php
 </code>
 
 You can learn more about YAML Schema Files in its [doc yaml-schema-files dedicated chapter].
@@ -328,19 +361,32 @@ Conservative model loading requires that each file contain only one class, and t
 To use conservative model loading we need to set the model loading attribute to be conservative:
 
 <code type="php">
-Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+// bootstrap.php
+
+// ...
+$manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
 </code>
+
+> **NOTE**
+> We already made this change in an earlier step in the {{bootstrap.php}} file so you don't need to make this change again.
 
 When we use the {{Doctrine::loadModels()}} functionality all found classes will be cached internally so the autoloader can require them later.
 
 <code type="php">
+// bootstrap.php
+
+// ...
 Doctrine::loadModels('models');
 </code>
 
 Now when we instantiate a new class, for example a {{File}} class, the autoloader will be triggered and the class is required.
 
 <code type="php">
-$user = new User(); // triggers call to Doctrine::autoload()
+// test.php
+
+// ...
+// triggers call to Doctrine::autoload() and the class is included
+$user = new User();
 </code>
 
 Instantiating the class above triggers a call to {{Doctrine::autoload()}} and the class that was found in the call to {{Doctrine::loadModels()}} will be required and made available.
@@ -359,7 +405,10 @@ The downside of aggressive model loading is that every php file is included in e
 To use aggressive model loading we need to set the model loading attribute to be aggressive:
 
 <code type="php">
-Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive');
+// bootstrap.php
+
+// ...
+$manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_AGGRESSIVE);
 </code>
 
 > **TIP**
@@ -368,5 +417,8 @@ Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive');
 When we use the {{Doctrine::loadModels()}} functionality all the classes found will be included right away:
 
 <code type="php">
+// bootstrap.php
+
+// ...
 Doctrine::loadModels('/path/to/models');
 </code>
