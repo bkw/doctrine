@@ -260,7 +260,7 @@ class Category extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Category:

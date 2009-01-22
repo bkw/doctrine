@@ -18,7 +18,7 @@ class Account extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1113,7 +1113,7 @@ class ReaderLog extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -2053,24 +2053,46 @@ Doctrine offers some magic finders for your Doctrine models that allow you to fi
 
 The basic pattern for the finder methods are as follows: findBy%s($value) or findOneBy%s($value). The %s can be a column name or a relation alias. If you give a column name you must give the value you are looking for. If you specify a relationship alias, you can either pass an instance of the relation class to find, or give the actual primary key value.
 
+First lets retrieve the {{UserTable}} instance to work with:
+
 <code type="php">
 // test.php
 
 // ...
 $userTable = Doctrine::getTable('User');
-
-$user = $userTable->find(1);
-
-// Find one user by the username
-$userTable = Doctrine::getTable('User');
-
-$user = $userTable->findOneByUsername('jonwage');
-
-// Find phonenumbers for the user above
-$phoneTable = Doctrine::getTable('Phonenumber');
-
-$phonenumbers = $phoneTable->findByUser($user);
 </code>
+
+Now we can easily find a {{User}} record by its primary key by using the {{find()}} method:
+
+<code type="php">
+// test.php
+
+// ...
+$user = $userTable->find(1);
+</code>
+
+Now if you want to find a single user by their username you can use the following magic finder:
+
+<code type="php">
+// test.php
+
+// ...
+$user = $userTable->findOneByUsername('jonwage');
+</code>
+
+You can also easily by records by using the relationships between records. Because {{User}} has many {{Phonenumbers}} we can find those {{Phonenumbers}} by passing the {{findBy**()}} method a {{User}} instance:
+
+<code type="php">
+// test.php
+
+// ...
+$phonenumberTable = Doctrine::getTable('Phonenumber');
+
+$phonenumbers = $phonenumberTable->findByUser($user);
+</code>
+
+> **NOTE**
+> The documented magic finders above are made possibly by using PHP's {{[http://us3.php.net/__call __call()]}} overloading functionality. The undefined functions are forwarded to {{Doctrine_Table::__call()}} where the {{Doctrine_Query}} objects are built, executed and returned to the user.
 
 ++ Debugging Queries
 
@@ -2102,5 +2124,8 @@ SELECT u.id AS u__id FROM user u ORDER BY u.username
 Get the array of parameters for the {{Doctrine_Query}} instance:
 
 <code type="php">
+// test.php
+
+// ...
 print_r($q->getParams());
 </code>

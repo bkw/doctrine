@@ -31,7 +31,7 @@ class Book extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -75,7 +75,7 @@ class User extends BaseUser
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -170,7 +170,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -199,7 +199,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -223,7 +223,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -245,7 +245,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -268,7 +268,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -301,7 +301,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -325,7 +325,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -347,7 +347,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -374,7 +374,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -400,7 +400,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -422,7 +422,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -448,7 +448,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -474,7 +474,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -507,7 +507,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -531,7 +531,7 @@ class Test extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Test:
@@ -625,7 +625,7 @@ class Example extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Example:
@@ -728,7 +728,7 @@ class Forum_Board extends Doctrine_Record
 > **NOTE**
 > Notice the as keyword being used above. This means that the Forum_Board has a many relationship defined to Forum_Thread but is aliased as Threads.
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -767,7 +767,7 @@ class Forum_Thread extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -940,7 +940,7 @@ class Email extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -982,7 +982,7 @@ class User extends BaseUser
 > **NOTE**
 > Notice how we override the {{setUp()}} method and call {{parent::setUp()}}. This is because the {{BaseUser}} class which is generated from YAML or from an existing database contains the main {{setUp()}} method and we override it in the {{User}} class to add an additional relationship.
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1043,7 +1043,7 @@ class Phonenumber extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1101,7 +1101,7 @@ class Task extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1153,7 +1153,7 @@ class User extends BaseUser
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -1193,7 +1193,7 @@ class Group extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1238,7 +1238,7 @@ class UserGroup extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1316,6 +1316,8 @@ Now if we inspect the {{$user}} object data with the {{Doctrine_Record::toArray(
 // ...
 print_r($user->toArray(true));
 </code>
+
+The above example would produce the following output:
 
 <code>
 $ php test.php 
@@ -1404,7 +1406,7 @@ class UserReference extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1479,7 +1481,7 @@ class UserReference extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1603,7 +1605,7 @@ class Product extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1649,7 +1651,7 @@ class Order extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1730,7 +1732,7 @@ class Phonenumber extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -1781,7 +1783,7 @@ class IndexTest extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 IndexTest:
@@ -1810,7 +1812,7 @@ class MultiColumnIndexTest extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 MultiColumnIndexTest:
@@ -1846,7 +1848,7 @@ class MultipleIndexTest extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 MultipleIndexTest:
@@ -1896,7 +1898,7 @@ class MultipleIndexTest extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 MultipleIndexTest:
@@ -1980,7 +1982,7 @@ class Product extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -2030,7 +2032,7 @@ class MyInnoDbRecord extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 MyInnoDbRecord:
@@ -2055,7 +2057,7 @@ class MyCustomOptionRecord extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 MyCustomOptionRecord:
@@ -2112,7 +2114,7 @@ class User extends BaseUser
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml
@@ -2187,7 +2189,7 @@ class Address extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 # schema.yml

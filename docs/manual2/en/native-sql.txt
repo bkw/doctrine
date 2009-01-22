@@ -7,12 +7,19 @@ Using raw sql for fetching might be useful when you want to utilize database spe
 Creating a Doctrine_RawSql object is easy:
 
 <code type="php">
+// test.php
+
+// ...
 $q = new Doctrine_RawSql();
 </code>
 
 Optionally a connection parameter can be given and it accepts an instance of {{Doctrine_Connection}}. You learned how to create connections in the [doc connections :name] chapter.
 
 <code type="php">
+// test.php
+
+// ...
+$conn = Doctrine_Manager::connection();
 $q = new Doctrine_RawSql($conn);
 </code>
 
@@ -23,14 +30,15 @@ The first thing to notice when using {{Doctrine_RawSql}} is that you always have
 The following example should clarify the usage of these:
 
 <code type="php">
-$q = new Doctrine_RawSql();
+// test.php
 
+// ...
 $q->select('{u.*}')
-  ->from('user')
-  ->addComponent('user', 'User');
+  ->from('user u')
+  ->addComponent('u', 'User');
 
 $users = $q->execute();
-$users[0]; // User object
+print_r($users->toArray());
 </code>
 
 > **NOTE**
@@ -45,49 +53,12 @@ Pay attention to following things:
 
 When fetching from multiple components the {{addComponent()}} calls become a bit more complicated as not only do we have to tell which tables are bound to which components, we also have to tell the parser which components belongs to which.
 
-Consider the following models {{User}} and {{Phonenumber}} where {{User}} has many {{Phonenumber}} and {{Phonenumber}} has one {{User}}.
-
-<code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string', 20);
-    }
-
-    public function setUp()
-    {
-        $this->hasMany('Phonenumber', array(
-                'local' => 'id',
-                'foreign' => 'user_id'
-            )
-        );
-    }
-}
-
-class Phonenumber extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('phonenumber', 'string', 20);
-        $this->hasColumn('user_id', 'integer');
-    }
-
-    public function setUp()
-    {
-        $this->hasOne('User', array(
-                'local' => 'user_id',
-                'foreign' => 'id',
-                'onDelete' => 'CASCADE'
-            )
-        );
-    }
-}
-</code>
-
 In the following example we fetch all {{users}} and their {{phonenumbers}}. First create a new {{Doctrine_RawSql}} object and add the select parts:
 
 <code type="php">
+// test.php
+
+// ...
 $q = new Doctrine_RawSql();
 $q->select('{u.*}, {p.*}');
 </code>
@@ -95,19 +66,28 @@ $q->select('{u.*}, {p.*}');
 Now we need to add the {{FROM}} part to the query with the join to the phonenumber table from the user table and map everything together:
 
 <code type="php">
+// test.php
+
+// ...
 $q->from('user u LEFT JOIN phonenumber p ON u.id = p.user_id')
 </code>
 
 Now we tell that {{user}} table is bound to class called {{User}} we also add an alias for {{User}} class called {{u}}. This alias will be used when referencing the {{User}} class.
 
 <code type="php">
+// test.php
+
+// ...
 $q->addComponent('u', 'User u');
 </code>
 
 Now we add another component that is bound to table {{phonenumber}}:
 
 <code type="php">
-$q->addComponent('p', 'u.Phonenumber p');
+// test.php
+
+// ...
+$q->addComponent('p', 'u.Phonenumbers p');
 </code>
 
 > **NOTE**
@@ -116,8 +96,20 @@ $q->addComponent('p', 'u.Phonenumber p');
 Now we can execute the {{Doctrine_RawSql}} query just like if you were executing a {{Doctrine_Query}} object:
 
 <code type="php">
+// test.php
+
+// ...
 $users = $q->execute();
-echo get_class($users);                      // Doctrine_Collection
-echo get_class($users[0]);                   // User
-echo get_class($users[0]['Phonenumber'][0]); // Phonenumber
+echo get_class($users) . "\n";
+echo get_class($users[0]) . "\n";
+echo get_class($users[0]['Phonenumbers'][0]) . "\n";
+</code>
+
+The above example would output the following when executed:
+
+<code>
+$ php test.php 
+Doctrine_Collection
+User
+Phonenumber
 </code>

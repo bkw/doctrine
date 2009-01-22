@@ -1,6 +1,6 @@
 ++ Introduction
 
-The purpose of schema files is to allow you to manage your model definitions directly from a yaml file rather then editing php code. The yaml schema file is parsed and used to generate all your model definitions/classes. This makes Doctrine model definitions much more portable.
+The purpose of schema files is to allow you to manage your model definitions directly from a YAML file rather then editing php code. The YAML schema file is parsed and used to generate all your model definitions/classes. This makes Doctrine model definitions much more portable.
 
 Schema files support all the normal things you would write with manual php code. Component to connection binding, relationships, attributes, templates/behaviors, indexes, etc.
 
@@ -480,7 +480,7 @@ $this->index('name_index', array(
 
 +++ Inheritance
 
-Below we will demonstrate how you can setup the different types of inheritance using yaml schema files.
+Below we will demonstrate how you can setup the different types of inheritance using YAML schema files.
 
 ++++ Simple Inheritance
 
@@ -665,11 +665,11 @@ Contact:
       type: string(255)
 </code>
 
-All of the settings at the top will be applied to every model which is defined in that yaml file.
+All of the settings at the top will be applied to every model which is defined in that YAML file.
 
 ++ Using Schema Files
 
-Once you have defined your schema files you need some code to build the models from the yaml definition.
+Once you have defined your schema files you need some code to build the models from the YAML definition.
 
 <code type="php">
 $options = array(

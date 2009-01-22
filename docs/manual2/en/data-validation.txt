@@ -36,10 +36,18 @@ Below is an example of how you use the validator and how to specify the argument
 In our example we will use the minlength validator.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'minlength' => 12
             )
@@ -48,14 +56,18 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       minlength: 12
+# ...
 </code>
 
 ++ Examples
@@ -67,34 +79,46 @@ A not-null constraint simply specifies that a column must not assume the null va
 The following definition uses a notnull constraint for column name. This means that the specified column doesn't accept null values.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'notnull' => true,
-                'primary' => true
+                'primary' => true,
             )
         );
     }
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       notnull: true
       primary: true
+# ...
 </code>
 
 When this class gets exported to database the following SQL statement would get executed (in MySQL):
 
 <code type="sql">
-CREATE TABLE user (name VARCHAR(200) NOT NULL, PRIMARY KEY(name))
+CREATE TABLE user (username VARCHAR(255) NOT NULL, PRIMARY KEY(username))
 </code>
 
 The notnull constraint also acts as an application level validator. This means that if Doctrine validators are turned on, Doctrine will automatically check that specified columns do not contain null values when saved.
@@ -106,10 +130,18 @@ If those columns happen to contain null values {{Doctrine_Validator_Exception}} 
 The e-mail validator simply validates that the inputted value is indeed a valid e-mail address and that the MX records for the address domain resolve as a valid e-mail address.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('email', 'string', 255, array(
                 'email'   => true
             )
@@ -118,30 +150,49 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
+# ...
     email:
       type: string(255)
       email: true
+# ...
 </code>
 
 Now when we try and create a user with an invalid email address it will not validate:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
+$user->username = 'jwage';
 $user->email = 'jonwage';
-echo $user->isValid(); // false
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid!';
+}
 </code>
 
 The above code will throw an exception because {{jonwage}} is not a valid e-mail address. Now we can take this even further and give a valid e-mail address format but an invalid domain name:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
+$user->username = 'jwage';
 $user->email = 'jonwage@somefakedomainiknowdoesntexist.com';
-echo $user->isValid(); // false
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid!';
+}
 </code>
 
 Now the above code will still fail because the domain {{somefakedomainiknowdoesntexist.com}} does not exist and the php function {{[http://www.php.net/checkdnsrr checkdnsrr()]}} returned false.
@@ -151,10 +202,18 @@ Now the above code will still fail because the domain {{somefakedomainiknowdoesn
 The not blank validator is similar to the not null validator except that it will fail on empty strings or strings with white space.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'notblank'   => true
             )
@@ -163,22 +222,32 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       notblank: true
+# ...
 </code>
 
 Now if we try and save a {{User}} record with a username that is a single blank white space, validation will fail:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = ' ';
-echo $user->isValid(); // false
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid!';
+}
 </code>
 
 +++ No Space
@@ -186,10 +255,18 @@ echo $user->isValid(); // false
 The no space validator is simple. It checks that the value doesn't contain any spaces.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'nospace'   => true
             )
@@ -198,14 +275,18 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       nospace: true
+# ...
 </code>
 
 Now if we try and save a {{User}} with a {{username}} that has a space in it, the validation will fail:
@@ -213,7 +294,10 @@ Now if we try and save a {{User}} with a {{username}} that has a space in it, th
 <code type="php">
 $user = new User();
 $user->username = 'jon wage';
-echo $user->isValid(); // false
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid!';
+}
 </code>
 
 +++ Past
@@ -221,11 +305,18 @@ echo $user->isValid(); // false
 The past validator checks if the given value is a valid date in the past. In this example we'll have a {{User}} model with a {{birthday}} column and we want to validate that the date is in the past.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('birthday', 'timestamp', null, array(
                 'past' => true
             )
@@ -234,27 +325,40 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     birthday:
       type: timestamp
       past: true
+# ...
 </code>
+
+Now if we try and set a birthday that is not in the past we will get a validation error.
 
 +++ Future
 
 The future validator is the opposite of the past validator and checks if the given value is a valid date in the future. In this example we'll have a {{User}} model with a {{next_appointment_date}} column and we want to validate that the date is in the future.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('next_appointment_date', 'timestamp', null, array(
                 'future' => true
             )
@@ -263,27 +367,38 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     next_appointment_date:
       type: timestamp
       future: true
+# ...
 </code>
+
+Now if we try and set an appointment date that is not in the future we will get a validation error.
 
 +++ Min Length
 
 The min length does exactly what it says. It checks that the value string length is greater than the specified minimum length. In this example we will have a {{User}} model with a {{password}} column where we want to make sure the length of the {{password}} is at least 5 characters long.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('password', 'timestamp', null, array(
                 'minlength' => 5
             )
@@ -292,24 +407,34 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     password:
       type: timestamp
       minlength: 5
+# ...
 </code>
 
 Now if we try and save a {{User}} with a {{password}} that is shorter than 5 characters, the validation will fail.
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = 'jwage';
 $user->password = 'test';
-echo $user->isValid(); // false because 'test' is only 4 characters long
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because "test" is only 4 characters long!';
+}
 </code>
 
 +++ Country
@@ -317,11 +442,18 @@ echo $user->isValid(); // false because 'test' is only 4 characters long
 The country validator checks if the given value is a valid country code.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('country', 'string', 2, array(
                 'country' => true
             )
@@ -330,24 +462,34 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     country:
       type: string(2)
       country: true
+# ...
 </code>
 
 Now if you try and save a {{User}} with an invalid country code the validation will fail.
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = 'jwage';
 $user->country_code = 'zz';
-echo $user->isValid(); // false because 'zz' is not a valid country code
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because "zz" is not a valid country code!';
+}
 </code>
 
 +++ IP Address
@@ -355,11 +497,18 @@ echo $user->isValid(); // false because 'zz' is not a valid country code
 The ip address validator checks if the given value is a valid ip address.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('ip_address', 'string', 15, array(
                 'ip' => true
             )
@@ -368,15 +517,19 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     ip_address:
       type: string(15)
       ip: true
+# ...
 </code>
 
 Now if you try and save a {{User}} with an invalid ip address the validation will fail.
@@ -385,7 +538,10 @@ Now if you try and save a {{User}} with an invalid ip address the validation wil
 $user = new User();
 $user->username = 'jwage';
 $user->ip_address = '123.123';
-echo $user->isValid(); // false because '123.123' is not a valid ip address
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because "123.123" is not a valid ip address
+}
 </code>
 
 +++ HTML Color
@@ -393,11 +549,16 @@ echo $user->isValid(); // false because '123.123' is not a valid ip address
 The html color validator checks that the given value is a valid html hex color.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('favorite_color', 'string', 7, array(
                 'htmlcolor' => true
             )
@@ -406,24 +567,34 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     favorite_color:
       type: string(7)
       htmlcolor: true
+# ...
 </code>
 
 Now if you try and save a {{User}} with an invalid html color value for the {{favorite_color}} column the validation will fail.
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = 'jwage';
 $user->favorite_color = 'red';
-echo $user->isValid(); // false because 'red' is not a valid hex color
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because "red" is not a valid hex color';
+}
 </code>
 
 +++ Range
@@ -431,11 +602,18 @@ echo $user->isValid(); // false because 'red' is not a valid hex color
 The range validator checks if value is within given range of numbers.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('age', 'integer', 3, array(
                 'range' => array(10, 100)
             )
@@ -444,34 +622,49 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     age:
       type: integer(3)
       range: [10, 100]
+# ...
 </code>
 
 Now if you try and save a {{User}} with an age that is less than 10 or greater than 100, the validation will fail.
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = 'jwage';
 $user->age = '3';
-echo $user->isValid(); // false because '3' is less than the minimum of '10'
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because "3" is less than the minimum of "10"';
+}
 </code>
 
 You can use the {{range}} validator to validate max and min values by omitting either one of the {{0}} or {{1}} keys of the range array. Below is an example:
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('age', 'integer', 3, array(
                 'range' => array(1 => 100)
             )
@@ -482,15 +675,19 @@ class User extends Doctrine_Record
 
 The above would make it so that age has a max of 100. To have a minimum value simple specify {{0}} instead of {{1}} in the range array.
 
-The yaml syntax for this would look like the following:
+The YAML syntax for this would look like the following:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     age:
       type: integer(3)
       range: { 1: 100 }
+# ...
 </code>
 
 +++ Unique
@@ -502,10 +699,18 @@ In general, a unique constraint is violated when there are two or more rows in t
 The following definition uses a unique constraint for column name.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'unique' => true
             )
@@ -514,14 +719,18 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       unique: true
+# ....
 </code>
 
 > **NOTE**
@@ -532,10 +741,18 @@ User:
 The regular expression validator is a simple way to validate column values against your own provided regular expression. In this example we will make sure the username contains only valid letters or numbers.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('username', 'string', 255, array(
                 'regexp' => '/[a-zA-Z0-9]/'
             )
@@ -544,22 +761,32 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
     username:
       type: string(255)
       regexp: '/[a-zA-Z0-9]/'
+# ...
 </code>
 
 Now if we were to try and save a {{User}} with a {{username}} that has any other character than a letter or number in it, the validation will fail:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = '[jwage';
-echo $user->isValid(); // false because the username contains a [
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because the username contains a [ character';
+}
 </code>
 
 +++ Credit Card
@@ -567,11 +794,18 @@ echo $user->isValid(); // false because the username contains a [
 The credit card validator simply checks that the given value is indeed a valid credit card number.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('cc_number', 'integer', 16, array(
                 'creditcard' => true
             )
@@ -580,15 +814,19 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     cc_number:
       type: integer(16)
       creditcard: true
+# ...
 </code>
 
 +++ Read Only
@@ -596,11 +834,18 @@ User:
 The read only validator will fail validation if you modify a column that has the readonly validator enabled on it.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('readonly_value', 'string', 255, array(
                 'readonly' => true
             )
@@ -609,15 +854,19 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     readonly_value:
       type: integer(16)
       readonly: true
+# ...
 </code>
 
 Now if I ever try and modify the column named {{readonly_value}} from a {{User}} object instance, validation will fail.
@@ -627,11 +876,18 @@ Now if I ever try and modify the column named {{readonly_value}} from a {{User}}
 The unsigned validator checks that the given integer value is unsigned.
 
 <code type="php">
-class User extends Doctrine_Record
+// models/User.class.php
+
+class User extends BaseUser
 {
+    // ...
+
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255);
+        parent::setTableDefinition();
+
+        // ...
+
         $this->hasColumn('age', 'integer', 3, array(
                 'unsigned' => true
             )
@@ -640,24 +896,34 @@ class User extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 User:
   columns:
-    username: string(255)
+# ...
     age:
       type: integer(3)
       unsigned: true
+# ...
 </code>
 
 Now if I try and save a {{User}} with a negative age the validation will fail:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
 $user->username = 'jwage';
 $user->age = '-100';
-echo $user->isValid(); // false because -100 is signed
+
+if ( ! $user->isValid()) {
+    echo 'User is invalid because -100 is signed';
+}
 </code>
 
 +++ US State
@@ -665,6 +931,8 @@ echo $user->isValid(); // false because -100 is signed
 The us state validator checks that the given string is a valid US state code.
 
 <code type="php">
+// models/State.class.php
+
 class State extends Doctrine_Record
 {
     public function setTableDefinition()
@@ -678,9 +946,12 @@ class State extends Doctrine_Record
 }
 </code>
 
-Here is the same example in YAML format. You can read more about yaml in the [doc yaml-schema-files :name] chapter:
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
+# schema.yml
+
+# ...
 State:
   columns:
     name: string(255)
@@ -695,5 +966,8 @@ Now if I try and save a {{State}} with an invalid state code then the validation
 $state = new State();
 $state->name = 'Tennessee';
 $state->code = 'ZZ';
-echo $state->isValid(); // false because 'ZZ' is not a valid state code
+
+if ( ! $state->isValid()) {
+    echo 'State is invalid because "ZZ" is not a valid state code';
+}
 </code>

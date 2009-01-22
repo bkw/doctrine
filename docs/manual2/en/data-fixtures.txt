@@ -2,13 +2,13 @@ Data fixtures are meant for loading small sets of test data through your models 
 
 ++ Dumping
 
-You can dump data to fixtures file in many different formats to help you get started with writing your data fixtures. You can dump your data fixtures to one big yaml file like the following:
+You can dump data to fixtures file in many different formats to help you get started with writing your data fixtures. You can dump your data fixtures to one big YAML file like the following:
 
 <code type="php">
 Doctrine::dumpData('data.yml');
 </code>
 
-Or you can optionally dump all data to individual files. One yaml file per model like the following:
+Or you can optionally dump all data to individual files. One YAML file per model like the following:
 
 <code type="php">
 Doctrine::dumpData('directory', true);
@@ -48,7 +48,7 @@ Imagine a schema with the following relationships:
 * Tag hasMany Resource as Resources
 
 > **NOTE**
-> All row keys across all yaml data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
+> All row keys across all YAML data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
 
 <code type="yaml">
 Resource:

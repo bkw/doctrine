@@ -334,7 +334,7 @@ User:
 > * Removed {{id}} column as it is automatically added if no primary key is defined.
 > * Removed {{updated_at}} and {{created_at}} columns as they can be handled automatically by the {{Timestampable}} behavior.
 >
-> Now look how much cleaner the yaml is and is because we take advantage of defaults and utilize core behaviors it is much less work we have to do ourselves.
+> Now look how much cleaner the YAML is and is because we take advantage of defaults and utilize core behaviors it is much less work we have to do ourselves.
 
 Now re-generate your models from the YAML schema file:
 
