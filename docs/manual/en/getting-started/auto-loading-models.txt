@@ -19,6 +19,7 @@ require_once('path-to-doctrine/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 
 Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+Doctrine_Manager::getInstance()->setAttribute('autoload_table_classes',true); // (optional) Auto load generated table classes too
 Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
 
 $user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
@@ -44,6 +45,7 @@ require_once('path-to-doctrine/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 
 Doctrine_Manager::getInstance()->setAttribute('model_loading', 'aggressive'); // Thi
+Doctrine_Manager::getInstance()->setAttribute('autoload_table_classes',true); // (optional) Auto load generated table classes too
 Doctrine::loadModels('/path/to/models'); // This call will not require the found .php files
 
 $user = new User(); // This will invoke Doctrine::autoload() to include the file so the User class is present.
