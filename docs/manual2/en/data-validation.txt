@@ -36,7 +36,7 @@ Below is an example of how you use the validator and how to specify the argument
 In our example we will use the minlength validator.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -79,7 +79,7 @@ A not-null constraint simply specifies that a column must not assume the null va
 The following definition uses a notnull constraint for column name. This means that the specified column doesn't accept null values.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -130,7 +130,7 @@ If those columns happen to contain null values {{Doctrine_Validator_Exception}} 
 The e-mail validator simply validates that the inputted value is indeed a valid e-mail address and that the MX records for the address domain resolve as a valid e-mail address.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -202,7 +202,7 @@ Now the above code will still fail because the domain {{somefakedomainiknowdoesn
 The not blank validator is similar to the not null validator except that it will fail on empty strings or strings with white space.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -255,7 +255,7 @@ if ( ! $user->isValid()) {
 The no space validator is simple. It checks that the value doesn't contain any spaces.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -305,7 +305,7 @@ if ( ! $user->isValid()) {
 The past validator checks if the given value is a valid date in the past. In this example we'll have a {{User}} model with a {{birthday}} column and we want to validate that the date is in the past.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -347,7 +347,7 @@ Now if we try and set a birthday that is not in the past we will get a validatio
 The future validator is the opposite of the past validator and checks if the given value is a valid date in the future. In this example we'll have a {{User}} model with a {{next_appointment_date}} column and we want to validate that the date is in the future.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -389,7 +389,7 @@ Now if we try and set an appointment date that is not in the future we will get 
 The min length does exactly what it says. It checks that the value string length is greater than the specified minimum length. In this example we will have a {{User}} model with a {{password}} column where we want to make sure the length of the {{password}} is at least 5 characters long.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -442,7 +442,7 @@ if ( ! $user->isValid()) {
 The country validator checks if the given value is a valid country code.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -497,7 +497,7 @@ if ( ! $user->isValid()) {
 The ip address validator checks if the given value is a valid ip address.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -549,7 +549,7 @@ if ( ! $user->isValid()) {
 The html color validator checks that the given value is a valid html hex color.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -602,7 +602,7 @@ if ( ! $user->isValid()) {
 The range validator checks if value is within given range of numbers.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -655,7 +655,7 @@ if ( ! $user->isValid()) {
 You can use the {{range}} validator to validate max and min values by omitting either one of the {{0}} or {{1}} keys of the range array. Below is an example:
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -686,7 +686,8 @@ User:
 # ...
     age:
       type: integer(3)
-      range: { 1: 100 }
+      range:
+        1: 100
 # ...
 </code>
 
@@ -699,7 +700,7 @@ In general, a unique constraint is violated when there are two or more rows in t
 The following definition uses a unique constraint for column name.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -741,7 +742,7 @@ User:
 The regular expression validator is a simple way to validate column values against your own provided regular expression. In this example we will make sure the username contains only valid letters or numbers.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -794,7 +795,7 @@ if ( ! $user->isValid()) {
 The credit card validator simply checks that the given value is indeed a valid credit card number.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -834,7 +835,7 @@ User:
 The read only validator will fail validation if you modify a column that has the readonly validator enabled on it.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -876,7 +877,7 @@ Now if I ever try and modify the column named {{readonly_value}} from a {{User}}
 The unsigned validator checks that the given integer value is unsigned.
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -931,7 +932,7 @@ if ( ! $user->isValid()) {
 The us state validator checks that the given string is a valid US state code.
 
 <code type="php">
-// models/State.class.php
+// models/State.php
 
 class State extends Doctrine_Record
 {

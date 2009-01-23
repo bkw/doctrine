@@ -63,7 +63,7 @@ You can write your fixtures files manually and load them in to your applications
 For the next several examples we will use the following models:
 
 <code type="php">
-// models/Resouce.class.php
+// models/Resouce.php
 
 class Resource extends Doctrine_Record
 {
@@ -90,7 +90,7 @@ class Resource extends Doctrine_Record
     }
 }
 
-// models/ResourceType.class.php
+// models/ResourceType.php
 
 class ResourceType extends Doctrine_Record
 {
@@ -109,7 +109,7 @@ class ResourceType extends Doctrine_Record
     }
 }
 
-// models/Tag.class.php
+// models/Tag.php
 
 class Tag extends Doctrine_Record
 {
@@ -129,7 +129,7 @@ class Tag extends Doctrine_Record
     }
 }
 
-// models/ResourceTag.class.php
+// models/ResourceTag.php
 
 class ResourceTag extends Doctrine_Record
 {
@@ -140,7 +140,7 @@ class ResourceTag extends Doctrine_Record
     }
 }
 
-// models/Category.class.php
+// models/Category.php
 
 class BaseCategory extends Doctrine_Record
 {

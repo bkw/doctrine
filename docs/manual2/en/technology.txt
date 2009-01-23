@@ -39,7 +39,7 @@ Doctrine DBAL is also divided into driver packages.
 
 * [doc component-overview:record Doctrine_Record]
 * [doc component-overview:table Doctrine_Table]
-* [doc models-explained:relationships Doctrine_Relation]
+* [doc defining-models:relationships Doctrine_Relation]
 * [doc component-overview:record:using-expression-values Doctrine_Expression]
 * [doc dql-doctrine-query-language Doctrine_Query]
 * [doc native-sql Doctrine_RawSql]

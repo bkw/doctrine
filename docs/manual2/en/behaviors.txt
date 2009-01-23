@@ -23,7 +23,7 @@ As you may already know templates are used for adding common definitions and opt
 In the following example we define a template called {{TimestampBehavior}}. Basically the purpose of this template is to add date columns 'created' and 'updated' to the record class that loads this template. Additionally this template uses a listener called Timestamp listener which updates these fields based on record actions.
 
 <code type="php">
-// models/TimestampListener.class.php
+// models/TimestampListener.php
 
 class TimestampListener extends Doctrine_Record_Listener
 {
@@ -43,7 +43,7 @@ class TimestampListener extends Doctrine_Record_Listener
 Now lets create a child {{Doctrine_Template}} named {{TimestampTemplate}} so we can attach it to our models with the {{actAs()}} method:
 
 <code type="php">
-// models/TimestampBehavior.class.php
+// models/TimestampBehavior.php
 
 class TimestampTemplate extends Doctrine_Template
 {
@@ -178,7 +178,7 @@ Now if we extend the {{User}} and {{Email}} classes and create, for example, cla
 In the following example we'll define two templates, {{UserTemplate}} and {{EmailTemplate}}, with almost identical definitions as the {{User}} and {{Email}} class had.
 
 <code type="php">
-// models/UserTemplate.class.php
+// models/UserTemplate.php
 
 class UserTemplate extends Doctrine_Template
 {
@@ -202,7 +202,7 @@ class UserTemplate extends Doctrine_Template
 Now lets define the {{EmailTemplate}}:
 
 <code type="php">
-// models/EmailTemplate.class.php
+// models/EmailTemplate.php
 
 class EmailTemplate extends Doctrine_Template
 {
@@ -316,7 +316,7 @@ Besides from acting as a full table definition delegate system, {{Doctrine_Templ
 Lets add to our previous example and add some custom methods to the {{UserTemplate}}:
 
 <code type="php">
-// models/UserTemplate.class.php
+// models/UserTemplate.php
 
 class UserTemplate extends Doctrine_Template
 {
@@ -353,7 +353,7 @@ You can also delegate methods to {{Doctrine_Table}} classes just as easily. But,
 Here is an example where we add a new finder method:
 
 <code type="php">
-// models/UserTemplate.class.php
+// models/UserTemplate.php
 
 class UserTemplate extends Doctrine_Template
 {
@@ -443,7 +443,7 @@ In the next several examples we will demonstrate some of the behaviors that come
 Lets create a {{BlogPost}} model that we want to have the ability to have versions:
 
 <code type="php">
-// models/BlogPost.class.php
+// models/BlogPost.php
 
 class BlogPost extends Doctrine_Record
 {
@@ -570,7 +570,7 @@ The Timestampable behavior will automatically add a {{created_at}} and {{updated
 Since it is common to want to know the date a post is made ets expand our {{BlogPost}} model and add the {{Timestampable}} behavior to automatically set these dates for us.
 
 <code type="php">
-// models/BlogPost.class.php
+// models/BlogPost.php
 
 class BlogPost extends Doctrine_Record
 {
@@ -663,7 +663,7 @@ The {{Sluggable}} behavior is a nice piece of functionality that will automatica
 Lets expand our {{BlogPost}} model to use the {{Sluggable}} behavior because we will want to have nice URLs for our posts:
 
 <code type="php">
-// models/BlogPost.class.php
+// models/BlogPost.php
 
 class BlogPost extends Doctrine_Record
 {
@@ -893,7 +893,7 @@ The {{NestedSet}} behavior allows you to turn your models in to a nested set tre
 Lets take a {{Category}} model for example where the categories need to be organized in a hierarchical tree structure:
 
 <code type="php">
-// models/Category.class.php
+// models/Category.php
 
 class Category extends Doctrine_Record
 {
@@ -956,7 +956,7 @@ The {{Searchable}} behavior is a fulltext indexing and searching tool. It can be
 Imagine we have a {{Job}} model for job postings and we want it to be easily searchable:
 
 <code type="php">
-// models/Job.class.php
+// models/Job.php
 
 class Job extends Doctrine_Record
 {
@@ -1018,7 +1018,7 @@ Because the {{Searchable}} behavior is such a large topic, we have more informat
 The below is only a demo. The geographical behavior can be used with any data record for determining the number of miles or kilometers between 2 records.
 
 <code type="php">
-// models/Zipcode.class.php
+// models/Zipcode.php
 
 class Zipcode extends Doctrine_Record
 {
@@ -1183,7 +1183,7 @@ foreach ($array as $key => $value) {
 The {{SoftDelete}} behavior is a very simple yet highly desired model behavior which overrides the {{delete()}} functionality and adds a {{deleted}} column. When {{delete()}} is called, instead of deleting the record from the database, a delete flag is set to 1. Below is an example of how to create a model with the {{SoftDelete}} behavior being used.
 
 <code type="php">
-// models/SoftDeleteTest.class.php
+// models/SoftDeleteTest.php
 
 class SoftDeleteTest extends Doctrine_Record
 {

@@ -5,7 +5,7 @@ Searching is a huge topic, hence an entire chapter has been devoted to a behavio
 Consider we have a class called {{NewsItem}} with the following definition:
 
 <code type="php">
-// models/NewsItem.class.php
+// models/NewsItem.php
 
 class NewsItem extends Doctrine_Record
 {
@@ -45,7 +45,7 @@ As the application grows these kind of queries become very slow. For example whe
 Doctrine solves this with its search component and inverse indexes. First lets alter our definition a bit:
 
 <code type="php">
-// models/NewsItem.class.php
+// models/NewsItem.php
 
 class NewsItem extends Doctrine_Record
 {
@@ -130,7 +130,7 @@ Whenever a searchable record is being inserted into database Doctrine executes t
 Sometimes you may not want to update the index table directly when new searchable entries are added. Rather you may want to batch update the index table in certain intervals. For disabling the direct update functionality you'll need to set the batchUpdates option to true when you attach the behavior:
 
 <code type="php">
-// models/NewsItem.class.php
+// models/NewsItem.php
 
 class NewsItem extends Doctrine_Record
 {
@@ -198,7 +198,7 @@ By default Doctrine uses {{Doctrine_Search_Analyzer_Standard}} for analyzing the
 You can write your own analyzer class by making a class that implements {{Doctrine_Search_Analyzer_Interface}}. Here is an example where we create an analyzer named {{MyAnalyzer}}:
 
 <code type="php">
-// models/MyAnalyzer.class.php
+// models/MyAnalyzer.php
 
 class MyAnalyzer implements Doctrine_Search_Analyzer_Interface
 {

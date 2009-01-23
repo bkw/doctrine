@@ -5,7 +5,7 @@
 + Configuration
 + Connections
 + Introduction to Models
-+ Models Explained
++ Defining Models
 + Working with Models
 + DQL (Doctrine Query Language)
 + Component Overview

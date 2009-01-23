@@ -435,7 +435,7 @@ User:
 
 +++ Indexes
 
-Please see the [doc models-explained:indexes :name] section of the [doc models-explained chapter] for more information about indexes and their options.
+Please see the [doc defining-models:indexes :name] section of the [doc defining-models chapter] for more information about indexes and their options.
 
 <code type="yml">
 UserProfile:
@@ -675,7 +675,7 @@ Once you have defined your schema files you need some code to build the models f
 $options = array(
   'packagesPrefix'  =>  'Plugin',
   'baseClassName'   =>  'MyDoctrineRecord',
-  'suffix'          =>  '.class.php'
+  'suffix'          =>  '.php'
 );
 
 Doctrine::generateModelsFromYaml('/path/to/yaml', '/path/to/model', $options);

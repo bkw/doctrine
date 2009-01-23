@@ -70,7 +70,7 @@ Below are a few examples of some migration classes you can use to build your dat
 For the first version lets create a new table named {{migration_test}}:
 
 <code type="php">
-// migrations/001_add_table.class.php
+// migrations/001_add_table.php
 
 class AddTable extends Doctrine_Migration
 {
@@ -89,7 +89,7 @@ class AddTable extends Doctrine_Migration
 Now lets create a second version where we add a new column to the table we added in the previous version:
 
 <code type="php">
-// migrations/002_add_column.class.php
+// migrations/002_add_column.php
 
 class AddColumn extends Doctrine_Migration
 {
@@ -108,7 +108,7 @@ class AddColumn extends Doctrine_Migration
 Finally, lets change the type of the {{field1}} column in the table we created previously:
 
 <code type="php">
-// migrations/003_change_column.class.php
+// migrations/003_change_column.php
 
 class ChangeColumn extends Doctrine_Migration
 {
@@ -385,7 +385,7 @@ The valid options for the {{$definition}} are:
 Sometimes you may need to alter the data in the database with your models. Since you may create a table or make a change, you have to do the data altering after the {{up()}} or {{down()}} method is processed. We have hooks in place for this named {{preUp()}}, {{postUp()}}, {{preDown()}}, and {{postDown()}}. Define these methods and they will be triggered:
 
 <code type="php">
-// migrations/001_add_table.class.php
+// migrations/001_add_table.php
 
 class AddTable extends Doctrine_Migration
 {
@@ -412,7 +412,7 @@ class AddTable extends Doctrine_Migration
 > The above example assumes you have created and made available the {{MigrationTest}} model. Once the {{up()}} method is executed the {{migration_test}} table is created so the {{MigrationTest}} model can be used. We have provided the definition of this model below.
 
 <code type="php">
-// models/MigrationTest.class.php
+// models/MigrationTest.php
 
 class MigrationTest extends Doctrine_Record
 {

@@ -14,7 +14,7 @@ $ rm -rf models/*
 Simple inheritance is the easiest and simplest inheritance to use. In simple inheritance all the child classes share the same columns as the parent and all information is stored in the parent table.
 
 <code type="php">
-// models/Entity.class.php
+// models/Entity.php
 
 class Entity extends Doctrine_Record 
 {
@@ -32,7 +32,7 @@ class Entity extends Doctrine_Record
 Now lets create a {{User}} model that extends {{Entity}}:
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends Entity 
 { }
@@ -41,7 +41,7 @@ class User extends Entity
 Do the same thing for the {{Group}} model:
 
 <code type="php">
-// models/Group.class.php
+// models/Group.php
 
 class Group extends Entity 
 { }
@@ -101,7 +101,7 @@ CREATE TABLE entity (id BIGINT AUTO_INCREMENT, username VARCHAR(20), password VA
 Concrete inheritance creates separate tables for child classes. However in concrete inheritance each class generates a table which contains all columns (including inherited columns). In order to use concrete inheritance you'll need to add explicit {{parent::setTableDefinition()}} calls to child classes as shown below.
 
 <code type="php">
-// models/TextItem.class.php
+// models/TextItem.php
 
 class TextItem extends Doctrine_Record
 {
@@ -115,7 +115,7 @@ class TextItem extends Doctrine_Record
 Now lets create a model named {{Comment}} that extends {{TextItem}} and add an extra column named {{content}}:
 
 <code type="php">
-// models/Comment.class.php
+// models/Comment.php
 
 class Comment extends TextItem
 {
@@ -169,7 +169,7 @@ In concrete inheritance you don't necessarily have to define additional columns,
 In the following example we have three database tables called {{entity}}, {{user}} and {{group}}. {{Users}} and {{groups}} are both {{entities}}. The only thing we have to do is write 3 classes ({{Entity}}, {{Group}} and {{User}}) and make iterative {{setTableDefinition()}} method calls.
 
 <code type="php">
-// models/Entity.class.php
+// models/Entity.php
 
 class Entity extends Doctrine_Record 
 {
@@ -182,7 +182,7 @@ class Entity extends Doctrine_Record
     }
 }
 
-// models/User.class.php
+// models/User.php
 
 class User extends Entity 
 {
@@ -194,7 +194,7 @@ class User extends Entity
     }
 }
 
-// models/Group.class.php
+// models/Group.php
 class Group extends Entity 
 {
     public function setTableDefinition() 
@@ -257,7 +257,7 @@ The {{entity}} table has a column called {{type}} which tells whether an {{entit
 The only thing we have to do is to create 3 records (the same as before) and add the call to the {{Doctrine_Table::setSubclasses()}} method from the parent class.
 
 <code type="php">
-// models/Entity.class.php
+// models/Entity.php
 
 class Entity extends Doctrine_Record 
 {
@@ -277,11 +277,11 @@ class Entity extends Doctrine_Record
     }
 }
 
-// models/User.class.php
+// models/User.php
 class User extends Entity
 { }
 
-// models/Group.class.php
+// models/Group.php
 class Group extends Entity
 { }
 </code>

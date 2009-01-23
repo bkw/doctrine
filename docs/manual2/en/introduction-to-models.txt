@@ -23,7 +23,7 @@ class User extends Doctrine_Record
 > **NOTE**
 > We aren't actually going to use the above class definition, it is only meant to be an example. We will generate our first class definition from an existing database table later in this chapter.
 
-Each {{Doctrine_Record}} child class can have a {{setTableDefinition()}} and {{setUp()}} method. The {{setTableDefinition()}} method is for defining columns, indexes and other information about the schema of tables. The {{setUp()}} method is for attaching behaviors and defining relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in the [doc models-explained :name] chapter.
+Each {{Doctrine_Record}} child class can have a {{setTableDefinition()}} and {{setUp()}} method. The {{setTableDefinition()}} method is for defining columns, indexes and other information about the schema of tables. The {{setUp()}} method is for attaching behaviors and defining relationships between {{Doctrine_Record}} child classes. In the above example we are enabling the Timestampable behavior which adds some automagic functionality. You will learn more about what all can be used in these functions in the [doc defining-models :name] chapter.
 
 ++ Generating Models
 
@@ -346,7 +346,7 @@ You can learn more about YAML Schema Files in its [doc yaml-schema-files dedicat
 
 ++ Manually Writing Models
 
-You can optionally skip all the convenience methods and write your models manually using nothing but your own PHP code. You can learn all about the models syntax in the [doc models-explained :name] chapter.
+You can optionally skip all the convenience methods and write your models manually using nothing but your own PHP code. You can learn all about the models syntax in the [doc defining-models :name] chapter.
 
 ++ Autoloading Models
 
@@ -427,4 +427,4 @@ Doctrine::loadModels('/path/to/models');
 
 This chapter is probably the most intense chapter so far but it is a good one. We learned a little about how to use models, how to generate models from existing databases, how to write our own models, and how to maintain our models as YAML schema files. We also modified our Doctrine test environment to implement some functionality for loading models from our models directory.
 
-This topic so large that it warranted the chapters being split in to two pieces to make it easier on the developer to absorb all the information.  In the [doc models-explained next chapter] we will really get in to how Doctrine models work.
+This topic of Doctrine models is so large that it warranted the chapters being split in to three pieces to make it easier on the developer to absorb all the information.  In the [doc defining-models next chapter] we will really get in to the API we use to define our models.

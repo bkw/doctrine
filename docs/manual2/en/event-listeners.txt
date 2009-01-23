@@ -7,7 +7,7 @@ There are several different listeners and hooks for various Doctrine components.
 Hooks are simpler than event listeners but they lack the separation of different aspects. An example of using {{Doctrine_Record}} hooks:
 
 <code type="php">
-// models/BlogPost.class.php
+// models/BlogPost.php
 
 class BlogPost extends Doctrine_Record 
 {

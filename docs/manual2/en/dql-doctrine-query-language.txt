@@ -3,10 +3,10 @@
 Doctrine Query Language (DQL) is an Object Query Language created for helping users in complex object retrieval. You should always consider using DQL (or raw SQL) when retrieving relational data efficiently (eg. when fetching users and their phonenumbers).
 
 > **NOTE**
-> In this chapter we will execute dozens of examples of how to use the Doctrine Query Language. All of these examples assume you are using the schemas defined in the previous chapters, primarily the [doc models-explained :name] chapter. We will define one additional model for our testing purposes which can be found right below this note.
+> In this chapter we will execute dozens of examples of how to use the Doctrine Query Language. All of these examples assume you are using the schemas defined in the previous chapters, primarily the [doc defining-models :name] chapter. We will define one additional model for our testing purposes which can be found right below this note.
 
 <code type="php">
-// models/Account.class.php
+// models/Account.php
 
 class Account extends Doctrine_Record
 {
@@ -402,11 +402,7 @@ echo $users->num_threads . ' threads found';
 {{UPDATE}} statement syntax:
 
 <code type="sql">
-UPDATE //component_name//
-    SET //col_name1//=//expr1// [, //col_name2//=//expr2// ...]
-    [WHERE //where_condition//]
-    [ORDER BY ...]
-    [LIMIT //record_count//]
+UPDATE <component_name> SET <col_name1> = <expr1> , <col_name2> = <expr2> WHERE <where_condition> ORDER BY <order_by> LIMIT <record_count>
 </code>
 
 * The {{UPDATE}} statement updates columns of existing records in {{component_name}} with new values and returns the number of affected records.
@@ -444,13 +440,10 @@ $rows = $q->execute();
 echo $rows;
 </code>
 
-++ DELETE queries
+++ DELETE Queries
 
 <code type="sql">
-DELETE FROM <component_name>
-    [WHERE <where_condition>]
-    [ORDER BY ...]
-    [LIMIT <record_count>]
+DELETE FROM <component_name> WHERE <where_condition> ORDER BY <order_by> LIMIT <record_count>
 </code>
 
 * The {{DELETE}} statement deletes records from {{component_name}} and returns the number of records deleted.
@@ -1094,7 +1087,7 @@ The NOT EXISTS operator returns TRUE if the subquery returns 0 rows and FALSE ot
 > For the next few examples we need to add the {{ReaderLog}} model.
 
 <code type="php">
-// models/ReaderLog.class.php
+// models/ReaderLog.php
 
 class ReaderLog extends Doctrine_Record
 {

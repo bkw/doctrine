@@ -356,7 +356,7 @@ Doctrine also offers some additional magic finder methods that can be read about
 Adding custom table classes is very easy. Only thing you need to do is name the classes as [componentName]Table and make them extend {{Doctrine_Table}}. So for the {{User}} model we would create a class like the following:
 
 <code type="php">
-// models/UserTable.class.php
+// models/UserTable.php
 
 class UserTable extends Doctrine_Table
 {
@@ -368,7 +368,7 @@ class UserTable extends Doctrine_Table
 You can add custom finder methods to your custom table object. These finder methods may use fast {{Doctrine_Table}} finder methods or [doc dql-doctrine-query-language DQL API] ({{Doctrine_Query::create()}}).
 
 <code type="php">
-// models/UserTable.class.php
+// models/UserTable.php
 
 class UserTable extends Doctrine_Table
 {
@@ -413,7 +413,7 @@ Doctrine represents tables in your RDBMS with child {{Doctrine_Record}} classes.
 
 +++ Properties
 
-Each assigned column property of {{Doctrine_Record}} represents a database table column. You will learn more about how to define your models in the [doc models-explained :name] chapter.
+Each assigned column property of {{Doctrine_Record}} represents a database table column. You will learn more about how to define your models in the [doc defining-models :name] chapter.
 
 Now accessing the columns is easy:
 
@@ -1289,7 +1289,7 @@ The first two options are advisable if it is likely that the validation is of ge
 If you need a special validation in your active record you can simply override one of these methods in your active record class (a descendant of {{Doctrine_Record}}). Within these methods you can use all the power of PHP to validate your fields. When a field does not pass your validation you can then add errors to the record's error stack. The following code snippet shows an example of how to define validators together with custom validation:
 
 <code type="php">
-// models/User.class.php
+// models/User.php
 
 class User extends BaseUser
 {
@@ -1304,7 +1304,7 @@ class User extends BaseUser
     }
 }
 
-// models/Email.class.php
+// models/Email.php
 
 class Email extends BaseEmail
 {

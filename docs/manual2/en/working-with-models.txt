@@ -1,58 +1,282 @@
+++ Define Test Schema
+
+> **NOTE**
+> Remember to delete any existing data fixtures, schema information and models from previous chapters.
+
+<code>
+$ rm data/fixtures/data.yml
+$ touch data/fixtures/data.yml
+$ rm schema.yml
+$ touch schema.yml
+$ rm -rf models/*
+</code>
+
+For the next several examples we will use the following schema:
+
+<code type="php">
+// models/User.php
+
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+
+        $this->hasColumn('password', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Group as Groups', array(
+                'refClass' => 'UserGroup',
+                'local' => 'user_id',
+                'foreign' => 'group_id'
+            )
+        );
+
+        $this->hasOne('Email', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
+
+        $this->hasMany('Phonenumber as Phonenumbers', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
+    }
+}
+
+// models/Email.php
+
+class Email extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('user_id', 'integer', null, array(
+                'type' => 'integer'
+            )
+        );
+
+        $this->hasColumn('address', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+    }
+}
+
+// models/Phonenumber.php
+
+class Phonenumber extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('user_id', 'integer', null, array(
+                'type' => 'integer'
+            )
+        );
+
+        $this->hasColumn('phonenumber', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+        $this->hasColumn('primary_num', 'boolean');
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+    }
+}
+
+// models/Group.php
+
+class Group extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->setTableName('groups');
+        $this->hasColumn('name', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('User as Users', array(
+                'refClass' => 'UserGroup',
+                'local' => 'group_id',
+                'foreign' => 'user_id'
+            )
+        );
+    }
+}
+
+// models/UserGroup.php
+
+class UserGroup extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('user_id', 'integer', null, array(
+                'type' => 'integer',
+                'primary' => true
+            )
+        );
+
+        $this->hasColumn('group_id', 'integer', null, array(
+                'type' => 'integer',
+                'primary' => true
+            )
+        );
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+# schema.yml
+
+User:
+  columns:
+    username: string(255)
+    password: string(255)
+  relations:
+    Groups:
+      class: Group
+      local: user_id
+      foreign: group_id
+      refClass: UserGroup
+      foreignAlias: Users
+
+Email:
+  columns:
+    user_id: integer
+    address: string(255)
+  relations:
+    User:
+      foreignType: one
+
+Phonenumber:
+  columns:
+    user_id: integer
+    phonenumber: string(255)
+    primary_num: boolean
+  relations:
+    User:
+      foreignAlias: Phonenumbers
+
+Group:
+  tableName: groups
+  columns:
+    name: string(255)
+
+UserGroup:
+  columns:
+    user_id:
+      type: integer
+      primary: true
+    group_id:
+      type: integer
+      primary: true
+</code>
+
+Now that you have your schema defined you can instantiate the database by simply running the {{generate.php}} script we so conveniently created in the previous chapter.
+
+<code>
+$ php generate.php
+</code>
+
 ++ Dealing with Relations
 
 +++ Creating Related Records
 
-Accessing related records in Doctrine is easy: you can use exactly the same getters and setters as for the record 
-properties.
+Accessing related records in Doctrine is easy: you can use exactly the same getters and setters as for the record properties.
 
 You can use any of the three ways above, however the last one is the recommended one for array portability purposes.
 
 <code type="php">
-$user->Email;
+// test.php
 
-$user->get('Email');
+// ...
+$user = new User();
+$user['username'] = 'jwage';
+$user-['password'] = 'changeme';
 
-$user['Email'];
+$email = $user->Email;
+
+$email = $user->get('Email');
+
+$email = $user['Email'];
 </code>
 
-When accessing a one-to-one related record that doesn't exist, Doctrine automatically creates the object. So for example 
-the following code is possible:
+When accessing a one-to-one related record that doesn't exist, Doctrine automatically creates the object. That is why the above
 
 <code type="php">
-$user = new User();
-$user->name = 'some user';
+// test.php
 
-$user->Email->address = 'some@one.info';
-// saves the user and the associated email
+// ...
+$user->Email->address = 'jonwage@gmail.com';
 $user->save();
 </code>
 
-When accessing one-to-many related records, Doctrine creates a Doctrine_Collection for the related component. Lets say we 
-have users and phonenumbers and their relation is one-to-many. You can add phonenumbers easily as shown above:
+When accessing one-to-many related records, Doctrine creates a {{Doctrine_Collection}} for the related component. Lets say we 
+have {{users}} and {{phonenumbers}} and their relation is one-to-many. You can add {{phonenumbers}} easily as shown above:
 
 <code type="php">
-$user = new User();
-$user->name = 'some user';
+// test.php
 
-$user->Phonenumber[]->phonenumber = '123 123';
-$user->Phonenumber[]->phonenumber = '456 123';
-$user->Phonenumber[]->phonenumber = '123 777';
+// ...
+$user->Phonenumbers[]->phonenumber = '123 123';
+$user->Phonenumbers[]->phonenumber = '456 123';
+$user->Phonenumbers[]->phonenumber = '123 777';
+</code>
 
-// saves the user and the associated phonenumbers
+Now we can easily save the user and the associated phonenumbers:
+
+<code type="php">
+// test.php
+
+// ...
 $user->save();
 </code>
 
-Another way to easily create a link between two related components is by using Doctrine_Record::link(). It often happens 
-that you have two existing records that you would like to relate (or link) to one another. In this case, if there is a 
-relation defined between the involved record classes, you only need the identifiers of the related record(s):
+Another way to easily create a link between two related components is by using Doctrine_Record::link(). It often happens that you have two existing records that you would like to relate (or link) to one another. In this case, if there is a relation defined between the involved record classes, you only need the identifiers of the related record(s):
+
+Lets create a few new {{Phonenumber}} objects and keep track of the new phone number identifiers::
 
 <code type="php">
+// test.php
 
-// We keep track of the new phone number identifiers
-
+// ...
 $phoneIds = array();
-
-// Some phone numbers are created...
 
 $phone1 = new Phonenumber();
 $phone1['phonenumber'] = '555 202 7890';
@@ -65,307 +289,400 @@ $phone2['phonenumber'] = '555 100 7890';
 $phone2->save();
 
 $phoneIds[] = $phone2['id'];
-
-// Some user is created...
-
-$user = new User();
-$user['name'] = 'Werner Mollentze';
-$user->save();
-
-// Let's link the phone numbers to the user, since the relation to Phonenumber exists for the User record...
-
-$user->link('Phonenumber', $phoneIds);
-
 </code>
 
-If a relation to the User record class is defined for the Phonenumber record class, you may even do this:
+Let's link the phone numbers to the user, since the relation to {{Phonenumbers}} exists for the {{User}} record
 
 <code type="php">
-
-// Some user is created...
+// test.php
 
 $user = new User();
-$user['name'] = 'wernerm';
+$user['username'] = 'jwage';
+$user['password'] = 'changeme';
 $user->save();
 
-// Some phone numbers are created and linked to the User on-the-fly...
-// This is possible if a relation to User exists for the Phonenumber record
+$user->link('Phonenumbers', $phoneIds);
+</code>
 
+If a relation to the {{User}} record class is defined for the {{Phonenumber}} record class, you may even do this:
+
+First create a user to work with:
+
+<code type="php">
+// test.php
+
+// ...
+$user = new User();
+$user['username'] = 'jwage';
+$user['password'] = 'changeme';
+$user->save();
+</code>
+
+Now create a new {{Phonenumber}} instance:
+
+<code type="php">
+// test.php
+
+// ...
 $phone1 = new Phonenumber();
 $phone1['phonenumber'] = '555 202 7890';
 $phone1->save();
+</code>
 
-// Let's link this Phonenumber to our User...
+Now we can link the {{User}} to our {{Phonenumber}}:
 
+<code type="php">
+// test.php
+
+// ...
 $phone1->link('User', array($user['id']));
+</code>
 
-// We create another phone number...
+We can create another phone number:
 
+<code type="php">
+// test.php
+
+// ...
 $phone2 = new Phonenumber();
 $phone2['phonenumber'] = '555 100 7890';
 $phone2->save();
+</code>
 
-// Let's link this Phonenumber to our User too...
+Let's link this Phonenumber to our User too:
 
+<code type="php">
+// test.php
+
+// ...
 $phone2->link('User', array($user['id']));
-
 </code>
 
 +++ Retrieving Related Records
 
-You can retrieve related records by the very same {{Doctrine_Record}} methods as in the previous subchapter. Please note 
-that whenever you access a related component that isn't already loaded Doctrine uses one SQL SELECT statement for the 
-fetching, hence the following example executes 4 SQL SELECTs.
+You can retrieve related records by the very same {{Doctrine_Record}} methods as in the previous subchapter. Please note that whenever you access a related component that isn't already loaded Doctrine uses one SQL SELECT statement for the fetching, hence the following example executes 3 SQL SELECTs.
 
 <code type="php">
-$user = Doctrine::getTable('User')->find(5);
+// test.php
 
-print $user->Email['address'];
+// ...
+$user = Doctrine::getTable('User')->find(1);
 
-print $user->Phonenumber[0]->phonenumber;
+echo $user->Email['address'];
 
-print $user->Group[0]->name;
+echo $user->Phonenumber[0]->phonenumber;
 </code>
 
-Much more efficient way of doing this is using DQL. The following example uses only one SQL query for the retrieval of 
-related components.
+Much more efficient way of doing this is using DQL. The following example uses only one SQL query for the retrieval of related components.
 
 <code type="php">
-$user = Doctrine_Query::create()
-        ->from('User u')
-        ->leftJoin('u.Email e')
-        ->leftJoin('u.Phonenumber p')
-        ->leftJoin('u.Group g')
-        ->execute();
+// test.php
 
-print $user->Email['address'];
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Email e')
+    ->leftJoin('u.Phonenumber p')
+    ->where('u.id = ?', 1);
 
-print $user->Phonenumber[0]->phonenumber;
+$user = $q->fetchOne();
 
-print $user->Group[0]->name;
+echo $user->Email['address'];
+
+echo $user->Phonenumber[0]['phonenumber'];
 </code>
-
 
 +++ Updating Related Records
 
-You can update the related records by calling save for each related object / collection individually or by calling save 
-on the object that owns the other objects. You can also call {{Doctrine_Connection::flush}} which saves all pending 
-objects.
+You can update the related records by calling save for each related object / collection individually or by calling save on the object that owns the other objects. You can also call {{Doctrine_Connection::flush}} which saves all pending objects.
 
 <code type="php">
+// test.php
+
+// ...
 $user->Email['address'] = 'koskenkorva@drinkmore.info';
 
-$user->Phonenumber[0]->phonenumber = '123123';
+$user->Phonenumber[0]['phonenumber'] = '123123';
 
 $user->save();
-
-// saves the email and phonenumber
 </code>
 
+> **NOTE**
+> In the above example calling {{$user->save()}} saves the {{email}} and {{phonenumber}}.
 
 +++ Deleting Related Records
 
 You can delete related records individually be calling {{delete()}} on a record or on a collection.
 
+Here you can delete an individual related record:
+
 <code type="php">
+// test.php
+
+// ...
 $user->Email->delete();
+</code>
 
+You can delete an individual record from within a collection of records:
+
+<code type="php">
+// test.php
+
+// ...
 $user->Phonenumber[3]->delete();
+</code>
 
-// deleting user and all related objects:
+You could delete the entire collection if you wanted:
 
+<code type="php">
+// test.php
+
+// ...
+$user->Phonenumbers->delete();
+</code>
+
+Or can just delete the entire user and all related objects:
+
+<code type="php">
+// test.php
+
+// ...
 $user->delete();
 </code>
 
-Usually in a typical web application the primary keys of the related objects that are to be deleted come from a form. 
-In this case the most efficient way of deleting the related records is using DQL DELETE statement. Lets say we have once 
-again users and phonenumbers with their relation being one-to-many. Deleting the given phonenumbers for given user id can 
-be achieved as follows:
+Usually in a typical web application the primary keys of the related objects that are to be deleted come from a form. In this case the most efficient way of deleting the related records is using DQL DELETE statement. Lets say we have once again {{Users}} and {{Phonenmbers}} with their relation being one-to-many. Deleting the given {{Phonenumbers}} for given user id can be achieved as follows:
 
 <code type="php">
-$deleted = Doctrine_Query::create()
-           ->delete()
-           ->from('Phonenumber')
-           ->addWhere('user_id = ?', array($userId))
-           ->whereIn('id', $phonenumberIds);
-           ->execute();
-// print out the number of deleted phonenumbers
-print $deleted;
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->delete('Phonenumber')
+    ->addWhere('user_id = ?', 5)
+    ->whereIn('id', array(1, 2, 3));
+
+$numDeleted = $q->execute();
 </code>
 
-Sometimes you may not want to delete the phonenumber records but to simply unlink the relations by setting the foreing 
-key fields to null. This can ofcourse be achieved with DQL but perhaps to most elegant way of doing this is by using 
-Doctrine_Record::unlink(). Please note that the unlink method is very smart. It not only sets the foreign fields for 
-related phonenumbers to null but it also removes all given phonenumber references from the User object.
+Sometimes you may not want to delete the {{Phonenumber}} records but to simply unlink the relations by setting the foreign key fields to null. This can of course be achieved with DQL but perhaps to most elegant way of doing this is by using {{Doctrine_Record::unlink()}}.
 
-Lets say we have a User who has 3 Phonenumbers (with identifiers 1, 2 and 3). Now unlinking the Phonenumbers 1 and 3 
-can be achieved as easily as:
+> **NOTE**
+> Please note that the {{unlink()}} method is very smart. It not only sets the foreign fields for related {{Phonenumbers}} to null but it also removes all given {{Phonenumber}} references from the {{User}} object.
+
+Lets say we have a {{User}} who has three {{Phonenumbers}} (with identifiers 1, 2 and 3). Now unlinking the {{Phonenumbers}} 1 and 3 can be achieved as easily as:
 
 <code type="php">
+// test.php
+
+// ...
 $user->unlink('Phonenumber', array(1, 3));
 
-$user->Phonenumber->count(); // 1
+echo $user->Phonenumber->count(); // 1
 </code>
 
 +++ Working with Related Records
 
 ++++ Testing the Existence of a Relation
 
+The below example would return false because the relationship has not been instantiated yet:
+
 <code type="php">
-$obj = new Model();
-if(isset($obj->Relation)) { // returns false
-        ...
+// test.php
+
+// ...
+$user = new User();
+if (isset($user->Email)) {
+    // ...
 }
-$obj->Relation = new Relation();
-if(isset($obj->Relation)) { // returns true
-        ...
+</code>
+
+Now the next example will return true because we instantiated the {{Email}} relationship:
+
+<code type="php">
+// test.php
+
+// ...
+$obj->Email = new Email();
+
+if(isset($obj->Email)) {
+    // ...
 }
 </code>
 
 ++ Many-to-Many Relations
 
-> **NOTE**
-> Doctrine requires that Many-to-Many relationships be bi-directional. For example: both User must have many Group and Group must have many User. This is required by Doctrine in order for Many-to-Many relationships to fully work.
+> **CAUTION**
+> Doctrine requires that Many-to-Many relationships be bi-directional. For example: both {{User}} must have many {{Groups}} and {{Group}} must have many {{User}}.
 
 +++ Creating a New Link
 
 Lets say we have two classes User and Group which are linked through a GroupUser association class. When working with transient (new) records the fastest way for adding a User and couple of Groups for it is:
 
 <code type="php">
+// test.php
+
+// ...
 $user = new User();
-$user->name = 'Some User';
-$user->Group[0]->name = 'Some Group';
-$user->Group[1]->name = 'Some Other Group';
+$user->username = 'Some User';
+$user->Groups[0]->username = 'Some Group';
+$user->Groups[1]->username = 'Some Other Group';
 $user->save();
 </code>
 
 However in real world scenarios you often already have existing groups, where you want to add a given user. The most efficient way of doing this is:
 
 <code type="php">
-$gu = new GroupUser();
-$gu->user_id = $userId;
-$gu->group_id = $groupId;
-$gu->save();
+// test.php
+
+// ...
+$groupUser = new GroupUser();
+$groupUser->user_id = $userId;
+$groupUser->group_id = $groupId;
+$groupUser->save();
 </code>
 
 +++ Deleting a Link
 
-The right way to delete links between many-to-many associated records is by using the DQL DELETE statement. Convenient 
-and recommended way of using DQL DELETE is trhough the Query API.
+The right way to delete links between many-to-many associated records is by using the DQL DELETE statement. Convenient and recommended way of using DQL DELETE is through the Query API.
 
 <code type="php">
-$deleted = Doctrine_Query::create()
-           ->delete()
-           ->from('GroupUser')
-           ->addWhere('user_id = 5')
-           ->whereIn('group_id', $groupIds);
-           ->execute();
-// print out the deleted links
-print $deleted;
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->delete('GroupUser')
+    ->addWhere('user_id = ?', 5)
+    ->whereIn('group_id', array(1, 2));
+
+$deleted = $q->execute();
 </code>
 
-Another way to {{unlink}} the relationships between related objects is through the {{Doctrine_Record::unlink}} method. 
-However, you should avoid using this method unless you already have the parent model, since it involves querying the 
-database first.
+Another way to {{unlink}} the relationships between related objects is through the {{Doctrine_Record::unlink}} method. However, you should avoid using this method unless you already have the parent model, since it involves querying the database first.
 
 <code type="php">
-$user = Doctrine::getTable('User')->find(5);
-$user->unlink('Group', array(0, 1));
-$user->save();
+// test.php
 
-// you can also unlink ALL relationships to Group
+// ...
+$user = Doctrine::getTable('User')->find(5);
+$user->unlink('Group', array(1, 2));
+$user->save();
+</code>
+
+You can also unlink ALL relationships to {{Group}} by omitting the second argument:
+
+<code type="php">
+// test.php
+
+// ...
 $user->unlink('Group');
 </code>
 
-While the obvious and convinient way of deleting a link between User and Group would be the following, you still should 
-*NOT* do this:
+While the obvious and convenient way of deleting a link between {{User}} and {{Group}} would be the following, you still should *NOT* do this:
 
 <code type="php">
+// test.php
+
+// ...
 $user = Doctrine::getTable('User')->find(5);
-$user->GroupUser
-     ->remove(0)
-     ->remove(1);
+$user->GroupUser->remove(0)->remove(1);
 $user->save();
 </code>
 
-This is due to a fact that $user->GroupUser loads all group links for given user. This can time-consuming task if user 
-belongs to many groups. Even if the user belongs to few groups this will still execute an unnecessary SELECT statement.
+This is due to a fact that the call to {{$user->GroupUser}} loads all {{Group}} links for given {{User}}. This can be time-consuming task if the {{User}} belongs to many {{Groups}}. Even if the user belongs to few {{groups}} this will still execute an unnecessary SELECT statement.
 
 ++ Fetching Objects
 
 Normally when you fetch data from database the following phases are executed:
 
-1. Sending the query to database
-2. Retrieve the returned data from the database
+# Sending the query to database
+# Retrieve the returned data from the database
 
-In terms of object fetching we call these two phases the 'fetching' phase. Doctrine also has another phase called hydration 
-phase. The hydration phase takes place whenever you are fecthing structured arrays / objects. Unless explicitly specified 
-everything in Doctrine gets hydrated.
+In terms of object fetching we call these two phases the 'fetching' phase. Doctrine also has another phase called hydration phase. The hydration phase takes place whenever you are fetching structured arrays / objects. Unless explicitly specified everything in Doctrine gets hydrated.
 
-Lets consider we have users and phonenumbers with their relation being one-to-many. Now consider the following plain sql 
-query:
+Lets consider we have {{Users}} and {{Phonenumbers}} with their relation being one-to-many. Now consider the following plain sql query:
 
 <code type="php">
-$dbh->fetchAll('SELECT u.id, u.name, p.phonenumber FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id');
+// test.php
+
+// ...
+$sql = 'SELECT u.id, u.username, p.phonenumber FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id';
+$results = $conn->getDbh()->fetchAll($sql);
 </code>
 
-If you are familiar with these kind of one-to-many joins it may be familiar to you how the basic result set is 
-constructed. Whenever the user has more than one phonenumbers there will be duplicated data in the result set. 
-The result set might look something like:
+If you are familiar with these kind of one-to-many joins it may be familiar to you how the basic result set is constructed. Whenever the user has more than one phonenumbers there will be duplicated data in the result set. The result set might look something like:
 
-<code>
- index  | u.id | u.name         | p.phonenumber |
- 0      |   1  | Jack Daniels   | 123 123       |
- 1      |   1  | Jack Daniels   | 456 456       |
- 2      |   2  | John Beer      | 111 111       |
- 3      |   3  | John Smith     | 222 222       |
- 4      |   3  | John Smith     | 333 333       |
- 5      |   3  | John Smith     | 444 444       |
-</code>
 
-Here Jack Daniels has 2 phonenumbers, John Beer has one whereas John Smith has 3 phonenumbers. You may notice how clumsy 
-this result set is. Its hard to iterate over it as you would need some duplicate data checkings here and there. 
+||~ index || u.id || u.username     || p.phonenumber ||
+|| 0      ||   1  || Jack Daniels   || 123 123       ||
+|| 1      ||   1  || Jack Daniels   || 456 456       ||
+|| 2      ||   2  || John Beer      || 111 111       ||
+|| 3      ||   3  || John Smith     || 222 222       ||
+|| 4      ||   3  || John Smith     || 333 333       ||
+|| 5      ||   3  || John Smith     || 444 444       ||
+
+Here Jack Daniels has two {{Phonenumbers}}, John Beer has one whereas John Smith has three. You may notice how clumsy this result set is. Its hard to iterate over it as you would need some duplicate data checking logic here and there. 
 
 Doctrine hydration removes all duplicated data. It also performs many other things such as:
 
 # Custom indexing of result set elements
 # Value casting and preparation
 # Value assignment listening
-# Makes multi-dimensional array out of the two-dimensional result set array, the number of dimensions is equal to the 
-number of nested joins
+# Makes multi-dimensional array out of the two-dimensional result set array, the number of dimensions is equal to the number of nested joins
 
 Now consider the DQL equivalent of the SQL query we used:
+
 <code type="php">
-$array = Doctrine_Query::create()
-          ->select('u.id, u.name, p.phonenumber')
-          ->from('User u')
-          ->leftJoin('u.Phonenumber p')
-          ->execute(array(), Doctrine::HYDRATE_ARRAY);
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->select('u.id, u.username, p.phonenumber')
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p');
+
+$results = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+
+print_r($results);
 </code>
 
 The structure of this hydrated array would look like:
 
 <code>
-array(0 => array('id' => 1,
-                 'name' => 'Jack Daniels',
-                 'Phonenumber' =>
-                    array(0 => array('phonenumber' => '123 123'),
-                          1 => array('phonenumber' => '456 456'))),
-      1 => array('id' => 2,
-                 'name' => 'John Beer',
-                 'Phonenumber' =>
-                    array(0 => array('phonenumber' => '111 111'))),
-      2 => array('id' => 3,
-                 'name' => 'John Smith',
-                 'Phonenumber' =>
-                    array(0 => array('phonenumber' => '111 111')),
-                          2 => array('phonenumber' => '222 222'),
-                          3 => array('phonenumber' => '333 333'))));
+$ php test.php 
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [username] => 
+            [Phonenumbers] => Array
+                (
+                    [0] => Array
+                        (
+                            [id] => 1
+                            [phonenumber] => 123 123
+                        )
+
+                    [1] => Array
+                        (
+                            [id] => 2
+                            [phonenumber] => 456 123
+                        )
+
+                    [2] => Array
+                        (
+                            [id] => 3
+                            [phonenumber] => 123 777
+                        )
+
+                )
+
+        )
+    // ...
+)
 </code>
 
-This structure also applies to the hydration of objects(records) which is the default hydration mode of Doctrine. The 
-only differences are that the individual elements are represented as Doctrine_Record objects and the arrays converted 
-into Doctrine_Collection objects. Whether dealing with arrays or objects you can:
+This structure also applies to the hydration of objects(records) which is the default hydration mode of Doctrine. The only differences are that the individual elements are represented as Doctrine_Record objects and the arrays converted into Doctrine_Collection objects. Whether dealing with arrays or objects you can:
 
 # Iterate over the results using //foreach//
 # Access individual elements using array access brackets 
@@ -373,101 +690,39 @@ into Doctrine_Collection objects. Whether dealing with arrays or objects you can
 # Check if given element exists using //isset()//
 # Unset given element using //unset()//
 
-You should always use array hydration when you only need to data for access-only purposes, whereas you should use the 
-record hydration when you need to change the fetched data.
+You should always use array hydration when you only need to data for access-only purposes, whereas you should use the record hydration when you need to change the fetched data.
 
 The constant O(n) performance of the hydration algorithm is ensured by a smart identifier caching solution.
 
 +++ Sample Queries
 
-All of the below queries were executed with the following schema and data fixtures:
-
-Schema
-
-<code type="yaml">
----
-User:
-  actAs:
-    Timestampable:
-    Sluggable:
-      fields: [username]
-  columns:
-    email_address: string(255)
-    username: string(255)
-    password: string(255)
-  relations:
-    Groups:
-      class: Group
-      refClass: UserGroup
-      foreignAlias: Users
-
-Phonenumber:
-  actAs: [Timestampable]
-  columns:
-    user_id: integer
-    phone: string(255)
-    primary_num:
-      type: boolean
-      default: false
-  relations:
-    User:
-      foreignAlias: Phonenumbers
-
-Group:
-  # required to renamed to groups because group is a reserved word in mysql
-  tableName: groups
-  columns:
-    name: string(255)
-
-UserGroup:
-  columns:
-    user_id: integer
-    group_id: integer
-</code>
-
-Data fixtures
-
-<code type="yaml">
----
-User:
-  User_1:
-    username: jwage
-    password: changeme
-    Phonenumbers:
-      Phonenumber_1:
-        phone: 6155139185
-        primary_num: true
-      Phonenumber_2:
-        phone: 6153137679
-    Groups: [Group_1]
-
-Group:
-  Group_1:
-    name: Group 1
-  Group_2:
-    name: Group 2
-</code>
-
-Count number of records for a relationship
+**Count number of records for a relationship:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
-        ->from('User u')
-        ->leftJoin('u.Phonenumbers p')
-        ->groupBy('u.id');
+    ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p')
+    ->groupBy('u.id');
 
 $users = $q->fetchArray();
 
 echo $users[0]['Phonenumbers'][0]['num_phonenumbers'];
 </code>
 
-Retrieve Users and the Groups they belong to
+**Retrieve Users and the Groups they belong to:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->leftJoin('u.Groups g');
+    ->from('User u')
+    ->leftJoin('u.Groups g');
+
 $users = $q->fetchArray();
 
 foreach ($users[0]['Groups'] as $group) {
@@ -475,288 +730,416 @@ foreach ($users[0]['Groups'] as $group) {
 }
 </code>
 
-Simple WHERE with one parameter value
+**Simple WHERE with one parameter value:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('u.username = ?', 'jwage');
+    ->from('User u')
+    ->where('u.username = ?', 'jwage');
+
 $users = $q->fetchArray();
 </code>
 
-Multiple WHERE with multiple parameters values
+**Multiple WHERE with multiple parameters values:**
 
 <code type="php">
-$q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('u.is_active = ? AND u.is_online = ?', array(1, 1));
-$users = $q->fetchArray();
+// test.php
 
-// You can also optionally use the addWhere() to add to the existing where parts
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('u.is_active = ?', 1)
-        ->addWhere('u.is_online = ?', 1);
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p')
+    ->where('u.username = ? AND p.id = ?', array(1, 1));
+
 $users = $q->fetchArray();
 </code>
 
-Using whereIn() convenience method
+> **TIP**
+> You can also optionally use the {{andWhere()}} method to add to the existing where parts.
 
 <code type="php">
-$q = Doctrine_Query::create()
-        ->from('User u')
-        ->whereIn('u.id', array(1, 2, 3))
-$users = $q->fetchArray();
+// test.php
 
-// This is the same as above
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('u.id IN (1, 2, 3)');
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p')
+    ->where('u.username = ?', 1)
+    ->andWhere('p.id = ?', 1);
+
 $users = $q->fetchArray();
 </code>
 
-Using DBMS function in your WHERE
+**Using {{whereIn()}} convenience method:**
 
 <code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->whereIn('u.id', array(1, 2, 3));
+
+$users = $q->fetchArray();
+</code>
+
+**The following is the same as above example:**
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id IN (1, 2, 3)');
+
+$users = $q->fetchArray();
+</code>
+
+**Using DBMS function in your WHERE:**
+
+<code type="php">
+// test.php
+
+// ...
 $userEncryptedKey = 'a157a558ac00449c92294c7fab684ae0';
 $q = Doctrine_Query::create()
-      ->from('User u')
-      ->where("MD5(CONCAT(u.username, 'secret_user_key')) = ?", $userEncryptedKey);
+    ->from('User u')
+    ->where("MD5(CONCAT(u.username, 'secret_key')) = ?", $userEncryptedKey);
+
 $user = $q->fetchOne();
 
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('LOWER(u.username) = LOWER(?)', 'jwage');
+    ->from('User u')
+    ->where('LOWER(u.username) = LOWER(?)', 'jwage');
+
 $user = $q->fetchOne();
-
 </code>
 
-Limiting resultsets using aggregate functions
+**Limiting result sets using aggregate functions. Limit to users with more than one phonenumber:**
 
 <code type="php">
-// Users with more than 1 phonenumber
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
-        ->from('User u')
-        ->leftJoin('u.Phonenumbers p')
-        ->having('num_phonenumbers > 1')
-        ->groupBy('u.id');
+    ->select('u.*, COUNT(DISTINCT p.id) AS num_phonenumbers')
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p')
+    ->having('num_phonenumbers > 1')
+    ->groupBy('u.id');
+
 $users = $q->fetchArray();
 </code>
 
-Join only primary phonenumbers using WITH
+**Join only primary phonenumbers using WITH:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->leftJoin('u.Phonenumbers p WITH p.primary_num = ?', true);
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p WITH p.primary_num = ?', true);
+
 $users = $q->fetchArray();
 </code>
 
-Selecting certain columns for optimization
+**Selecting certain columns for optimization:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->select('u.username, p.phone')
-        ->from('User u')
-        ->leftJoin('u.Phonenumbers p');
+    ->select('u.username, p.phone')
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p');
+
 $users = $q->fetchArray();
 </code>
 
-Using wildcards to select all columns
+**Using a wildcard to select all {{User}} columns but only one {{Phonenumber}} column:**
 
 <code type="php">
-// Select all User columns but only the phone phonenumber column
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->select('u.*, p.phone')
-        ->from('User u')
-        ->leftJoin('u.Phonenumbers p');
+    ->select('u.*, p.phonenumber')
+    ->from('User u')
+    ->leftJoin('u.Phonenumbers p');
+
 $users = $q->fetchArray();
 </code>
 
-Perform DQL delete with simple WHERE
+**Perform DQL delete with simple WHERE:**
 
 <code type="php">
-// Delete phonenumbers for user id = 5
-$deleted = Doctrine_Query::create()
-           ->delete()
-           ->from('Phonenumber')
-           ->addWhere('user_id = 5')
-           ->execute();
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->delete('Phonenumber')
+    ->addWhere('user_id = 5');
+
+$deleted = $q->execute();
 </code>
 
-Perfom simple DQL update for a column
+**Perform simple DQL update for a column:**
 
 <code type="php">
-// Set user id = 1 to active
-Doctrine_Query::create()
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
     ->update('User u')
     ->set('u.is_active', '?', true)
-    ->where('u.id = ?', 1)
-    ->execute();
+    ->where('u.id = ?', 1);
+
+$updated = $q->execute();
 </code>
 
-Perform DQL update with dbms functions
+**Perform DQL update with DBMS function. Make all usernames lowercase:**
 
 <code type="php">
-// Make all usernames lowercase
-Doctrine_Query::create()
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
   ->update('User u')
-  ->set('u.username', 'LOWER(u.username)')
-  ->execute();
+  ->set('u.username', 'LOWER(u.username)');
+
+$updated = $q->execute();
 </code>
 
-Using mysql LIKE to search for records
+**Using mysql LIKE to search for records:**
 
 <code type="php">
+// test.php
+
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->where('u.username LIKE ?', '%jwage%');
-$users = $q->fetchArray();
-</code>
+    ->from('User u')
+    ->where('u.username LIKE ?', '%jwage%');
 
-Use the INDEXBY keyword to hydrate the data where the key of record entry is the name of the column you 
-assign
-
-<code type="php">
-$q = Doctrine_Query::create()
-        ->from('User u INDEXBY u.username');
-
-$users = $q->fetchArray();
-print_r($users['jwage']); // Will print the user with the username of jwage
-</code>
-
-Using positional and named parameters
-
-<code type="php">
-// Positional parameters
-$q = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.username = ?', array('Arnold'));
-$users = $q->fetchArray();
-
-// Named parameters
-$q = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.username = :username', array(':username' => 'Arnold'));
 $users = $q->fetchArray();
 </code>
 
-Using subqueries in your WHERE
+**Use the INDEXBY keyword to hydrate the data where the key of record entry is the name of the column you assign:**
 
 <code type="php">
-// Find uers not in group named Group 2
-$q = Doctrine_Query::create()
-          ->from('User u')
-          ->where('u.id NOT IN (SELECT u.id FROM User u2 INNER JOIN u2.Groups g WHERE g.name = ?)', 'Group 2');
-$users = $q->fetchArray();
+// test.php
 
-// You can accomplish this without subqueries like the 2 below
-// This is similar as above
+// ...
 $q = Doctrine_Query::create()
-        ->from('User u')
-        ->innerJoin('u.Groups g WITH g.name != ?', 'Group 2')
-$users = $q->fetchArray();
+    ->from('User u INDEXBY u.username');
 
-// or this
-$q = Doctrine_Query::create()
-        ->from('User u')
-        ->leftJoin('u.Groups g')
-        ->where('g.name != ?', 'Group 2');
+$users = $q->fetchArray();
 </code>
 
-Doctrine has many different ways you can execute queries and retrieve the data. Below is a list of all 
-the different ways you can execute queries.
+**Now we can print the user with the username of jwage:**
+
+<code type="php">
+// test.php
+
+// ...
+print_r($users['jwage']);
+</code>
+
+**Using positional parameters**
 
 <code type="php">
 $q = Doctrine_Query::create()
-        ->from('User u');
+    ->from('User u')
+    ->where('u.username = ?', array('Arnold'));
 
-// Array hydration
-$users = $q->fetchArray();                                         // Fetch the results as a hydrated array
-$users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);            // This is the same as above
+$users = $q->fetchArray();
+</code>
+
+**Using named parameters**
+
+<code type="php">
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.username = :username', array(':username' => 'Arnold'));
+
+$users = $q->fetchArray();
+</code>
+
+**Using subqueries in your WHERE. Find users not in group named Group 2:**
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->where('u.id NOT IN (SELECT u.id FROM User u2 INNER JOIN u2.Groups g WHERE g.name = ?)', 'Group 2');
+
+$users = $q->fetchArray();
+</code>
+
+> **TIP**
+> You can accomplish this without using subqueries. The two examples below would have the same result as the example above.
+
+**Use INNER JOIN to retrieve users who have groups**
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->innerJoin('u.Groups g WITH g.name != ?', 'Group 2')
+
+$users = $q->fetchArray();
+</code>
+
+**Use WHERE condition to retrieve users who have groups**
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->leftJoin('u.Groups g')
+    ->where('g.name != ?', 'Group 2');
+
+$users = $q->fetchArray();
+</code>
+
+Doctrine has many different ways you can execute queries and retrieve the data. Below are examples of all the different ways you can execute a query:
+
+**First lets create a sample query to test with:**
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u');
+</code>
+
+**You can use array hydration with the {{fetchArray()}} method:**
+
+<code type="php">
+$users = $q->fetchArray();
+</code>
+
+**You can also use array hydration by specifying the hydration method to the second argument of the {{execute()}} method:**
+
+<code type="php">
+// test.php
+
+// ...
+$users = $q->execute(array(), Doctrine::HYDRATE_ARRAY)
+</code>
+
+**You can also specify the hydration method by using the {{setHydrationMethod()}} method:**
+
+<code type="php">
 $users = $q->setHydrationMode(Doctrine::HYDRATE_ARRAY)->execute(); // So is this
+</code>
 
-// No hydration
-$users = $q->execute(array(), Doctrine::HYDRATE_NONE);             // Execute the query with plain PDO and no hydration
-$users = $q->setHydrationMode(Doctrine::HYDRATE_NONE)->execute();  // This is the same as above
+**Sometimes you may want to totally bypass hydration and return the raw data that PDO returns:**
 
-// Fetch one
+<code type="php">
+// test.php
+
+// ...
+$users = $q->execute(array(), Doctrine::HYDRATE_NONE);
+</code>
+
+**If you want to just fetch one record from the query:**
+
+<code type="php">
+// test.php
+
+// ...
 $user = $q->fetchOne();
+</code>
 
 // Fetch all and get the first from collection
 $user = $q->execute()->getFirst();
 </code>
 
-+++ Field lazy-loading
++++ Field Lazy Loading
 
-Whenever you fetch an object that has not all of its fields loaded from database then the state of this object is called 
-proxy. Proxy objects can load the unloaded fields lazily.
+Whenever you fetch an object that has not all of its fields loaded from database then the state of this object is called proxy. Proxy objects can load the unloaded fields lazily.
 
-Lets say we have a User class with the following definition:
+In the following example we fetch all the Users with the {{username}} field loaded directly. Then we lazy load the password field:
 
 <code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string', 20);
-        $this->hasColumn('password', 'string', 16);
-        $this->hasColumn('description', 'string');
-    }
-}
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->select('u.username')
+    ->from('User u')
+    ->where('u.id = ?', 1)
+
+$user = $q->fetchOne();
 </code>
 
-In the following example we fetch all the Users with the fields name and password loaded directly. Then we lazy-load a 
-huge field called description for one user.
+The following lazy-loads the {{password}} field and executes one additional database query to retrieve the value:
 
 <code type="php">
-$users = Doctrine_Query::create()
-          ->select('u.name, u.password')
-          ->from('User u')
-          ->execute();
+// test.php
 
-// the following lazy-loads the description fields and executes one additional database query
-$users[0]->description;
+// ...
+$user->description;
 </code>
 
-Doctrine does the proxy evaluation based on loaded field count. It does not evaluate which fields are loaded on 
-field-by-field basis. The reason for this is simple: performance. Field lazy-loading is very rarely needed in PHP 
-world, hence introducing some kind of variable to check which fields are loaded would introduce unnecessary overhead 
-to basic fetching.
+Doctrine does the proxy evaluation based on loaded field count. It does not evaluate which fields are loaded on field-by-field basis. The reason for this is simple: performance. Field lazy-loading is very rarely needed in PHP world, hence introducing some kind of variable to check which fields are loaded would introduce unnecessary overhead to basic fetching.
 
-++ Arrays and objects
+++ Arrays and Objects
 
-Doctrine_Records and Doctrine_Collections provide methods to facilitate working with arrays: {{toArray()}}, 
-{{fromArray()}} and {{synchronizeWithArray()}}.
+{{Doctrine_Record}} and {{Doctrine_Collection}} provide methods to facilitate working with arrays: {{toArray()}}, {{fromArray()}} and {{synchronizeWithArray()}}.
 
-+++ toArray
++++ To Array
 
-The {{toArray()}} method returns an array representation of your records or collections. It also accesses the 
-relationships the objects may have. If you need to print a record for debugging purposes you can get an array 
-representation of the object and print that.
+The {{toArray()}} method returns an array representation of your records or collections. It also accesses the relationships the objects may have. If you need to print a record for debugging purposes you can get an array representation of the object and print that.
 
 <code type="php">
-print_r ($user->toArray()); // toArray(false) if you don't want to get the relations
+// test.php
+
+// ...
+print_r($user->toArray());
+</code>
+
+If you want include the relationships in the array then you need to pass the {{$deep}} argument with a value of //true//:
+
+<code type="php">
+// test.php
+
+// ...
+print_r($user->toArray(true));
 </code>
 
 +++ From Array
 
-If you have an array of values you want to use to fill a record or even a collection, the {{fromArray()}} method 
-simplifies this common task.
+If you have an array of values you want to use to fill a record or even a collection, the {{fromArray()}} method simplifies this common task.
 
 <code type="php">
-// If you have an array like this
+// test.php
+
+// ...
 $data = array(
   'name' => 'John',
   'age' => '25',
-  'Emails' => array('john@mail.com', 'john@work.com')
+  'Emails' => array(
+    array('address' => 'john@mail.com'),
+    array('address' => 'john@work.com')
 );
 
-// you can populate a user record with an Emails relationship like this
 $user = new User();
 $user->fromArray($data);
-$user->Emails->count(); // --> 2
+$user->save();
 </code>
 
 +++ Synchronize With Array
@@ -766,48 +1149,67 @@ of your model and modify a field, modify a relationship field or even delete or 
 be applied to the record.
 
 <code type="php">
-$user = Doctrine_Query::create()
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
     ->select('u.*, g.*')
     ->from('User u')
     ->leftJoin('u.Groups g')
-    ->where('id = ?', 1)
-    ->fetchOne();
+    ->where('id = ?', 1);
 
-// Display this object on a cool javascript form that allows you to:
-
-$arrayUser['name'] = 'New name'; // modify a field
-$arrayUser['Group'][0]['name'] = 'Renamed Group'; // modify a field on a relation
-$arrayUser['Group'][] = array('name' => 'New Group'); // create a new relation
-unset($arrayUser['Group'][1]); // even remove a relation
-
-// submit the form and on the next script use the same query to retrieve the record
-
-$user = Doctrine_Query::create()
-    ->select('u.*, g.*')
-    ->from('User u')
-    ->leftJoin('u.Groups g')
-    ->where('id = ?', 1)
-    ->fetchOne();
-
-// sanitize the form input an get the data
-
-$user->synchronizeWithArray($arrayUser);
-$user->save(); // all changes get applied to the user object
+$user = $q->fetchOne();
 </code>
 
-++ Overriding the constructor
+Now convert it to an array and modify some of the properties:
 
-Sometimes you want to do some operations at the creation time of your objects. Doctrine doesn't allow you to override 
-the Doctrine_Record::__construct() method but provides an alternative:
+<code type="php">
+// test.php
+
+// ...
+$arrayUser = $user->toArray(true);
+
+$arrayUser['username'] = 'New name';
+$arrayUser['Group'][0]['name'] = 'Renamed Group';
+$arrayUser['Group'][] = array('name' => 'New Group');
+</code>
+
+Now use the same query to retrieve the record and synchronize the record with the {{$arrayUser}} variable:
+
+<code type="php">
+// test.php
+
+// ...
+$user = Doctrine_Query::create()
+    ->select('u.*, g.*')
+    ->from('User u')
+    ->leftJoin('u.Groups g')
+    ->where('id = ?', 1)
+    ->fetchOne();
+
+$user->synchronizeWithArray($arrayUser);
+$user->save();
+</code>
+
+++ Overriding the Constructor
+
+Sometimes you want to do some operations at the creation time of your objects. Doctrine doesn't allow you to override the {{Doctrine_Record::__construct()}} method but provides an alternative:
 
 <code type="php">
 class User extends Doctrine_Record
 {
     public function construct()
     {
-        $this->name = 'Test Name';
-        $this->do_something();
+        $this->username = 'Test Name';
+        $this->doSomething();
     }
+
+    public function doSomething()
+    {
+        // ...
+    }
+
+    // ...
 }
 </code>
 
@@ -815,4 +1217,4 @@ The only drawback is that it doesn't provide a way to pass parameters to the con
 
 ++ Conclusion
 
-By now we should know absolutely everything their is to know about models. We know how to create them, load them and most importantly we know how to use them in our application. Now we are ready to move on to learn about how to use the [doc dql-doctrine-query-language :name].
+By now we should know absolutely everything their is to know about models. We know how to create them, load them and most importantly we know how to use them and work with columns and relationships. Now we are ready to move on to learn about how to use the [doc dql-doctrine-query-language :name].

@@ -33,7 +33,7 @@ For more detailed information on the Nested Set, read here:
 To set up your model as Nested Set, you must add some code to the {{setUp()}} method of your model. Take this {{Category}} model below for example:
 
 <code type="php">
-// models/Category.class.php
+// models/Category.php
 
 class Category extends Doctrine_Record
 {
@@ -73,7 +73,7 @@ The nested set implementation can be configured to allow your table to have mult
 The example below shows how to setup and use multiple roots with the {{Category}} model:
 
 <code type="php">
-// models/Category.class.php
+// models/Category.php
 
 class Category extends Doctrine_Record
 {
