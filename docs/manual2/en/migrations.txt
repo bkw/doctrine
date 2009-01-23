@@ -438,4 +438,4 @@ MigrationTest:
 
 Using migrations is highly recommended for altering your production database schemas as it is a safe and easy way to make changes to your schema.
 
-Migrations are the last feature of Doctrine that we will discuss in this book. The final chapters will discuss some other topics that will help you be a better Doctrine developers on a day-to-day basis. First lets discuss how Doctrine maintains stability and avoids regressions by using [doc unit-testing :name].
+Migrations are the last feature of Doctrine that we will discuss in this book. The final chapters will discuss some other topics that will help you be a better Doctrine developers on a day-to-day basis. First lets discuss some of the other [doc utilities :name] that Doctrine provides.

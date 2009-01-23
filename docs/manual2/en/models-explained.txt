@@ -2219,6 +2219,6 @@ Currently, the only two supported database-level cascade styles are for {{onDele
 
 ++ Conclusion
 
-Now that we know everything about how Doctrine models work, I think we are ready to move on to learning about the [doc dql-doctrine-query-language Doctrine Query Language]. DQL works intimately with the Doctrine models so it is good that we are fluent in how they work.
+Now that we know everything about how to create our Doctrine models, I think we are ready to move on to learning about how to [doc working-with-models work with models] in your application.
 
 This is a very large topic as well so take a break, grab a mountain dew and hurry back for the [doc dql-doctrine-query-language next chapter].

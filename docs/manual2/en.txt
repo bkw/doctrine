@@ -6,6 +6,7 @@
 + Connections
 + Introduction to Models
 + Models Explained
++ Working with Models
 + DQL (Doctrine Query Language)
 + Component Overview
 + Native SQL
@@ -21,6 +22,7 @@
 + Event Listeners
 + Caching
 + Migrations
++ Utilities
 + Unit Testing
 + Improving Performance
 + Technology
