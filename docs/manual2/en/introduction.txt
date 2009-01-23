@@ -64,9 +64,9 @@ Now you already know a lot about what Doctrine is and what it is not. If you wou
 
 ++ Key Concepts
 
-The Doctrine Query Language (DQL) is an object query language. It let's you express queries for single objects or full object graphs, using the terminology of your domain model: class names, field names, relations between classes, etc. This is a powerful tool for retrieving or even manipulating objects without breaking the separation of the domain model (field names, class names, etc) from the relational model (table names, column names, etc).DQL looks very much like SQL and this is intended because it makes it relatively easy to grasp for people knowing SQL. There are, however, a few very important differences you should always keep in mind:
+The Doctrine Query Language (DQL) is an object query language. It let's you express queries for single objects or full object graphs, using the terminology of your domain model: class names, field names, relations between classes, etc. This is a powerful tool for retrieving or even manipulating objects without breaking the separation of the domain model (field names, class names, etc) from the relational model (table names, column names, etc). DQL looks very much like SQL and this is intended because it makes it relatively easy to grasp for people knowing SQL. There are, however, a few very important differences you should always keep in mind:
 
-Take this example:
+Take this example DQL query:
 
 <code type="sql">
 FROM User u LEFT JOIN u.Phonenumbers where u.level > 1
@@ -80,7 +80,7 @@ The things to notice about this query:
 * There is no join condition (ON x.y = y.x). The associations between your classes and how these are expressed in the database are known to Doctrine (You need to make this mapping known to Doctrine, of course. How to do that is explained later in the [doc models-explained :name] chapter.).
 
 > **NOTE**
-> DQL expresses a query in the terms of your domain model (your classes, the attributes they have, the relations they have to other classes, etc.)
+> DQL expresses a query in the terms of your domain model (your classes, the attributes they have, the relations they have to other classes, etc.).
 
 It's very important that we speak about classes, fields and associations between classes here. {{User}} is **not** a table / table name . It may be that the name of the database table that the {{User}} class is mapped to is indeed named {{User}} but you should nevertheless adhere to this differentiation of terminology. This may sound nit picky since, due to the ActiveRecord approach, your relational model is often very similar to your domain model but it's really important. The column names are rarely the same as the field names and as soon as inheritance is involved, the relational model starts to diverge from the domain model. You can have a class {{User}} that is in fact mapped to several tables in the database. At this point it should be clear that talking about "selecting from the {{User}} table" is simply wrong then. And as Doctrine development continues there will be more features available that allow the two models to diverge even more.
 
@@ -91,3 +91,9 @@ For people new to object-relational mapping and (object-oriented) domain models 
 The [http://www.martinfowler.com/books.html books by Martin Fowler] cover a lot of the basic ORM terminology, the different approaches of modeling business logic and the patterns involved.
 
 Another good read is about [http://domaindrivendesign.org/books/#DDD Domain Driven Design]. Though serious Domain-Driven Design is currently not possible with Doctrine, this is an excellent resource for good domain modeling, especially in complex business domains, and the terminology around domain models that is pretty widespread nowadays is explained in depth (Entities, Value Objects, Repositories, etc).
+
+++ Conclusion
+
+Well, now that we have given a little educational reading about the methodologies and principals behind Doctrine we are pretty much ready to dive in to everything that is Doctrine.
+
+First though, we will [doc acknowledgements acknowledge] the people who are responsible for making Doctrine what it is today. Then we will dive in to setting up Doctrine in the [doc getting-started :name] chapter.

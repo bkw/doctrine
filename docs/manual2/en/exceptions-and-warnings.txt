@@ -22,11 +22,15 @@ Connection exceptions are being thrown if something failed at the database level
 try {
     $conn->execute('SELECT * FROM unknowntable');
 } catch (Doctrine_Connection_Exception $e) {
-    print 'Code : ' . $e->getPortableCode();
-    print 'Message : ' . $e->getPortableMessage();
+    echo 'Code : ' . $e->getPortableCode();
+    echo 'Message : ' . $e->getPortableMessage();
 }
 </code>
 
 ++ Query exceptions
 
 An exception will be thrown when a query is executed if the DQL query is invalid in some way.
+
+++ Conclusion
+
+Now that you know how to deal with Doctrine throwing exceptions lets move on and show you some [doc real-world-examples real world schemas] that would be used in common web applications found today on the web.

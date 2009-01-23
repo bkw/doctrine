@@ -1,6 +1,13 @@
+++ Introduction
+
+Doctrine is a product of the work of many people. Not just the people who have coded and documented this software are the only ones responsible for this great framework. Other ORMs in other languages are a major resource for us as we can learn from what they have already done.
+
+> **NOTE**
+> Doctrine has also borrowed pieces of code from other open source projects instead of re-inventing the wheel. Two of the projects borrowed from are [http://www.symfony-project.com symfony] and the [http://framework.zend.com Zend Framework]. The relevant license information can be found in the root of Doctrine when you [http://www.doctrine-project.org download] it in a file named {{LICENSE}}.
+
 ++ Architecture
 
-Doctrine is divided into 3 main packages. The CORE, ORM and DBAL. Below is a list of some of the main classes that make up each of the packages.
+Doctrine is divided into three main packages: CORE, ORM and DBAL. Below is a list of some of the main classes that make up each of the packages.
 
 +++ Doctrine CORE
 
@@ -19,12 +26,12 @@ Doctrine is divided into 3 main packages. The CORE, ORM and DBAL. Below is a lis
 
 +++ Doctrine DBAL
 
-* Doctrine_Expression_Driver
-* Doctrine_Export
-* Doctrine_Import
+* [doc component-overview:record:using-expression-values Doctrine_Expression_Driver]
+* [doc database-abstraction-layer:export Doctrine_Export]
+* [doc database-abstraction-layer:import Doctrine_Import]
 * Doctrine_Sequence
-* Doctrine_Transaction
-* Doctrine_DataDict
+* [doc transactions Doctrine_Transaction]
+* [doc database-abstraction-layer:datadict Doctrine_DataDict]
 
 Doctrine DBAL is also divided into driver packages.
 
@@ -94,3 +101,9 @@ Enterprise application design patterns used:
 * **Updating only the modified columns.** - Doctrine always knows which columns have been changed.
 * **Never inserting/updating unmodified objects.** - Doctrine knows if the the state of the record has changed.
 * **PDO for database abstraction** - PDO is by far the fastest availible database abstraction layer for php.
+
+++ Conclusion
+
+This chapter should have given you a complete birds eye view of all the components of Doctrine and how they are organized. Up until now you have seen them all used a part from each other but the separate lists of the three main packages should have made things very clear for you if it was not already.
+
+Now we are ready to move on and learn about how to deal with Doctrine throwing exceptions in the [doc exceptions-and-warnings :name] chapter.

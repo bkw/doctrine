@@ -17,13 +17,13 @@
 + Hierarchical Data
 + Data Fixtures
 + Database Abstraction Layer
-+ Event Listeners
 + Transactions
++ Event Listeners
 + Caching
 + Migrations
++ Unit Testing
 + Improving Performance
 + Technology
 + Exceptions and Warnings
 + Real World Examples
-+ Unit Testing
 + Coding Standards

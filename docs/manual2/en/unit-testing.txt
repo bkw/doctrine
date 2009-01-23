@@ -1,5 +1,4 @@
-Doctrine is programmatically tested using UnitTests. You can read more about
-unit testing [http://en.wikipedia.org/wiki/Unit_testing here].
+Doctrine is programmatically tested using UnitTests. You can read more about unit testing [http://en.wikipedia.org/wiki/Unit_testing here] on Wikipedia.
 
 ++ Running tests
 
@@ -28,13 +27,17 @@ tools/
 vendor/
 </code>
 
+> **TIP**
+> It is not uncommon for the test suite to have fails that we are aware of. Often Doctrine will have test cases for bugs or enhancement requests that cannot be committed until later versions. Or we simply don't have a fix for the issue yet and the test remains failing. You can ask on the mailing list or in IRC for how many fails should be expected in each version of Doctrine.
+
 +++ CLI
 
 To run tests on the command line, you must have php-cli installed.
 
-Navigate to the /path/to/co/doctrine/tests folder and run the following command:
+Navigate to the {{/path/to/co/doctrine/tests}} folder and execute the {{run.php}} script:
 
 <code>
+$ cd /path/to/co/doctrine/tests
 $ php run.php
 </code>
 
@@ -45,6 +48,7 @@ The CLI has several options available for running specific tests, groups of test
 <code>
 $ php run.php -help
 </code>
+
 You can run an individual group of tests like this:
 
 <code>
@@ -140,15 +144,67 @@ class Doctrine_Ticket_9999_TestCase extends Doctrine_UnitTestCase
 
 +++ Methods for testing
 
+++++ Assert Equal
+
 <code type="php">
-public function assertEqual($value, $value2)
-public function assertIdentical($value, $value2)
-public function assertNotEqual($value, $value2)
-public function assertTrue($expr)
-public function assertFalse($expr)
+// ...
+    public function test1Equals1()
+    {
+        $this->assertEqual(1, 1);
+    }
+// ...
 </code>
 
-+++ Mock drivers
+++++ Assert Not Equal
+
+<code type="php">
+// ...
+    public function test1DoesNotEqual2()
+    {
+        $this->assertNotEqual(1, 2);
+    }
+// ...
+</code>
+
+++++ Assert Identical
+
+The {{assertIdentical()}} method is the same as the {{assertEqual()}} except that its logic is stricter and uses the {{===}} for comparing the two values.
+
+<code type="php">
+// ...
+    public function testAssertIdentical()
+    {
+        $this->assertIdentical(1, '1');
+    }
+// ...
+</code>
+
+> **NOTE**
+> The above test would fail obviously because the first argument is the number 1 casted as PHP type integer and the second argument is the number 1 casted as PHP type string.
+
+++++ Assert True
+
+<code type="php">
+// ...
+    public function testAssertTrue()
+    {
+        $this->assertTrue(5 > 2);
+    }
+// ...
+</code>
+
+++++ Assert False
+
+<code type="php">
+// ...
+    public function testAssertFalse()
+    {
+        $this->assertFalse(5 < 2);
+    }
+// ...
+</code>
+
++++ Mock Drivers
 
 Doctrine uses mock drivers for all drivers other than sqlite. The following code snippet shows you how to use mock drivers:
 
@@ -163,23 +219,53 @@ class Doctrine_Sample_TestCase extends Doctrine_UnitTestCase
 }
 </code>
 
+Now when you execute queries they won't actually be executed against a real database. Instead they will be collected in an array and you will be able to analyze the queries that were executed and make test assertions against them.
+
+<code type="php">
+class Doctrine_Sample_TestCase extends Doctrine_UnitTestCase 
+{
+    // ...
+
+    public function testMockDriver()
+    {
+        $user = new User();
+        $user->username = 'jwage';
+        $user->password = 'changeme';
+        $user->save();
+
+        $sql = $this->dbh->getAll();
+
+        // print the sql array to find the query you're looking for
+        // print_r($sql);
+
+        $this->assertEqual($sql[0], 'INSERT INTO user (username, password) VALUES (?, ?)');
+    }
+}
+</code>
+
 +++ Test Class Guidelines
 
-Every class should have at least one TestCase equivalent and they should inherit Doctrine_UnitTestCase. Test classes should refer to a class or an aspect of a class, and they should be named accordingly.
+Every class should have at least one TestCase equivalent and they should inherit {{Doctrine_UnitTestCase}}. Test classes should refer to a class or an aspect of a class, and they should be named accordingly.
 
 Some examples:
 
-* Doctrine_Record_TestCase is a good name because it refers to the Doctrine_Record class
-* Doctrine_Record_State_TestCase is also good, because it refers to the state aspect of the Doctrine_Record class.
-* Doctrine_PrimaryKey_TestCase is a bad name, because it's too generic.
+* {{Doctrine_Record_TestCase}} is a good name because it refers to the Doctrine_Record class
+* {{Doctrine_Record_State_TestCase}} is also good, because it refers to the state aspect of the Doctrine_Record class.
+* {{Doctrine_PrimaryKey_TestCase}} is a bad name, because it's too generic.
 
 +++ Test Method Guidelines
 
 Methods should support agile documentation and should be named so that if it fails, it is obvious what failed. They should also give information of the system they test
 
-Example: Doctrine_Export_Pgsql_TestCase::testCreateTableSupportsAutoincPks() is a good test name
+For example the method test name {{Doctrine_Export_Pgsql_TestCase::testCreateTableSupportsAutoincPks()}} is a good name.
 
 Test method names can be long, but the method content should not be.  If you need several assert-calls, divide the method into smaller methods. There should never be assertions within any loops, and rarely within functions.
 
 > **NOTE**
-> Commonly used testing method naming convention TestCase::test[methodName] is **not** allowed in Doctrine. So in this case Doctrine_Export_Pgsql_TestCase::testCreateTable() would not be allowed!
+> Commonly used testing method naming convention {{TestCase::test[methodName]}} is **not** allowed in Doctrine. So in this case {{Doctrine_Export_Pgsql_TestCase::testCreateTable()}} would not be allowed!
+
+++ Conclusion
+
+Unit testing in a piece of software like Doctrine is so incredible important. Without it, it would be impossible to know if a change we make has any kind of negative affect on existing working use cases. With our collection of unit tests we can be sure that the changes we make won't break existing functionality.
+
+Now lets move on to learn about how we can [doc improving-performance improve performance] when using Doctrine.

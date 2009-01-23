@@ -422,3 +422,9 @@ When we use the {{Doctrine::loadModels()}} functionality all the classes found w
 // ...
 Doctrine::loadModels('/path/to/models');
 </code>
+
+++ Conclusion
+
+This chapter is probably the most intense chapter so far but it is a good one. We learned a little about how to use models, how to generate models from existing databases, how to write our own models, and how to maintain our models as YAML schema files. We also modified our Doctrine test environment to implement some functionality for loading models from our models directory.
+
+This topic so large that it warranted the chapters being split in to two pieces to make it easier on the developer to absorb all the information.  In the [doc models-explained next chapter] we will really get in to how Doctrine models work.

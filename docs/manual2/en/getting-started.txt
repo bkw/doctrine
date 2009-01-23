@@ -2,15 +2,16 @@
 
 First we need to make sure that you can run Doctrine on your server. We can do this one of two ways:
 
-1. Create a small PHP script named phpinfo.php and upload it somewhere on your web server that is accessible to the web.
+First create a small PHP script named {{phpinfo.php}} and upload it somewhere on your web server that is accessible to the web:
 
 <code type="php">
-<?php phpinfo(); ?>
+phpinfo();
 </code>
 
-Now execute it from your browser by going to http://localhost/phpinfo.php. You will see a list of information detailing your PHP configuration. Check that your PHP version is >= 5.2.3 and that you have PDO and the desired drivers installed.
+Now execute it from your browser by going to http://localhost/phpinfo.php. You will see a list of information detailing your PHP configuration. Check that your PHP version is >= //5.2.3// and that you have PDO and the desired drivers installed.
 
-2. You can also check your PHP installation has the necessary requirements by running some commands from the terminal.
+> **NOTE**
+> You can also check your PHP installation has the necessary requirements by running some commands from the terminal. We will demonstrate in the next example.
 
 Check that your PHP version is >= 5.2.3 with the following command:
 
@@ -22,6 +23,12 @@ Now check that you have PDO and the desired drivers installed with the following
 
 <code>
 $ php -i
+</code>
+
+You could also execute the {{phpinfo.php}} from the command line and get the same result as the above example:
+
+<code>
+$ php phpinfo.php
 </code>
 
 ++ Installing
@@ -36,7 +43,7 @@ Currently it is possible to install Doctrine four different ways that are listed
 It is recommended to download Doctrine via SVN (subversion), because in this case updating is easy. If your project is already under version control with SVN, you should choose SVN externals.
 
 > **TIP**
-> If you wish to just try out Doctrine in under 5 minutes, the sandbox package is recommended.
+> If you wish to just try out Doctrine in under 5 minutes, the sandbox package is recommended. We will discuss the sandbox package in the next section.
 
 +++ Sandbox
 
@@ -147,6 +154,7 @@ We need to create a php script for bootstrapping Doctrine and all the configurat
  * Bootstrap Doctrine.php, register autoloader specify
  * configuration attributes and load models.
  */
+
 require_once('/path/to/doctrine/lib/Doctrine.php');
 </code>
 
@@ -205,6 +213,9 @@ In the above example the {{Doctrine_Some_Class}} can be found at {{/path/to/doct
 
 +++ Bootstrap File
 
+> **TIP**
+> We will use this bootstrap class in later chapters and sections so be sure to create it!
+
 The bootstrap file we have created should now look like the following:
 
 <code type="php">
@@ -214,6 +225,7 @@ The bootstrap file we have created should now look like the following:
  * Bootstrap Doctrine.php, register autoloader specify
  * configuration attributes and load models.
  */
+
 require_once('/path/to/doctrine/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 $manager = Doctrine_Manager::getInstance();
@@ -249,3 +261,9 @@ Now you can execute the test script from your command line. This is how we will 
 $ php test.php 
 /path/to/doctrine/lib
 </code>
+
+++ Conclusion
+
+Phew! This was our first chapter where we actually got into some code. As you saw, first we were able to check that our server can actually run Doctrine. Then we learned all the different ways we can download and install Doctrine. Lastly we learned how to implement Doctrine by setting up a small test environment that we will use to perform some exercises in the remaining chapters of the book.
+
+Now lets move on and get our first taste of Doctrine connections in the [doc introduction-to-connections :name] chapter.

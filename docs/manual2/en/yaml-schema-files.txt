@@ -693,3 +693,7 @@ Below is a table containing the different options you can use to customize the b
 || baseClassesDirectory   || generated              || Name of the folder to generate the base class definitions in. ||
 || baseClassName          || Doctrine_Record    || Name of the base Doctrine_Record class. ||
 || suffix                 || .php                   || Extension for your generated models. ||
+
+++ Conclusion
+
+Now that we have learned all about YAML Schema files we are ready to move on to a great topic regarding [doc data-validation :name]. This is an important topic because if you are not validating user inputted data yourself then we want Doctrine to validate data before being persisted to the database.

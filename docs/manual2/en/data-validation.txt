@@ -971,3 +971,9 @@ if ( ! $state->isValid()) {
     echo 'State is invalid because "ZZ" is not a valid state code';
 }
 </code>
+
+++ Conclusion
+
+If we want Doctrine to validate our data before being persisted to the database, now we have the knowledge on how to do it. We can use the validators that are provided with the Doctrine core to perform common validations of our data.
+
+The [doc inheritance next chapter] is an important one as we will discuss a great feature of Doctrine, [doc inheritance :name]! Inheritance is a great way accomplish complex functionality with minimal code. After we discuss inheritance we will move on to a custom strategy that provides even better functionality than inheritance, called [doc behaviors :name].

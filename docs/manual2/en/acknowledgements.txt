@@ -58,3 +58,7 @@ Below are some other contributors that have played a role in the success of the 
 * **[http://www.aide-de-camp.org/ Fabien Potencier]** - For lending us code from the symfony project to help with building the Doctrine website.
 
 Lots of other people have contributed a long the way, as I cannot mention everyone here, you can always read more about the contributors on the Doctrine [http://www.doctrine-project.org/about about] page.
+
+++ Conclusion
+
+As you can see Doctrine is possible because of a lot of people and companies. Big thanks to all these people as none of it would be possible without them. Now we are ready to dive in to Doctrine in the [doc getting-started :name] chapter.

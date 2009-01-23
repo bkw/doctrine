@@ -276,7 +276,7 @@ $conn->setAttribute('validate', 'none');
 
 ++ Conclusion
 
-Now we have gone over some of the most common attributes used to configure Doctrine. Some of these attributes may not apply to you period or you may not understand what you could use them for now. As you read the next chapters you will see which attributes you do and don't need to use and things will begin to make more sense.
+Now we have gone over some of the most common attributes used to configure Doctrine. Some of these attributes may not apply to you ever or you may not understand what you could use them for now. As you read the next chapters you will see which attributes you do and don't need to use and things will begin to make more sense.
 
 If you saw some attributes you wanted to change the value above, then you should have added it to your {{bootstrap.php}} file and it should look something like the following now:
 
@@ -297,3 +297,5 @@ $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CON
 
 > **NOTE**
 > For this example we need to turn on [doc introduction-to-models:autoloading-models:conservative conservative model loading] because it is the recommended mode and we will need it for a later step.
+
+Now we are ready to move on to the next chapter where we will learn everything their is to know about Doctrine [doc connections :name].

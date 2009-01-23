@@ -1,11 +1,16 @@
-++ User management system
+++ User Management System
+
+In almost all applications you need to have some kind of security or authentication system where you have users, roles, permissions, etc. Below is an example where we setup several models that give you a basic user management and security system.
 
 <code type="php">
 class User extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('username', 'string', 255, array('unique' => true));
+        $this->hasColumn('username', 'string', 255, array(
+                'unique' => true
+            )
+        );
         $this->hasColumn('password', 'string', 255);
     }
 }
@@ -30,14 +35,28 @@ class RolePermission extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('role_id', 'integer', null, array('primary' => true));
-        $this->hasColumn('permission_id', 'integer', null, array('primary' => true));
+        $this->hasColumn('role_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+        $this->hasColumn('permission_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
     }
 
     public function setUp()
     {
-        $this->hasOne('Role', array('local' => 'role_id', 'foreign' => 'id'));
-        $this->hasOne('Permission', array('local' => 'permission_id', 'foreign' => 'id'));
+        $this->hasOne('Role', array(
+                'local' => 'role_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasOne('Permission', array(
+                'local' => 'permission_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 
@@ -45,14 +64,28 @@ class UserRole extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('user_id', 'integer', null, array('primary' => true));
-        $this->hasColumn('role_id', 'integer', null, array('primary' => true));
+        $this->hasColumn('user_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+        $this->hasColumn('role_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
     }
 
     public function setUp()
     {
-        $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
-        $this->hasOne('Role', array('local' => 'role_id', 'foreign' => 'id'));
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasOne('Role', array(
+                'local' => 'role_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 
@@ -60,17 +93,33 @@ class UserPermission extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->hasColumn('user_id', 'integer', null, array('primary' => true));
-        $this->hasColumn('permission_id', 'integer', null, array('primary' => true));
+        $this->hasColumn('user_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
+        $this->hasColumn('permission_id', 'integer', null, array(
+                'primary' => true
+            )
+        );
     }
 
     public function setUp()
     {
-        $this->hasOne('User', array('local' => 'user_id', 'foreign' => 'id'));
-        $this->hasOne('Permission', array('local' => 'permission_id', 'foreign' => 'id'));
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasOne('Permission', array(
+                'local' => 'permission_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 </code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 User:
@@ -137,7 +186,9 @@ UserPermission:
     Permission:
 </code>
 
-++ Forum application
+++ Forum Application
+
+Below is an example of a forum application where you have categories, boards, threads and posts:
 
 <code type="php">
 class Forum_Category extends Doctrine_Record
@@ -152,8 +203,16 @@ class Forum_Category extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasMany('Forum_Category as Subcategory', array('local' => 'parent_category_id', 'foreign' => 'id'));
-        $this->hasOne('Forum_Category as Rootcategory', array('local' => 'root_category_id', 'foreign' => 'id'));
+        $this->hasMany('Forum_Category as Subcategory', array(
+                'local' => 'parent_category_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasOne('Forum_Category as Rootcategory', array(
+                'local' => 'root_category_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 
@@ -168,8 +227,16 @@ class Forum_Board extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Category as Category', array('local' => 'category_id', 'foreign' => 'id'));
-        $this->hasMany('Forum_Thread as Threads',  array('local' => 'id', 'foreign' => 'board_id'));
+        $this->hasOne('Forum_Category as Category', array(
+                'local' => 'category_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasMany('Forum_Thread as Threads',  array(
+                'local' => 'id',
+                'foreign' => 'board_id'
+            )
+        );
     } 
 }
 
@@ -187,8 +254,16 @@ class Forum_Entry extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Entry as Parent',  array('local' => 'parent_entry_id', 'foreign' => 'id'));
-        $this->hasOne('Forum_Thread as Thread', array('local' => 'thread_id', 'foreign' => 'id'));
+        $this->hasOne('Forum_Entry as Parent',  array(
+                'local' => 'parent_entry_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->hasOne('Forum_Thread as Thread', array(
+                'local' => 'thread_id',
+                'foreign' => 'id'
+            )
+        );
     }
 }
 
@@ -203,11 +278,21 @@ class Forum_Thread extends Doctrine_Record
 
     public function setUp()
     {
-        $this->hasOne('Forum_Board as Board', array('local' => 'board_id', 'foreign' => 'id'));
-        $this->ownsMany('Forum_Entry as Entries', array('local' => 'id', 'foreign' => thread_id'));
+        $this->hasOne('Forum_Board as Board', array(
+                'local' => 'board_id',
+                'foreign' => 'id'
+            )
+        );
+        $this->ownsMany('Forum_Entry as Entries', array(
+                'local' => 'id',
+                'foreign' => thread_id'
+            )
+        );
     }
 }
 </code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
 
 <code type="yaml">
 Forum_Category:
@@ -274,3 +359,7 @@ Forum_Thread:
       local: id
       foreign: thread_id
 </code>
+
+++ Conclusion
+
+I hope that these real world schema examples will help you with using Doctrine in the real world in your application. The last chapter of this book will discuss the [doc coding-standards coding standards] used in Doctrine and are recommended for you to use in your application as well. Remember, consistency in your code is key!

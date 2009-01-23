@@ -1,31 +1,17 @@
 Data fixtures are meant for loading small sets of test data through your models to populate your database with data to test against. The data fixtures are often used side by side with some kind of unit/functional testing suite.
 
-++ Dumping
-
-You can dump data to fixtures file in many different formats to help you get started with writing your data fixtures. You can dump your data fixtures to one big YAML file like the following:
-
-<code type="php">
-Doctrine::dumpData('data.yml');
-</code>
-
-Or you can optionally dump all data to individual files. One YAML file per model like the following:
-
-<code type="php">
-Doctrine::dumpData('directory', true);
-</code>
-
 ++ Importing
 
 Importing data fixtures is just as easy as dumping. You can use the {{loadData()}} function:
 
 <code type="php">
-Doctrine::loadData('data.yml');
+Doctrine::loadData('/path/to/data.yml');
 </code>
 
 You can either specify an individual yml file like we have done above, or you can specify an entire directory:
 
 <code type="php">
-Doctrine::loadData('directory');
+Doctrine::loadData('/path/to/directory');
 </code>
 
 If you want to append the imported data to the already existing data then you need to use the second argument of the {{loadData()}} function. If you don't specify the second argument as true then the data will be purged before importing.
@@ -33,24 +19,220 @@ If you want to append the imported data to the already existing data then you ne
 Here is how you can append instead of purging:
 
 <code type="php">
-Doctrine::loadData('data.yml', true);
+Doctrine::loadData('/path/to/data.yml', true);
+</code>
+
+++ Dumping
+
+You can dump data to fixtures file in many different formats to help you get started with writing your data fixtures. You can dump your data fixtures to one big YAML file like the following:
+
+<code type="php">
+Doctrine::dumpData('/path/to/data.yml');
+</code>
+
+Or you can optionally dump all data to individual files. One YAML file per model like the following:
+
+<code type="php">
+Doctrine::dumpData('/path/to/directory', true);
+</code>
+
+++ Implement
+
+Now that we know a little about data fixtures lets implement them in to our test environment we created and have been using through the previous chapters so that we can test the example fixtures used in the next sections.
+
+First create a directory in your {{doctrine_test}} directory named {{fixtures}} and create a file named {{data.yml}} inside:
+
+<code>
+$ mkdir fixtures
+$ touch fixtures/data.yml
+</code>
+
+Now we need to just modify our {{generate.php}} script to include the code for loading the data fixtures. Add the following code to the bottom of {{generate.php}}:
+
+<code type="php">
+// generate.php
+
+// ...
+Doctrine::loadData('fixtures');
 </code>
 
 ++ Writing
 
 You can write your fixtures files manually and load them in to your applications. Below is a sample {{data.yml}} fixtures file. You can also split your data fixtures file up in to multiple files. Doctrine will read all fixtures files and parse them, then load all data.
 
-Imagine a schema with the following relationships:
+For the next several examples we will use the following models:
 
-* Resource hasMany Tag as Tags
-* Resource hasOne ResourceType as Type
-* ResourceType hasMany Resource as Resources
-* Tag hasMany Resource as Resources
+<code type="php">
+// models/Resouce.class.php
+
+class Resource extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+        $this->hasColumn('resource_type_id', 'integer');
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('ResourceType as Type', array(
+                'local' => 'resource_type_id',
+                'foreign' => 'id'
+            )
+        );
+
+        $this->hasMany('Tag as Tags', array(
+                'local' => 'resource_id',
+                'foreign' => 'tag_id',
+                'refClass' => 'ResourceTag'
+            )
+        );
+    }
+}
+
+// models/ResourceType.class.php
+
+class ResourceType extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Resource as Resouces', array(
+                'local' => 'id',
+                'foreign' => 'resource_type_id'
+            )
+        );
+    }
+}
+
+// models/Tag.class.php
+
+class Tag extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Resource as Resources', array(
+                'local' => 'tag_id',
+                'foreign' => 'resource_id',
+                'refClass' => 'ResourceTag'
+            )
+        );
+    }
+}
+
+// models/ResourceTag.class.php
+
+class ResourceTag extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('resource_id', 'integer');
+        $this->hasColumn('tag_id', 'integer');
+    }
+}
+
+// models/Category.class.php
+
+class BaseCategory extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('name', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+    }
+
+    public function setUp()
+    {
+        $this->actAs('NestedSet');
+    }
+}
+
+class BaseArticle extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 255, array(
+                'type' => 'string',
+                'length' => '255'
+            )
+        );
+
+        $this->hasColumn('body', 'clob', null, array(
+                'type' => 'clob'
+            )
+        );
+    }
+
+    public function setUp()
+    {
+        $this->actAs('I18n', array('fields' => array('title', 'body')));
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+# schema.yml
+
+Resource:
+  columns:
+    name: string(255)
+    resource_type_id: integer
+  relations:
+    Type:
+      class: ResourceType
+      foreignAlias: Resources
+    Tags:
+      class: Tag
+      refClass: ResourceTag
+      foreignAlias: Resources
+
+ResourceType:
+  columns:
+    name: string(255)
+
+Tag:
+  columns:
+   name: string(255)
+
+ResourceTag:
+  columns:
+    resource_id: integer
+    tag_id: integer
+
+Category:
+  actAs: [NestedSet]
+  columns:
+    name: string(255)
+
+Article:
+  actAs:
+    I18n:
+      fields: [title, body]
+  columns:
+    title: string(255)
+    body: clob
+</code>
 
 > **NOTE**
 > All row keys across all YAML data fixtures must be unique. For example below tutorial, doctrine, help, cheat are all unique.
 
 <code type="yaml">
+# fixtures/data.yml
+
 Resource:
   Resource_1:
     name: Doctrine Video Tutorial
@@ -81,6 +263,9 @@ Tag:
 You could optionally specify the Resources each tag is related to instead of specifying the Tags a Resource has.
 
 <code type="yaml">
+# fixtures/data.yml
+
+# ...
 Tag:
   tutorial:
     name: tutorial
@@ -96,28 +281,25 @@ Tag:
     Resources: [Resource_1]
 </code>
 
-Now you can load those data fixtures by simply calling {{loadData()}} and give it the path to the above {{data.yml}}.
-
-<code type="php">
-Doctrine::loadData('/path/to/data.yml');
-</code>
-
 ++ Fixtures For Nested Sets
 
 Writing a fixtures file for a nested set tree is slightly different from writing regular fixtures files. The structure of the tree is defined like the following:
 
 <code type="yaml">
+# fixtures/data.yml
+
+# ...
 Category:
   Category_1:
-    title: Categories # the root node
+    name: Categories # the root node
     children:
       Category_2:
-        title: Category 1
+        name: Category 1
       Category_3:
-        title: Category 2
+        name: Category 2
         children:
           Category_4:
-            title: Subcategory of Category 2
+            name: Subcategory of Category 2
 </code>
 
 > **NOTE**
@@ -128,9 +310,11 @@ Category:
 The fixtures for the {{I18n}} aren't anything custom since the {{I18n}} really is just a normal set of relationships that are built on the fly dynamically:
 
 <code type="yaml">
+# fixtures/data.yml
+
+# ...
 Article:
   Article_1:
-    name: Test article
     Translation:
       en:
         title: Title of article
@@ -139,3 +323,7 @@ Article:
         title: French title of article
         body: French body of article
 </code>
+
+++ Conclusion
+
+By now we should be able to write and load our own data fixtures in our application. So, now we will move on to learning about the underlying [doc database-abstraction-layer :name] in Doctrine. This layer is what makes all the previously discussed functionality possible. You can use this layer standalone apart from the ORM. In the next chapter we'll explain how you can use the DBAL by itself.

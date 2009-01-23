@@ -1,12 +1,14 @@
 ++ Introduction
 
-Many times you may find classes having similar things within your models. These things may contain anything related to the schema of the component itself (relations, column definitions, index definitions etc.). One obvious way of refactoring the code is having a base class with some classes extending it.
+Many times you may find classes having similar things within your models. These things may contain anything related to the schema of the component itself (relations, column definitions, index definitions etc.). One obvious way of re-factoring the code is having a base class with some classes extending it.
 
-However inheritance solves only a fraction of things. The following subchapters show how many times using {{Doctrine_Template}} is much more powerful and flexible than using inheritance.
+However inheritance solves only a fraction of things. The following sections show how using {{Doctrine_Template}} is much more powerful and flexible than using inheritance.
 
-{{Doctrine_Template}} is a class templating system. Templates are basically ready-to-use little components that your Record classes can load. When a template is being loaded its {{setTableDefinition()}} and {{setUp()}} methods are being invoked and the method calls inside them are being directed into the class in question.
+{{Doctrine_Template}} is a class template system. Templates are basically ready-to-use little components that your Record classes can load. When a template is being loaded its {{setTableDefinition()}} and {{setUp()}} methods are being invoked and the method calls inside them are being directed into the class in question.
 
-This chapter describes the usage of various behaviors available for Doctrine. You'll also learn how to create your own behaviors. In order to grasp the concepts of this chapter you should already be familiar with the theory behind {{Doctrine_Template}} and {{Doctrine_Record_Generator}}. When referring to behaviors we refer to class packages that use templates, generators and listeners extensively. All the introduced components in this chapter can be considered {{core}} behaviors, that means they reside at the Doctrine main repository.
+This chapter describes the usage of various behaviors available for Doctrine. You'll also learn how to create your own behaviors. In order to grasp the concepts of this chapter you should be familiar with the theory behind {{Doctrine_Template}} and {{Doctrine_Record_Generator}}. We will explain what these classes are shortly.
+
+When referring to behaviors we refer to class packages that use templates, generators and listeners extensively. All the introduced components in this chapter can be considered {{core}} behaviors, that means they reside at the Doctrine main repository.
 
 Usually behaviors use generators side-to-side with template classes (classes that extend {{Doctrine_Template}}). The common workflow is:
 
@@ -14,10 +16,415 @@ Usually behaviors use generators side-to-side with template classes (classes tha
 * The template creates the generator and calls {{initialize()}} method
 * The template is attached to given class
 
-As you may already know templates are used for adding common definitions and options to record classes. The purpose of generators is much more complex. Usually they are being used for creating generic record classes dynamically. The definitions of these generic classes usually depend on the owner class. For example the columns of the AuditLog versioning class are the columns of the parent class with all the sequence and autoincrement definitions removed.
+As you may already know templates are used for adding common definitions and options to record classes. The purpose of generators is much more complex. Usually they are being used for creating generic record classes dynamically. The definitions of these generic classes usually depend on the owner class. For example the columns of the {{AuditLog}} versioning class are the columns of the parent class with all the sequence and autoincrement definitions removed.
+
+++ Simple Templates
+
+In the following example we define a template called {{TimestampBehavior}}. Basically the purpose of this template is to add date columns 'created' and 'updated' to the record class that loads this template. Additionally this template uses a listener called Timestamp listener which updates these fields based on record actions.
+
+<code type="php">
+// models/TimestampListener.class.php
+
+class TimestampListener extends Doctrine_Record_Listener
+{
+    public function preInsert(Doctrine_Event $event)
+    {
+        $event->getInvoker()->created = date('Y-m-d', time());
+        $event->getInvoker()->updated = date('Y-m-d', time());
+    }
+
+    public function preUpdate(Doctrine_Event $event)
+    {
+        $event->getInvoker()->updated = date('Y-m-d', time());
+    }
+}
+</code>
+
+Now lets create a child {{Doctrine_Template}} named {{TimestampTemplate}} so we can attach it to our models with the {{actAs()}} method:
+
+<code type="php">
+// models/TimestampBehavior.class.php
+
+class TimestampTemplate extends Doctrine_Template
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('created', 'date');
+        $this->hasColumn('updated', 'date');
+
+        $this->setListener(new TimestampListener());
+    }
+}
+</code>
+
+Lets say we have a class called {{BlogPost}} that needs the timestamp functionality. All we need to do is to add {{actAs()}} call in the class definition.
+
+<code type="php">
+class BlogPost extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('title', 'string', 200);
+        $this->hasColumn('body', 'clob');
+    }
+
+    public function setUp()
+    {
+        $this->actAs('TimestampBehavior');
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+BlogPost:
+  actAs: [TimestampBehavior]
+  columns:
+    title: string(200)
+    body: clob
+</code>
+
+Now when we try and utilize the {{BlogPost}} model you will notice that the {{created}} and {{updated}} columns were added for you and automatically set when saved:
+
+<code type="php">
+$blogPost = new BlogPost();
+$blogPost->title = 'Test';
+$blogPost->body = 'test';
+$blogPost->save();
+
+print_r($blogPost->toArray());
+</code>
+
+The above example would produce the following output:
+
+<code>
+$ php test.php 
+Array
+(
+    [id] => 1
+    [title] => Test
+    [body] => test
+    [created] => 2009-01-22
+    [updated] => 2009-01-22
+)
+</code>
 
 > **NOTE**
-> For this chapter lets delete all our existing schemas and models from our test environment we created and have been using in the earlier chapters.
+> The above described functionality is available via the {{Timestampable}} behavior that we have already talked about. You can go back and read more about it in the [doc behaviors:core-behaviors:timestampable :name] section of this chapter.
+
+++ Templates with Relations
+
+Many times the situations tend to be much more complex than the situation in the previous chapter. You may have model classes with relations to other model classes and you may want to replace given class with some extended class.
+
+Consider we have two classes, {{User}} and {{Email}}, with the following definitions:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('Email', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
+    }
+}
+
+class Email extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('address', 'string');
+        $this->hasColumn('user_id', 'integer');
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+User:
+  columns:
+    username: string(255)
+    password: string(255)
+
+Email:
+  columns:
+    address: string
+    user_id: integer
+  relations:
+    User:
+</code>
+
+Now if we extend the {{User}} and {{Email}} classes and create, for example, classes {{ExtendedUser}} and {{ExtendedEmail}}, the {{ExtendedUser}} will still have a relation to the {{Email}} class and not the {{ExtendedEmail}} class. We could of course override the {{setUp()}} method of the {{User}} class and define relation to the {{ExtendedEmail}} class, but then we lose the whole point of inheritance. {{Doctrine_Template}} can solve this problem elegantly with its dependency injection solution.
+
+In the following example we'll define two templates, {{UserTemplate}} and {{EmailTemplate}}, with almost identical definitions as the {{User}} and {{Email}} class had.
+
+<code type="php">
+// models/UserTemplate.class.php
+
+class UserTemplate extends Doctrine_Template
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMany('EmailTemplate as Emails', array(
+                'local' => 'id',
+                'foreign' => 'user_id'
+            )
+        );
+    }
+}
+</code>
+
+Now lets define the {{EmailTemplate}}:
+
+<code type="php">
+// models/EmailTemplate.class.php
+
+class EmailTemplate extends Doctrine_Template
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('address', 'string');
+        $this->hasColumn('user_id', 'integer');
+    }
+
+    public function setUp()
+    {
+        $this->hasOne('UserTemplate as User', array(
+                'local' => 'user_id',
+                'foreign' => 'id'
+            )
+        );
+    }
+}
+</code>
+
+Notice how we set the relations. We are not pointing to concrete Record classes, rather we are setting the relations to templates. This tells Doctrine that it should try to find concrete Record classes for those templates. If Doctrine can't find these concrete implementations the relation parser will throw an exception, but before we go ahead of things, here are the actual record classes:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setUp()
+    {
+        $this->actAs('UserTemplate');
+    }
+}
+
+class Email extends Doctrine_Record
+{
+    public function setUp()
+    {
+        $this->actAs('EmailTemplate');
+    }
+}
+</code>
+
+Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
+
+<code type="yaml">
+User:
+  actAs: [UserTemplate]
+
+Email:
+  actAs: [EmailTemplate]
+</code>
+
+Now consider the following code snippet. This does NOT work since we haven't yet set any concrete implementations for the templates.
+
+<code type="php">
+// test.php
+
+// ...
+$user = new User();
+$user->Emails; // throws an exception
+</code>
+
+The following version works. Notice how we set the concrete implementations for the templates globally using {{Doctrine_Manager}}:
+
+<code type="php">
+// bootstrap.php
+
+// ...
+$manager->setImpl('UserTemplate', 'User')
+        ->setImpl('EmailTemplate', 'Email');
+</code>
+
+Now this code will work and won't throw an exception like it did before:
+
+<code type="php">
+$user = new User();
+$user->Emails[0]->address = 'jonwage@gmail.com';
+$user->save();
+
+print_r($user->toArray(true));
+</code>
+
+The above example would produce the following output:
+
+<code>
+$ php test.php 
+Array
+(
+    [id] => 1
+    [username] => 
+    [password] => 
+    [Emails] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [address] => jonwage@gmail.com
+                    [user_id] => 1
+                )
+
+        )
+
+)
+</code>
+
+> **TIP**
+> The implementations for the templates can be set at manager, connection and even at the table level.
+
+++ Delegate Methods
+
+Besides from acting as a full table definition delegate system, {{Doctrine_Template}} allows the delegation of method calls. This means that every method within the loaded templates is available in the record that loaded the templates. Internally the implementation uses magic method called {{__call()}} to achieve this functionality.
+
+Lets add to our previous example and add some custom methods to the {{UserTemplate}}:
+
+<code type="php">
+// models/UserTemplate.class.php
+
+class UserTemplate extends Doctrine_Template
+{
+    // ...
+
+    public function authenticate($username, $password)
+    {
+        $invoker = $this->getInvoker();
+        if ($invoker->username == $username && $invoker->password == $password) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+</code>
+
+Now take a look at the following code and how we can use it:
+
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'changeme';
+
+if ($user->authenticate('jwage', 'changemte')) {
+    echo 'Authenticated successfully!';
+} else {
+    echo 'Could not authenticate user!';
+}
+</code>
+
+You can also delegate methods to {{Doctrine_Table}} classes just as easily. But, to avoid naming collisions the methods for table classes must have the string {{TableProxy}} appended to the end of the method name.
+
+Here is an example where we add a new finder method:
+
+<code type="php">
+// models/UserTemplate.class.php
+
+class UserTemplate extends Doctrine_Template
+{
+    // ...
+
+    public function findUsersWithEmailTableProxy()
+    {
+        return Doctrine_Query::create()
+            ->select('u.username')
+            ->from('User u')
+            ->innerJoin('u.Emails e')
+            ->execute();
+    }
+}
+</code>
+
+Now we can access that function from the {{Doctrine_Table}} object for the {{User}} model:
+
+<code type="php">
+$userTable = Doctrine::getTable('User');
+
+$users = $userTable->findUsersWithEmail();
+</code>
+
+
+> **TIP**
+> Each class can consists of multiple templates. If the templates contain similar definitions the most recently loaded template always overrides the former.
+
+++ Creating Behaviors
+
+This subchapter provides you the means for creating your own behaviors. Lets say we have various different Record classes that need to have one-to-many emails. We achieve this functionality by creating a generic behavior which creates Email classes on the fly.
+
+We start this task by creating a behavior called {{EmailBehavior}} with a {{setTableDefinition()}} method. Inside the {{setTableDefinition()}} method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
+
+<code type="php">
+public function initOptions()
+public function buildLocalRelation()
+public function buildForeignKeys(Doctrine_Table $table)
+public function buildForeignRelation($alias = null)
+public function buildRelation() // calls buildForeignRelation() and buildLocalRelation()
+</code>
+
+<code type="php">
+class EmailBehavior extends Doctrine_Record_Generator
+{
+    public function initOptions()
+    {
+        $this->setOption('className', '%CLASS%Email');
+    }
+
+    public function buildRelation()
+    {
+    	  $this->buildForeignRelation('Emails');
+        $this->buildLocalRelation();
+    }
+    
+    public function setTableDefinition()
+    {
+        $this->hasColumn('address', 'string', 255, array(
+                'email'  => true,
+                'primary' => true
+            )
+        );
+    }
+}
+</code>
+
+++ Core Behaviors
+
+> **NOTE**
+> For the next several examples using the core behaviors lets delete all our existing schemas and models from our test environment we created and have been using in the earlier chapters.
 
 <code>
 $ rm schema.yml
@@ -25,9 +432,11 @@ $ touch schema.yml
 $ rm -rf models/*
 </code>
 
-++ Core Behaviors
++++ Introduction
 
-Doctrine comes bundled with some templates that offer out of the box functionality for your models. You can enable these templates in your models very easily. You can do it directly in your Doctrine_Records or you can specify them in your YAML schema if you are managing your models with a YAML schema file.
+Doctrine comes bundled with some templates that offer out of the box functionality for your models. You can enable these templates in your models very easily. You can do it directly in your Doctrine_Records or you can specify them in your YAML schema if you are managing your models with YAML.
+
+In the next several examples we will demonstrate some of the behaviors that come bundled with Doctrine.
 
 +++ Versionable
 
@@ -771,7 +1180,7 @@ foreach ($array as $key => $value) {
 
 +++ SoftDelete
 
-The {{SoftDelete}} behavior is a very simple model behavior which overrides the {{delete()}} functionality and adds a {{deleted}} column. When {{delete()}} is called, instead of deleting the record from the database, a delete flag is set to 1. Below is an example of how to create a model with the {{SoftDelete}} behavior being used.
+The {{SoftDelete}} behavior is a very simple yet highly desired model behavior which overrides the {{delete()}} functionality and adds a {{deleted}} column. When {{delete()}} is called, instead of deleting the record from the database, a delete flag is set to 1. Below is an example of how to create a model with the {{SoftDelete}} behavior being used.
 
 <code type="php">
 // models/SoftDeleteTest.class.php
@@ -859,7 +1268,7 @@ $record->delete();
 print_r($record->toArray());
 </code>
 
-The above code would output the following SQL query:
+The above example would produce the following output:
 
 <code>
 $ php test.php
@@ -901,320 +1310,7 @@ $count = $q->count();
 echo $count;
 </code>
 
-The above would be echo 0 because it would exclude the record saved above because the delete flag was set. The following SQL would have been executed to get this count:
-
-++ Simple Templates
-
-In the following example we define a template called {{TimestampTemplate}}. Basically the purpose of this template is to add date columns 'created' and 'updated' to the record class that loads this template. Additionally this template uses a listener called Timestamp listener which updates these fields based on record actions.
-
-<code type="php">
-// models/TimestampListener.class.php
-
-class TimestampListener extends Doctrine_Record_Listener
-{
-    public function preInsert(Doctrine_Event $event)
-    {
-        $event->getInvoker()->created = date('Y-m-d', time());
-        $event->getInvoker()->updated = date('Y-m-d', time());
-    }
-
-    public function preUpdate(Doctrine_Event $event)
-    {
-        $event->getInvoker()->updated = date('Y-m-d', time());
-    }
-}
-</code>
-
-Now lets create a child {{Doctrine_Template}} named {{TimestampTemplate}} so we can attach it to our models with the {{actAs()}} method:
-
-<code type="php">
-// models/TimestampTemplate.class.php
-
-class TimestampTemplate extends Doctrine_Template
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('created', 'date');
-        $this->hasColumn('updated', 'date');
-
-        $this->setListener(new TimestampListener());
-    }
-}
-</code>
-
-Lets say we have a class called {{Blog}} that needs the timestamp functionality. All we need to do is to add {{actAs()}} call in the class definition.
-
-<code type="php">
-class BlogPost extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('title', 'string', 200);
-        $this->hasColumn('content', 'string');
-    }
-
-    public function setUp()
-    {
-        $this->actAs('TimestampTemplate');
-    }
-}
-</code>
-
-Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
-
-<code type="yaml">
-BlogPost:
-  actAs: [TimestampTemplate]
-  columns:
-    title: string(200)
-    content: string
-</code>
-
-> **NOTE**
-> The above described functionality is available via the {{Timestampable}} behavior that we have already talked about. You can go back and read more about it in the [doc behaviors:core-behaviors:timestampable :name] section of this chapter.
-
-++ Templates with Relations
-
-Many times the situations tend to be much more complex than the situation in the previous chapter. You may have model classes with relations to other model classes and you may want to replace given class with some extended class.
-
-Consider we have two classes, {{User}} and {{Email}}, with the following definitions:
-
-<code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string');
-    }
-
-    public function setUp()
-    {
-        $this->hasMany('Email', array(
-                'local' => 'id',
-                'foreign' => 'user_id'
-            )
-        );
-    }
-}
-
-class Email extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('address', 'string');
-        $this->hasColumn('user_id', 'integer');
-    }
-
-    public function setUp()
-    {
-        $this->hasOne('User', array(
-                'local' => 'user_id',
-                'foreign' => 'id'
-            )
-        );
-    }
-}
-</code>
-
-Here is the same example in YAML format. You can read more about YAML in the [doc yaml-schema-files :name] chapter:
-
-<code type="yaml">
-User:
-  columns:
-    name: string(255)
-
-Email:
-  columns:
-    address: string
-    user_id: integer
-  relations:
-    User:
-</code>
-
-Now if we extend the {{User}} and {{Email}} classes and create, for example, classes {{ExtendedUser}} and {{ExtendedEmail}}, the {{ExtendedUser}} will still have a relation to the {{Email}} class and not the {{ExtendedEmail}} class. We could of course override the {{setUp()}} method of the {{User}} class and define relation to the {{ExtendedEmail}} class, but then we lose the whole point of inheritance. {{Doctrine_Template}} can solve this problem elegantly with its dependency injection solution.
-
-In the following example we'll define two templates, {{UserTemplate}} and {{EmailTemplate}}, with almost identical definitions as the {{User}} and {{Email}} class had.
-
-<code type="php">
-class UserTemplate extends Doctrine_Template
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('name', 'string');
-    }
-
-    public function setUp()
-    {
-        $this->hasMany('EmailTemplate as Email', array(
-                'local' => 'id',
-                'foreign' => 'user_id'
-            )
-        );
-    }
-}
-
-class EmailTemplate extends Doctrine_Template
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('address', 'string');
-        $this->hasColumn('user_id', 'integer');
-    }
-
-    public function setUp()
-    {
-        $this->hasOne('UserTemplate as User', array(
-                'local' => 'user_id',
-                'foreign' => 'id'
-            )
-        );
-    }
-}
-</code>
-
-Notice how we set the relations. We are not pointing to concrete Record classes, rather we are setting the relations to templates. This tells Doctrine that it should try to find concrete Record classes for those templates. If Doctrine can't find these concrete implementations the relation parser will throw an exception, but before we go ahead of things, here are the actual record classes:
-
-<code type="php">
-class User extends Doctrine_Record
-{
-    public function setUp()
-    {
-        $this->actAs('UserTemplate');
-    }
-}
-
-class Email extends Doctrine_Record
-{
-    public function setUp()
-    {
-        $this->actAs('EmailTemplate');
-    }
-}
-</code>
-
-Now consider the following code snippet. This does NOT work since we haven't yet set any concrete implementations for the templates.
-
-<code type="php">
-$user = new User();
-$user->Email; // throws an exception
-</code>
-
-The following version works. Notice how we set the concrete implementations for the templates globally using Doctrine_Manager.
-
-<code type="php">
-$manager = Doctrine_Manager::getInstance();
-$manager->setImpl('UserTemplate', 'User')
-        ->setImpl('EmailTemplate', 'Email');
-
-$user = new User();
-$user->Email;
-</code>
-
-The implementations for the templates can be set at manager, connection and even at the table level.
-
-++ Delegate Methods
-
-Besides from acting as a full table definition delegate system, Doctrine_Template allows the delegation of method calls. This means that every method within the loaded templates is available in the record that loaded the templates. Internally the implementation uses magic method called __call() to achieve this functionality.
-
-Lets take an example: we have a User class that loads authentication functionality through a template.
-
-<code type="php">
-class User extends Doctrine_Record
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('fullname', 'string', 30);
-    }
-
-    public function setUp()
-    {
-        $this->actAs('AuthTemplate');
-    }
-}
-
-class AuthTemplate extends Doctrine_Template
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('username', 'string', 16);
-        $this->hasColumn('password', 'string', 16);
-    }
-
-    public function login($username, $password)
-    {
-        // some login functionality here
-    }
-}
-</code>
-
-Now you can simply use the methods found in {{AuthTemplate}} within the {{User}} class as shown above below:
-
-<code type="php">
-$user = new User();
-$user->login($username, $password);
-</code>
-
-You can get the record that invoked the delegate method by using the {{getInvoker()}} method of {{Doctrine_Template}}. Consider the {{AuthTemplate}} example. If we want to have access to the {{User}} object we just need to do the following:
-
-<code type="php">
-class AuthTemplate extends Doctrine_Template
-{
-    public function setTableDefinition()
-    {
-        $this->hasColumn('username', 'string', 16);
-        $this->hasColumn('password', 'string', 16);
-    }
-
-    public function login($username, $password)
-    {
-        // do something with the Invoker object here
-        $object = $this->getInvoker();
-    }
-}
-</code>
-
-++ Multiple Templates
-
-Each class can consists of multiple templates. If the templates contain similar definitions the most recently loaded template always overrides the former.
-
-++ Creating Behaviors
-
-This subchapter provides you the means for creating your own behaviors. Lets say we have various different Record classes that need to have one-to-many emails. We achieve this functionality by creating a generic behavior which creates Email classes on the fly.
-
-We start this task by creating a behavior called {{EmailBehavior}} with a {{setTableDefinition()}} method. Inside the {{setTableDefinition()}} method various helper methods can be used for easily creating the dynamic record definition. Commonly the following methods are being used:
-
-<code type="php">
-public function initOptions()
-public function buildLocalRelation()
-public function buildForeignKeys(Doctrine_Table $table)
-public function buildForeignRelation($alias = null)
-public function buildRelation() // calls buildForeignRelation() and buildLocalRelation()
-</code>
-
-<code type="php">
-class EmailBehavior extends Doctrine_Record_Generator
-{
-    public function initOptions()
-    {
-        $this->setOption('className', '%CLASS%Email');
-    }
-
-    public function buildRelation()
-    {
-    	  $this->buildForeignRelation('Emails');
-        $this->buildLocalRelation();
-    }
-    
-    public function setTableDefinition()
-    {
-        $this->hasColumn('address', 'string', 255, array(
-                'email'  => true,
-                'primary' => true
-            )
-        );
-    }
-}
-</code>
+The above would be echo 0 because it would exclude the record saved above because the delete flag was set.
 
 ++ Nesting Behaviors
 
@@ -1269,6 +1365,9 @@ WikiTest:
     title: string(255)
     content: string
 </code>
+
+> **NOTE**
+> The above example of nesting behaviors is currently broken in Doctrine. We are working furiously to come up with a backwards compatible fix. We will announce when the fix is ready and update the documentation accordingly.
 
 ++ Generating Files
 
@@ -1328,3 +1427,12 @@ $q = Doctrine_Query::create()
 
 $translations = $q->execute();
 </code>
+
+> **NOTE**
+> This is required because the behaviors are not instantiated until the model is instantiated for the first time. The above {{initializeModels()}} method instantiates the passed models and makes sure the information is properly loaded in to the array of loaded models.
+
+++ Conclusion
+
+By now we should know a lot about Doctrine behaviors. We should know how to write our own for our models as well as how to use all the great behaviors that come bundled with Doctrine.
+
+Now we are ready to move on to discuss the [doc searching Searchable] behavior in more detail in the [doc searching :name] chapter. As it is a large topic we have devoted an entire chapter to it.

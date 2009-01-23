@@ -409,3 +409,7 @@ SELECT e.id AS e__id FROM entity e WHERE (e.type = '1')
 
 > **NOTE**
 > Notice how the {{type}} condition was automatically added to the query so that it will only return records that are of type {{User}}.
+
+++ Conclusion
+
+Now that we've learned about how to take advantage of PHPs inheritance features with our models we can move on to learning about Doctrine [doc behaviors :name]. This is one of the most sophisticated and useful features in Doctrine for accomplishing complex models with small and easy to maintain code.

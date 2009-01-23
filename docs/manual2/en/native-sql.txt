@@ -1,10 +1,10 @@
 ++ Introduction
 
-Doctrine_RawSql provides a convenient interface for building raw sql queries. Similar to Doctrine_Query, Doctrine_RawSql provides means for fetching arrays and objects. Whichever way you prefer.
+{{Doctrine_RawSql}} provides a convenient interface for building raw sql queries. Similar to {{Doctrine_Query}}, {{Doctrine_RawSql}} provides means for fetching arrays and objects. Whichever way you prefer.
 
 Using raw sql for fetching might be useful when you want to utilize database specific features such as query hints or the CONNECT keyword in Oracle.
 
-Creating a Doctrine_RawSql object is easy:
+Creating a {{Doctrine_RawSql}} object is easy:
 
 <code type="php">
 // test.php
@@ -113,3 +113,9 @@ Doctrine_Collection
 User
 Phonenumber
 </code>
+
+++ Conclusion
+
+This chapter may or may not be useful for you right now. In most cases the Doctrine Query Language is plenty sufficient for retrieving the complex data sets you require. But if you require something outside the scope of what {{Doctrine_Query}} is capable of then {{Doctrine_RawSql}} can help you.
+
+In the previous chapters you've seen a lot of mention about YAML schema files and have been given examples of schema files but haven't really been trained on how to write your own. The next chapter explains in great detail how to maintain your models as [doc yaml-schema-files YAML Schema Files].

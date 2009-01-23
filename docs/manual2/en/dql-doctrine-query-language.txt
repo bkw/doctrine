@@ -2129,3 +2129,9 @@ Get the array of parameters for the {{Doctrine_Query}} instance:
 // ...
 print_r($q->getParams());
 </code>
+
+++ Conclusion
+
+The Doctrine Query Language is by far one of the most advanced and helpful feature of Doctrine. It allows you to easily select very complex data from RDBMS relationships efficiently!
+
+Now that we have gone over most of the major components of Doctrine and how to use them we are going to take a step back in the next chapter and look at everything from a birds eye view in the [doc component-overview :name] chapter.

@@ -219,3 +219,9 @@ Array
 
 )
 </code>
+
+++ Conclusion
+
+Great! Now we learned some basic operations of Doctrine connections. We have modified our Doctrine test environment to have a new connection. This is required because the examples in the coming chapters will require a connection.
+
+Lets move on to the [doc configuration :name] chapter and learn how you can control functionality and configurations using the Doctrine attribute system.

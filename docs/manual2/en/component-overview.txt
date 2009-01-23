@@ -1592,3 +1592,9 @@ foreach ($users as $user) {
     print_r($us->toArray());
 }
 </code>
+
+++ Conclusion
+
+We now have been exposed to a very large percentage of the core functionality provided by Doctrine. The next chapters of this book are documentation that cover some of the optional functionality that can help make your life easier on a day to basis.
+
+Lets move on to the [doc native-sql next chapter] where we can learn about how to use native SQL to hydrate our data in to arrays and objects instead of the Doctrine Query Language.

@@ -7,16 +7,20 @@ A database transaction is a unit of interaction with a database management syste
 * [http://en.wikipedia.org/wiki/Isolation_%28computer_science%29 Isolation] refers to the ability of the application to make operations in a transaction appear isolated from all other operations. This means that no operation outside the transaction can ever see the data in an intermediate state; a bank manager can see the transferred funds on one account or the other, but never on both - even if she ran her query while the transfer was still being processed. More formally, isolation means the transaction history (or [http://en.wikipedia.org/wiki/Schedule_%28computer_science%29 schedule]) is [http://en.wikipedia.org/wiki/Serializability serializable]. For performance reasons, this ability is the most often relaxed constraint. See the [http://en.wikipedia.org/wiki/Isolation_%28computer_science%29 isolation] article for more details.
 * [http://en.wikipedia.org/wiki/Durability_%28computer_science%29 Durability] refers to the guarantee that once the user has been notified of success, the transaction will persist, and not be undone. This means it will survive system failure, and that the [http://en.wikipedia.org/wiki/Database_system database system] has checked the integrity constraints and won't need to abort the transaction. Typically, all transactions are written into a [http://en.wikipedia.org/wiki/Database_log log] that can be played back to recreate the system to its state right before the failure. A transaction can only be deemed committed after it is safely in the log.
 
-- //from [http://www.wikipedia.org wikipedia]//
-
 In Doctrine all operations are wrapped in transactions by default. There are some things that should be noticed about how Doctrine works internally:
 
 * Doctrine uses application level transaction nesting.
 * Doctrine always executes {{INSERT}} / {{UPDATE}} / {{DELETE}} queries at the end of transaction (when the outermost commit is called). The operations are performed in the following order: all inserts, all updates and last all deletes. Doctrine knows how to optimize the deletes so that delete operations of the same component are gathered in one query.
 
+First we need to begin a new transation:
+
 <code type="php">
 $conn->beginTransaction();
+</code>
 
+Next perform some operations which result in queries being executed:
+
+<code type="php">
 $user = new User();
 $user->name = 'New user';
 $user->save();
@@ -24,16 +28,23 @@ $user->save();
 $user = Doctrine::getTable('User')->find(5);
 $user->name = 'Modified user';
 $user->save();
+</code>
 
-$conn->commit(); // all the queries are executed here
+Now we can commit all the queries by using the {{commit()}} method:
+
+<code type="php">
+$conn->commit();
 </code>
 
 ++ Nesting
 
-You can easily nest transactions with the Doctrine DBAL. Check the code below for a simple example demonstrating nested transactions:
+You can easily nest transactions with the Doctrine DBAL. Check the code below for a simple example demonstrating nested transactions.
+
+First lets create a standard PHP function named {{saveUserAndGroup()}}:
 
 <code type="php">
-function saveUserAndGroup(Doctrine_Connection $conn, User $user, Group $group) {
+function saveUserAndGroup(Doctrine_Connection $conn, User $user, Group $group)
+{
     $conn->beginTransaction();
     
     $user->save();
@@ -42,7 +53,11 @@ function saveUserAndGroup(Doctrine_Connection $conn, User $user, Group $group) {
 
     $conn->commit();
 }
+</code>
 
+Now we make use of the function inside another transaction:
+
+<code type="php">
 try {
     $conn->beginTransaction();
 
@@ -112,7 +127,7 @@ try {
 }
 </code>
 
-++ Isolation levels
+++ Isolation Levels
 
 A transaction isolation level sets the default transactional behavior. As the name 'isolation level' suggests, the setting determines how isolated each transation is, or what kind of locks are associated with queries inside a transaction. The four available levels are (in ascending order of strictness):
 
@@ -124,16 +139,33 @@ A transaction isolation level sets the default transactional behavior. As the na
 
 : {{SERIALIZABLE}} : Updates are not permitted in other transactions if a transaction has run an ordinary {{SELECT}} query.
 
+To get the transaction module use the following code:
+
 <code type="php">
-$tx = $conn->transaction; // get the transaction module
+$tx = $conn->transaction;
+</code>
 
-// sets the isolation level to READ COMMITTED
+Set the isolation level to READ COMMITTED:
+
+<code type="php">
 $tx->setIsolation('READ COMMITTED');
+</code>
 
-// sets the isolation level to SERIALIZABLE
+Set the isolation level to SERIALIZABLE:
+
+<code type="php">
 $tx->setIsolation('SERIALIZABLE');
+</code>
 
-// Some drivers (like Mysql) support the fetching of current transaction
-// isolation level. It can be done as follows:
+> **TIP**
+> Some drivers (like Mysql) support the fetching of current transaction isolation level. It can be done as follows:
+
+<code type="php">
 $level = $tx->getIsolation();
 </code>
+
+++ Conclusion
+
+Transactions are a great feature for ensuring the quality and consistency of your database. Now that you know about transactions we are ready to move on and learn about the events sub-framework.
+
+The events sub-framework is a great feature that allows you to hook in to core methods of Doctrine and alter the operations of internal functionality without modifying one line of core code.

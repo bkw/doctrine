@@ -97,7 +97,7 @@ Now when you print the name on a brand new User record it will print the default
 
 // ...
 $user = new User();
-print $user->username; // default username
+echo $user->username; // default username
 </code>
 
 +++ Data types
@@ -2216,3 +2216,9 @@ The {{onDelete}} option is translated to proper DDL/DML statements when Doctrine
 > Note that 'onDelete' => 'CASCADE' is specified on the Address class, since the Address owns the foreign key (user_id) and database-level cascades are applied on the foreign key.
 
 Currently, the only two supported database-level cascade styles are for {{onDelete}} and {{onUpdate}}. Both are specified on the side that owns the foreign key and applied to your database schema when Doctrine creates your tables.
+
+++ Conclusion
+
+Now that we know everything about how Doctrine models work, I think we are ready to move on to learning about the [doc dql-doctrine-query-language Doctrine Query Language]. DQL works intimately with the Doctrine models so it is good that we are fluent in how they work.
+
+This is a very large topic as well so take a break, grab a mountain dew and hurry back for the [doc dql-doctrine-query-language next chapter].
