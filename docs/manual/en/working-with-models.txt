@@ -1,11 +1,9 @@
 ++ Define Test Schema
 
 > **NOTE**
-> Remember to delete any existing data fixtures, schema information and models from previous chapters.
+> Remember to delete any existing schema information and models from previous chapters.
 
 <code>
-$ rm data/fixtures/data.yml
-$ touch data/fixtures/data.yml
 $ rm schema.yml
 $ touch schema.yml
 $ rm -rf models/*

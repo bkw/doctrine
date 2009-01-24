@@ -177,6 +177,7 @@ Add your database connection to {{bootstrap.php}} and it should look something l
 
 require_once('../doctrine/branches/1.0/lib/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
+$manager = Doctrine_Manager::getInstance();
 
 $conn = Doctrine_Manager::connection('sqlite::memory:', 'doctrine');
 </code>

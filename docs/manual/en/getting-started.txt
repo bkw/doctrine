@@ -141,9 +141,51 @@ $ tar xzf Doctrine-1.0.6.tgz
 
 Now that you have Doctrine in your hands, we are ready to implement Doctrine in to our application. This is the first step towards getting started with Doctrine.
 
-+++ Require Doctrine Base Class
+First create a directory named {{doctrine_test}}. This is where we will place all our test code:
 
-The first thing we must do is find the {{Doctrine.php}} file containing the core class so that we can require it in to our application. The Doctrine.php file is in the lib folder from when you downloaded Doctrine in the previous section.
+<code>
+$ mkdir doctrine_test
+$ cd doctrine_test
+</code>
+
++++ Including Doctrine Libraries
+
+The first thing we must do is find the {{Doctrine.php}} file containing the core class so that we can require it in to our application. The {{Doctrine.php}} file is in the lib folder from when you downloaded Doctrine in the previous section.
+
+We need to move the Doctrine libraries in to the {{doctrine_test}} directory into a folder in {{doctrine_test/lib/vendor/doctrine}}:
+
+<code>
+$ mkdir lib
+$ mkdir lib/vendor
+$ mkdir lib/vendor
+$ mv /path/to/doctrine/lib doctrine
+</code>
+
+Or if you are using SVN, you can use externals:
+
+<code>
+$ svn co http://svn.doctrine-project.org/branches/1.0/lib lib/vendor/doctrine
+</code>
+
+Now add it to your svn externals:
+
+<code>
+$ svn propedit svn:externals lib/vendor
+</code>
+
+It will open up your editor and place the following inside and save:
+
+<code>
+doctrine http://svn.doctrine-project.org/branches/1.0/lib
+</code>
+
+Now when you do SVN update you will get the Doctrine libraries updated:
+
+<code>
+$ svn update lib/vendor
+</code>
+
++++ Require Doctrine Base Class
 
 We need to create a php script for bootstrapping Doctrine and all the configuration for it. Create a file named {{bootstrap.php}} and place the following code in the file:
 
@@ -155,7 +197,7 @@ We need to create a php script for bootstrapping Doctrine and all the configurat
  * configuration attributes and load models.
  */
 
-require_once('/path/to/doctrine/lib/Doctrine.php');
+require_once(dirname(__FILE__) . '/lib/vendor/doctrine/Doctrine.php');
 </code>
 
 +++ Register Autoloader
@@ -226,7 +268,7 @@ The bootstrap file we have created should now look like the following:
  * configuration attributes and load models.
  */
 
-require_once('/path/to/doctrine/lib/Doctrine.php');
+require_once(dirname(__FILE__) . '/lib/vendor/doctrine/Doctrine.php');
 spl_autoload_register(array('Doctrine', 'autoload'));
 $manager = Doctrine_Manager::getInstance();
 </code>
@@ -238,12 +280,7 @@ This new bootstrapping file will be referenced several times in this book as it 
 
 +++ Test Script
 
-Now lets create a simple test script that we can use to run various tests as we learn about the features of Doctrine. Create a directory named {{doctrine_test}} and copy your {{bootstrap.php}} file there:
-
-<code>
-$ mkdir doctrine_test
-$ cp /path/to/bootstrap.php doctrine_test
-</code>
+Now lets create a simple test script that we can use to run various tests as we learn about the features of Doctrine.
 
 Create a new file in the {{doctrine_test}} directory named {{test.php}} and place the following code inside:
 

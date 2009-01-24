@@ -361,9 +361,6 @@ Conservative model loading requires that each file contain only one class, and t
 To use conservative model loading we need to set the model loading attribute to be conservative:
 
 <code type="php">
-// bootstrap.php
-
-// ...
 $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
 </code>
 
@@ -373,18 +370,12 @@ $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CON
 When we use the {{Doctrine::loadModels()}} functionality all found classes will be cached internally so the autoloader can require them later.
 
 <code type="php">
-// bootstrap.php
-
-// ...
 Doctrine::loadModels('models');
 </code>
 
 Now when we instantiate a new class, for example a {{File}} class, the autoloader will be triggered and the class is required.
 
 <code type="php">
-// test.php
-
-// ...
 // triggers call to Doctrine::autoload() and the class is included
 $user = new User();
 </code>
@@ -405,9 +396,6 @@ The downside of aggressive model loading is that every php file is included in e
 To use aggressive model loading we need to set the model loading attribute to be aggressive:
 
 <code type="php">
-// bootstrap.php
-
-// ...
 $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_AGGRESSIVE);
 </code>
 
@@ -417,9 +405,6 @@ $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_AGG
 When we use the {{Doctrine::loadModels()}} functionality all the classes found will be included right away:
 
 <code type="php">
-// bootstrap.php
-
-// ...
 Doctrine::loadModels('/path/to/models');
 </code>
 

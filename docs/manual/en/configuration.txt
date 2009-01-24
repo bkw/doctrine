@@ -292,10 +292,9 @@ $manager = Doctrine_Manager::getInstance();
 
 $conn = Doctrine_Manager::connection('sqlite::memory:', 'doctrine');
 
+$manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+$manager->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
 $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
 </code>
-
-> **NOTE**
-> For this example we need to turn on [doc introduction-to-models:autoloading-models:conservative conservative model loading] because it is the recommended mode and we will need it for a later step.
 
 Now we are ready to move on to the next chapter where we will learn everything their is to know about Doctrine [doc connections :name].
