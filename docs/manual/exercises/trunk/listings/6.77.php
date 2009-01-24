@@ -1,5 +1,5 @@
 <?php
-require_once('bootstrap.php');
+require_once(dirname(__FILE__) . '/../bootstrap.php');
 
 $conn = Doctrine_Manager::connection('mysql://username:password@localhost/test', 'connection 1');
 
