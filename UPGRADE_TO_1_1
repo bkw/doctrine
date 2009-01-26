@@ -544,5 +544,17 @@ SoftDelete
 In Doctrine 1.1 the SoftDelete behavior was changed slightly to store a `deleted_at`
 timestamp to indicate a deleted record rather than a `deleted` boolean flag.
 
-You will need to modify your existing database schema and rename the `deleted`
+We still kept the BC, so you're `deleted` boolean column will still be supported as 
+long as you have defined in your schema:
+
+Foo:
+  actAs:
+    SoftDelete:
+      name: deleted
+      type: boolean
+  columns:
+    bar: string
+
+By doing that, you'll not need to update your existent database schema. Otherwise,
+you will need to modify your existing database schema and rename the `deleted`
 column to `deleted_at` and modify the type to be a timestamp.
