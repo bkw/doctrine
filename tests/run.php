@@ -1,4 +1,5 @@
 <?php
+$startTime = time();
 
 // Debug Diagnosic process attacher sleep time needed to link process
 // More info about that: http://bugs.php.net/bugs-generating-backtrace-win32.php
@@ -309,3 +310,8 @@ $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
 $test->run();
+
+$endTime = time();
+$time = $endTime - $startTime;
+
+echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
