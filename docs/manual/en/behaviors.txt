@@ -636,7 +636,7 @@ Array
     [created_at] => 2009-01-21 17:54:23
     [updated_at] => 2009-01-21 17:54:23
 )
-<code>
+</code>
 
 > **NOTE**
 > Look how the {{created_at}} and {{updated_at}} values were automatically set for you!
