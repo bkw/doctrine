@@ -57,7 +57,7 @@ class Doctrine_Ticket_1641_TestCase extends Doctrine_UnitTestCase
 
         $table = Doctrine::getTable('T1641_User');
 
-        $this->assertEqual($table->createQuery()->getCountQuery(), 'SELECT COUNT(DISTINCT t.user_id) AS num_results FROM t1641__user t WHERE (t.deleted_at IS NULL) GROUP BY t.user_id');
+        $this->assertEqual($table->createQuery()->getCountQuery(), 'SELECT COUNT(foo.distinct_results) AS num_results FROM (SELECT DISTINCT t.user_id AS distinct_results FROM t1641__user t WHERE (t.deleted_at IS NULL) GROUP BY t.user_id) as foo');
 	
         $this->assertEqual($table->count(), 1);
         $this->assertEqual($table->createQuery()->execute()->count(), 1);
