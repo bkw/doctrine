@@ -105,7 +105,7 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p');
         
-        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(foo.distinct_results) AS num_results FROM (SELECT DISTINCT "e"."id" AS distinct_results FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."type" = 0 GROUP BY "e"."id") as foo');
+        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS "num_results" FROM (SELECT DISTINCT "e"."id" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."type" = 0 GROUP BY "e"."id") AS "dctrn_count_query"');
 
     }
 

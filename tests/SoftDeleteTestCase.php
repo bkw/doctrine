@@ -99,7 +99,7 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('s.name = ?', 'test1')
                 ->addWhere('s.something = ?', 'test2');
 
-        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(foo.distinct_results) AS num_results FROM (SELECT DISTINCT s.name AS distinct_results FROM soft_delete_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = ? OR s.deleted IS NULL) GROUP BY s.name) as foo');
+        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT DISTINCT s.name FROM soft_delete_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = ? OR s.deleted IS NULL) GROUP BY s.name) AS dctrn_count_query');
         $this->assertEqual($q->count(), 0);
 
         Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
