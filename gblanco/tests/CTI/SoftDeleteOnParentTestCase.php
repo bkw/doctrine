@@ -83,7 +83,7 @@ class Doctrine_CTI_SoftDeleteOnParent_TestCase extends Doctrine_UnitTestCase
                     ->from('CTISoftDeleteOnParentTest s')
                     ->where('s.parent_name = ?', array('blah3'));
 
-        $this->assertEqual($q->getSql(), 'SELECT c.id AS c__id, c2.parent_name AS c__parent_name, c2.deleted_at AS c__deleted_at, c.name AS c__name, c.title AS c__title FROM c_t_i_soft_delete_on_child_test c INNER JOIN c_t_i_soft_delete_on_child_parent c2 ON c.id = c2.id WHERE c2.parent_name = ? AND c.deleted_at IS NULL');
+        $this->assertEqual($q->getSql(), 'SELECT c.id AS c__id, c2.deleted_at AS c__deleted_at, c2.parent_name AS c__parent_name, c.name AS c__name, c.title AS c__title FROM c_t_i_soft_delete_on_parent_test c INNER JOIN c_t_i_soft_delete_on_parent_parent c2 ON c.id = c2.id WHERE c2.parent_name = ? AND (c2.deleted_at IS NULL)');
         $params = $q->getFlattenedParams();
         $this->assertEqual(count($params), 1);
         $this->assertEqual($params[0], 'blah3');
@@ -142,5 +142,8 @@ class CTISoftDeleteOnParentTest extends CTISoftDeleteOnParentParent
     {
         $this->hasColumn('name', 'string', 200);
         $this->hasColumn('title', 'string', 200);
+    }
+    public function setUp()
+    {
     }
 }
