@@ -1,5 +1,4 @@
 + Introduction
-+ Acknowledgements
 + Getting Started
 + Introduction to Connections
 + Configuration
