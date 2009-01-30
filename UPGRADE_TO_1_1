@@ -558,3 +558,10 @@ Foo:
 By doing that, you'll not need to update your existent database schema. Otherwise,
 you will need to modify your existing database schema and rename the `deleted`
 column to `deleted_at` and modify the type to be a timestamp.
+
+Timestamps
+----------
+PostgreSQL now uses TIMESTAMPS with timezone by default for timestamps.
+TIME defaults to TIME without timezone and TIMESTAMP to TIMESTAMP with timezone.
+Time validation is now accepting time zones and milliseconds accordingly to the
+ISO 8601.

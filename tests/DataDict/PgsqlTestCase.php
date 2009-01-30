@@ -299,13 +299,13 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'timestamp', 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'TIMESTAMP without time zone');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'TIMESTAMP');
     }
     public function testGetNativeDefinitionSupportsTimeType() 
     {
         $a = array('type' => 'time', 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'TIME without time zone');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'TIME');
     }
     public function testGetNativeDefinitionSupportsClobType() 
     {
