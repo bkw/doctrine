@@ -828,6 +828,16 @@ The above code would issue the following SQL query:
 INSERT INTO user (username, updated_at_) VALUES ('jwage', NOW())
 </code>
 
+> **TIP**
+> When you use {{Doctrine_Expression}} with your objects in order to get the updated value you will have to manually call {{refresh()}} to get the updated value from the database.
+
+<code type="php">
+// test.php
+
+// ...
+$user->refresh();
+</code>
+
 +++ Getting Record State
 
 Every {{Doctrine_Record}} has a state. First of all records can be transient or persistent. Every record that is retrieved from database is persistent and every newly created record is considered transient. If a {{Doctrine_Record}} is retrieved from database but the only loaded property is its primary key, then this record has a state called proxy.
