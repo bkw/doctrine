@@ -47,7 +47,7 @@ class Doctrine_Ticket_1072_TestCase extends Doctrine_UnitTestCase
         // $record->Related->name = 'foo'; // will implicitly create a new Related
         // In addition the foreign key field is set to a reference to the new record (ugh..).
         // No way to change this behavior at the moment for BC reasons.
-        $this->assertEqual(gettype($bt->payment_detail_id), 'object');
+        $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
         
         // ...save...
         // [romanb]: Related T1072PaymentDetail will not be saved because its not modified
@@ -64,8 +64,36 @@ class Doctrine_Ticket_1072_TestCase extends Doctrine_UnitTestCase
             
             // (additional check: value must still be NULL not an object)
             // [romanb]: See above. This is an empty object now, same as before.
-            $this->assertEqual(gettype($bt->payment_detail_id), 'object');
+            $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
             
+            $this->pass();
+        } catch (Doctrine_Record_Exception $e) {
+            $this->fail($e->getMessage());
+        }
+    }
+    
+    
+    public function testTicket2()
+    {
+        $bt = new T1072BankTransaction();
+        $bt->name = 'Test Bank Transaction';
+
+        try {
+            // [romanb]: Accessing a related record will create
+            // a new one if there is none yet. This makes it possible to use syntax like:
+            // $record = new Record();
+            // $record->Related->name = 'foo'; // will implicitly create a new Related
+            $bt->T1072PaymentDetail->name = 'foo';
+
+            $this->assertEqual(gettype($bt->T1072PaymentDetail), 'object');
+            $this->assertEqual(gettype($bt->T1072PaymentDetail->name), 'string');
+            $this->assertEqual(gettype($bt->payment_detail_id), gettype(null));
+			
+            $bt->save();
+			
+            // After the object gets saved, the foreign key is finally set
+            $this->assertEqual($bt->payment_detail_id, 1);
+			
             $this->pass();
         } catch (Doctrine_Record_Exception $e) {
             $this->fail($e->getMessage());

@@ -55,7 +55,9 @@ class Doctrine_Query_Join_TestCase extends Doctrine_UnitTestCase
 
         $c->City[0]->District->name = 'District 1';
         $c->City[2]->District->name = 'District 2';
-        $this->assertTrue($c->City[0]->get('district_id') === $c->City[0]->District);
+        
+        $this->assertTrue(gettype($c->City[0]->District), 'object');
+        $this->assertTrue(gettype($c->City[0]->District->name), 'string');
 
         $c->save();
 
