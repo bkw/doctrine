@@ -39,7 +39,7 @@ echo $migration->getCurrentVersion();
 
 > **NOTE**
 > **Transactions in Migrations**
-> Internally Doctrine wraps all migration version in transactions. Remember though, that very few databases support transactional DDL. So on most databases, even if you wrap the migrations in a transaction, any DDL statements like create, alter, drop, rename, etc., will take effect anyway. 
+> Internally Doctrine does not wrap migration versions in transactions. It is up to you as the developer to handle exceptions and transactions in your migration classes. Remember though, that very few databases support transactional DDL. So on most databases, even if you wrap the migrations in a transaction, any DDL statements like create, alter, drop, rename, etc., will take effect anyway. 
 
 ++ Implement
 
