@@ -1049,6 +1049,29 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     }
                 }
                 
+                // Now we need to inspect possible joined inheritance
+                // Example: foo f LEFT JOIN Bar b ON ....
+                $m = array();
+                
+                if (preg_match_all('/(LEFT|INNER)\s+JOIN\s+([^\s]*)\s+([^\s]*)/', $part, $m, PREG_SET_ORDER)) {
+                    for ($i = 0, $l = count($m); $i < $l; $i++) {
+                        $where = $this->_processPendingJoinConditions($this->getComponentAlias($m[$i][3]));
+                    
+                        // apply inheritance to WHERE part
+                        if ( ! empty($where)) {
+                            if (count($this->_sqlParts['where']) > 0) {
+                                $this->_sqlParts['where'][] = 'AND';
+                            }
+    
+                            if (substr($where, 0, 1) === '(' && substr($where, -1) === ')') {
+                                $this->_sqlParts['where'][] = $where;
+                            } else {
+                                $this->_sqlParts['where'][] = '(' . $where . ')';
+                            }
+                        }
+                    }
+                }
+                
                 $q .= $part;
                 
                 continue;
@@ -1872,6 +1895,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $queryPart = '';
 
+        // CTI table relation join building (parents)
         foreach ($table->getOption('joinedParents') as $parent) {
         	$parentTable = $this->_conn->getTable($parent);
 
@@ -1883,6 +1907,9 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             $queryPart .= ' INNER JOIN ' . $this->_conn->quoteIdentifier($parentTable->getTableName())
                         . ' ' . $this->_conn->quoteIdentifier($parentTableAlias) . ' ON ';
 
+            $this->_tableAliasMap[$parentTableAlias] = $parentAlias;
+            $this->_queryComponents[$parentAlias] = array('table' => $parentTable, 'map' => null, 'joinedChildComponentAlias' => $componentAlias);            
+                        
             //Doctrine::dump($table->getIdentifier());
             foreach ((array) $table->getIdentifier() as $identifier) {
                 $column = $table->getColumnName($identifier);
@@ -1894,7 +1921,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
             }
         }
 
-        // CTI table relation join building
+        // CTI table relation join building (children)
         if ($subchildren = $table->getJoinedInheritanceMapChildren()) { 
             foreach ($subchildren as $subchild) { 
                 $subchildTable = $this->_conn->getTable($subchild); 
@@ -1904,8 +1931,9 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                 $subchildTableAlias = $this->getTableAlias($subchildAlias, $subchildTable->getTableName()); 
 		 	
                 $queryPart .= ' LEFT JOIN ' . $this->_conn->quoteIdentifier($subchildTable->getTableName()) 
-                           . ' ' . $this->_conn->quoteIdentifier($subchildTableAlias) . ' ON '; 
-
+                           . ' ' . $this->_conn->quoteIdentifier($subchildTableAlias) . ' ON ';
+                            
+                $this->_tableAliasMap[$subchildTableAlias] = $subchildAlias;
                 $this->_queryComponents[$subchildAlias] = array('table' => $subchildTable, 'map' => null, 'joinedParentComponentAlias' => $componentAlias); 
 
                 //Doctrine::dump($table->getIdentifier()); 

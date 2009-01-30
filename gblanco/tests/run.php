@@ -264,7 +264,7 @@ $aggregation_inheritance->addTestCase(new Doctrine_ColumnAggregationInheritance_
 $test->addTestCase($aggregation_inheritance);
 
 // Class Table Inheritance tests
-$classtable_inheritance = new GroupTest('Concrete Inheritance Tests', 'classtable_inheritance');
+$classtable_inheritance = new GroupTest('Class Table Inheritance Tests', 'classtable_inheritance');
 $classtable_inheritance->addTestCase(new Doctrine_CTI_TestCase());
 $classtable_inheritance->addTestCase(new Doctrine_CTI_NewCTI_TestCase());
 $classtable_inheritance->addTestCase(new Doctrine_CTI_TreeStructure_TestCase());
