@@ -26,13 +26,20 @@ $test = new DoctrineTest();
 // If you write a ticket testcase add it to the bottom of the list, with the ticket number in it
 $tickets = new GroupTest('Tickets Tests', 'tickets');
 
+$excludeTickets = array(
+    '1830' // MySQL specific error
+);
+
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
 foreach ($ticketTestCases as $testCase)
 {
     $fileInfo = pathinfo($testCase);
     $name = str_replace('TestCase', '', $fileInfo['filename']);
-    $name = sprintf('Doctrine_Ticket_%s_TestCase', $name);
-    $tickets->addTestCase(new $name());
+    
+    if ( ! in_array($name, $excludeTickets)) {
+        $name = sprintf('Doctrine_Ticket_%s_TestCase', $name);
+        $tickets->addTestCase(new $name());
+    }
 }
 
 $test->addTestCase($tickets);
