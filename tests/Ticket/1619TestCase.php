@@ -33,7 +33,7 @@ class Doctrine_Ticket_1619_TestCase extends Doctrine_UnitTestCase {
 	
 	public function prepareTables()
   {
-    $this->tables[] = 'Ticket_1619_article';
+    $this->tables[] = 'Ticket_1619_Article';
     parent::prepareTables();
   }
 

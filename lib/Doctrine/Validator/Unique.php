@@ -41,13 +41,19 @@ class Doctrine_Validator_Unique
     public function validate($value)
     {
         $table = $this->invoker->getTable();
-        $pks = $table->getIdentifier();
+        $conn = $table->getConnection();
+        $pks = $table->getIdentifierColumnNames();
 
-        if ( is_array($pks) ) {
+        if (is_array($pks)) {
+            for ($i = 0, $l = count($pks); $i < $l; $i++) {
+                $pks[$i] = $conn->quoteIdentifier($pks[$i]);
+            }
+            
             $pks = join(',', $pks);
         }
 
-        $sql   = 'SELECT ' . $pks . ' FROM ' . $table->getTableName() . ' WHERE ' . $this->field . ' = ?';
+        $sql = 'SELECT ' . $pks . ' FROM ' . $conn->quoteIdentifier($table->getTableName()) 
+             . ' WHERE ' . $conn->quoteIdentifier($table->getColumnName($this->field)) . ' = ?';
         
         $values = array();
         $values[] = $value;
@@ -57,8 +63,8 @@ class Doctrine_Validator_Unique
         // as the one that is validated here.
         $state = $this->invoker->state();
         if ( ! ($state == Doctrine_Record::STATE_TDIRTY || $state == Doctrine_Record::STATE_TCLEAN)) {
-            foreach ((array) $table->getIdentifier() as $pk) {
-                $sql .= " AND {$pk} != ?";
+            foreach ((array) $table->getIdentifierColumnNames() as $pk) {
+                $sql .= ' AND ' . $conn->quoteIdentifier($pk) . ' != ?';
                 $values[] = $this->invoker->$pk;
             }
         }
