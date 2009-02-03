@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-01-05</date>
- <time>20:16:08</time>
+ <date>2009-02-03</date>
+ <time>18:51:43</time>
  <version>
-  <release>1.0.6</release>
-  <api>1.0.6</api>
+  <release>1.0.7</release>
+  <api>1.0.7</api>
  </version>
  <stability>
   <release>stable</release>
@@ -1163,6 +1163,7 @@ requiring needless code duplication.</description>
      <file name="973TestCase.php" role="test" />
      <file name="982TestCase.php" role="test" />
      <file name="987TestCase.php" role="test" />
+     <file name="990TestCase.php" role="test" />
      <file name="1015TestCase.php" role="test" />
      <file name="1028TestCase.php" role="test" />
      <file name="1044TestCase.php" role="test" />
@@ -1265,6 +1266,13 @@ requiring needless code duplication.</description>
      <file name="1763TestCase.php" role="test" />
      <file name="1764TestCase.php" role="test" />
      <file name="1768TestCase.php" role="test" />
+     <file name="1793TestCase.php" role="test" />
+     <file name="1799TestCase.php" role="test" />
+     <file name="1818TestCase.php" role="test" />
+     <file name="1821TestCase.php" role="test" />
+     <file name="1824TestCase.php" role="test" />
+     <file name="1865TestCase.php" role="test" />
+     <file name="1868TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1648,6 +1656,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.7</release>
+    <api>1.0.7</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-02-03</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.6</release>
