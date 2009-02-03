@@ -615,8 +615,14 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
      */
     public function hydrate(array $data)
     {
-        $this->_values = array_merge($this->_values, $this->cleanData($data));
-        $this->_data = array_merge($this->_data, $data);
+        if ($this->getTable()->getAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE)) {
+            $this->_values = array_merge($this->_values, $this->cleanData($data));
+            $this->_data = array_merge($this->_data, $data);
+        } else {
+            $this->_values = array_merge($this->cleanData($data), $this->_values);
+            $this->_data = array_merge($data, $this->_data);
+        }
+
         if (count($this->_values) < $this->_table->getColumnCount()) {
             $this->_state = self::STATE_PROXY;
         }
@@ -835,6 +841,9 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
         }
         $id = array_values($id);
 
+        $overwrite = $this->getTable()->getAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE);
+        $this->getTable()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, true);
+
         if ($deep) {
             $query = $this->getTable()->createQuery();
             foreach (array_keys($this->_references) as $name) {
@@ -850,6 +859,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 $this->hydrate($record);
             }
         }
+
+        $this->getTable()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, $overwrite);
 
         if ($record === false) {
             throw new Doctrine_Record_Exception('Failed to refresh. Record does not exist.');

@@ -692,6 +692,9 @@ You should always use array hydration when you only need to data for access-only
 
 The constant O(n) performance of the hydration algorithm is ensured by a smart identifier caching solution.
 
+> **TIP**
+> Doctrine uses an identity map internally to make sure that multiple objects for one record in a database don't ever exist. If you fetch an object and modify some of its properties, then re-fetch that same object later, the modified properties will be overwritten by default. You can change this behavior by changing the {{ATTR_HYDRATE_OVERWRITE}} attribute to {{false}}.
+
 +++ Sample Queries
 
 **Count number of records for a relationship:**
