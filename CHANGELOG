@@ -1,3 +1,84 @@
+1.0.7
+-----
+     * [r5335] [1.0] Releasing Doctrine 1.0.6
+     * [r5340] [1.0, 1.1] Adding getSupportedDrivers() (closes #1794)
+     * [r5347] [1.0, 1.1] Moving new manual to 1.0 branch
+     * [r5349] [doc] Initial entry of new unit testing chapter.
+     * [r5351] [doc] Initial entry of data validation, dql, inheritance and models explained.
+     * [r5353] [doc] Initial entry of all chapters in new order.
+     * [r5354] [doc] Adding notes.
+     * [r5356] [doc] Misc. revisions
+     * [r5357] [doc] Initial entry of acknowledgements
+     * [r5358] [doc] A few misc. fixes
+     * [r5361] [1.0, 1,1] Fixing NestedSet to not create column for root column if it already exists (closes #1817)
+     * [r5369] [doc][1.0] Misc. revisions across several chapters.
+     * [r5371] [doc][1.0] Revisions for tickets in documentation milestone.
+     * [r5372] [doc][1.0] Revisions from first round of comments from readers.
+     * [r5373] [doc][1.0] Fixing typo in code example
+     * [r5375] [doc][1.0] Small fixes
+     * [r5376] [doc][1.0] Fixing spacing
+     * [r5378] [doc][1.0] Grammar fixes.
+     * [r5380] [doc][1.0] Adding follow a long style to first few chapters.
+     * [r5381] [doc][1.0] Initial entry of introduction to connections.
+     * [r5382] [doc][1.0] Small tweak.
+     * [r5383] [doc][1.0] Misc. revisions
+     * [r5390] [1.0] Changing table option collation to collate as that is what it should be
+     * [r5391] [doc][1.0] Misc. revisions.
+     * [r5393] [doc][1.0] Misc. revisions.
+     * [r5394] show how to autoload table classes as an optional setting
+     * [r5398] [doc][1.0] Final misc. revisions across all chapters.
+     * [r5399] [doc][1.0] Adding the chapters that got lost in the conversion. They still need to be re-written.
+     * [r5400] [doc][1.0] Misc. revisions
+     * [r5401] initial entry
+     * [r5402] [doc][1.0] Removing models explained because it was renamed.
+     * [r5403] [doc][1.0] Moving manual to old_manual.
+     * [r5404] [doc][1.0] Moving new manual in to place.
+     * [r5405] [1.0, 1.1] Fixed 2 in the Searchable behavior.
+     * [r5407] [doc][1.0] Chapter 3 exercises.
+     * [r5408] [doc][1.0] Exercises chapter 3 tag
+     * [r5409] [doc][1.0] Chapter 4 exercises.
+     * [r5410] [doc][1.0] Chapter 5 exercises.
+     * [r5411] [doc][1.0] Exercise listings
+     * [r5412] [doc][1.0] Chapter 5 exercises tag
+     * [r5413] [doc][1.0] Chapter 7 exercise listings.
+     * [r5414] [doc][1.0] Chapter 8 exercises tag
+     * [r5415] [doc][1.0] Misc. revisions.
+     * [r5418] [1.0, 1.1] Fixes #1849. Fixed sqlite export sequence name that was throughing fatal errors
+     * [r5419] [1.0, 1.1] Fixes #1856. Added checking to schema file to ensure correct file extension (format).
+     * [r5420] [1.0, 1.1] Fixed wrong code I introduced. No fatal errors.
+     * [r5421] [1.0, 1.1] Fixes #1859. Fixed wrong table alias generation that was picking numbers if table contains it.
+     * [r5424] [1.0, 1.1] Fixes #1833. Fixed makeRoot that was not working correctly.
+     * [r5427] [doc][1.0] Fixing syntax problem.
+     * [r5428] [doc][1.0] Fixes typo in docs.
+     * [r5429] [1.0, 1.1] Fixes issue with generated count queries (closes #1766)
+     * [r5430] [1.0, 1.1] Fixed #1766. Previous applied patch did not work. I updated it to get it working smoothly
+     * [r5434] [1.0] Adding special pages to svn
+     * [r5435] [doc][1.0] Fixes special pages
+     * [r5436] [doc][1.0] Removing jwage
+     * [r5438] [1.0, 1.1] Fixes issue with saveRelated() being called too early (closes #1865)
+     * [r5441] [1.0, 1.1] Fixing generated models to adhere to coding standard of using 4 spaces (closes #1846)
+     * [r5442] [doc][1.0] Added tip to using doctrine expressions for how to get the updated values (addresses #1864)
+     * [r5443] [1.0, 1.1] Fixes issue with intval overflow in validation (closes #1850)
+     * [r5444] [doc][1.0] Added tip about transactions in migrations (closes #1853)
+     * [r5445] [doc][1.0] Updating tip to be relavent for 1.0 (addresses #1853)
+     * [r5448] [1.0, 1.1] Fixed #1835. Fixed MSSQL limit-subquery that was incorrectly using alias and also double escaping it. Thanks for the patch
+     * [r5450] [1.0, 1.1] Fixes #1813. Fixed email validator to accept empty values.
+     * [r5451] [1.0, 1.1] Fixed #1821. Fixed Unique validator that was not building check-sql correctly.
+     * [r5453] [1.0, 1.1] Added referring row key to exception when importing data (closes #1777)
+     * [r5454] [1.0, 1.1] Fixes issue with not being able to change keyField value for column aggregation inheritance (closes #1793)
+     * [r5456] [1.0, 1.1] Fixes issue with dropConstraint() function under mysql (closes #1711)
+     * [r5457] [1.0, 1.1] Added new attribute to fix problem with modified objects being overwritten when querying for objects existing in the identify map already (closes #990)
+     * [r5458] [1.0, 1.1] Fixes issue where enum values cannot be null (closes #1782)
+     * [r5459] [1.0, 1.1] Fixes issue with I18n and column aliases (closes #1824)
+     * [r5460] [1.0, 1.1] Fixes issue with creating associations between child inheritance classes (closes #1818)
+     * [r5461] [1.0, 1.1] Fixes issue where exists() returns true when state === null (closes #1823)
+     * [r5462] [1.0, 1.1] Fixes issue with geographical length (closes #1799)
+     * [r5463] #1868: added test case for this ticket. Note that with the default
+	  sqlite driver, the test currently passes... you have to actually run the
+	  test against a mysql backend to see the failure. More details provided
+	  on the ticket.
+     * [r5464] [1.0, 1.1] Fixes issue with data fixture properties not working with record filters and fixed issue with missing record functions not being called on templates
+
 1.0.6
 -----
      * [r5283] [1.0] Releasing 1.0.5
