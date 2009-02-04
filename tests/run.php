@@ -28,11 +28,11 @@ $tickets = new GroupTest('Tickets Tests', 'tickets');
 
 $excludeTickets = array(
     '1830', // MySQL specific error
-    '1876',
     '1876b',
 );
 
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
+
 foreach ($ticketTestCases as $testCase)
 {
     $fileInfo = pathinfo($testCase);
