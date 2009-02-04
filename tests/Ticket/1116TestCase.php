@@ -58,10 +58,10 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 
 		$sql    = $q->getSql(); // just getSql()?!?! and it works ? the params are ok after this call  
 		$params = $q->getParams();
-		$this->assertEqual(count($params), 2); // now we have array('test',null) very strange ..... 
+		$this->assertEqual(count($params), 1); // now we have array('test',null) very strange ..... 
 
-		$this->assertEqual($sql, "SELECT u.id AS u__id, u.username AS u__username, u.deleted AS u__deleted FROM user u WHERE u.username = ? AND (u.deleted = ? OR u.deleted IS NULL)");
-		$this->assertEqual($params, array('test', false));
+		$this->assertEqual($sql, "SELECT u.id AS u__id, u.username AS u__username, u.deleted AS u__deleted FROM user u WHERE u.username = ? AND (u.deleted = 0 OR u.deleted IS NULL)");
+		$this->assertEqual($params, array('test'));
 
 		//now also this works! (always works witch mock only fails with mysql)
 		$test = $q->fetchOne();

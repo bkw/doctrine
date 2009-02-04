@@ -45,8 +45,8 @@ class Doctrine_Ticket_1480_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create()
             ->from('Foo f')
             ->addWhere('f.id IN (SELECT user_id FROM Bar b)');
-        $this->assertEqual($q->getSql(), 'SELECT f.id AS f__id, f.name AS f__name, f.password AS f__password, f.deleted AS f__deleted FROM foo f WHERE f.id IN (SELECT f.user_id AS f__user_id FROM bar b) AND (f.deleted = ? OR f.deleted IS NULL)');
-        $this->assertEqual(count($q->getParams()), 1);
+        $this->assertEqual($q->getSql(), 'SELECT f.id AS f__id, f.name AS f__name, f.password AS f__password, f.deleted AS f__deleted FROM foo f WHERE f.id IN (SELECT f.user_id AS f__user_id FROM bar b) AND (f.deleted = 0 OR f.deleted IS NULL)');
+        $this->assertEqual(count($q->getParams()), 0);
         Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
     }
 }
