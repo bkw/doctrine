@@ -2054,8 +2054,8 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
             $foreignFieldName = $rel->getForeignFieldName();
             $foreignFieldDef  = $rel->getAssociationTable()->getColumnDefinition($foreignFieldName);
             if ($foreignFieldDef['type'] == 'integer') {
-                foreach ($ids as $i => $ids) {
-                    $ids[$i] = (integer) $ids[$i];
+                foreach ($ids as $i => $id) {
+                    $ids[$i] = (integer) $id;
                 }
             }
             foreach ($ids as $id) {
