@@ -561,7 +561,24 @@ column to `deleted_at` and modify the type to be a timestamp.
 
 Timestamps
 ----------
+
 PostgreSQL now uses TIMESTAMPS with timezone by default for timestamps.
 TIME defaults to TIME without timezone and TIMESTAMP to TIMESTAMP with timezone.
 Time validation is now accepting time zones and milliseconds accordingly to the
 ISO 8601.
+
+Searchable
+----------
+
+You now have the ability to pass an array of options for the search analyzers. For example the Utf8 analyzer can accept an encoding option:
+
+    [php]
+    BlogPost:
+      actAs:
+        Searchable:
+          analyzer: Doctrine_Search_Analyzer_Utf8
+          analyzer_options:
+            encoding: utf-8
+      columns:
+        title: string(255)
+        body: clob
