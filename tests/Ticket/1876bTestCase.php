@@ -76,7 +76,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
                     . 'LEFT JOIN t1876__company t2 ON t.company_id = t2.id AND t2.deleted_at IS NULL '
                     . 'LEFT JOIN t1876__recipe_ingredient t3 ON t.id = t3.recipe_id AND t3.deleted_at IS NULL '
                     . 'WHERE t2.id = ? AND (t.deleted_at IS NULL) GROUP BY t.id' 
-                . ') AS dctrn_count_query'
+                . ') dctrn_count_query'
             );
             $this->assertEqual($q->count(), 3);
         } catch (Exception $e) {

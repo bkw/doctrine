@@ -62,7 +62,7 @@ class Doctrine_Ticket_1192_TestCase extends Doctrine_UnitTestCase
                 ->from('Ticket_1192_CPK t')
                 ->groupBy('t.user_id');
 
-        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT DISTINCT t.id , t.user_id FROM ticket_1192__c_p_k t GROUP BY t.user_id) AS dctrn_count_query');
+        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT DISTINCT t.id , t.user_id FROM ticket_1192__c_p_k t GROUP BY t.user_id) dctrn_count_query');
         $count = $q->count();
         $this->assertEqual($count, 2);
         $this->assertEqual($count, $q->execute()->count());
