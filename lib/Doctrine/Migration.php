@@ -314,6 +314,8 @@ class Doctrine_Migration
         $migrate = $this->getMigrationClass($num);
         
         $migrate->doMigrate($direction);
+
+        $this->setCurrentVersion($num);
     }
 
     /**
