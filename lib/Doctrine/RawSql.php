@@ -245,6 +245,8 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
         // first add the fields of the root component
         reset($this->_queryComponents);
         $componentAlias = key($this->_queryComponents);
+
+        $this->_rootAlias = $componentAlias;
         
         $q .= implode(', ', $select[$componentAlias]);
         unset($select[$componentAlias]);
@@ -287,6 +289,9 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
         //This is not correct, if the result is not hydrated by doctrine, but it mimics the behaviour of Doctrine_Query::getCountQuery
         reset($this->_queryComponents);
         $componentAlias = key($this->_queryComponents);
+
+        $this->_rootAlias = $componentAlias;
+
         $tableAlias = $this->getSqlTableAlias($componentAlias);
         $fields = array();
 
