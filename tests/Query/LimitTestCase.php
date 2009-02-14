@@ -181,10 +181,10 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->select('u.id, p.id')->from('User u LEFT JOIN u.Phonenumber p');
-        $q->where('u.name = ?');
+        $q->where('u.name = ?', array('zYne'));
         $q->limit(5);
-        $users = $q->execute(array('zYne'));
-        
+        $users = $q->execute();
+
         $this->assertEqual($users->count(), 1);
         $count = $this->conn->count();
         $users[0]->Phonenumber[0];
@@ -217,10 +217,12 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->from('User.Phonenumber');
-        $q->where('User.name = ?');
+        $q->where('User.name = ?', array('zYne'));
         $q->limit(5);
 
-        $users = $q->execute(array('zYne'));
+        $users = $q->execute();
+
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id IN (SELECT DISTINCT e2.id FROM entity e2 LEFT JOIN phonenumber p2 ON e2.id = p2.entity_id WHERE e2.name = ? AND (e2.type = 0) LIMIT 5) AND e.name = ? AND (e.type = 0)');
         
         $this->assertEqual($users->count(), 1);
         //$this->connection->flush();
