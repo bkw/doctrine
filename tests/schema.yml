@@ -192,5 +192,24 @@ ListenerTestWithParameters:
       useOptions: true
       class: Doctrine_Template_Listener_Sluggable
 
+# Long identifier test on FK      
+sfUserEmailAddressType:
+  columns:
+    name:
+      type: string
+      length: 20
 
-          
+sfUserEmailAddress:
+  actAs:
+    Timestampable:
+    Userstampable:
+  columns:
+    email_address_type_id: integer
+    address:
+      type: string
+      length: 128
+      email: true
+  relations:
+    EmailAddressType:
+      class: sfUserEmailAddressType
+      local: email_address_type_id
