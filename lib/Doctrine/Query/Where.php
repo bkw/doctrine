@@ -104,7 +104,7 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
                 $q     = $this->query->createSubquery()->parseQuery($trimmed, false);
                 $sql   = $q->getSql();
                 $value = '(' . $sql . ')';
-
+                $q->free();
             // If custom sql for custom subquery
             // You can specify SQL: followed by any valid sql expression
             // FROM User u WHERE u.id = SQL:(select id from user where id = 1)
@@ -149,6 +149,9 @@ class Doctrine_Query_Where extends Doctrine_Query_Condition
 
         $sub = $this->_tokenizer->bracketTrim(substr($where, $pos));
 
-        return $operator . ' (' . $this->query->createSubquery()->parseQuery($sub, false)->getQuery() . ')';
+        $q = $this->query->createSubquery()->parseQuery($sub, false);
+        $sql = $q->getSql();
+        $q->free();
+        return $operator . ' (' . $sql . ')';
     }
 }
