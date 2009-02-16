@@ -302,8 +302,34 @@ Category:
             name: Subcategory of Category 2
 </code>
 
-> **NOTE**
-> Notice how the children of each node is specified under a key named {{children}}. This is a special syntax that models with the {{NestedSet}} behavior enabled on look for.
+> **TIP**
+> When writing data fixtures for the NestedSet you must either specify at least a {{children}} element of the first data block or specify {{NestedSet: true}} under the model which is a NestedSet in order for the data fixtures to be imported using the NestedSet api.
+
+<code type="yaml">
+# fixtures/data.yml
+
+# ...
+Category:
+  NestedSet: true
+  Category_1:
+    name: Categories
+# ...
+</code>
+
+Or simply specifying the children keyword will make the data fixtures importing using the NestedSet api.
+
+<code type="yaml">
+# fixtures/data.yml
+
+# ...
+Category:
+  Category_1:
+    name: Categories
+    children: []
+# ...
+</code>
+
+If you don't use one of the above methods then it is up to you to manually specify the lft, rgt and level values for your nested set records.
 
 ++ Fixtures For I18n
 
