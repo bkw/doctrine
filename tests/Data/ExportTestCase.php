@@ -44,8 +44,8 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
             $i = new I18nTestExport();
             $i->Translation['en']->title = 'english test';
             $i->Translation['fr']->title = 'french test';
+            $i->test_object = new stdClass();
             $i->save();
-            $i->free();
 
             $data = new Doctrine_Data();
             $data->exportData('test.yml', 'yml', array('I18nTestExport', 'I18nTestExportTranslation'));
@@ -56,6 +56,18 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
             $this->assertTrue(isset($array['I18nTestExport']['I18nTestExport_1']));
             $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_en']));
             $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_fr']));
+
+            $i->Translation->delete();
+            $i->delete();
+
+            Doctrine::loadData('test.yml');
+
+            $q = Doctrine_Query::create()
+                ->from('I18nTestExport e')
+                ->leftJoin('e.Translation t');
+
+            $results = $q->execute();
+            $this->assertEqual(get_class($results[0]->test_object), 'stdClass');
 
             $this->pass();
         } catch (Exception $e) {
@@ -74,7 +86,9 @@ class I18nTestExport extends Doctrine_Record
     {
         $this->hasColumn('name', 'string', 200);
         $this->hasColumn('title', 'string', 200);
+        $this->hasColumn('test_object', 'object');
     }
+
     public function setUp()
     {
         $this->actAs('I18n', array('fields' => array('name', 'title')));
