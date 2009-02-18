@@ -60,6 +60,13 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $e->content = 'There are many ORM frameworks, but nevertheless we decided to create one.';
 
         $e->save();
+
+        $e = new SearchTest();
+
+        $e->title = '007';
+        $e->content = 'Awesome movie series';
+
+        $e->save();
     }
 
     public function testSearchFromTableObject()
@@ -86,6 +93,17 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $array = $q->execute(array('orm'), Doctrine::HYDRATE_ARRAY);
 
         $this->assertEqual($array[0]['title'], 'Once there was an ORM framework');
+
+        $q = new Doctrine_Query();
+
+        $q->select('t.title')
+          ->from('SearchTest t')
+          ->innerJoin('t.SearchTestIndex i')
+          ->where('i.keyword = ?');
+
+        $array = $q->execute(array('007'), Doctrine::HYDRATE_ARRAY);
+
+        $this->assertEqual($array[0]['title'], '007');
     }
     
     public function testUsingWordRange()
@@ -148,7 +166,7 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
                 ->setHydrationMode(Doctrine::HYDRATE_ARRAY)
                 ->fetchOne();
 
-        $this->assertEqual($coll['id'], 2);
+        $this->assertEqual($coll['id'], 3);
         $this->assertEqual($coll['keyword'], null);
         $this->assertEqual($coll['field'], null);
         $this->assertEqual($coll['position'], null);
