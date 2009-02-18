@@ -538,6 +538,8 @@ api method.
 The above example will create the column when $direction == up and will remove 
 the column when $direction == down.
 
+* Introduced new CLI task generate-migrations-diff for producing differences between your generated PHP models and your YAML schema files.
+
 SoftDelete
 ----------
 
