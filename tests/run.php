@@ -29,6 +29,7 @@ $tickets = new GroupTest('Tickets Tests', 'tickets');
 $excludeTickets = array(
     '1830', // MySQL specific error
     '1876b',
+    '1935',
 );
 
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
