@@ -1138,37 +1138,48 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
         }
 
         $modifyLimit = true;
+
         if ( ( ! empty($this->_sqlParts['limit']) || ! empty($this->_sqlParts['offset'])) && $needsSubQuery) {
-                $subquery = $this->getLimitSubquery();
-                // what about composite keys?
-                $idColumnName = $table->getColumnName($table->getIdentifier());
-                switch (strtolower($this->_conn->getDriverName())) {
-                    case 'mysql':
-                        $this->useQueryCache(false);
-                        // mysql doesn't support LIMIT in subqueries
-                        $list = $this->_conn->execute($subquery, $params)->fetchAll(Doctrine::FETCH_COLUMN);
-                        $subquery = implode(', ', array_map(array($this->_conn, 'quote'), $list));
-                        break;
-                    case 'pgsql':
-                        // pgsql needs special nested LIMIT subquery
-                        $subquery = 'SELECT '
-                                . $this->_conn->quoteIdentifier('doctrine_subquery_alias.' . $idColumnName)
-                                . ' FROM (' . $subquery . ') AS doctrine_subquery_alias';
-                        break;
-                }
+            $subquery = $this->getLimitSubquery();
+            
+            // what about composite keys?
+            $idColumnName = $table->getColumnName($table->getIdentifier());
 
-                $field = $this->getSqlTableAlias($rootAlias) . '.' . $idColumnName;
+            switch (strtolower($this->_conn->getDriverName())) {
+                case 'mysql':
+                    $this->useQueryCache(false);
+            
+                    // mysql doesn't support LIMIT in subqueries
+                    $list = $this->_conn->execute($subquery, $params)->fetchAll(Doctrine::FETCH_COLUMN);
+                    $subquery = implode(', ', array_map(array($this->_conn, 'quote'), $list));
 
-                // only append the subquery if it actually contains something
-                if ($subquery !== '') {
-                    if (count($this->_sqlParts['where']) > 0) {
-                        array_unshift($this->_sqlParts['where'], 'AND');
-                    }
+                    break;
 
-                    array_unshift($this->_sqlParts['where'], $this->_conn->quoteIdentifier($field) . ' IN (' . $subquery . ')');
-                }
+                case 'pgsql':
+                    $subqueryAlias = $this->_conn->quoteIdentifier('doctrine_subquery_alias');
 
-                $modifyLimit = false;
+                    // pgsql needs special nested LIMIT subquery
+                    $subquery = 'SELECT ' . $subqueryAlias . '.' . $this->_conn->quoteIdentifier($idColumnName)
+                            . ' FROM (' . $subquery . ') AS ' . $subqueryAlias;
+
+                    break;
+            }
+
+            // only append the subquery if it actually contains something
+            if (count($this->_sqlParts['where']) > 0) {
+                array_unshift($this->_sqlParts['where'], 'AND');
+            }
+
+            $field = $this->getSqlTableAlias($rootAlias) . '.' . $idColumnName;
+
+            // FIX #1868: If not ID under MySQL is found to be restricted, restrict pk column for null
+            //            (which will lead to a return of 0 items)
+            array_unshift(
+                $this->_sqlParts['where'], $this->_conn->quoteIdentifier($field) .
+                (( ! empty($subquery)) ? ' IN (' . $subquery . ')' : ' IS NULL')
+            );
+
+            $modifyLimit = false;
         }
 
         $q .= ( ! empty($this->_sqlParts['where']))?   ' WHERE '    . implode(' ', $this->_sqlParts['where']) : '';
