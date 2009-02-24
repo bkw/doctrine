@@ -38,7 +38,7 @@ foreach ($ticketTestCases as $testCase)
 {
     $fileInfo = pathinfo($testCase);
     $name = str_replace('TestCase', '', $fileInfo['filename']);
-    
+
     if ( ! in_array($name, $excludeTickets)) {
         $name = sprintf('Doctrine_Ticket_%s_TestCase', $name);
         $tickets->addTestCase(new $name());
