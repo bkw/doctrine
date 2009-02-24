@@ -566,17 +566,6 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     }
 
     /**
-     * getTemplates
-     * returns all templates attached to this table
-     *
-     * @return array     an array containing all templates
-     */
-    public function getTemplates()
-    {
-        return $this->_templates;
-    }
-
-    /**
      * export
      * exports this table to database based on column and option definitions
      *
@@ -1997,6 +1986,17 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     public function isTree()
     {
         return ( ! is_null($this->_options['treeImpl'])) ? true : false;
+    }
+    
+    /**
+     * getTemplates
+     * returns all templates attached to this table
+     *
+     * @return array     an array containing all templates
+     */
+    public function getTemplates()
+    {
+        return $this->_templates;
     }
 
     /**
