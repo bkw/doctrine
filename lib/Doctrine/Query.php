@@ -1812,70 +1812,83 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
      *
      * @return string $q
      */
-     public function getCountQuery()
-     {
-         // triggers dql parsing/processing
-         $this->getQuery(); // this is ugly
+    public function getCountQuery()
+    {
+        // triggers dql parsing/processing
+        $this->getSqlQuery(); // this is ugly
 
-         // initialize temporary variables
-         $where  = $this->_sqlParts['where'];
-         $having = $this->_sqlParts['having'];
-         $groupby = $this->_sqlParts['groupby'];
-         $map = reset($this->_queryComponents);
-         $componentAlias = key($this->_queryComponents);
-         $tableAlias = $this->getTableAlias($componentAlias);
-         $table = $map['table'];
-         $idColumnNames = $table->getIdentifierColumnNames();
+        // initialize temporary variables
+        $where   = $this->_sqlParts['where'];
+        $having  = $this->_sqlParts['having'];
+        $groupby = $this->_sqlParts['groupby'];
 
-         // build the query base
-         $q  = 'SELECT COUNT(*) AS ' . $this->_conn->quoteIdentifier('num_results') . 
-            ' FROM (SELECT DISTINCT ' . $this->_conn->quoteIdentifier($tableAlias) . '.' . 
-            implode(
-                ' , ' . $this->_conn->quoteIdentifier($tableAlias) . '.',
-                $this->_conn->quoteMultipleIdentifier($idColumnNames)
-            );
+        $rootAlias = $this->getRootAlias();
+        $tableAlias = $this->getTableAlias($rootAlias);
 
-         foreach ($this->_sqlParts['select'] as $field) {
-             if (strpos($field, '(') !== false) {
-                 $q .= ', ' . $field;
-             }
-         }
+        // Build the query base
+        $q = 'SELECT COUNT(*) AS ' . $this->_conn->quoteIdentifier('num_results') . ' FROM ';
 
-         $q .= ' FROM ' . $this->_buildSqlFromPart();
+        // Build the from clause
+        $from = $this->_buildSqlFromPart();
 
-         // append column aggregation inheritance (if needed)
-         $string = $this->getInheritanceCondition($this->getRootAlias());
+        // Append column aggregation inheritance (if needed)
+        $string = $this->getInheritanceCondition($rootAlias);
 
-         if ( ! empty($string)) {
-             if (count($where) > 0) {
-                 $where[] = 'AND';
-             }
+        if ( ! empty($string)) {
+            if ( ! empty($where)) {
+                $where[] = 'AND';
+            }
 
-             $where[] = $string;
-         }
+            $where[] = $string;
+        }
 
-         // append conditions
-         $q .= ( ! empty($where)) ?  ' WHERE '  . implode(' ', $where) : '';
+        // Build the where clause
+        $where = ( ! empty($where)) ? ' WHERE ' . implode(' ', $where) : '';
 
-         if ( ! empty($groupby)) {
-             // Maintain existing groupby
-             $q .= ' GROUP BY '  . implode(', ', $groupby);
-         } else {
-             // Default groupby to primary identifier. Database defaults to this internally
-             // This is required for situations where the user has aggregate functions in the select part
-             // Without the groupby it fails
-             $q .= ' GROUP BY ' . $this->_conn->quoteIdentifier($tableAlias)
-                 . '.' . implode(
-                         ', ' . $this->_conn->quoteIdentifier($tableAlias) . '.',
-                         $this->_conn->quoteMultipleIdentifier($idColumnNames)
-                         );
-         }
+        // Build the group by clause
+        $groupby = ( ! empty($groupby)) ? ' GROUP BY ' . implode(', ', $groupby) : '';
 
-         $q .= ( ! empty($having)) ? ' HAVING ' . implode(' AND ', $having): '';
-         $q .= ') AS ' . $this->_conn->quoteIdentifier('dctrn_count_query');
+        // Build the having clause
+        $having = ( ! empty($having)) ? ' HAVING ' . implode(', ', $having) : '';
 
-         return $q;
-     }
+        // Building the from clause and finishing query
+        if (count($this->_queryComponents) == 1 && empty($having)) {
+            $q .= $from . $where . $groupby . $having;
+        } else {
+            // Subselect fields will contain only the pk of root entity
+            $ta = $this->_conn->quoteIdentifier($tableAlias);
+
+            $map = $this->getRootDeclaration();
+            $idColumnNames = $map['table']->getIdentifierColumnNames();
+            
+            $pkFields = $ta . '.' . implode(', ' . $ta . '.', $this->_conn->quoteMultipleIdentifier($idColumnNames));
+
+            // We need to do some magic in select fields if the query contain anything in having clause
+            $selectFields = $pkFields;
+
+            if ( ! empty($having)) {
+                // For each field defined in select clause
+                foreach ($this->_sqlParts['select'] as $field) {
+                    // We only include aggregate expressions to count query
+                    // This is needed because HAVING clause will use field aliases
+                    if (strpos($field, '(') !== false) {
+                        $selectFields .= ', ' . $field;
+                    }
+                }
+            }
+
+            // If we do not have a custom group by, apply the default one
+            if (empty($groupby)) {
+                $groupby = ' GROUP BY ' . $pkFields;
+            }
+
+            $q .= '(SELECT ' . $selectFields . ' FROM ' . $from . $where . $groupby . $having . ') '
+                . $this->_conn->quoteIdentifier('dctrn_count_query');
+        }
+
+        return $q;
+    }
+
     /**
      * count
      * fetches the count of the query
