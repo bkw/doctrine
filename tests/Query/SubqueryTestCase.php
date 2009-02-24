@@ -111,7 +111,7 @@ class Doctrine_Query_Subquery_TestCase extends Doctrine_UnitTestCase
     public function testAggregateFunctionsInOrderByAndHavingWithCount()
     {
         $q = new Doctrine_Query();
-        
+
         $q->select('u.*, COUNT(a.id) num_albums')
           ->from('User u')
           ->leftJoin('u.Album a')
@@ -121,10 +121,12 @@ class Doctrine_Query_Subquery_TestCase extends Doctrine_UnitTestCase
           ->limit(5);
         
         try {
+            $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT e.id, COUNT(a.id) AS a__0 FROM entity e LEFT JOIN album a ON e.id = a.user_id WHERE e.type = 0 GROUP BY e.id HAVING a__0 > 0) dctrn_count_query');
             $q->count();
+            
             $this->pass();
         } catch (Doctrine_Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
     }
 }
