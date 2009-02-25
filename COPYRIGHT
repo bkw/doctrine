@@ -8,7 +8,7 @@ Doctrine is a Object Relational Mapper built from scratch with PHP5. It contains
 
 Url:        http://www.phpdoctrine.net
 Copyright:  2005-2007 Konsta Vesterinen
-License:    GPL - see LICENSE file
+License:    LGPL - see LICENSE file
 
 symfony
 -------
