@@ -7,7 +7,7 @@ class MysqlIndexTestRecord extends Doctrine_Record
         $this->hasColumn('code', 'integer', 4);
         $this->hasColumn('content', 'string', 4000);
 
-        $this->index('content',  array('fields' => 'content', 'type' => 'fulltext'));
+        $this->index('content',  array('fields' => array('content'), 'type' => 'fulltext'));
         $this->index('namecode', array('fields' => array('name', 'code'),
                                        'type'   => 'unique'));
 

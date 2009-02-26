@@ -35,6 +35,8 @@ class Doctrine_Ticket_1923_TestCase extends Doctrine_UnitTestCase
     public function prepareTables()
     {
         $this->tables[] = 'Ticket_1923_User';
+        $this->tables[] = 'Ticket_1923_User2';
+
         parent::prepareTables();
     }
 
@@ -42,6 +44,9 @@ class Doctrine_Ticket_1923_TestCase extends Doctrine_UnitTestCase
     {
         $sql = Doctrine::generateSqlFromArray(array('Ticket_1923_User'));
         $this->assertEqual($sql[1], 'CREATE INDEX username_idx ON ticket_1923__user (login)');
+
+        $sql = Doctrine::generateSqlFromArray(array('Ticket_1923_User2'));
+        $this->assertEqual($sql[1], 'CREATE INDEX username2_idx ON ticket_1923__user2 (login DESC)');
     }
 }
 
@@ -53,5 +58,16 @@ class Ticket_1923_User extends Doctrine_Record
         $this->hasColumn('password', 'string', 255);
 
         $this->index('username', array('fields' => array('username')));
+    }
+}
+
+class Ticket_1923_User2 extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('login as username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
+
+        $this->index('username2', array('fields' => array('username' => array('sorting' => 'DESC'))));
     }
 }
