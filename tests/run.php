@@ -33,7 +33,7 @@ $excludeTickets = array(
 );
 
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
-$tickets->addTestCase(new Doctrine_Ticket_1858_TestCase());
+
 foreach ($ticketTestCases as $testCase)
 {
     $fileInfo = pathinfo($testCase);

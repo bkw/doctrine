@@ -5,10 +5,10 @@ class Doctrine_Ticket_1830_TestCase extends Doctrine_UnitTestCase
 {
     public function init()
     {
-        Doctrine_Manager::connection('mysql://root:pass@localhost/doctrine_testdb', 'Mysql');
+        Doctrine_Manager::connection('mysql://root:password@localhost/doctrine', 'Mysql');
         $this->driverName = 'Mysql';
         parent::init();
-        Doctrine_Manager::connection('mysql://root:pass@localhost/doctrine_testdb', 'Mysql');
+        Doctrine_Manager::connection('mysql://root:password@localhost/doctrine', 'Mysql');
         $this->prepareTables();
         $this->prepareData();
     }
