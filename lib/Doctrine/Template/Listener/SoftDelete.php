@@ -45,7 +45,7 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
     /**
      * __construct
      *
-     * @param string $options 
+     * @param string $options
      * @return void
      */
     public function __construct(array $options)
@@ -90,17 +90,17 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
         $field = $params['alias'] . '.' . $this->_options['name'];
         $query = $event->getQuery();
         if ( ! $query->contains($field)) {
-            $query->from('')->update($params['component'] . ' ' . $params['alias']);
-            $query->set($field, '?', array(false));
-            $query->addWhere($field . ' = ?', array(true));
+            $query->from('')->update($params['component']['table']->getOption('name') . ' ' . $params['alias']);
+            $query->set($field, '?', array('true'));
+            $query->addWhere($field . ' = 0 OR ' . $field . ' IS NULL');
         }
     }
 
     /**
-     * Implement preDqlDelete() hook and add the deleted flag to all queries for which this model 
+     * Implement preDqlSelect() hook and add the deleted flag to all queries for which this model
      * is being used in.
      *
-     * @param Doctrine_Event $event 
+     * @param Doctrine_Event $event
      * @return void
      */
     public function preDqlSelect(Doctrine_Event $event)
@@ -109,7 +109,7 @@ class Doctrine_Template_Listener_SoftDelete extends Doctrine_Record_Listener
         $field = $params['alias'] . '.' . $this->_options['name'];
         $query = $event->getQuery();
         if ( ! $query->contains($field)) {
-            $query->addWhere($field . ' = ?', array(false));
+            $query->addWhere($field . ' = 0 OR ' . $field . ' IS NULL');
         }
     }
 }
