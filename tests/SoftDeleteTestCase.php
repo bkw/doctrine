@@ -57,7 +57,7 @@ class Doctrine_SoftDelete_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_test s WHERE s.name = ? AND (s.deleted = 0 OR s.deleted IS NULL)');
         $params = $q->getParams();
-        $this->assertEqual(count($params), 2);
+        $this->assertEqual(count($params), 1);
         $this->assertEqual($params[0], 'test');
 //        $this->assertEqual($params[1], false);
 
