@@ -1,3 +1,112 @@
+1.1.0-RC2
+---------
+     * [r5362] [1.1] Releasing Doctrine 1.1.0-RC1
+     * [r5363] [1.1] Fixing typo in upgrade file.
+     * [r5364] [1.1] Fixing another typo.
+     * [r5365] [1.1] Fixing syntax error in markdown
+     * [r5366] [1.1] Fixing another typo
+     * [r5389] [1.1] Fixes issue with generated migrations not including important table options (closes #1831)
+     * [r5395] show how to autoload table classes as an optional setting
+     * [r5405] [1.0, 1.1] Fixed 2 in the Searchable behavior.
+     * [r5406] [doc][1.1] Moving old manual0
+     * [r5417] [1.1] Fixes #1845. Changed deleted_at column to receive date(...) instead of NOW(), since it is not supported in all DBMS.
+     * [r5418] [1.0, 1.1] Fixes #1849. Fixed sqlite export sequence name that was throughing fatal errors
+     * [r5419] [1.0, 1.1] Fixes #1856. Added checking to schema file to ensure correct file extension (format).
+     * [r5420] [1.0, 1.1] Fixed wrong code I introduced. No fatal errors.
+     * [r5421] [1.0, 1.1] Fixes #1859. Fixed wrong table alias generation that was picking numbers if table contains it.
+     * [r5422] [1.1] Added BC to SoftDelete behavior for users that cannot/want to update deleted column.
+     * [r5423] [1.1] Added coverage to SoftDelete BC
+     * [r5424] [1.0, 1.1] Fixes #1833. Fixed makeRoot that was not working correctly.
+     * [r5425] [1.1] More fixes to BC of SoftDelete behavior.
+     * [r5426] [1.1] Fix for broken code (forgot to test before commit).
+     * [r5429] [1.0, 1.1] Fixes issue with generated count queries (closes #1766)
+     * [r5430] [1.0, 1.1] Fixed #1766. Previous applied patch did not work. I updated it to get it working smoothly
+     * [r5431] [1.1] Fixes issue with pre/post(save|insert|update) being invoked multiple times. Also fixes issue with isValid() not invoking the save hooks since they can alter the model
+	  properties which affects if it is valid or not.
+     * [r5437] [1.1] Fixed #1131. Now reference columns to not store the related objects on it. Thanks German for patch.
+     * [r5438] [1.0, 1.1] Fixes issue with saveRelated() being called too early (closes #1865)
+     * [r5439] [1.1] Fixes issue with setting object properties in construct() (closes #1841)
+     * [r5440] PostgreSQL now uses TIMESTAMPS with timezone by default for timestamps (Closes #1758)
+     * [r5441] [1.0, 1.1] Fixing generated models to adhere to coding standard of using 4 spaces (closes #1846)
+     * [r5443] [1.0, 1.1] Fixes issue with intval overflow in validation (closes #1850)
+     * [r5446] [1.1] Fixed #1830, #1827. Fixed duplicated params when using LIMIT/OFFSET under MySQL. Thanks for the awesome testcase and patch!
+     * [r5447] Fixed issue with #1464 test case, not accepting more than 3 fraction of seconds digits.
+     * [r5448] [1.0, 1.1] Fixed #1835. Fixed MSSQL limit-subquery that was incorrectly using alias and also double escaping it. Thanks for the patch
+     * [r5449] Typo in the prepareTables parameter 'Ticket_1619_Article' made this test case fail.
+     * [r5450] [1.0, 1.1] Fixes #1813. Fixed email validator to accept empty values.
+     * [r5451] [1.0, 1.1] Fixed #1821. Fixed Unique validator that was not building check-sql correctly.
+     * [r5453] [1.0, 1.1] Added referring row key to exception when importing data (closes #1777)
+     * [r5454] [1.0, 1.1] Fixes issue with not being able to change keyField value for column aggregation inheritance (closes #1793)
+     * [r5455] [1.1] Added coverage to ticket #1876. Cannot make it fail, even under mysql-specific test
+     * [r5456] [1.0, 1.1] Fixes issue with dropConstraint() function under mysql (closes #1711)
+     * [r5457] [1.0, 1.1] Added new attribute to fix problem with modified objects being overwritten when querying for objects existing in the identify map already (closes #990)
+     * [r5458] [1.0, 1.1] Fixes issue where enum values cannot be null (closes #1782)
+     * [r5459] [1.0, 1.1] Fixes issue with I18n and column aliases (closes #1824)
+     * [r5460] [1.0, 1.1] Fixes issue with creating associations between child inheritance classes (closes #1818)
+     * [r5461] [1.0, 1.1] Fixes issue where exists() returns true when state === null (closes #1823)
+     * [r5462] [1.0, 1.1] Fixes issue with geographical length (closes #1799)
+     * [r5464] [1.0, 1.1] Fixes issue with data fixture properties not working with record filters and fixed issue with missing record functions not being called on templates
+     * [r5465] [1.1] Fixes issue with HYDRATE_SINGLE_SCALAR and empty results causing php error (closes #1881)
+     * [r5467] [1.0, 1.1] Fixes #1860. Fixed two issues: softdelete not correctly converting booleans and reused query in pager was not applying DQL hooks
+     * [r5470] [1.0, 1.1] Fixes issue with link() throwing notices (closes #1884)
+     * [r5471] [1.0, 1.1] Fixes issue where fields with camel case are not moved to the translation table (closes #1883)
+     * [r5472] [1.0, 1.1] Fixes mistake from previous commit.
+     * [r5475] [1.1] Fixes issue with utf8 search analyzer (closes #1887)
+     * [r5477] [1.1] Changed default from encoding to utf-8 (closes #1887)
+     * [r5478] [1.1] Fixes issue with AS keyword in count query under oracle (closes #1886)
+     * [r5479] [1.1] Fixes #1858. Fixed issue that was preventing usage of CAST functions inside UPDATE queries.
+     * [r5480] [1.1] Cleanup of useless commented code
+     * [r5482] [1.0, 1.1] Fixed #1690. Added patch to prevent MSSQL to export a NULLable primary key
+     * [r5483] [1.0, 1.1] Fixed license issue with Zend Framework. License header imported from zend framework license as suggested by Wil Sinclair
+     * [r5485] [1.0, 1.1] Fixing space/tab issue.
+     * [r5486] [1.0, 1.1] Fixes issue with not being able to call accessor methods for children templates (closes #1795)
+     * [r5487] [1.0, 1.1] Fixes issue with query cache not being constructed properly for m2m relationships (closes #1630)
+     * [r5488] [1.0, 1.1] Fixes issue with migrations where migration version number isn't updaded as each migration is executed (closes #1633)
+     * [r5489] [1.0, 1.1] Added coverage to #1916. Fixed issue with column aggregation and subqueries which was incorrectly picking the root alias.
+     * [r5496] [1.0, 1.1] Fixed issue while generating the opposite side relation that was missing to pick the foreignAlias. Added coverage to this issue in 1.1 branch.
+     * [r5497] [1.0, 1.1] Updated the previous patch applied in r5496, simplifying it.
+     * [r5498] [1.0, 1.1] Fixed #1913. Fixed problem dumping data when containing fields with type object
+     * [r5499] [1.0, 1.1] Fixes issue with dumping and importing data fixtures with column type of object (closes #1913)
+     * [r5500] [1.0, 1.1] Fixes and documents issue with importing nested set data fixtures (closes #1919)
+     * [r5501] [1.0, 1.1] Fixes memory leak in sub queries (closes #1908)
+     * [r5502] [1.0, 1.1] Fixes issue with bit operation support in DQL (closes #1921)
+     * [r5516] [1.1] Fixed #1882. Fixed foreign key and index order on migration diff tool
+     * [r5517] [1.0, 1.1] Fixed #1787. Fixed Searchable behavior numeric evaluation
+     * [r5521] [1.1] Fixes issue with attribute using wrong number (closes #1917)
+     * [r5522] [1.1] Fixes issue with prefixes causing invalid differences (closes #1854)
+     * [r5525] [1.0, 1.1] Fixes issue with tmp connections not using port (closes #1928)
+     * [r5526] [1.0, 1.1] Fixes issue with indexes cannot be specified using field names (closes #1923)
+     * [r5528] [1.0, 1.1] Fixes issue with importing from existing databases (closes #1877)
+     * [r5529] [1.0, 1.1] Fixes issue with previous commit to fix tmp connection
+     * [r5531] [1.0, 1.1] Fixes issue with email validator false positive (closes #1893)
+     * [r5532] [1.0, 1.1] Fixed importing so both sides of relationships are properly generated (closes #1890)
+     * [r5533] [1.0, 1.1] Fixed issue with validating length of decimal and float types (closes #1875)
+     * [r5535] [1.0, 1.1] Making another tweak to previous decimal/float validation (closes #1875)
+     * [r5536] [1.0, 1.1] Yet another fix for decimal/float validation (addresses #1875)
+     * [r5537] [1.0, 1.1] Throwing exception when using IN() with empty params array (closes #1912)
+     * [r5539] [1.1] Fixes #1935. Fixed issue of double identifier quoting when using agg expression aliases.
+     * [r5540] [1.1] Fixed #1835. Added support to check_mx against Windows in PHP version lower than 5.3.0.
+     * [r5541] [1.0, 1.1] Fixed #1616, #1766 and #1922. Optimized count query in Doctrine_Query::getCountQuery() to produce smarter count queries, preventing too much resources usage and also
+	  better SQL supported stuff.
+     * [r5542] [1.0, 1.1] Fixes #1931. Fixed issue on Template record generator that was missing to export actAs template behaviors.
+     * [r5543] [1.0, 1.1] Added missing root save when creating a root node (makeRoot()) on NestedSet behavior.
+     * [r5544] [1.0, 1.1] Fixed #1868. Fixed issue with offset bigger than actual resulted that was returning all records.
+     * [r5545] [1.0, 1.1] Fixing case type
+     * [r5546] [1.1] License corrections.
+     * [r5549] [1.1] Fixed warning of email validator on non-Windows OS
+     * [r5550] [1.1] Fixed #1860 and #1876. Fixed issue with pending join conditions not being applied when reusing query.
+     * [r5551] [1.0, 1.1] Fixed #1948. Fixed limit-subquery under Postgres that was generating incorrect SQL. Thanks for ticket and patch!
+     * [r5552] [1.0, 1.1] Fixed #1873. Fixed unsigned validator that was failing when value exceed PHP maximum integer
+     * [r5553] [1.0, 1.1] Fixed #1923. Added support to field names as index declaration. Fixed issue with field options
+     * [r5554] [1.0, 1.1] Fixes issue with importing from mssql databases that have sysdiagrams.
+     * [r5555] [1.0, 1.1] Fixes issue with utf8 length validation
+     * [r5557] [1.0, 1.1] Fixed issue with Validator that was throughing warnings on OSX
+     * [r5558] [1.0, 1.1] Fixed #1950. Added possibility to fetchTree and define a depth limit.
+     * [r5559] [1.0, 1.1] Fixed #1942. Fixed issue that fromArray was not setting properties on templates
+     * [r5560] [1.0, 1.1] Reverting r5559 temporarily (addresses #1942)
+     * [r5564] [1.0, 1.1] Casting $fieldName as string
+     * [r5565] [1.0, 1.1] Undoing changeset
+
 1.1.0-RC1
 ---------
      * [r5346] [1.1] Releasing Doctrine 1.1.0-BETA2
