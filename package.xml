@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-01-12</date>
- <time>20:10:44</time>
+ <date>2009-03-02</date>
+ <time>23:08:11</time>
  <version>
   <release>1.1.0</release>
   <api>1.1.0</api>
@@ -393,6 +393,7 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
       <file name="GenerateMigration.php" role="php" />
       <file name="GenerateMigrationsDb.php" role="php" />
+      <file name="GenerateMigrationsDiff.php" role="php" />
       <file name="GenerateMigrationsModels.php" role="php" />
       <file name="GenerateModelsDb.php" role="php" />
       <file name="GenerateModelsYaml.php" role="php" />
@@ -1002,6 +1003,7 @@ requiring needless code duplication.</description>
      <file name="SelfRefTest.php" role="test" />
      <file name="SequenceRecord.php" role="test" />
      <file name="SerializeTest.php" role="test" />
+     <file name="SoftDeleteBCTest.php" role="test" />
      <file name="SoftDeleteTest.php" role="test" />
      <file name="Song.php" role="test" />
      <file name="SymfonyRecord.php" role="test" />
@@ -1182,6 +1184,7 @@ requiring needless code duplication.</description>
      <file name="973TestCase.php" role="test" />
      <file name="982TestCase.php" role="test" />
      <file name="987TestCase.php" role="test" />
+     <file name="990TestCase.php" role="test" />
      <file name="1015TestCase.php" role="test" />
      <file name="1028TestCase.php" role="test" />
      <file name="1044TestCase.php" role="test" />
@@ -1286,6 +1289,7 @@ requiring needless code duplication.</description>
      <file name="1622TestCase.php" role="test" />
      <file name="1628TestCase.php" role="test" />
      <file name="1629TestCase.php" role="test" />
+     <file name="1630TestCase.php" role="test" />
      <file name="1636TestCase.php" role="test" />
      <file name="1641TestCase.php" role="test" />
      <file name="1653TestCase.php" role="test" />
@@ -1302,6 +1306,24 @@ requiring needless code duplication.</description>
      <file name="1763TestCase.php" role="test" />
      <file name="1764TestCase.php" role="test" />
      <file name="1768TestCase.php" role="test" />
+     <file name="1783TestCase.php" role="test" />
+     <file name="1793TestCase.php" role="test" />
+     <file name="1795TestCase.php" role="test" />
+     <file name="1799TestCase.php" role="test" />
+     <file name="1818TestCase.php" role="test" />
+     <file name="1821TestCase.php" role="test" />
+     <file name="1824TestCase.php" role="test" />
+     <file name="1830TestCase.php" role="test" />
+     <file name="1841TestCase.php" role="test" />
+     <file name="1843TestCase.php" role="test" />
+     <file name="1858TestCase.php" role="test" />
+     <file name="1860TestCase.php" role="test" />
+     <file name="1865TestCase.php" role="test" />
+     <file name="1875TestCase.php" role="test" />
+     <file name="1876bTestCase.php" role="test" />
+     <file name="1876TestCase.php" role="test" />
+     <file name="1923TestCase.php" role="test" />
+     <file name="1935TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1374,6 +1396,7 @@ requiring needless code duplication.</description>
     <file name="SearchTestCase.php" role="test" />
     <file name="SequenceTestCase.php" role="test" />
     <file name="SluggableTestCase.php" role="test" />
+    <file name="SoftDeleteBCTestCase.php" role="test" />
     <file name="SoftDeleteTestCase.php" role="test" />
     <file name="TableTestCase.php" role="test" />
     <file name="template.tpl" role="test" />
@@ -1720,7 +1743,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2009-01-12</date>
+   <date>2009-03-02</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
