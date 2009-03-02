@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-02-03</date>
- <time>18:51:43</time>
+ <date>2009-03-02</date>
+ <time>22:42:20</time>
  <version>
-  <release>1.0.7</release>
-  <api>1.0.7</api>
+  <release>1.0.8</release>
+  <api>1.0.8</api>
  </version>
  <stability>
   <release>stable</release>
@@ -1254,6 +1254,7 @@ requiring needless code duplication.</description>
      <file name="1621TestCase.php" role="test" />
      <file name="1628TestCase.php" role="test" />
      <file name="1629TestCase.php" role="test" />
+     <file name="1630TestCase.php" role="test" />
      <file name="1636TestCase.php" role="test" />
      <file name="1658TestCase.php" role="test" />
      <file name="1703TestCase.php" role="test" />
@@ -1266,13 +1267,19 @@ requiring needless code duplication.</description>
      <file name="1763TestCase.php" role="test" />
      <file name="1764TestCase.php" role="test" />
      <file name="1768TestCase.php" role="test" />
+     <file name="1783TestCase.php" role="test" />
      <file name="1793TestCase.php" role="test" />
+     <file name="1795TestCase.php" role="test" />
      <file name="1799TestCase.php" role="test" />
      <file name="1818TestCase.php" role="test" />
      <file name="1821TestCase.php" role="test" />
      <file name="1824TestCase.php" role="test" />
+     <file name="1860TestCase.php" role="test" />
      <file name="1865TestCase.php" role="test" />
      <file name="1868TestCase.php" role="test" />
+     <file name="1875TestCase.php" role="test" />
+     <file name="1885TestCase.php" role="test" />
+     <file name="1923TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1656,6 +1663,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.8</release>
+    <api>1.0.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-03-02</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.7</release>
