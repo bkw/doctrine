@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Enum.php 1080 2007-02-10 18:17:08Z romanb $
+ *  $Id$
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,43 +20,43 @@
  */
 
 /**
- * Doctrine_Validator_Unsigned
+ * Doctrine_Ticket_1958_TestCase
  *
  * @package     Doctrine
- * @subpackage  Validator
+ * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @category    Object Relational Mapping
  * @link        www.phpdoctrine.org
  * @since       1.0
- * @version     $Revision: 1080 $
- * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @version     $Revision$
  */
-class Doctrine_Validator_Unsigned
+class Doctrine_Ticket_1958_TestCase extends Doctrine_UnitTestCase 
 {
-    /**
-     * checks if given value is a valid unsigned integer or float
-     *
-     * valid values: null, '', 5, '5', 5.9, '5.9'
-     * invalid values: -5, '-5', 'five', -5.9, '-5.9', '5.5.5'
-     *
-     * @param mixed $value
-     * @return boolean
-     */
-    public function validate($value)
+    public function prepareTables()
     {
-        if(is_null($value) || $value == '')
-        {
-            return true;
-        }
+        $this->tables[] = 'Ticket_1958_User';
+        parent::prepareTables();
+    }
 
-        if (preg_match('/[^0-9\-\.]/', $value)) {
-            return false;
-        }
+    public function testTest()
+    {
+        Doctrine_Manager::getInstance()->setAttribute('validate', 'all');
 
-        if ((double) $value >= 0)
-        {
-            return true;
-        }
+        $user = new Ticket_1958_User();
+        $user->username = 'jwage';
+        $user->password = 'test';
+        $user->save();
 
-        return false;
+        Doctrine_Manager::getInstance()->setAttribute('validate', 'none');
+    }
+}
+
+class Ticket_1958_User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('password', 'string', 255);
+        $this->hasColumn('foo', 'integer', 4, array('notnull' => true, 'default' => '0', 'unsigned' => 1));
     }
 }
