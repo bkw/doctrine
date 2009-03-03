@@ -15,7 +15,18 @@ In short: You can name your fields however you want, using under_scores, camelCa
 > **NOTE**
 > In Doctrine columns and column aliases are case sensitive. So when you are using columns in your DQL queries, the column/field names must match the case in your model definition.
 
-+++ Column aliases
++++ Column Lengths
+
+In Doctrine column length is an integer that specifies the column length. Some column types depend not only the given portable type but also on the given length. For example type string with length 1000 will be translated into native type TEXT on mysql.
+
+The length is different depending on the type of column you are using:
+
+* //integer// - Length is the the number of bytes the integer occupies.
+* //string// - Number of the characters allowed in the string.
+* //float/decimal// - Total number of characters allowed excluding the decimal.
+* //enum// - If using native enum length does not apply but if using emulated enums then it is just the string length of the column value.
+
++++ Column Aliases
 
 Doctrine offers a way of setting column aliases. This can be very useful when you want to keep the application logic separate from the database logic. For example if you want to change the name of the database field all you need to change at your application is the column definition.
 
