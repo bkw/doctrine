@@ -283,7 +283,7 @@ class Forum_Thread extends Doctrine_Record
                 'foreign' => 'id'
             )
         );
-        $this->ownsMany('Forum_Entry as Entries', array(
+        $this->hasMany('Forum_Entry as Entries', array(
                 'local' => 'id',
                 'foreign' => thread_id'
             )

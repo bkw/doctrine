@@ -63,7 +63,7 @@ class Forum_Thread extends Doctrine_Record
     public function setUp()
     {
         $this->hasOne('Forum_Board as Board', array('local' => 'board_id', 'foreign' => id'));
-        $this->ownsMany('Forum_Entry as Entries', array('local' => 'id', 'foreign' => thread_id'));
+        $this->hasMany('Forum_Entry as Entries', array('local' => 'id', 'foreign' => thread_id'));
     }
 }
 </code>
