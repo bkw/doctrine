@@ -1056,6 +1056,9 @@ $users = $q->setHydrationMode(Doctrine::HYDRATE_ARRAY)->execute(); // So is this
 $users = $q->execute(array(), Doctrine::HYDRATE_NONE);
 </code>
 
+> **TIP**
+> More can be read about skipping hydration in the [doc improving-performance improving performance] chapter.
+
 **If you want to just fetch one record from the query:**
 
 <code type="php">
