@@ -201,6 +201,24 @@ for ($i = 0; $i < 1000; $i++)
 }
 </code>
 
+You can automatically free query objects after executing by using the {{Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS}} attribute.
+
+<code type="php">
+// test.php
+
+// ...
+$manager->setAttribute('auto_free_query_objects', true);
+
+$q = Doctrine_Query::create()
+  ->from('User u')
+</code>
+
+Now when we execute the above query, it will be automatically freed of resouces.
+
+<code type="php">
+$users = $q->execute(); // $q->free() is triggered
+</code>
+
 ++ Other Tips
 
 **Helping the DQL parser**

@@ -67,14 +67,14 @@ $migration->migrate();
 Migration classes consist of a simple class that extends from {{Doctrine_Migration}}. You can define a {{up()}} and {{down()}} method that is meant for doing and undoing changes to a database for that migration version. 
 
 > **NOTE**
-> The name of the class can be whatever you want, but the name of the file which contains the class must have a prefix containing the version number of the database that class represents.
+> The name of the class can be whatever you want, but the name of the file which contains the class must have a prefix containing a number that is used for loading the migrations in the correct order.
 
 Below are a few examples of some migration classes you can use to build your database starting from version 1.
 
 For the first version lets create a new table named {{migration_test}}:
 
 <code type="php">
-// migrations/001_add_table.php
+// migrations/1_add_table.php
 
 class AddTable extends Doctrine_Migration
 {
@@ -93,7 +93,7 @@ class AddTable extends Doctrine_Migration
 Now lets create a second version where we add a new column to the table we added in the previous version:
 
 <code type="php">
-// migrations/002_add_column.php
+// migrations/2_add_column.php
 
 class AddColumn extends Doctrine_Migration
 {
@@ -112,7 +112,7 @@ class AddColumn extends Doctrine_Migration
 Finally, lets change the type of the {{field1}} column in the table we created previously:
 
 <code type="php">
-// migrations/003_change_column.php
+// migrations/3_change_column.php
 
 class ChangeColumn extends Doctrine_Migration
 {

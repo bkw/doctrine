@@ -458,7 +458,8 @@ class BlogPost extends Doctrine_Record
         $this->actAs('Versionable', array(
                 'versionColumn' => 'version',
                 'className' => '%CLASS%Version',
-                'auditLog' => true
+                'auditLog' => true,
+                'deleteVersions' => true
             )
         );
     }
@@ -474,6 +475,7 @@ BlogPost:
       versionColumn: version
       className: %CLASS%Version
       auditLog: true
+      deleteVersions: true
   columns:
     title: string(255)
     body: clob

@@ -135,6 +135,59 @@ $conn->addListener(new MyDebugger());
 $conn->addListener(new MyLogger());
 </code>
 
++++ Aliasing Listeners
+
+You can optionally alias a listener when adding it. This is useful if you register the same listener multiple times and want to have a unique alias to reference it by. Below you will examples of how to utilize this feature.
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    // ...
+
+    public function setUp()
+    {
+        $this->addListener(new My_Listener_FooListener(), 'FooListener');
+    }
+}
+</code>
+
+
+<code type="yaml">
+User:
+#...
+  listeners:
+    FooListener:
+      class: My_Listener_FooListener
+</code>
+
++++ Enabling/Disabling Listeners
+
+If you wish to enable and disable existing listeners this is possible by using the {{disabled}} option of the listeners. Below you will find a simple example.
+
+**Disable all record listeners**
+
+<code type="php">
+Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', true);
+</code>
+
+**Disable some listeners across all record listeners**
+
+<code type="php">
+Doctrine::getTable('Foo')->getRecordListener()->setOption('disabled', array('preSerialize', 'postHydrate'));
+</code>
+
+**Disable all listeners of a single record listener**
+
+<code type="php">
+Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')->setOption('disabled', true);    
+</code>
+
+**Disable some listeners of a single record listener**
+
+<code type="php">
+Doctrine::getTable('Foo')->getRecordListener()->get('FooListener')->setOption('disabled', array('preSave', 'postInsert'));
+</code>
+
 +++ Pre and Post Connect
 
 ||~ Methods     ||~ Listens ||~ Params ||

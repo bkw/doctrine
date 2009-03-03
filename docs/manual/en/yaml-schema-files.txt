@@ -667,6 +667,28 @@ Contact:
 
 All of the settings at the top will be applied to every model which is defined in that YAML file.
 
++++ Custom Column Attribute
+
+If you wish to store additional attributes on your model columns that aren't used by Doctrine internally you can use the {{extra}} attribute like the following.
+
+<code type="yaml">
+User:
+  columns:
+    username:
+      type: string(255)
+      extra:
+        test: 123
+    password:
+      type: string(255)
+</code>
+
+Now after you build your models from yaml you can now access the data with the following php code.
+
+<code type="php">
+$username = Doctrine::getTable('User')->getDefinitionOf('username');
+echo $username['extra']['test']; // 123
+</code>
+
 ++ Using Schema Files
 
 Once you have defined your schema files you need some code to build the models from the YAML definition.

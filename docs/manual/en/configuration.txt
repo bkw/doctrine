@@ -40,6 +40,35 @@ $table->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 > **NOTE**
 > We haven't introduced the above used {{Doctrine::getTable()}} method. You will learn more about the table objects used in Doctrine in the [doc component-overview:table :name] section of the next chapter.
 
+++ Defaults Attributes
+
+Doctrine has a few specific attributes available that allow you to specify the default values of things that in the past were hardcoded values. Such as default column length, default column type, etc.
+
++++ Default Column Options
+
+It is possible to specify an array of default options to be used on every column in your model.
+
+<code type="php">
+// bootstrap.php
+
+// ...
+
+$manager->setAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS, 
+  array('type' => 'string', 'length' => 255, 'notnull' => true));
+</code>
+
++++ Default Added Auto Id
+
+You can customize the properties of the automatically added primary key in Doctrine models.
+
+<code type="php">
+$manager->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, 
+  array('name' => '%s_id', 'type' => 'string', 'length' => 16));
+</code>
+
+> **NOTE**
+> The {{%s}} string in the name is replaced with the table name.
+
 ++ Portability
 
 Each database management system (DBMS) has it's own behaviors. For example, some databases capitalize field names in their output, some lowercase them, while others leave them alone. These quirks make it difficult to port your applications over to another database type. Doctrine strives to overcome these differences so your applications can switch between DBMS's without any changes. For example switching from sqlite to mysql.

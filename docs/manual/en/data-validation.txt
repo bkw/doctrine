@@ -197,6 +197,23 @@ if ( ! $user->isValid()) {
 
 Now the above code will still fail because the domain {{somefakedomainiknowdoesntexist.com}} does not exist and the php function {{[http://www.php.net/checkdnsrr checkdnsrr()]}} returned false.
 
+> **TIP**
+> You may not always want to validate the mx record of an e-mail address. If this is the case then you can disable it by using the check_mx option and setting it to false.
+
+<code type="php">
+// models/User.php
+
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        // ...
+
+        $this->hasColumn('email_address', 'string', 255, array('email' => array('check_mx' => false)));
+    }
+}
+</code>
+
 +++ Not Blank
 
 The not blank validator is similar to the not null validator except that it will fail on empty strings or strings with white space.
@@ -737,6 +754,24 @@ User:
 > **NOTE**
 > You should only use unique constraints for columns other than the primary key because they are always unique already.
 
+If you wish to add a unique constraint to more than one column then you can use the {{unique()}} mapping method.
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string', 255);
+        $this->hasColumn('email_address', 'string', 255);
+
+        $this->unique('username', 'email_address');
+    }
+}
+</code>
+
+> **NOTE**
+> Using the {{unique()}} method is a convenience method for adding a unique index for the specified fields. You can accomplish the same thing by manually adding the unique index for the specified fields.
+
 +++ Regular Expression
 
 The regular expression validator is a simple way to validate column values against your own provided regular expression. In this example we will make sure the username contains only valid letters or numbers.
@@ -971,6 +1006,46 @@ $state->code = 'ZZ';
 if ( ! $state->isValid()) {
     echo 'State is invalid because "ZZ" is not a valid state code';
 }
+</code>
+
+++ Validating Relationships
+
+Sometimes you may want to run validation deep on any referenced relationships. This can be accomplished by passing a {{$deep}} argument to {{isValid()}} with a value of true. Below you can find an example:
+
+<code type="php">
+$user = new User();
+$mail = new Email();
+
+$user->name = 'jwage';
+$user->Emails[] = $mail;
+</code>
+
+Now if we check validation it will return false because the referenced Email object does not have an address set.
+
+<code type="php">
+$valid = $user->isValid(true); // false
+</code>
+
+++ Custom Validators
+
+You can register custom validators for Doctrine to be aware of by using the {{Doctrine_Manager::registerValidator()}} method.
+
+<code type="php">
+// bootstrap.php
+
+// ...
+
+$manager->registerValidators('MyValidator');
+</code>
+
+You can also get the possible validators by using the {{getValidators()}} method.
+
+<code type="php">
+// test.php
+
+// ...
+
+$validators = $manager->getValidators();
 </code>
 
 ++ Conclusion

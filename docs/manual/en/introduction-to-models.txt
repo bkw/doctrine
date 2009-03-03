@@ -408,6 +408,41 @@ When we use the {{Doctrine::loadModels()}} functionality all the classes found w
 Doctrine::loadModels('/path/to/models');
 </code>
 
+++ Custom Accessors/Mutators
+
+With Doctrine it is possible to define custom accessors and mutators to use in your Doctrine models. This is possible with the {{hasAccessor()}} and {{hasMutator()}} mapping methods. Or, you can define both the mutator and accessor in one call using the {{hasAccessorMutator()}} method.
+
+Imagine a user model where you want to define a custom password mutator that encrypts the password using the PHP {{md5()}} method:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->hasColumn('username', 'string' 255);
+        $this->hasColumn('password', 'string', 255);
+    }
+
+    public function setUp()
+    {
+        $this->hasMutator('password', 'md5Passwrd');
+    }
+
+    public function md5Passwrd($value)
+    {
+        $this->_set('passwrd', md5($value));
+    }
+} 
+</code>
+
+Now when you try and set the password the custom mutator will be invoked instead of the normal mutating procedure.
+
+<code type="php">
+$user = new User();
+$user->username = 'jwage';
+$user->password = 'changeme'; // invokes User::md5Password()
+</code>
+
 ++ Conclusion
 
 This chapter is probably the most intense chapter so far but it is a good one. We learned a little about how to use models, how to generate models from existing databases, how to write our own models, and how to maintain our models as YAML schema files. We also modified our Doctrine test environment to implement some functionality for loading models from our models directory.

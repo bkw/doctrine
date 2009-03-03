@@ -519,6 +519,67 @@ You can also simply check if a record is modified by using the {{Doctrine_Record
 echo $user->isModified() ? 'Modified':'Not Modified';
 </code>
 
+If you want to also check if any of the referenced relationships are modified you can pass a {{$deep}} argument to {{isModified()}} with a value of true. Below you will find an example:
+
+<code type="php">
+$user = new User();
+$mail = new Email();
+$mail->address = 'test';
+$user->Emails[] = $mail;
+</code>
+
+Now if we deep check if the user is modified it will return true because the Email address is modified.
+
+<code type="php">
+$modified = $user->isModified(true); // true
+</code>
+
+Sometimes when a record has been updated you may want to inspect the old values and not just the new values. This is possible in Doctrine with the {{getModified()}} method by passing an argument of true. This will return the old values instead of the new ones.
+
+<code type="php">
+// test.php
+
+// ...
+
+$user = Doctrine::getTable('User')->findOneByName('zYne-);
+$user->name = 'zYne-';
+
+$oldValues = $user->getModified(true);
+
+/*
+array(
+  'name' => 'zYne',
+)
+*/
+
+$newValues = $user->getModified(false);
+
+/*
+array(
+  'name' => 'zYne-',
+)
+</code>
+
+After saving a record in Doctrine, the modified properties are cleared out and the state of the object is returned to un-modified. Sometimes you may want to retrieve the values that were last modified and this is possible by using the {{getLastModified()}} method.
+
+<code type="php">
+// test.php
+
+// ...
+
+$user = new User();
+$user->username = 'jwage';
+print_r($user->getModified()); // array('username' => 'jwage')
+$user->save();
+
+// getModified() returns the current modified properties and in this case 
+// now no propeties are modified.
+print_r($user->getModified()); // array()
+
+// you can retrieve the last modified properties like the following
+print_r($user->getLastModified()); // array('username' => 'jwage')
+</code>
+
 Sometimes you may want to retrieve the column count of given record. In order to do this you can simply pass the record as an argument for the count() function. This is possible since {{Doctrine_Record}} implements a magic Countable interface. The other way would be calling the count() method.
 
 <code type="php">
@@ -938,9 +999,22 @@ There might be situations where you want to map custom values to records. For ex
 // test.php
 
 // ...
-$user->mapValue('isRegistered', true);
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        // ...
 
-$user->isRegistered; // true
+        $this->mapValue('name');
+    }
+
+    // ...
+}
+
+$user = new User();
+
+$user->name = 'jwage';
+echo $user->name; // jwage
 </code>
 
 +++ Serializing
@@ -1014,6 +1088,37 @@ Now just like we can delete a collection we can save it:
 
 <code type="php">
 $users->save();
+</code>
+
+Splitting a collection in to a simple key => value pair array is simple. It can be accomplished with the {{toKeyValueArray()}} method.
+
+<code type="php">
+// test.php
+
+// ...
+
+$q = Doctrine_Query::create()
+    ->from('User u');
+
+$users = $q->execute();
+
+$array = $users->toKeyValueArray('id', 'name');
+print_r($array);
+</code>
+
+The above example would output the following array structure:
+
+<code>
+array(
+  4 => 'zYne',
+  5 => 'Arnold Schwarzenegger',
+  6 => 'Michael Caine',
+  7 => 'Takeshi Kitano',
+  8 => 'Sylvester Stallone',
+  9 => 'Kurt Russell',
+  10 => 'Jean Reno',
+  11 => 'Edward Furlong',
+)
 </code>
 
 +++ Accessing Elements

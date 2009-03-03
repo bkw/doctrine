@@ -297,9 +297,24 @@ Let's link the phone numbers to the user, since the relation to {{Phonenumbers}}
 $user = new User();
 $user['username'] = 'jwage';
 $user['password'] = 'changeme';
-$user->save();
-
 $user->link('Phonenumbers', $phoneIds);
+$user->save();
+</code>
+
+> **TIP**
+> Remember to save the record after calling {{link()}}. By default the links are not persisted until you save the record. If you wish to save the links to the database instantly then you can pass the third argument {{$now}} with a value of true.
+
+<code type="php">
+$user = new User();
+$user['username'] = 'jwage';
+$user['password'] = 'changeme';
+$user->save();
+</code>
+
+Now the following will issue query to database creating links because of the third argument being true. Without it you would have to call {{save()}} to persist the links.
+
+<code type="php">
+$user->link('Phonenumbers', $phoneIds, true);
 </code>
 
 If a relation to the {{User}} record class is defined for the {{Phonenumber}} record class, you may even do this:
@@ -334,6 +349,7 @@ Now we can link the {{User}} to our {{Phonenumber}}:
 
 // ...
 $phone1->link('User', array($user['id']));
+$phone1->save();
 </code>
 
 We can create another phone number:
@@ -354,6 +370,7 @@ Let's link this Phonenumber to our User too:
 
 // ...
 $phone2->link('User', array($user['id']));
+$phone2->save();
 </code>
 
 +++ Retrieving Related Records
@@ -474,6 +491,7 @@ Lets say we have a {{User}} who has three {{Phonenumbers}} (with identifiers 1, 
 
 // ...
 $user->unlink('Phonenumber', array(1, 3));
+$user->save();
 
 echo $user->Phonenumber->count(); // 1
 </code>
@@ -573,6 +591,7 @@ You can also unlink ALL relationships to {{Group}} by omitting the second argume
 
 // ...
 $user->unlink('Group');
+$user->save();
 </code>
 
 While the obvious and convenient way of deleting a link between {{User}} and {{Group}} would be the following, you still should *NOT* do this:
@@ -1165,12 +1184,38 @@ $data = array(
   'age' => '25',
   'Emails' => array(
     array('address' => 'john@mail.com'),
-    array('address' => 'john@work.com')
+    array('address' => 'john@work.com')),
+  'Groups' => array(1, 2, 3)
 );
 
 $user = new User();
 $user->fromArray($data);
 $user->save();
+</code>
+
+It is possible to use {{fromArray()}} with custom model mutators like the following:
+
+<code type="php">
+// models/User.php
+
+class User extends Doctrine_Record
+{
+    // ...
+
+    public function setEncryptedPassword($password)
+    {
+        return $this->_set('password', md5($password));
+    }
+}
+</code>
+
+Now if when we use {{fromArray()}} we can use the {{setEncryptedPassword()}} method by passing a value named {{encrypted_password}}.
+
+<code type="php">
+// test.php
+
+// ...
+$user->fromArray(array('encrypted_password' => 'changeme'));
 </code>
 
 +++ Synchronize With Array
@@ -1221,6 +1266,18 @@ $user = Doctrine_Query::create()
 $user->synchronizeWithArray($arrayUser);
 $user->save();
 </code>
+
+You can also synchronize relationships by specifying an array of ids to link the record to.
+
+<code type="php">
+$user->synchronizeWithArray(array('Group' => array(1, 2, 3)));
+$user->save();
+</code>
+
+The above code will remove any existing groups and link the user to the group id 1, 2, and 3.
+
+> **TIP**
+> Internally {{Doctrine_Record::link()}} and {{Doctrine_Record::unlink()}} are used to link relationships together.
 
 ++ Overriding the Constructor
 

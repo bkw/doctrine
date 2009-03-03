@@ -1011,6 +1011,28 @@ The above call to {{getSql()}} would output the following SQL query:
 SELECT u.id AS u__id FROM user u WHERE u.id IN (?, ?, ?, ?)
 </code>
 
+You can also optionally use the following DQL syntax when working with IN conditions.
+
+<code type="php">
+// test.php
+
+// ...
+$q = Doctrine_Query::create()
+    ->from('User u')
+    ->andWhere('u.id IN ?', array(array(1, 2, 3, 4, 5)));
+
+echo $q->getSql();
+</code>
+
+The above call to {{getSql()}} would output the following SQL query:
+
+<code type="sql">
+SELECT u.id AS u__id, u.username AS u__username, u.password AS u__password FROM user u WHERE u.id IN (?, ?, ?, ?, ?)j
+</code>
+
+> **NOTE**
+> Notice how the placeholders were added automatically for you. You will see that their is one {{?}} for every parameter you passed.
+
 +++ Like Expressions
 
 Syntax:
@@ -2124,6 +2146,16 @@ Get the array of parameters for the {{Doctrine_Query}} instance:
 
 // ...
 print_r($q->getParams());
+</code>
+
+> **NOTE**
+> The above call to {{getParams()}} returns the unmodified array of parameters that are used to build the final params to be passed to the query. If you wish to get the flattened array of params passed to PDO then use the {{getFlattenedParams()}} method.
+
+<code type="php">
+// test.php
+
+// ...
+print_r($q->getFlattenedParams());
 </code>
 
 ++ Conclusion

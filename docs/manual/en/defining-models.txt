@@ -2086,6 +2086,45 @@ $conn = Doctrine_Manager::connection();
 $conn->setCharset('utf8');
 </code>
 
+You can set the default charset and collate at the manager, connection or table level just like all the other configurations in Doctrine.
+
+Set globally on a manager instance.
+
+<code type="php">
+// bootstrap.php
+
+// ...
+
+$manager->setCollate('utf8_unicode_ci');
+$manager->setCharset('utf8');
+</code>
+
+The same can be set on the connection level.
+
+<code type="php">
+// bootstrap.php
+
+// ...
+
+$connection->setCollate('utf8_unicode_ci');
+$connection->setCharset('utf8');
+</code>
+
+You can also set this at the table level like always:
+
+<code type="php">
+class User extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        // ...
+
+        $this->setCollate('utf8_unicode_ci');
+        $this->setCharset('utf8');
+    }
+}
+</code>
+
 ++ Transitive Persistence
 
 Doctrine offers both database and application level cascading operations. This section will explain in detail how to setup both application and database level cascades.
