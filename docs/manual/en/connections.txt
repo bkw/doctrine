@@ -62,7 +62,7 @@ echo $manager->getCurrentConnection()->getName(); // connection 1
 
 ++ Iterating Connections
 
-You can iterate over the opened connection by simply passing the manager object to a foreach clause. This is possible since {{Doctrine_Manager}} implements special {{IteratorAggregate}} interface.
+You can iterate over the opened connections by simply passing the manager object to a foreach clause. This is possible since {{Doctrine_Manager}} implements special {{IteratorAggregate}} interface.
 
 <code type="php">
 // test.php

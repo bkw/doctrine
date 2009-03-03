@@ -58,7 +58,7 @@ Below is a list of all the available portability attributes and the description 
 || PORTABILITY_DELETE_COUNT            || Force reporting the number of rows deleted. Some DBMS's don't count the number of rows deleted when performingsimple {{DELETE FROM}} tablename queries. This mode tricks such DBMS's into telling the count by adding {{WHERE 1=1}} to the end of {{DELETE}} queries. ||
 || PORTABILITY_EMPTY_TO_NULL           || Convert empty strings values to null in data in and output. Needed because Oracle considers empty strings to be null, while most other DBMS's know the difference between empty and null. ||
 || PORTABILITY_ERRORS                  || Makes certain error messages in certain drivers compatible with those from other DBMS's ||
-|| PORTABILITY_FIX_ASSOC_FIELD_NAMES   || This removes any qualifiers from keys in associative fetches. some RDBMS , like for example SQLite, will be default use the fully qualified name for a column in assoc fetches if it is qualified in a query. ||
+|| PORTABILITY_FIX_ASSOC_FIELD_NAMES   || This removes any qualifiers from keys in associative fetches. Some RDBMS, like for example SQLite, will by default use the fully qualified name for a column in assoc fetches if it is qualified in a query. ||
 || PORTABILITY_FIX_CASE                || Convert names of tables and fields to lower or upper case in all methods. The case depends on the field_case option that may be set to either CASE_LOWER (default) or CASE_UPPER ||
 || PORTABILITY_NONE                    || Turn off all portability features. ||
 || PORTABILITY_NUMROWS                 || Enable hack that makes numRows() work in Oracle. ||

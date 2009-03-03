@@ -226,7 +226,7 @@ You can use any of the three ways above, however the last one is the recommended
 // ...
 $user = new User();
 $user['username'] = 'jwage';
-$user-['password'] = 'changeme';
+$user['password'] = 'changeme';
 
 $email = $user->Email;
 
@@ -235,7 +235,7 @@ $email = $user->get('Email');
 $email = $user['Email'];
 </code>
 
-When accessing a one-to-one related record that doesn't exist, Doctrine automatically creates the object. That is why the above
+When accessing a one-to-one related record that doesn't exist, Doctrine automatically creates the object. That is why the above code is possible.
 
 <code type="php">
 // test.php

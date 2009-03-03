@@ -927,6 +927,9 @@ $user->state('TDIRTY');
 $user->save();
 </code>
 
+> **NOTE**
+> When setting the state you can optionally pass a string for the state and it will be converted to the appropriate state constant. In the example above, `TDIRTY` is actually converted to `Doctrine_Record::STATE_TDIRTY`.
+
 +++ Mapping Custom Values
 
 There might be situations where you want to map custom values to records. For example values that depend on some outer sources and you only want these values to be available at runtime not persisting those values into database. This can be achieved as follows:
@@ -973,7 +976,7 @@ echo $record->exists() ? 'Exists':'Does Not Exist'; // Exists
 
 +++ Function Callbacks for Columns
 
-{{Doctrine_Record}} offers a way for attaching callback calls for column values. For example if you want to trim certain column, you can simply user:
+{{Doctrine_Record}} offers a way for attaching callback calls for column values. For example if you want to trim certain column, you can simply use:
 
 <code type="php">
 // test.php
@@ -1261,9 +1264,7 @@ $manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 
 Once you enabled validation, you'll get a bunch of validations automatically:
 
-* Data type validations: All values assigned to columns are checked for the right type. That means if you specified
-
-A column of your record as type 'integer', Doctrine will validate that any values assigned to that column are of this type. This kind of type validation tries to be as smart as possible since PHP is a loosely typed language. For example 2 as well as "7" are both valid integers whilst "3f" is not. Type validations occur on every column (since every column definition needs a type).
+* Data type validations: All values assigned to columns are checked for the right type. That means if you specified a column of your record as type 'integer', Doctrine will validate that any values assigned to that column are of this type. This kind of type validation tries to be as smart as possible since PHP is a loosely typed language. For example 2 as well as "7" are both valid integers whilst "3f" is not. Type validations occur on every column (since every column definition needs a type).
 
 * Length validation: As the name implies, all values assigned to columns are validated to make sure that the value does not exceed the maximum length.
 
@@ -1459,7 +1460,7 @@ The state/version of the object(s) is noted when the transaction begins. When th
 
 +++ Pessimistic Locking
 
-The objects that need to participate in the transaction are locked at the moment the user starts the transaction. No other user can start a transaction that operates on these objects while the locks are active. This ensures that the user who starts the transaction can be sure that noone else modifies the same objects until he has finished his work.
+The objects that need to participate in the transaction are locked at the moment the user starts the transaction. No other user can start a transaction that operates on these objects while the locks are active. This ensures that the user who starts the transaction can be sure that no one else modifies the same objects until he has finished his work.
 
 Doctrine's pessimistic offline locking capabilities can be used to control concurrency during actions or procedures that take several HTTP request and response cycles and/or a lot of time to complete.
 

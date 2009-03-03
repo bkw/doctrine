@@ -1671,7 +1671,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
-SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.phonenumber AS p__phonenumber FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id
+SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.phonenumber AS p__phonenumber FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id LIMIT 20
 </code>
 
 +++ Driver Portability
@@ -1717,8 +1717,11 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
  
 <code type="sql">
-SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.user_id AS p__user_id, p.phonenumber AS p__phonenumber FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id
+SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.phonenumber AS p__phonenumber, p.user_id AS p__user_id FROM user u LEFT JOIN phonenumber p ON u.id = p.user_id WHERE u.id IN (SELECT DISTINCT u2.id FROM user u2 LIMIT 20)
 </code>
+
+>**NOTE**
+>Notice how the IN clause with the subquery was added. This is so that the users are limited to 20 and the users phonenumbers are not limited.
 
 In the next example we are going to fetch first 20 users and all their phonenumbers and only those users that actually have phonenumbers with single efficient query, hence we use an INNER JOIN. Notice how the DQL parser is smart enough to use the INNER JOIN in the subquery:
 
@@ -1738,7 +1741,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
  
 <code type="sql">
-SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.user_id AS p__user_id, p.phonenumber AS p__phonenumber FROM user u INNER JOIN phonenumber p ON u.id = p.user_id
+SELECT u.id AS u__id, u.username AS u__username, p.id AS p__id, p.phonenumber AS p__phonenumber, p.user_id AS p__user_id FROM user u INNER JOIN phonenumber p ON u.id = p.user_id WHERE u.id IN (SELECT DISTINCT u2.id FROM user u2 INNER JOIN phonenumber p2 ON u2.id = p2.user_id LIMIT 20)
 </code>
 
 ++ Named Queries

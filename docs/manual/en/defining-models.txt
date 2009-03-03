@@ -68,7 +68,7 @@ $book->save();
 
 +++ Default values
 
-Doctrine supports default values for all data types. When default value is attached to a record column this means two things. First this value isattached to every newly created Record and when Doctrine creates your database tables it includes the default value in the create table statement.
+Doctrine supports default values for all data types. When default value is attached to a record column this means two things. First this value is attached to every newly created Record and when Doctrine creates your database tables it includes the default value in the create table statement.
 
 <code type="php">
 // models/generated/BaseUser.php
@@ -117,7 +117,7 @@ echo $user->username; // default username
 
 All DBMS provide multiple choice of data types for the information that can be stored in their database table fields. However, the set of data types made available varies from DBMS to DBMS.
 
-To simplify the interface with the DBMS supported by Doctrine, it was defined a base set of data types that applications may access independently of the underlying DBMS.
+To simplify the interface with the DBMS supported by Doctrine, a base set of data types was defined. Applications may access them independently of the underlying DBMS.
 
 The Doctrine applications programming interface takes care of mapping data types when managing database options. It is also able to convert that is sent to and received from the underlying DBMS using the respective driver.
 
@@ -495,7 +495,7 @@ Test:
 
 ++++ Enum
 
-Doctrine has a unified enum type. The possible values for the column can be specified can be specified on the column definition with {{Doctrine_Record::hasColumn()}}
+Doctrine has a unified enum type. The possible values for the column can be specified on the column definition with {{Doctrine_Record::hasColumn()}}
 
 > **NOTE**
 > If you wish to use native enum types for your dbms if it supports it then you must set the following attribute:
@@ -2230,6 +2230,6 @@ Currently, the only two supported database-level cascade styles are for {{onDele
 
 ++ Conclusion
 
-Now that we know everything about how to define our Doctrine models, I think we are ready to move on to learning about how to [doc work-with-models work with models] in your application.
+Now that we know everything about how to define our Doctrine models, I think we are ready to move on to learning about how to [doc working-with-models work with models] in your application.
 
 This is a very large topic as well so take a break, grab a mountain dew and hurry back for the [doc working-with-models next chapter].
