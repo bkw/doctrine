@@ -31,6 +31,9 @@ You could also execute the {{phpinfo.php}} from the command line and get the sam
 $ php phpinfo.php
 </code>
 
+> **NOTE**
+> Checking the requirements are required in order to run the examples used throughout this documentation.
+
 ++ Installing
 
 Currently it is possible to install Doctrine four different ways that are listed below:
