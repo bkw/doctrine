@@ -52,7 +52,7 @@ class TimestampTemplate extends Doctrine_Template
         $this->hasColumn('created', 'date');
         $this->hasColumn('updated', 'date');
 
-        $this->setListener(new TimestampListener());
+        $this->addListener(new TimestampListener());
     }
 }
 </code>
