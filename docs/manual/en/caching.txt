@@ -184,7 +184,7 @@ Usually the cache entries are valid for only some time. You can set global value
 $manager->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 3600);
 </code>
 
-Now as we have set a cache driver for use we can make a DQL query use it by calling the {{userResultCache()}} method:
+Now as we have set a cache driver for use we can make a DQL query use it by calling the {{useResultCache()}} method:
 
 **Fetch blog post titles and the number of comments:**
 
