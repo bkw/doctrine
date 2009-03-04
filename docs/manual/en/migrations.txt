@@ -438,6 +438,26 @@ MigrationTest:
     field1: string
 </code>
 
++++ Generating Migrations
+
+Doctrine offers the ability to generate migration classes a few different ways. You can generate a set of migrations to re-create an existing database, or generate migration classes to create a database for an existing set of models.
+
+++++ From Database
+
+To generate a set of migrations from the existing database connections it is simple, just use {{Doctrine::generateMigrationsFromDb()}}.
+
+<code type="php">
+Doctrine::generateMigrationsFromDb('/path/to/migration/classes');
+</code>
+
+++++ From Existing Models
+
+To generate a set of migrations from an existing set of models it is just as simple as from a database, just use  {{Doctrine::generateMigrationsFromModels()}}.
+
+<code type="php">
+Doctrine::generateMigrationsFromModels('/path/to/migration/classes', '/path/to/models');
+</code>
+
 ++ Conclusion
 
 Using migrations is highly recommended for altering your production database schemas as it is a safe and easy way to make changes to your schema.
