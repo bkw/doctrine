@@ -76,7 +76,7 @@ For the first version lets create a new table named {{migration_test}}:
 <code type="php">
 // migrations/1_add_table.php
 
-class AddTable extends Doctrine_Migration
+class AddTable extends Doctrine_Migration_Base
 {
     public function up()
     {
@@ -95,7 +95,7 @@ Now lets create a second version where we add a new column to the table we added
 <code type="php">
 // migrations/2_add_column.php
 
-class AddColumn extends Doctrine_Migration
+class AddColumn extends Doctrine_Migration_Base
 {
     public function up()
     {
@@ -114,7 +114,7 @@ Finally, lets change the type of the {{field1}} column in the table we created p
 <code type="php">
 // migrations/3_change_column.php
 
-class ChangeColumn extends Doctrine_Migration
+class ChangeColumn extends Doctrine_Migration_Base
 {
     public function up()
     {
@@ -389,9 +389,9 @@ The valid options for the {{$definition}} are:
 Sometimes you may need to alter the data in the database with your models. Since you may create a table or make a change, you have to do the data altering after the {{up()}} or {{down()}} method is processed. We have hooks in place for this named {{preUp()}}, {{postUp()}}, {{preDown()}}, and {{postDown()}}. Define these methods and they will be triggered:
 
 <code type="php">
-// migrations/001_add_table.php
+// migrations/1_add_table.php
 
-class AddTable extends Doctrine_Migration
+class AddTable extends Doctrine_Migration_Base
 {
     public function up()
     {
@@ -437,6 +437,115 @@ MigrationTest:
   columns:
     field1: string
 </code>
+
++++ Up/Down Automation
+
+In Doctrine migrations it is possible most of the time to automate the opposite of a migration method. For example if you create a new column in the up of a migration, we should be able to easily automate the down since all we need to do is remove the column that was created. This is possible by using the {{migrate()}} function for both the {{up}} and {{down}}.
+
+The {{migrate()}} method accepts an argument of $direction and it will either have a value of {{up}} or {{down}}. This value is passed to the first argument of functions like {{column}}, {{table}}, etc.
+
+Here is an example where we automate the adding and removing of a column
+
+<code type="php">
+class MigrationTest extends Doctrine_Migration_Base
+{
+    public function migrate($direction)
+    {
+      $this->column($direction, 'table_name', 'column_name', 'string', '255');
+    }
+}
+</code>
+
+Now when we run up with the above migration, the column will be added and when we run down the column will be removed.
+
+Here is a list of the following migration methods that can be automated:
+
+||~ Automate Method Name        ||~ Automates ||
+|| table()                      || createTable()/dropTable() ||
+|| constraint()                 || createConstraint()/dropConstraint() ||
+|| foreignKey()                 || createForeignKey()/dropForeignKey() ||
+|| column()                     || addColumn()/removeColumn() ||
+|| index()                      || addInex()/removeIndex() ||
+
++++ Generating Migrations
+
+Doctrine offers the ability to generate migration classes a few different ways. You can generate a set of migrations to re-create an existing database, or generate migration classes to create a database for an existing set of models. You can even generate migrations from differences between two sets of schema information.
+
+++++ From Database
+
+To generate a set of migrations from the existing database connections it is simple, just use {{Doctrine::generateMigrationsFromDb()}}.
+
+<code type="php">
+Doctrine::generateMigrationsFromDb('/path/to/migration/classes');
+</code>
+
+++++ From Existing Models
+
+To generate a set of migrations from an existing set of models it is just as simple as from a database, just use  {{Doctrine::generateMigrationsFromModels()}}.
+
+<code type="php">
+Doctrine::generateMigrationsFromModels('/path/to/migration/classes', '/path/to/models');
+</code>
+
+++++ Diff Tool
+
+Sometimes you may want to alter your models and be able to automate the migration process for your changes. In the past you would have to write the migration classes manually for your changes. Now with the diff tool you can make your changes then generate the migration classes for the changes.
+
+The diff tool is simple to use. It accepts a "from" and a "to" and they can be one of the following:
+
+* Path to yaml schema files
+* Name of an existing database connection
+* Path to an existing set of models
+
+A simple example would be to create two YAML schema files, one named {{schema1.yml}} and another named {{schema2.yml}}.
+
+The {{schema1.yml}} contains a simple {{User}} model:
+
+<code type="yaml">
+# schema1.yml
+
+User:
+  columns:
+    username: string(255)
+    password: string(255)
+</code>
+
+Now imagine we modify the above schema and want to add a {{email_address}} column:
+
+<code type="yaml">
+# schema1.yml
+
+User:
+  columns:
+    username: string(255)
+    password: string(255)
+    email_address: string(255)
+</code>
+
+Now we can easily generate a migration class which will add the new column to our database:
+
+<code type="php">
+Doctrine::generateMigrationsFromDiff('/path/to/migration/classes', '/path/to/schema1.yml', '/path/to/schema2.yml');
+</code>
+
+This will produce a file at the path {{/path/to/migration/classes/1236199329_version1.php}}
+
+<code type="php">
+class Version1 extends Doctrine_Migration_Base
+{
+    public function up()
+    {
+		$this->addColumn('user', 'email_address', 'string', '255', array ());
+    }
+
+    public function down()
+    {
+		$this->removeColumn('user', 'email_address');
+    }
+}
+</code>
+
+Now you can easily migrate your database and add the new column!
 
 ++ Conclusion
 

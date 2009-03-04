@@ -1182,7 +1182,7 @@ foreach ($array as $key => $value) {
 
 +++ SoftDelete
 
-The {{SoftDelete}} behavior is a very simple yet highly desired model behavior which overrides the {{delete()}} functionality and adds a {{deleted}} column. When {{delete()}} is called, instead of deleting the record from the database, a delete flag is set to 1. Below is an example of how to create a model with the {{SoftDelete}} behavior being used.
+The {{SoftDelete}} behavior is a very simple yet highly desired model behavior which overrides the {{delete()}} functionality and adds a {{deleted_at}} column. When {{delete()}} is called, instead of deleting the record from the database, {{deleted_at}} column is set to the current date and time. Below is an example of how to create a model with the {{SoftDelete}} behavior being used.
 
 <code type="php">
 // models/SoftDeleteTest.php
@@ -1231,13 +1231,13 @@ echo $sql[0];
 The above code would output the following SQL query:
 
 <code type="sql">
-CREATE TABLE soft_delete_test (name VARCHAR(255), deleted TINYINT(1) DEFAULT '0' NOT NULL, PRIMARY KEY(name)) ENGINE = INNODB
+CREATE TABLE soft_delete_test (name VARCHAR(255), deleted_at DATETIME, PRIMARY KEY(name)) ENGINE = INNODB
 </code>
 
 Now lets put the behavior in action.
 
 > **NOTE**
-> You are required to enable DQL callbacks in order for all executed queries to have the dql callbacks executed on them. In the SoftDelete behavior they are used to filter the select statements to exclude all records where the deleted flag is set with an additional WHERE condition.
+> You are required to enable DQL callbacks in order for all executed queries to have the dql callbacks executed on them. In the SoftDelete behavior they are used to filter the select statements to exclude all records where the deleted_at flag is set with an additional WHERE condition.
 
 **Enable DQL Callbacks**
 
@@ -1259,7 +1259,7 @@ $record->name = 'new record';
 $record->save();
 </code>
 
-Now when we call {{delete()}} the {{deleted}} flag will be set to true:
+Now when we call {{delete()}} the {{deleted_at}} column will be set:
 
 <code type="php">
 // test.php
@@ -1277,11 +1277,11 @@ $ php test.php
 Array
 (
     [name] => new record
-    [deleted] => 1
+    [deleted_at] => 2009-03-04 03:01:02
 )
 </code>
 
-Also, when we query, any records where deleted is not null are excluded from the results:
+Also, when we query, any records where deleted_at is not null are excluded from the results:
 
 <code type="php">
 // test.php
@@ -1296,7 +1296,7 @@ echo $q->getSql();
 The above call to {{getSql()}} would output the following SQL query:
 
 <code type="sql">
-SELECT s.name AS s__name, s.deleted AS s__deleted FROM soft_delete_test s WHERE (s.deleted = ? OR s.deleted IS NULL)
+SELECT s.name AS s__name, s.deleted_at AS s__deleted_at FROM soft_delete_test s WHERE (s.deleted_at IS NULL)
 </code>
 
 > **NOTE**
