@@ -642,7 +642,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
 
                     if (($key = array_search($def, $options['foreignKeys'])) === false) {
                         $options['foreignKeys'][] = $def;
-                        $constraints[] = $integrity;
+                        if ($integrity !== $emptyIntegrity) {
+                            $constraints[] = $integrity;
+                        }
                     } else {
                         if ($integrity !== $emptyIntegrity) {
                             $constraints[$key] = $integrity;
