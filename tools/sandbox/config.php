@@ -43,6 +43,7 @@ define('SQL_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPAR
 define('YAML_SCHEMA_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'schema');
 define('DB_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'sandbox.db');
 define('DSN', 'sqlite:///' . DB_PATH);
+//define('DSN', 'mysql://root@localhost/doctrine10');
 
 require_once(DOCTRINE_PATH . DIRECTORY_SEPARATOR . 'Doctrine.php');
 
@@ -51,3 +52,6 @@ spl_autoload_register(array('Doctrine', 'autoload'));
 Doctrine_Manager::connection(DSN, 'sandbox');
 
 Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
+Doctrine_Manager::getInstance()->setAttribute('validate', 'all');
