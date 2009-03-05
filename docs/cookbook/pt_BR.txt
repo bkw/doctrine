@@ -1,6 +1,0 @@
-+ My First Project
-+ symfony and Doctrine
-+ symfony and Doctrine Migrations
-+ Code Igniter and Doctrine
-+ Plug and Play Schema Information With Templates
-+ Taking Advantage of Column Aggregation Inheritance

@@ -1,2 +1,0 @@
-The command line interface is a collection of the most commonly used tasks in Doctrine available from a command line. The 
-command line interface can be read about more in the [doc utilities:command-line-interface :index :name] section.
