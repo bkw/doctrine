@@ -42,12 +42,13 @@ define('MIGRATIONS_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'migrations');
 define('SQL_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'sql');
 define('YAML_SCHEMA_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'schema');
 define('DB_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'sandbox.db');
-define('DSN', 'sqlite:///' . DB_PATH);
+//define('DSN', 'sqlite:///' . DB_PATH);
+define('DSN', 'mysql://root:@localhost/doctrine11sandbox');
 
 require_once(DOCTRINE_PATH . DIRECTORY_SEPARATOR . 'Doctrine.php');
 
 spl_autoload_register(array('Doctrine', 'autoload'));
 
-Doctrine_Manager::connection(DSN, 'sandbox');
+Doctrine_Manager::connection(DSN, 'canhr2');
 
 Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
