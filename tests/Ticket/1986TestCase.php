@@ -85,6 +85,11 @@ class Testing_Ticket_1986_2 extends Doctrine_Record
 		$this->setTableName('testing_ticket_1986_2');
 		$this->hasColumn('value', 'string', 64, array());
 	}
+
+	public function setUp()
+	{
+		$this->hasMany('Testing_Ticket_1986_1', array('refClass' => 'Testing_Ticket_1986Link', 'local' => 'id_2', 'foreign' => 'id_1'));
+	}
 }
 
 class Testing_Ticket_1986Link extends Doctrine_Record
