@@ -48,7 +48,7 @@ class Doctrine_Validator_Email
         if (isset($this->args)) {
             $parts = explode('@', $value);
         
-            if (isset($parts[1]) && function_exists('checkdnsrr')) {
+            if (isset($parts[1]) && $parts[1] && function_exists('checkdnsrr')) {
                 if ( ! checkdnsrr($parts[1], 'MX')) {
                     return false;
                 }
