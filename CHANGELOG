@@ -1,3 +1,25 @@
+1.1.0
+-----
+     * [r5567] [1.1] Releasing 1.1.0-RC2
+     * [r5568] [1.0, 1.1] Fixes issue with unsigned validator failing with value of 0 (closes #1958)
+     * [r5570] [1.1] Removing outdated cookbook articles (closes #1899)
+     * [r5579] [1.1] Initial entry of 1.1 manual(copied from 1.0)
+     * [r5580] [1.1] Updating manual for 1.1. Still need to update Migrations, SoftDelete, Timestamps, and Searchable
+     * [r5581] [1.0, 1.1] Updating Migrations chapter for 1.1 and adding missing docs to 1.0
+     * [r5582] [1.0, 1.1] Fixes issue with toArray() not using custom accessors (closes #1940)
+     * [r5583] [1.1] Fixes issue with migrations diff producing empty onDelete and onUpdate keys (closes #1962)
+     * [r5585] [1.0, 1.1] Fixed issue with relation alias generation when generating from database (closes #1966)
+     * [r5586] [1.0, 1.1] Removing coverage files from svn
+     * [r5588] [1.0, 1.1, 2.0] Moving docs.
+     * [r5589] [1.0, 1.1] Removing unused files from svn and cleaning up
+     * [r5591] [1.0, 1.1] Fixing issue with building opposite end of relationship when building from database (addresses #1966)
+     * [r5593] [1.1] Fixed #1973. Fixed issue with modified fiels that was throughing notices on fields with default value
+     * [r5597] test case for ticket #1986
+	  Ticket: 1986
+     * [r5599] [1.1] Fixing invalid failing test case. m2m must be bidirectional (closes #1986)
+     * [r5603] [1.0, 1.1] Fixes issue with result cache (closes #1981)
+     * [r5605] [1.0, 1.1] Fixes email validator from throwing warnings with empty host in email address (closes #1974)
+
 1.1.0-RC2
 ---------
      * [r5362] [1.1] Releasing Doctrine 1.1.0-RC1
