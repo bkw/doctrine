@@ -32,7 +32,26 @@
  */
 class Doctrine_Ticket_990_TestCase extends Doctrine_UnitTestCase 
 {
-    public function testTest()
+    public function prepareTables()
+    {
+        $this->tables[] = 'Ticket_990_Person';
+        parent::prepareTables();
+    }
+
+    public function testOverwriteIdentityMap()
+    {        
+        $person = new Ticket_990_Person();
+        $person->firstname = 'John';
+        $person->save();
+        
+        $person->firstname = 'Alice';
+        
+        $person = Doctrine::getTable('Ticket_990_Person')->find($person->id);
+        
+        $this->assertEqual('John', $person->firstname);
+    }
+
+    public function testDontOverwriteIdentityMap()
     {
         Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, false);
 
@@ -41,6 +60,52 @@ class Doctrine_Ticket_990_TestCase extends Doctrine_UnitTestCase
         $user = Doctrine::getTable('User')->find($user->id);
         $this->assertEqual($user->name, 'test');
 
+        
+        $person = new Ticket_990_Person();
+        $person->firstname = 'John';
+        $person->save(); 
+        
+        $person->firstname = 'Alice';
+        
+        $this->assertEqual(Doctrine_Record::STATE_DIRTY, $person->state());
+        $this->assertTrue($person->isModified());
+        $this->assertEqual(array('firstname' => 'Alice'), $person->getModified());
+        
+        $person = Doctrine::getTable('Ticket_990_Person')->find($person->id);
+        
+        $this->assertEqual('Alice', $person->firstname);
+        $this->assertEqual(Doctrine_Record::STATE_DIRTY, $person->state());
+        $this->assertTrue($person->isModified());
+        $this->assertEqual(array('firstname' => 'Alice'), $person->getModified());
+        
         Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, true);
+    }
+
+    public function testRefreshAlwaysOverwrites()
+    {
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, false);
+        
+        $person = new Ticket_990_Person();
+        $person->firstname = 'John';
+        $person->save();
+        
+        $person->firstname = 'Alice';
+        
+        $person->refresh();
+        
+        $this->assertEqual('John', $person->firstname);
+        
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, true);
+    }
+}
+
+class Ticket_990_Person extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->setTableName('person');
+        $this->hasColumn('id', 'integer', 11, array('primary' => true, 'notnull' => true, 'autoincrement' => true) );
+        $this->hasColumn('firstname', 'string');
+        $this->hasColumn('lastname', 'string');
     }
 }
