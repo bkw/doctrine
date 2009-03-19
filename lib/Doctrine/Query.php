@@ -1084,7 +1084,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
         }
         $this->_state = self::STATE_CLEAN;
 
-        $params = $this->convertEnums($params);
+        $params = $this->convertEnums((empty($params) ? $this->getParams():$params)); //$params);
 
         // Proceed with the generated SQL
 
