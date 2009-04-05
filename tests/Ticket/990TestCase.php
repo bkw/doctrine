@@ -30,6 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
+
 class Doctrine_Ticket_990_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareTables()
@@ -54,12 +55,24 @@ class Doctrine_Ticket_990_TestCase extends Doctrine_UnitTestCase
     public function testDontOverwriteIdentityMap()
     {
         Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_HYDRATE_OVERWRITE, false);
-
-        $user = Doctrine::getTable('User')->createQuery()->fetchOne();
-        $user->name = 'test';
-        $user = Doctrine::getTable('User')->find($user->id);
-        $this->assertEqual($user->name, 'test');
-
+        
+        $person = new Ticket_990_Person();
+        $person->firstname = 'John';
+        $person->save(); 
+        
+        $person->firstname = 'Alice';
+        
+        $this->assertEqual(Doctrine_Record::STATE_DIRTY, $person->state());
+        $this->assertTrue($person->isModified());
+        $this->assertEqual(array('firstname' => 'Alice'), $person->getModified());
+        
+        $person = Doctrine::getTable('Ticket_990_Person')->find($person->id);
+        
+        $this->assertEqual('Alice', $person->firstname);
+        $this->assertEqual(Doctrine_Record::STATE_DIRTY, $person->state());
+        $this->assertTrue($person->isModified());
+        $this->assertEqual(array('firstname' => 'Alice'), $person->getModified());
+        
         
         $person = new Ticket_990_Person();
         $person->firstname = 'John';
