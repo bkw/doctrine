@@ -187,7 +187,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($item1->slug, 'my-item-1');
         $item1->name = 'New name';
         $item1->save();
-        $this->assertEqual($item1->slug, 'my-item-1');
+        $this->assertEqual($item1->slug, 'new-name');
     }
 
     public function testSluggableWithSoftDeleteFailWithSameSlug()

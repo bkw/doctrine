@@ -23,7 +23,6 @@ spl_autoload_register(array('DoctrineTest','autoload'));
 $test = new DoctrineTest();
 
 // Ticket Tests
-// If you write a ticket testcase add it to the bottom of the list, with the ticket number in it
 $tickets = new GroupTest('Tickets Tests', 'tickets');
 
 $excludeTickets = array(
