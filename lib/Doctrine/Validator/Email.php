@@ -41,10 +41,9 @@ class Doctrine_Validator_Email
      */
     public function validate($value)
     {
-        if (empty($value)) {
+        if (is_null($value)) {
             return true;
         }
-        
         if (isset($this->args)) {
             $parts = explode('@', $value);
         
