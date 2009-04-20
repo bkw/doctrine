@@ -1908,7 +1908,7 @@ abstract class Doctrine_Query_Abstract
      */
     public function expireResultCache($expire = true)
     {
-        $this->_expireResultCache = true;
+        $this->_expireResultCache = $expire;
         return $this;
     }
 
@@ -1920,7 +1920,7 @@ abstract class Doctrine_Query_Abstract
      */
     public function expireQueryCache($expire = true)
     {
-        $this->_expireQueryCache = true;
+        $this->_expireQueryCache = $expire;
         return $this;
     }
 
