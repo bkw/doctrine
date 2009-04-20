@@ -64,7 +64,7 @@ class Doctrine_Ticket_1763_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(strstr($string, '3 fields had validation errors:'));
         $this->assertTrue(strstr($string, '* 1 validator failed on email_address (notnull)'));
         $this->assertTrue(strstr($string, '* 1 validator failed on username (notnull)'));
-        $this->assertTrue(strstr($string, '* 2 validators failed on ip_address (notnull, ip)'));
+        $this->assertTrue(strstr($string, '* 1 validator failed on ip_address (notnull)'));
     }
 }
 
