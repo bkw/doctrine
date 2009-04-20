@@ -241,7 +241,7 @@ class Doctrine_Relation_Nest_TestCase extends Doctrine_UnitTestCase
 
         $n = $q->execute();
 
-        $this->assertEqual($q->getSql(), 'SELECT n.id AS n__id, n.name AS n__name, n2.id AS n2__id, n2.name AS n2__name FROM nest_test n INNER JOIN nest_reference n3 ON n.id = n3.child_id OR n.id = n3.parent_id INNER JOIN nest_test n2 ON (n2.id = n3.parent_id OR n2.id = n3.child_id) AND n2.id != n.id WHERE n.id = 1');
+        $this->assertEqual($q->getSql(), 'SELECT n.id AS n__id, n.name AS n__name, n2.id AS n2__id, n2.name AS n2__name FROM nest_test n INNER JOIN nest_reference n3 ON (n.id = n3.child_id OR n.id = n3.parent_id) INNER JOIN nest_test n2 ON (n2.id = n3.parent_id OR n2.id = n3.child_id) AND n2.id != n.id WHERE n.id = 1');
 
         $this->assertEqual($n[0]->Relatives->count(), 5);
     }
