@@ -42,7 +42,7 @@ class Doctrine_Ticket_1467_TestCase extends Doctrine_UnitTestCase
             ->innerJoin('ite.Puzzles puz');
 
         $this->assertEqual($q->getDql(), 'SELECT pic.id FROM T1467_Picture pic INNER JOIN pic.Items ite INNER JOIN ite.Puzzles puz');
-        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM t1467__picture t INNER JOIN t1467__item_picture t3 ON t.id = t3.picture_id INNER JOIN t1467__item t2 ON t2.id = t3.item_id INNER JOIN t1467__item_puzzle t5 ON t2.id = t5.item_id INNER JOIN t1467__puzzle t4 ON t4.id = t5.puzzle_id');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM t1467__picture t INNER JOIN t1467__item_picture t3 ON (t.id = t3.picture_id) INNER JOIN t1467__item t2 ON t2.id = t3.item_id INNER JOIN t1467__item_puzzle t5 ON (t2.id = t5.item_id) INNER JOIN t1467__puzzle t4 ON t4.id = t5.puzzle_id');
     }
 }
 
