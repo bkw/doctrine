@@ -65,9 +65,9 @@ class Doctrine_Transaction_Oracle_TestCase extends Doctrine_UnitTestCase
         $this->transaction->setIsolation('REPEATABLE READ');
         $this->transaction->setIsolation('SERIALIZABLE');
 
-        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION ISOLATION LEVEL SERIALIZABLE');
-        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION ISOLATION LEVEL SERIALIZABLE');
-        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION ISOLATION LEVEL SERIALIZABLE');
-        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION ISOLATION LEVEL READ COMMITTED');
+        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION SET ISOLATION_LEVEL = SERIALIZABLE');
+        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION SET ISOLATION_LEVEL = SERIALIZABLE');
+        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION SET ISOLATION_LEVEL = SERIALIZABLE');
+        $this->assertEqual($this->adapter->pop(), 'ALTER SESSION SET ISOLATION_LEVEL = READ COMMITTED');
     }
 }
