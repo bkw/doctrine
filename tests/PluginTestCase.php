@@ -41,7 +41,8 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
     public function testNestedPluginsGetExportedRecursively()
     {
-        $sql = $this->conn->export->exportClassesSql(array('Wiki'));
+        $sql = $this->conn->export->exportSortedClassesSql(array('Wiki'));
+        $sql = current($sql);
 
         $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content VARCHAR(2147483647), version INTEGER, PRIMARY KEY(id, lang, version))');
         $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))');
