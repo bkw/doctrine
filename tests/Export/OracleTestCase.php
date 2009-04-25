@@ -106,7 +106,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($this->adapter->pop(), 'COMMIT');
         $this->assertEqual(substr($this->adapter->pop(), 0, 14), 'CREATE TRIGGER');
-        $this->assertEqual($this->adapter->pop(), 'CREATE SEQUENCE mytable_seq START WITH 1 INCREMENT BY 1 NOCACHE');  
+        $this->assertEqual($this->adapter->pop(), 'CREATE SEQUENCE MYTABLE_seq START WITH 1 INCREMENT BY 1 NOCACHE');  
         $this->assertEqual(substr($this->adapter->pop(), 0, 7), "DECLARE");
         $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id INT)');
         $this->assertEqual($this->adapter->pop(), 'BEGIN TRANSACTION');
@@ -161,5 +161,57 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
         $sql = $this->export->createTableSql('sometable', $fields, $options);
         $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT, name VARCHAR2(4), category NUMBER(2), PRIMARY KEY(id), CONSTRAINT unique_index UNIQUE (id, name))');
         $this->assertEqual($sql[4], 'CREATE INDEX category_index ON sometable (category)');
+    }
+    
+    public function testIdentifierQuoting()
+    {
+    	$this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        
+        $fields = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
+                        'name' => array('type' => 'string', 'length' => 4),
+                        );
+        $options = array('primary' => array('id'),
+                         'indexes' => array('myindex' => array('fields' => array('id', 'name')))
+                         );
+                         
+        $sql  = $this->export->createTableSql('sometable', $fields, $options);
+        $this->assertEqual($sql[0], 'CREATE TABLE "sometable" ("id" INT, "name" VARCHAR2(4), PRIMARY KEY("id"))');
+        $this->assertEqual($sql[1], 'DECLARE
+  constraints_Count NUMBER;
+BEGIN
+  SELECT COUNT(CONSTRAINT_NAME) INTO constraints_Count FROM USER_CONSTRAINTS WHERE TABLE_NAME = \'sometable\' AND CONSTRAINT_TYPE = \'P\';
+  IF constraints_Count = 0 THEN
+    EXECUTE IMMEDIATE \'ALTER TABLE "sometable" ADD CONSTRAINT "sometable_AI_PK_idx" PRIMARY KEY ("id")\';
+  END IF;
+END;');
+        $this->assertEqual($sql[2], 'CREATE SEQUENCE "sometable_seq" START WITH 1 INCREMENT BY 1 NOCACHE');
+        $this->assertEqual($sql[3], 'CREATE TRIGGER "sometable_AI_PK"
+   BEFORE INSERT
+   ON "sometable"
+   FOR EACH ROW
+DECLARE
+   last_Sequence NUMBER;
+   last_InsertID NUMBER;
+BEGIN
+   SELECT "sometable_seq".NEXTVAL INTO :NEW."id" FROM DUAL;
+   IF (:NEW."id" IS NULL OR :NEW."id" = 0) THEN
+      SELECT "sometable_seq".NEXTVAL INTO :NEW."id" FROM DUAL;
+   ELSE
+      SELECT NVL(Last_Number, 0) INTO last_Sequence
+        FROM User_Sequences
+       WHERE Sequence_Name = \'sometable_seq\';
+      SELECT :NEW."id" INTO last_InsertID FROM DUAL;
+      WHILE (last_InsertID > last_Sequence) LOOP
+         SELECT "sometable_seq".NEXTVAL INTO last_Sequence FROM DUAL;
+      END LOOP;
+   END IF;
+END;');
+		$this->assertEqual($sql[4], 'CREATE INDEX "myindex" ON "sometable" ("id", "name")');
+		
+		// test dropping sequence		
+		$sql = $this->export->dropSequenceSql('sometable');
+		$this->assertEqual($sql, 'DROP SEQUENCE "sometable_seq"');
+		
+        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
 }
