@@ -131,6 +131,7 @@ class Doctrine_Record_Synchronize_TestCase extends Doctrine_UnitTestCase
         $userArray = $user->toArray(true);
         unset($userArray['Phonenumber']);
         unset($userArray['Email']);
+        unset($userArray['email_id']);
 
         $user->synchronizeWithArray($userArray);
         $this->assertEqual($user->Phonenumber->count(), 0);
