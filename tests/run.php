@@ -167,6 +167,7 @@ $relation->addTestCase(new Doctrine_Relation_ManyToMany2_TestCase());
 $relation->addTestCase(new Doctrine_Relation_OneToMany_TestCase());
 $relation->addTestCase(new Doctrine_Relation_Nest_TestCase());
 $relation->addTestCase(new Doctrine_Relation_OneToOne_TestCase());
+$relation->addTestCase(new Doctrine_Relation_ColumnAliases_TestCase());
 $relation->addTestCase(new Doctrine_Relation_Parser_TestCase());
 $test->addTestCase($relation);
 
