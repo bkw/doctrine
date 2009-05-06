@@ -323,9 +323,19 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create()
             ->select('u.id')
             ->from('User u')
-            ->where("u.name = 'John O'Connor (West)'");
+            ->where("u.name = 'John O\'Connor (West)'");
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'John O\'Connor (West)' AND (e.type = 0) ");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'John O\'Connor (West)' AND (e.type = 0)");
+    }
+
+    public function testAsAndBracketUsageAsValueInQuery()
+    {
+        $q = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->where("u.name = 'Total Kjeldahl Nitrogen (TKN) as N'");
+
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'Total Kjeldahl Nitrogen (TKN) as N' AND (e.type = 0)");
     }
 }
 
