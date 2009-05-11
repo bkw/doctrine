@@ -1,3 +1,59 @@
+1.1.1
+-----
+     * [r5606] [1.1] Releasing Doctrine 1.1
+     * [r5607] [1.0, 1.1] Fixing regression caused by mistake being made with an invalid bug fix (closes #1998)
+     * [r5608] [1.0, 1.1] Fixing issue with overwrite changes in hydration and record state (closes #990)
+     * [r5620] [1.1] Added ability to prefix cache items, since it may collide with other environments. To use this support, do: = new Doctrine_Cache_XXX(array('prefix' => 'myprefix_'));
+     * [r5622] [1.1] Added missing null default value to set() method in Doctrine_Query_Abstract, because query fails to execute when passing an array as first method argument
+     * [r5630] [1.1] Fixed #1991.
+     * [r5639] [1.1] Fixed #1982.
+     * [r5643] [1.1] fixed #2075. Fixed missing parameter in createConstraint and dropConstraint.
+     * [r5644] [1.1] fixed #2015. Fixed multilevel inheritance issues when using column aggregation. Thanks for the excellent explanation and patch! Could not add the test case because it is
+	  creating some files on filesystem that I could not fix.
+     * [r5645] [1.0, 1.1] Adding suggested alias to package.xml (closes #1474)
+     * [r5651] [1.0, 1.1] fixed #1955. Fixed Sluggable behavior that was not accepting updates on slug field, even when defined canUpdate=true
+     * [r5652] [1.0, 1.1] Fixing Oracle connection adapter to allow lazy connecting (closes #1952)
+     * [r5653] [1.0, 1.1] Fixes issue with missing column types for pgsql (closes #1951)
+     * [r5654] [1.0, 1.1] Fix to db cache driver to delete invalidated cache entries (closes #1987)
+     * [r5655] [1.0, 1.1] Fixing issue with cache expire functions not making use of bool argument (closes #1961)
+     * [r5656] [1.0, 1.1] Fixing validators to return true for null values as they all should (closes #1925)
+     * [r5657] [1.0, 1.1] Re-introducing fixes so fromArray() will use template settings (closes #1942)
+     * [r5658] [1.0, 1.1] Fix to equal nest relationships and column aggregation inheritance (closes #1802)
+     * [r5659] [1.0, 1.1] fixed #2050. Also backported some issues reported in #1835 to 1.0
+     * [r5660] [1.0, 1.1] Fixed issue with db cache driver on oracle (closes #2086)
+     * [r5662] [1.0, 1.1] Fixes issue with Searchable behavior hardcoding id column name (closes #2071)
+     * [r5665] [1.0, 1.1] Fixes issue with transation setIsolation() under oracle (closes #2063)
+     * [r5666] [1.0, 1.1] Fixing tests for previous commit related to oracle transactions
+     * [r5667] [1.0, 1.1] Fixes issue with query cache not using right connection (closes #2052)
+     * [r5668] [1.0, 1.1] Fixes Doctrine_Data::purge() so that the delete statements are issued per connection and are sorted (closes #2038)
+     * [r5670] [1.1] Adding coverage for #1992 (addresses #1992)
+     * [r5674] [1.0, 1.1] Fixes issue with mssql bigint when importing (closes #2001)
+     * [r5675] [1.0, 1.1] Fixing issue with hash generation for result cache not including the hydration mode (closes #2003)
+     * [r5676] [1.0, 1.1] Fixing issue with unique index exporting under sqlite (closes #2009)
+     * [r5677] [1.0, 1.1] Fixing issue with wrong parameter given in dropDatabase() (closes #2011)
+     * [r5678] [1.0, 1.1] Fixing issue with relation names not stripping white space (closes #2025)
+     * [r5679] [1.0, 1.1] Fixed issue with multiple having statements being concatenated with commas instead of AND in count queries (closes #2034)
+     * [r5680] [1.1] fixed #2033. Added possibility to include multiple pending join conditions
+     * [r5681] [1.0, 1.1] fixed #2031. Fixed issue when record is being loaded in proxy state, which was removing fields with NULL as value
+     * [r5682] [1.0, 1.1] fixed #2045. Fixed issue with export Oracle tables which was outputing ON DELETE NO ACTION, which is not a valid constraint option in some Oracle versions
+     * [r5683] [1.0, 1.1] fixed #2044. Fixed issue in some Oracle versions that always consider uppercase table names.
+     * [r5686] [1.0, 1.1] Fixed issues with uppercase table names in Oracle when having QUOTE_IDENTIFIERS on.
+	  
+	  Added tests in OracleTest case for exporting tables with QUOTE_IDENTIFIERS on.
+	  
+	  Converted Export_Oracle_TestCase line endings to LF (was CRLF)
+	  
+	  Fixed #2062: typo in Doctrine_Adapter_Oracle->beginTransaction()
+     * [r5687] [1.1] Fixed issue with synchronizeWithArray that was incorrectly removing relations, even if foreign key was set
+     * [r5688] [1.1] fixed #2106. Fixed migrations diff that was considering fk and indexes of dropped tables
+     * [r5689] [1.1] fixed #2043. Drivers were not extending from right class (it was Doctrine_Connection, it should be Doctrine_Connection_Common)
+     * [r5690] [1.1] Added coverage to ticket #2104.
+     * [r5697] [1.1] Added coverage to ticket #2058. Ticket is invalid, but it was missing coverage to relationed objetcts with aliases
+     * [r5698] [1.0, 1.1] fixed #2104 and fixed #2111 Now DQL plays nice with parenthesis and apostrophe in strings
+     * [r5699] [1.0, 1.1] Fixed issue with SoftDelete that was failing to apply the deleted records condition in certains DBMS
+     * [r5700] [1.1] Fixed issue with query not resetting certain values after being executed (closes #2105)
+     * [r5702] [1.1] Changed AuditLog to be able to retrieve versions not only as array, but also as objects
+
 1.1.0
 -----
      * [r5567] [1.1] Releasing 1.1.0-RC2

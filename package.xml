@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-03-16</date>
- <time>23:18:55</time>
+ <date>2009-05-11</date>
+ <time>18:22:56</time>
  <version>
-  <release>1.1.0</release>
-  <api>1.1.0</api>
+  <release>1.1.1</release>
+  <api>1.1.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -896,6 +896,7 @@ requiring needless code duplication.</description>
     <dir name="Relation">
      <file name="AccessTestCase.php" role="test" />
      <file name="CircularSavingTestCase.php" role="test" />
+     <file name="ColumnAliasesTestCase.php" role="test" />
      <file name="ManyToMany2TestCase.php" role="test" />
      <file name="ManyToManyTestCase.php" role="test" />
      <file name="NestTestCase.php" role="test" />
@@ -1132,6 +1133,9 @@ requiring needless code duplication.</description>
      <file name="1940TestCase.php" role="test" />
      <file name="1958TestCase.php" role="test" />
      <file name="1986TestCase.php" role="test" />
+     <file name="1991TestCase.php" role="test" />
+     <file name="1992TestCase.php" role="test" />
+     <file name="2105TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
@@ -1267,6 +1271,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.1</release>
+    <api>1.1.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-05-11</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.1.0</release>
