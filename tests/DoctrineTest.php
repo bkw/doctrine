@@ -152,25 +152,26 @@ class DoctrineTest
             $cov = new CoverageRecorder($includePaths, $excludePaths, $covReporter);
 
             $cov->startInstrumentation();
-            $testGroup->run($reporter, $filter);
+            $ret = $testGroup->run($reporter, $filter);
             $cov->stopInstrumentation();
 
             $cov->generateReport();
             $covReporter->printTextSummary();
+            return $ret;
              */
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-            $testGroup->run($reporter, $filter);
+            $ret = $testGroup->run($reporter, $filter);
             $result['coverage'] = xdebug_get_code_coverage();
             xdebug_stop_code_coverage();
             file_put_contents(dirname(__FILE__) . '/coverage/coverage.txt', serialize($result));
             require_once dirname(__FILE__) . '/DoctrineTest/Coverage.php';
             $coverageGeneration = new DoctrineTest_Coverage();
             $coverageGeneration->generateReport();
-            return;
+            return $ret;
             // */
 
         }
-        $testGroup->run($reporter, $filter);
+        return $testGroup->run($reporter, $filter);
     }
 
 

@@ -65,6 +65,8 @@ class GroupTest extends UnitTestCase
         $this->cachePassesAndFails();
 
         $reporter->paintFooter();
+
+        return $this->_failed ? false : true;
     }
 
 

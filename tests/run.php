@@ -322,4 +322,6 @@ $unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase())
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
-$test->run();
+$ret = $test->run();
+
+exit($ret ? 0 : 1);
