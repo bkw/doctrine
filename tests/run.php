@@ -311,9 +311,11 @@ $unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase())
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
-$test->run();
+$ret = $test->run();
 
 $endTime = time();
 $time = $endTime - $startTime;
 
 echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
+
+exit($ret ? 0 : 1);
