@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareTables()
     {
@@ -72,6 +72,29 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
         $this->assertFalse($this->conn->import->tableExists('migration_phonenumber'));
         $this->assertFalse($this->conn->import->tableExists('migration_user'));
         $this->assertFalse($this->conn->import->tableExists('migration_profile'));
+    }
+
+    public function testMigrateClearsErrors()
+    {
+        $migration = new Doctrine_Migration('migration_classes');
+        $migration->setCurrentVersion(3);
+        try {
+            $migration->migrate(3);
+        } catch (Doctrine_Migration_Exception $e) {
+            $this->assertTrue($migration->hasErrors());
+            $this->assertEqual(1, $migration->getNumErrors());
+        }
+
+        try {
+            $migration->migrate(3);
+        } catch (Doctrine_Migration_Exception $e) {
+            $this->assertTrue($migration->hasErrors());
+            $this->assertEqual(1, $migration->getNumErrors());
+        }
+
+        $migration->clearErrors();
+        $this->assertFalse($migration->hasErrors());
+        $this->assertEqual(0, $migration->getNumErrors());
     }
 
     public function testMigrationClassNameInflected()
