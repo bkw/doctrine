@@ -10,6 +10,9 @@ class Doctrine_Relation_ColumnAliases_TestCase extends Doctrine_UnitTestCase
         
         parent::prepareTables();
     }
+    
+    public function prepareData()
+    { }
 
     public function testCompoundSave() {
         $c2 = new ColumnAliasTest2();
@@ -18,6 +21,16 @@ class Doctrine_Relation_ColumnAliases_TestCase extends Doctrine_UnitTestCase
         $c2->save();
         
         $this->assertNotNull($c2->column_alias_test3_id);
+    }
+    
+    
+    public function testHasOneCompoundSave2() {
+        $c3 = new ColumnAliasTest3();
+        $c3->alias1 = 'foo';
+        $c3->ColumnAliasTest2->alias1 = 'bar';
+        $c3->save();
+
+        $this->assertNotNull($c3->id);
     }
 }
 
