@@ -95,9 +95,9 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
 
     public function testSavingNullValue() {
         $test = new BooleanTest();
-        $this->is_working = null;
+        $test->is_working = null;
 
-        $this->assertIdentical($this->is_working, null);
+        $this->assertIdentical($test->is_working, null);
         $this->assertEqual($test->state(), Doctrine_Record::STATE_TDIRTY);
         $test->save();
 
@@ -105,9 +105,9 @@ class Doctrine_DataType_Boolean_TestCase extends Doctrine_UnitTestCase {
         $this->assertIdentical($test->is_working, null);
         
         $test = new BooleanTest();
-        $this->is_working_notnull = null;
+        $test->is_working_notnull = null;
 
-        $this->assertIdentical($this->is_working_notnull, null);
+        $this->assertIdentical($test->is_working_notnull, false);
         $this->assertEqual($test->state(), Doctrine_Record::STATE_TDIRTY);
         $test->save();
 
