@@ -138,12 +138,23 @@ class Doctrine_Expression_Mysql extends Doctrine_Expression_Driver
     /**
      * Returns day from dbms
      *
-     * @param string $column 
+     * @param string $column
      * @return string to get day from dbms
      */
     public function day($column)
     {
         $column = $this->getIdentifier($column);
         return 'DAY(' .  $column . ')';
+    }
+
+    /**
+     * Returns soundex from dbms
+     *
+     * @param string $column
+     * @return string to get soundex from dbms
+     */
+    public function soundex($column)
+    {
+        return 'SOUNDEX(' . $column . ')';
     }
 }
