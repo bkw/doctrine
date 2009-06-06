@@ -46,7 +46,7 @@ foreach ($ticketTestCases as $testCase)
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
-/*$driver = new GroupTest('Driver Tests', 'driver');
+$driver = new GroupTest('Driver Tests', 'driver');
 $driver->addTestCase(new Doctrine_Connection_Pgsql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
