@@ -31,7 +31,7 @@ $excludeTickets = array(
     '1935',
 );
 
-$ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
+/*$ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
 
 foreach ($ticketTestCases as $testCase)
 {
@@ -42,12 +42,12 @@ foreach ($ticketTestCases as $testCase)
         $name = sprintf('Doctrine_Ticket_%s_TestCase', $name);
         $tickets->addTestCase(new $name());
     }
-}
-
+}*/
+$tickets->addTestCase(new Doctrine_Ticket_2158_TestCase());
 $test->addTestCase($tickets);
 
 // Connection Tests (not yet fully tested)
-$driver = new GroupTest('Driver Tests', 'driver');
+/*$driver = new GroupTest('Driver Tests', 'driver');
 $driver->addTestCase(new Doctrine_Connection_Pgsql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
@@ -320,7 +320,7 @@ $unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_NestedSet_MultiRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
-$test->addTestCase($unsorted);
+$test->addTestCase($unsorted);*/
 
 $ret = $test->run();
 
