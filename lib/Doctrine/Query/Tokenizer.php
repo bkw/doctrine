@@ -261,7 +261,7 @@ class Doctrine_Query_Tokenizer
             $str = explode($d, $str);
         }
 
-        $str = array_filter($str, create_function('$v', 'return ! empty($v);'));
+        $str = array_filter($str, create_function('$v', 'return strlen(trim($v)) != 0;'));
         $term = array();
         $i = 0;
 
