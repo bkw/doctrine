@@ -99,7 +99,7 @@ class Doctrine_Tokenizer_TestCase extends Doctrine_UnitTestCase
         $a   = $tokenizer->sqlExplode($str);
         $this->assertEqual($a, array("something", "(subquery '')"));
 
-        $str = "something ((  ))";
+        $str = "something (( ))";
         $a   = $tokenizer->sqlExplode($str);
         $this->assertEqual($a, array("something", "(( ))"));
     }
