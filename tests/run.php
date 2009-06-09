@@ -300,7 +300,7 @@ $unsorted = new GroupTest('Unsorted Tests', 'unsorted');
 $unsorted->addTestCase(new Doctrine_CustomPrimaryKey_TestCase());
 $unsorted->addTestCase(new Doctrine_CustomResultSetOrder_TestCase());
 $unsorted->addTestCase(new Doctrine_ColumnAlias_TestCase());
-//$unsorted->addTestCase(new Doctrine_RawSql_TestCase());
+$unsorted->addTestCase(new Doctrine_RawSql_TestCase());
 $unsorted->addTestCase(new Doctrine_NewCore_TestCase());
 $unsorted->addTestCase(new Doctrine_Template_TestCase());
 $unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
