@@ -1519,7 +1519,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
 
             $columnValue = $this->get($column);
             $a[$column] = ($columnValue instanceof Doctrine_Record) 
-                ? $column_value->toArray($deep, $prefixKey) : $columnValue;
+                ? $columnValue->toArray($deep, $prefixKey) : $columnValue;
         }
 
         if ($this->_table->getIdentifierType() ==  Doctrine::IDENTIFIER_AUTOINC) {
