@@ -1,3 +1,92 @@
+1.1.2
+-----
+     * [r5708] [1.1] Releasing Doctrine 1.1.1
+     * [r5710] [1.0, 1.1] fixed #1746. Fixed NestedSet behavior that was buggy when associated to Timestampable
+     * [r5711] [1.1] fixed #2135 Fixed issue with multiple string defined IN ? condition, which was causing parameter overwrites
+     * [r5712] [1.0, 1.1] fixed #2137 Fixed issue with composite unique indices in SQLite
+     * [r5713] [1.0, 1.1] fixed #2092 Fixed issue with getLimitSubquery() that was producing incorrect SQL when using HAVING instead of WHERE (it was not including the LEFT JOINs)
+     * [r5714] [1.1] fixed #2032 Fixed issue with ORDER BY using multiple fields separated by comma without space between each field
+     * [r5715] [1.0, 1.1] fixed #2125 Fixed issue with MSSQL data dictionary that was failing to import when using date column
+     * [r5719] [1.1] Fixed issue with Result Cache that was not returning correct cached resultset
+     * [r5735] [1.1] Fixed issue with Result Cache Hashing calculation. Issue was failing ticket 1768
+     * [r5739] [1.1] Fixed issue with AuditLog that was not returning a record, but a collection of a single record when using method getVersion. To keep BC, it was added as an optional parameter.
+	  It'll be removed on 1.2.0 and will only return record.
+     * [r5745] [1.0, 1.1] added a return value when running the test suite from the command line (to ease integration with CI tools)
+     * [r5746] [1.1] integrated docblock for all public methods
+     * [r5748] [1.1] integrated docblock for all methods
+     * [r5759] [1.1] fixed docblock grammar
+     * [r5760] [1.1] integrated docblock
+     * [r5784] [1.1] inserted docblock
+     * [r5785] [1.1] writed docblock for static methods
+     * [r5786] [1.1] writed docblocks for record insertion methods
+     * [r5787] [1.1] writed docblock for 'describe me' tagged methods
+     * [r5788] [1.1] added svn:eol-style property
+     * [r5789] [1.1] mass setting svn:eol-style property
+     * [r5790] [1.1] setting svn:eol-style property
+     * [r5792] [1.1] improved docblock of isIdentifier()
+     * [r5797] [1.1] Added identifier quoting into Oracle's limit subquery
+     * [r5798] [1.1] set svn:eol-style property on plain text files
+     * [r5799] [1.0, 1.1] Fixing issue with Doctrine_Query::count() not converting boolean params (closes #2020)
+     * [r5803] [1.0, 1.1] Fixing php warning in certain cases (closes #2098)
+     * [r5804] [1.0, 1.1] Fixing issue with previous commit to ticket #2050 (closes #2050)
+     * [r5805] [1.1] Fixing typo in migrations base method createConstraint() (closes #2078)
+     * [r5806] [1.1] Fixes issue with reusing a query object with a count after executing it (closes #2159)
+     * [r5807] [1.1] More work on #5806 and adding more test coverage
+     * [r5808] [1.1] Fixing conversion of booleans for SoftDelete BC behavior (closes #2154)
+     * [r5809] [1.1] Fixes issue where property tags were not being generated when generateBaseClasses === false (closes #2047)
+     * [r5810] [1.0, 1.1] Fixed issue with purge not executing in the correct order (closes #2038)
+     * [r5811] [1.1] Fixes issue with inheritance (closes #2197)
+     * [r5812] [1.1] Added ability to clear errors on migrations; migrate() does this automatically. (closes #2203)
+     * [r5814] [1.0, 1.1] Fixed issue with validating length of negative numbers (closes #2204)
+     * [r5815] [1.0, 1.1] Fixes memory leak with Sluggable behavior record listener (closes #2208)
+     * [r5816] [1.0, 1.1] Fixing issue with SoftDelete and slugs that are longer then the slug column length (closes #2190)
+     * [r5817] [1.1] Added coverage to ticket #2058. Issue is still present and it is related to UnitOfWork, which is trying to save the local key and since the main object is not yet saved, it
+	  puts NULL as value of relation id column and fails to insert. Investigate possible owningSide missing.
+     * [r5818] [1.0, 1.1] Fixing issue with generated Doctrine files having really long lines (closes #2189)
+     * [r5819] [1.1] fixed #2150 Fixed regression between 1.0 and 1.1 that toArray() was not converting the relations
+     * [r5820] [1.0, 1.1] Fixes issue with classifying not removing $ characters (closes #2184)
+     * [r5821] [1.0, 1.1] Fixing incorrect test
+     * [r5823] [1.0, 1.1] Fixed issue with limit sub query not applying inheritance join conditions (closes #2110)
+     * [r5824] [1.0, 1.1] Fixing mssql creating tables with indexes (closes #2153)
+     * [r5828] Coding standards change
+     * [r5829] Coding standards fix
+     * [r5830] [1.1] fixed #1681 Added possibility to define default value while trying to grab an option from a template/behavior.
+     * [r5831] [1.0, 1.1] Fixed issue with sqlExplode function in Tokenizer that was failing to build the query when using multiple spaces as separator (closes #2158)
+     * [r5832] Reverting changes made to unit test execution
+     * [r5833] [1.1] Fixed issue with synchronizeWithArray and relations saving (closes #2109). Fixed remaining comment in unit test suite
+     * [r5834] Fixed wrong commit of sqlExplode fix. Updated wrong test case of Tokenizer
+     * [r5835] [1.1] Fixed issue with large FK constraint names (closes #1691)
+     * [r5836] [1.0, 1.1] Added missing LENGTH() expression functionality in DQL (closes #2211)
+     * [r5837] [1.0, 1.1] Added missing SOUNDEX() function in DQL (closes #2156)
+     * [r5840] [1.1] Reverted changes to sqlExplode made in revision 5831 which introduced issues with subqueries.
+     * [r5842] [1.0, 1.1] Filter out extra spaces in JoinCondition::load instead of Tokenizer::sqlExplode (closes #2158)
+     * [r5843] [1.0, 1.1] Reverting changes in r5842. They caused unit test failures.
+     * [r5844] [1.0, 1.1] Fixed typo in NestedSet (closes #2226)
+     * [r5845] [1.1] Fixes default table column options so that they work properly (closes #2221)
+     * [r5847] [1.0, 1.1] Fixes issue with mssql primary keys without identity (closes #2067)
+     * [r5848] [1.0, 1.1] Fixes issue with mssql identify/autoincrement (closes #1269)
+     * [r5849] [1.0, 1.1] Fixes issue with oracle reverse engineering and primary key (closes #2170)
+     * [r5850] [1.0, 1.1] Fixes issue with oracle reverse engineering not using prepared statements (closes #2171)
+     * [r5851] [1.1] Fixes issue with Doctrine_Table::getFieldValidators() not removing the extra parameter (closes #2152)
+     * [r5852] [1.1] Changes Doctrine migrations to not generate base classes (closes #2132)
+     * [r5853] [1.1] Fixes issue with pgsql and SoftDelete + Sluggable (closes #2228)
+     * [r5854] [1.1] expanded docblocks
+     * [r5855] [1.1] added code examples in docblock
+     * [r5857] [1.0, 1.1] Fixing RawSql to generate proper cache hash (closes #2209)
+     * [r5858] [1.0, 1.1] Fixes issue with wrong option key being used (closes #2220)
+     * [r5859] [1.0, 1.1] Fixes issue with Doctrine search (closes #2217)
+     * [r5860] [1.0, 1.1] Fixes issue with raw sql and strict standards notices. Uncommented raw sql test
+     * [r5861] [1.1] Fixing tests so we have 0 fails for CI server
+     * [r5871] [1.1] Fixes issue with Doctrine_Inflector::urlize() (closes #2229)
+     * [r5872] [1.1] Fixed missing ")" and wrong boolean value in Sluggable listener.
+     * [r5873] [1.1] copmpleted fetchOne() docblock
+     * [r5876] [1.1] Fixes @return tags in docblock, replacing mixed and object types (closes #2040)
+     * [r5882] [1.1] Fixed a couple of issues with field names being used in relation mapping instead of column names... this support was added in 1.1 and was not working well. Everything should be
+	  fine now (closes #2058, #2240)
+     * [r5883] [1.1] Fixed issue with WHERE IN ? that was throwing a not so nice exception if parameter is passed (closes #2218)
+     * [r5884] [1.1] Fixed wrong test case (related to previous commit)
+     * [r5886] [1.1] Reverting r5883
+
 1.1.1
 -----
      * [r5606] [1.1] Releasing Doctrine 1.1
