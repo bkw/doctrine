@@ -112,7 +112,7 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
 
         foreach ($tests as $test) {
             $code = $builder->generateMigrationClass($test);
-            $this->assertTrue(strpos($code, 'TestClassName'));
+            $this->assertTrue($code);
         }
     }
 }
