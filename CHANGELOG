@@ -1,3 +1,46 @@
+1.0.10
+------
+     * [r5709] [1.0] Releasing Doctrine 1.0.9
+     * [r5710] [1.0, 1.1] fixed #1746. Fixed NestedSet behavior that was buggy when associated to Timestampable
+     * [r5712] [1.0, 1.1] fixed #2137 Fixed issue with composite unique indices in SQLite
+     * [r5713] [1.0, 1.1] fixed #2092 Fixed issue with getLimitSubquery() that was producing incorrect SQL when using HAVING instead of WHERE (it was not including the LEFT JOINs)
+     * [r5715] [1.0, 1.1] fixed #2125 Fixed issue with MSSQL data dictionary that was failing to import when using date column
+     * [r5745] [1.0, 1.1] added a return value when running the test suite from the command line (to ease integration with CI tools)
+     * [r5799] [1.0, 1.1] Fixing issue with Doctrine_Query::count() not converting boolean params (closes #2020)
+     * [r5801] set svn:eol-style property on plain text files
+     * [r5803] [1.0, 1.1] Fixing php warning in certain cases (closes #2098)
+     * [r5804] [1.0, 1.1] Fixing issue with previous commit to ticket #2050 (closes #2050)
+     * [r5810] [1.0, 1.1] Fixed issue with purge not executing in the correct order (closes #2038)
+     * [r5814] [1.0, 1.1] Fixed issue with validating length of negative numbers (closes #2204)
+     * [r5815] [1.0, 1.1] Fixes memory leak with Sluggable behavior record listener (closes #2208)
+     * [r5816] [1.0, 1.1] Fixing issue with SoftDelete and slugs that are longer then the slug column length (closes #2190)
+     * [r5818] [1.0, 1.1] Fixing issue with generated Doctrine files having really long lines (closes #2189)
+     * [r5820] [1.0, 1.1] Fixes issue with classifying not removing $ characters (closes #2184)
+     * [r5821] [1.0, 1.1] Fixing incorrect test
+     * [r5823] [1.0, 1.1] Fixed issue with limit sub query not applying inheritance join conditions (closes #2110)
+     * [r5824] [1.0, 1.1] Fixing mssql creating tables with indexes (closes #2153)
+     * [r5831] [1.0, 1.1] Fixed issue with sqlExplode function in Tokenizer that was failing to build the query when using multiple spaces as separator (closes #2158)
+     * [r5834] Fixed wrong commit of sqlExplode fix. Updated wrong test case of Tokenizer
+     * [r5836] [1.0, 1.1] Added missing LENGTH() expression functionality in DQL (closes #2211)
+     * [r5837] [1.0, 1.1] Added missing SOUNDEX() function in DQL (closes #2156)
+     * [r5841] [1.0] Reverted changes to sqlExplode made in revision 5831 which introduced issues with subqueries.
+     * [r5842] [1.0, 1.1] Filter out extra spaces in JoinCondition::load instead of Tokenizer::sqlExplode (closes #2158)
+     * [r5843] [1.0, 1.1] Reverting changes in r5842. They caused unit test failures.
+     * [r5844] [1.0, 1.1] Fixed typo in NestedSet (closes #2226)
+     * [r5846] [1.0] Backporting r5819 to 1.0 (closes #2225)
+     * [r5847] [1.0, 1.1] Fixes issue with mssql primary keys without identity (closes #2067)
+     * [r5848] [1.0, 1.1] Fixes issue with mssql identify/autoincrement (closes #1269)
+     * [r5849] [1.0, 1.1] Fixes issue with oracle reverse engineering and primary key (closes #2170)
+     * [r5850] [1.0, 1.1] Fixes issue with oracle reverse engineering not using prepared statements (closes #2171)
+     * [r5857] [1.0, 1.1] Fixing RawSql to generate proper cache hash (closes #2209)
+     * [r5858] [1.0, 1.1] Fixes issue with wrong option key being used (closes #2220)
+     * [r5859] [1.0, 1.1] Fixes issue with Doctrine search (closes #2217)
+     * [r5860] [1.0, 1.1] Fixes issue with raw sql and strict standards notices. Uncommented raw sql test
+     * [r5862] [1.0] Commenting out failing test cases for CI
+     * [r5870] [1.0] Fixes issue with Doctrine_Inflector::urlize() (closes #2229)
+     * [r5874] [1.0] completed fetchOne() docblock
+     * [r5877] [1.0] Fixes case typo (closes #2235)
+
 1.0.9
 -----
      * [r5566] [1.0] Releasing Doctrine 1.0.8
