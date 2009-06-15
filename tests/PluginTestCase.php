@@ -138,7 +138,7 @@ class Wiki extends Doctrine_Record
         $options = array('fields' => array('title', 'content'));
         $auditLog = new Doctrine_Template_Versionable($options);
         $search = new Doctrine_Template_Searchable($options);
-        $slug = new Doctrine_Template_Sluggable(array('fields' => array('title')));
+        $slug = new Doctrine_Template_Sluggable(array('fields' => array('title'), 'indexName' => 'plugin_test_case_sluggable'));
         $i18n = new Doctrine_Template_I18n($options);
 
         $i18n->addChild($auditLog)
