@@ -193,7 +193,6 @@ DECLARE
    last_Sequence NUMBER;
    last_InsertID NUMBER;
 BEGIN
-   SELECT "sometable_seq".NEXTVAL INTO :NEW."id" FROM DUAL;
    IF (:NEW."id" IS NULL OR :NEW."id" = 0) THEN
       SELECT "sometable_seq".NEXTVAL INTO :NEW."id" FROM DUAL;
    ELSE
