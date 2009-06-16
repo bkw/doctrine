@@ -101,7 +101,6 @@ class Doctrine_Migration_TestCase extends Doctrine_UnitTestCase
     {
         $tests = array('test-class-Name',
                        'test_class_name',
-                       'TestClassName',
                        'test:class:name',
                        'test(class)name',
                        'test*class*name',
