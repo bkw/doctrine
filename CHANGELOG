@@ -650,7 +650,7 @@
      * [r4560] Fix for ( XXX ) in joins. Issue reported when using IN ( SUBSELECT ), but issue cound be reachable using SQL: and enum too.
      * [r4561] adding coverage for #1170
      * [r4562] Added documentation for #1170
-     * [r4563] Removing setAttribute('use_dql_callbacks', true) from contructor as it is useless here. It is required that dql callbacks be manually enabled in order to use SoftDelete or the dql
+     * [r4563] Removing ->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true) from contructor as it is useless here. It is required that dql callbacks be manually enabled in order to use SoftDelete or the dql
 	  callbacks.
      * [r4564] Fixed mistake.
      * [r4565] Fixed typos in listing .407

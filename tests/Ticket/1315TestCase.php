@@ -34,7 +34,7 @@ class Doctrine_Ticket_1315_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         $userTable = Doctrine::getTable('User');
         $userTable->addRecordListener(new Ticket_1315_Listener());
 
@@ -60,7 +60,7 @@ class Doctrine_Ticket_1315_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

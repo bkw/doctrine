@@ -67,7 +67,7 @@ class Doctrine_Ticket_1876_TestCase extends Doctrine_UnitTestCase
     
     public function testTicket()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         
         try {
             $q = Doctrine_Query::create()
@@ -77,7 +77,7 @@ class Doctrine_Ticket_1876_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('c.id = ?', 2);
             
             $this->assertEqual(
-                $q->getCountQuery(), 
+                $q->getCountSqlQuery(), 
                 'SELECT COUNT(*) AS num_results ' . 
                 'FROM (SELECT t.id FROM t1876__recipe t ' . 
                 'LEFT JOIN t1876__company t2 ON t.company_id = t2.id AND (t2.deleted_at IS NULL) ' .
@@ -90,7 +90,7 @@ class Doctrine_Ticket_1876_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
         
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
         

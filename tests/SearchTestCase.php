@@ -76,7 +76,7 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $query = Doctrine_Query::create()
             ->from('SearchTest s');
         $query = Doctrine::getTable('SearchTest')->search('orm', $query);
-        $this->assertEqual($query->getSql(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE s.id IN (SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id)');
+        $this->assertEqual($query->getSqlQuery(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE s.id IN (SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id)');
         $results = $query->fetchArray();
         $this->assertEqual($results[0]['id'], 1);
     }
@@ -189,20 +189,19 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
 
     public function testThrowExceptionIfInvalidTable()
     {
-       try{
+       try {
            $oQuery = new Doctrine_Search_Query(new Doctrine_Query());
            $this->fail('Should throw exception');
-       }catch(Doctrine_Search_Exception $exception){
+       } catch(Doctrine_Search_Exception $exception) {
            $this->assertEqual($exception->getMessage(), 'Invalid argument type. Expected instance of Doctrine_Table.');
        }
     }
-
 
     public function testGenerateSearchQueryForWeightedSearch()
     {
         $oQuery = new Doctrine_Search_Query('SearchTest');
         $oQuery->query('^test');
-        $this->assertEqual($oQuery->getSql(), 'SELECT SUM(sub_relevance) AS relevance, id FROM search_test WHERE keyword = ? GROUP BY id ORDER BY relevance DESC');
+        $this->assertEqual($oQuery->getSqlQuery(), 'SELECT SUM(sub_relevance) AS relevance, id FROM search_test WHERE keyword = ? GROUP BY id ORDER BY relevance DESC');
     }
 
     public function testStandardAnalyzerCanHandleAccentedCharactersGracefullyWorks()

@@ -41,7 +41,7 @@ class Doctrine_Ticket_1629_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 
         $user = new Ticket_1629_User();
         $user->username = 'jwage';
@@ -60,7 +60,7 @@ class Doctrine_Ticket_1629_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($users), 1);
         $this->assertEqual(count($users[0]['Phonenumbers']), 0);
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

@@ -41,8 +41,8 @@ class Doctrine_Ticket_1077_TestCase extends Doctrine_UnitTestCase
 
     public function testAutomaticAccessorsAndMutators()
     {
-        $orig = Doctrine_Manager::getInstance()->getAttribute('auto_accessor_override');
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
+        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
         $user = new Ticket_1077_User();
         $user->username = 'jwage';
         $user->password = 'changeme';
@@ -63,7 +63,7 @@ class Doctrine_Ticket_1077_TestCase extends Doctrine_UnitTestCase
         
         $this->assertIdentical($user->phonenumbersTest, $numbers);
 
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', $orig);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, $orig);
     }
 
     public function testDefiningCustomAccessorsAndMutators()

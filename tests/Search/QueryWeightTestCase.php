@@ -50,7 +50,7 @@ class Doctrine_Search_QueryWeight_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY foreign_id '
              . 'ORDER BY relevancy_sum';
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
     
     public function testSearchSupportsMixingOfOperatorsParenthesisAndWeights()
@@ -76,7 +76,7 @@ class Doctrine_Search_QueryWeight_TestCase extends Doctrine_UnitTestCase
                 GROUP BY foreign_id
                 ORDER BY relevancy_sum";
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testQuerySupportsMultiWordAndOperatorSearchWithQuotesAndWeights()
@@ -97,7 +97,7 @@ class Doctrine_Search_QueryWeight_TestCase extends Doctrine_UnitTestCase
                 GROUP BY foreign_id
                 ORDER BY relevancy_sum";
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testQuerySupportsMultiWordNegationOperatorSearchWithQuotesWeights()
@@ -124,6 +124,6 @@ class Doctrine_Search_QueryWeight_TestCase extends Doctrine_UnitTestCase
                 GROUP BY foreign_id
                 ORDER BY relevancy_sum";
                 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 }

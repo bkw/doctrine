@@ -93,6 +93,7 @@ class Doctrine_AuditLog_TestCase extends Doctrine_UnitTestCase
         $entity->save();
         $this->assertTrue($entity->version, 2);
     }
+
     public function testTableName()
     {
         $entity = new VersioningTest3();

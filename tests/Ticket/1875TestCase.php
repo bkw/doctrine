@@ -40,14 +40,14 @@ class Doctrine_Ticket_1875_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'all');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 
         $account = new Ticket_1875_Account();
         $account->name = 'Test';
         $account->amount = '25.99';
         $this->assertTrue($account->isValid());
 
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'none');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 }
 

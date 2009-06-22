@@ -41,17 +41,17 @@ class Doctrine_Ticket_1540_TestCase extends Doctrine_UnitTestCase
 	public function testShouldNotConvertToAmpersandsInSelect()
     {
         $q = Doctrine_Query::create()
-			->select('IF(1 AND 2, 1, 2)')
+			->select('if(1 AND 2, 1, 2)')
             ->from('Ticket_1540_TableName t');
-        $this->assertEqual($q->getSql(), 'SELECT IF(1 AND 2, 1, 2) AS t__0 FROM ticket_1540__table_name t');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT if(1 AND 2, 1, 2) AS t__0 FROM ticket_1540__table_name t');
     }
 	
     public function testShouldNotConvertToAmpersandsInWhere()
     {
         $q = Doctrine_Query::create()
             ->from('Ticket_1540_TableName t')
-			->where('IF(1 AND 2, 1, 2)', 1);
-        $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id FROM ticket_1540__table_name t WHERE IF(1 AND 2, 1, 2)');
+			->where('if(1 AND 2, 1, 2)', 1);
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM ticket_1540__table_name t WHERE if(1 AND 2, 1, 2)');
     }
 }
 

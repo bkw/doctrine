@@ -192,7 +192,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
 
     public function testSluggableWithSoftDeleteFailWithSameSlug()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 
         parent::prepareTables();
         $item0 = new SluggableItem9();
@@ -212,7 +212,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item1->save();
         $this->assertEqual($item1->slug, 'test-1');
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
     }
 }
 

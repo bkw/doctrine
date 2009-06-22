@@ -268,7 +268,8 @@ class Doctrine_Transaction_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($phonenumber->id > 0);
     }
 
-    public function testAddDuplicateRecordToTransactionShouldSkipSecond(){
+    public function testAddDuplicateRecordToTransactionShouldSkipSecond()
+    {
         $transaction = new Doctrine_Transaction();
         $user = new User();
         $transaction->addInvalid($user);

@@ -1,14 +1,20 @@
 <?php
 
-class DoctrineTest_Reporter_Cli extends DoctrineTest_Reporter{
-    public function __construct(){
+class DoctrineTest_Reporter_Cli extends DoctrineTest_Reporter
+{
+    public function __construct()
+    {
         $this->formatter = new Doctrine_Cli_AnsiColorFormatter();
     }
-    public function paintHeader($name){
+
+    public function paintHeader($name)
+    {
         echo $this->formatter->format($name, 'INFO') . "\n";
         echo str_repeat('=', strlen($name)) . "\n";
     }
-    public function paintFooter(){
+
+    public function paintFooter()
+    {
         echo "\n";
         echo "\n";
         foreach ($this->_test->getMessages() as $message) {
@@ -21,7 +27,9 @@ class DoctrineTest_Reporter_Cli extends DoctrineTest_Reporter{
         echo $this->formatter->format("Number of new Failures: " . $this->_test->getNumNewFails(), $this->_test->getNumNewFails() ? 'ERROR':'INFO') . ' ' . implode(", ", $this->_test->getNewFails()) . "\n";
         echo $this->formatter->format("Number of fixed Failures: " . $this->_test->getNumFixedFails(), $this->_test->getNumFixedFails() ? 'INFO':'HEADER') . ' ' . implode(", ", $this->_test->getFixedFails()) . "\n";
     }
-    public function getProgressIndicator(){
+
+    public function getProgressIndicator()
+    {
         return ".";
     }
 }

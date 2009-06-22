@@ -75,7 +75,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         $query->update('EnumTest2 u')
             ->set('u.status', '?', 'verified');
 
-        $this->assertEqual($query->getSql(), 'UPDATE enum_test2 SET status = ?');   
+        $this->assertEqual($query->getSqlQuery(), 'UPDATE enum_test2 SET status = ?');   
 
         $query->execute();
 
@@ -92,7 +92,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
     {
         try {
             $query = new Doctrine_Query($this->connection);
-            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = 'open'")
+            $ret = $query->parseDqlQuery("FROM EnumTest WHERE EnumTest.status = 'open'")
               ->count();
             $this->assertEqual($ret, 1);
         } catch (Exception $e) {
@@ -101,7 +101,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
 
         try {
             $query = new Doctrine_Query($this->connection);
-            $ret = $query->parseQuery("FROM EnumTest WHERE EnumTest.status = ?")
+            $ret = $query->parseDqlQuery("FROM EnumTest WHERE EnumTest.status = ?")
               ->count(array('open'));
             $this->assertEqual($ret, 1);
         } catch (Exception $e) {
@@ -238,7 +238,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
           ->where("e.status = 'verified'")
           ->execute();
 
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE e.status = 'verified'");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE e.status = 'verified'");
     }
 
     public function testInvalidValueErrors()

@@ -40,7 +40,7 @@ class Doctrine_Ticket_2190_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'all');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 
         $article = new Ticket_2190_Article();
         $article->name = 'test';
@@ -65,7 +65,7 @@ class Doctrine_Ticket_2190_TestCase extends Doctrine_UnitTestCase
         }
 
         $this->assertEqual($article->slug, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-7');
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'none');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 }
 

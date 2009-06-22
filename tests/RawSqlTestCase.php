@@ -37,24 +37,25 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     {
         $sql = 'SELECT {p.*} FROM photos p';
         $query = new Doctrine_RawSql($this->connection);
-        $query->parseQuery($sql);
+        $query->parseDqlQuery($sql);
         
         $this->assertEqual($query->getSqlQueryPart('from'), array('photos p'));
 
 
         $sql = 'SELECT {p.*} FROM (SELECT p.* FROM photos p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE t.tag_id = 65) p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE p.can_see = -1 AND t.tag_id = 62 LIMIT 200';
-        $query->parseQuery($sql);
+        $query->parseDqlQuery($sql);
 
         $this->assertEqual($query->getSqlQueryPart('from'), array('(SELECT p.* FROM photos p LEFT JOIN photos_tags t ON t.photo_id = p.id WHERE t.tag_id = 65) p LEFT JOIN photos_tags t ON t.photo_id = p.id'));
         $this->assertEqual($query->getSqlQueryPart('where'), array('p.can_see = -1 AND t.tag_id = 62'));
         $this->assertEqual($query->getSqlQueryPart('limit'), array(200));
     }
+
     public function testAsteriskOperator() 
     {
         // Selecting with *
 
         $query = new Doctrine_RawSql($this->connection);
-        $query->parseQuery('SELECT {entity.*} FROM entity');
+        $query->parseDqlQuery('SELECT {entity.*} FROM entity');
         $fields = $query->getFields();
 
         $this->assertEqual($fields, array('entity.*'));
@@ -65,6 +66,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($coll->count(), 11);
     }
+
     public function testLazyPropertyLoading() 
     {
         $query = new Doctrine_RawSql($this->connection);
@@ -72,7 +74,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
 
         // selecting proxy objects (lazy property loading)
 
-        $query->parseQuery('SELECT {entity.name}, {entity.id} FROM entity');
+        $query->parseDqlQuery('SELECT {entity.name}, {entity.id} FROM entity');
         $fields = $query->getFields();
 
         $this->assertEqual($fields, array('entity.name', 'entity.id'));
@@ -90,7 +92,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         $query = new Doctrine_RawSql($this->connection);
         // smart component mapping (no need for additional addComponent call
         
-        $query->parseQuery('SELECT {entity.name}, {entity.id} FROM entity');
+        $query->parseDqlQuery('SELECT {entity.name}, {entity.id} FROM entity');
         $fields = $query->getFields();
 
         $this->assertEqual($fields, array('entity.name', 'entity.id'));
@@ -108,7 +110,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         $query = new Doctrine_RawSql($this->connection);
         // multi component fetching
 
-        $query->parseQuery('SELECT {entity.name}, {entity.id}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id');
+        $query->parseDqlQuery('SELECT {entity.name}, {entity.id}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id');
 
         $query->addComponent('entity', 'Entity');
 
@@ -129,12 +131,12 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     public function testAliasesAreSupportedInAddComponent()
     {
         $query = new Doctrine_RawSql();
-        $query->parseQuery('SELECT {entity.name}, {entity.id}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id');
+        $query->parseDqlQuery('SELECT {entity.name}, {entity.id}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id');
 
         $query->addComponent('entity', 'Entity e');
         $query->addComponent('phonenumber', 'e.Phonenumber');
 
-        $this->assertEqual(array_keys($query->getAliasMap()), array('e', 'e.Phonenumber'));
+        $this->assertEqual(array_keys($query->getQueryComponents()), array('e', 'e.Phonenumber'));
 
         $coll = $query->execute();
         $this->assertEqual($coll->count(), 11);
@@ -153,7 +155,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         
         $query = new Doctrine_RawSql($this->connection);
 
-        $query->parseQuery('SELECT {entity.name} FROM entity');
+        $query->parseDqlQuery('SELECT {entity.name} FROM entity');
         
         $coll = $query->execute();
         
@@ -184,7 +186,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
 
         $query = new Doctrine_RawSql($this->connection);
 
-        $query->parseQuery('SELECT {entity.name} FROM entity');
+        $query->parseDqlQuery('SELECT {entity.name} FROM entity');
         $query->addComponent('entity', 'User');
         $coll = $query->execute();
 
@@ -200,10 +202,10 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
 
         $query = new Doctrine_RawSql($this->connection);
 
-        $query->parseQuery('SELECT {entity.name} FROM entity ORDER BY entity.name');
+        $query->parseDqlQuery('SELECT {entity.name} FROM entity ORDER BY entity.name');
         $query->addComponent('entity', 'User');
 
-        $this->assertEqual($query->getQuery(), "SELECT entity.name AS entity__name, entity.id AS entity__id FROM entity WHERE entity.type = 0 ORDER BY entity.name");
+        $this->assertEqual($query->getSqlQuery(), "SELECT entity.name AS entity__name, entity.id AS entity__id FROM entity WHERE entity.type = 0 ORDER BY entity.name");
 
 
         $coll = $query->execute();
@@ -219,9 +221,9 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     {
         $query = new Doctrine_RawSql();
         
-        $query->parseQuery("SELECT {entity.name} FROM (SELECT entity.name FROM entity WHERE entity.name = 'something') WHERE entity.id = 2 ORDER BY entity.name");
+        $query->parseDqlQuery("SELECT {entity.name} FROM (SELECT entity.name FROM entity WHERE entity.name = 'something') WHERE entity.id = 2 ORDER BY entity.name");
 
-        $this->assertEqual($query->getQuery(),
+        $this->assertEqual($query->getSqlQuery(),
         "SELECT entity.name AS entity__name, entity.id AS entity__id FROM (SELECT entity.name FROM entity WHERE entity.name = 'something') WHERE entity.id = 2 ORDER BY entity.name");
     }
 
@@ -229,10 +231,10 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     {
         $query = new Doctrine_RawSql();
 
-        $query->parseQuery('SELECT {entity.name}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
+        $query->parseDqlQuery('SELECT {entity.name}, {phonenumber.*} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
         $query->addComponent('entity', 'Entity');
         $query->addComponent('phonenumber', 'Entity.Phonenumber');
-        $this->assertEqual($query->getSql(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
+        $this->assertEqual($query->getSqlQuery(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
         $coll = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
 
         $this->assertEqual(count($coll), 3);
@@ -242,10 +244,10 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     {
         $query = new Doctrine_RawSql();
 
-        $query->parseQuery('SELECT {phonenumber.*}, {entity.name} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
+        $query->parseDqlQuery('SELECT {phonenumber.*}, {entity.name} FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
         $query->addComponent('entity', 'Entity');
         $query->addComponent('phonenumber', 'Entity.Phonenumber');
-        $this->assertEqual($query->getSql(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
+        $this->assertEqual($query->getSqlQuery(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
         $coll = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
 
         $this->assertEqual(count($coll), 3);
@@ -254,8 +256,8 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     public function testParseQueryPartShouldAddPartIfNotSelectAndAppend()
     {
       $query = new Doctrine_Rawsql();
-      $query->parseQueryPart("test", "test", true);
-      $parts = $query->getParts();
+      $query->parseDqlQueryPart("test", "test", true);
+      $parts = $query->getSqlParts();
       $this->assertTrue(isset($parts["test"]));
       $this->assertTrue(is_array($parts["test"]));
       $this->assertTrue(isset($parts["test"][0]));
@@ -265,19 +267,19 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     public function testParseQueryShouldExtractGroupBy()
     {
         $query = new Doctrine_RawSql();
-        $query->parseQuery("having group");
-        $parts = $query->getParts();
+        $query->parseDqlQuery("having group");
+        $parts = $query->getSqlParts();
         $this->assertEqual($parts["having"][0], "group");
     }
 
     public function testThrowExceptionIfFieldNameIsOnWrongForm()
     {  
       $query = new Doctrine_RawSql();
-      $query->parseQueryPart("select", "{test}");
+      $query->parseDqlQueryPart("select", "{test}");
       try{
-          $query->getQuery();
+          $query->getSqlQuery();
           $this->fail("Should throw exception");
-      }catch(Doctrine_RawSql_Exception $exception){
+      } catch(Doctrine_RawSql_Exception $exception) {
           $this->assertEqual($exception->getMessage(), "All selected fields in Sql query must be in format tableAlias.fieldName"); 
       }
     }
@@ -285,11 +287,11 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
     public function testThrowExceptionIfAliasDoesNotExist()
     {  
       $query = new Doctrine_RawSql();
-      $query->parseQueryPart("select", "{test.test}");
-      try{
-          $query->getQuery();
+      $query->parseDqlQueryPart("select", "{test.test}");
+      try {
+          $query->getSqlQuery();
           $this->fail("Should throw exception");
-      }catch(Doctrine_RawSql_Exception $exception){
+      } catch(Doctrine_RawSql_Exception $exception) {
           $this->assertEqual($exception->getMessage(), "The associated component for table alias test couldn't be found.");
       }
     }

@@ -38,76 +38,82 @@ class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'DeleteTestModel';
         parent::prepareTables();
     }
+
     public function testDeleteAllWithColumnAggregationInheritance() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('DELETE FROM User');
+        $q->parseDqlQuery('DELETE FROM User');
 
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity WHERE (type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE (type = 0)');
 
         $q = new Doctrine_Query();
 
         $q->delete()->from('User');
         
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity WHERE (type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE (type = 0)');
     }
+
     public function testDeleteAll() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('DELETE FROM Entity');
+        $q->parseDqlQuery('DELETE FROM Entity');
 
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity');
         
         $q = new Doctrine_Query();
 
         $q->delete()->from('Entity');
         
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity');
     }
+
     public function testDeleteWithCondition() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('DELETE FROM Entity WHERE id = 3');
+        $q->parseDqlQuery('DELETE FROM Entity WHERE id = 3');
 
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity WHERE id = 3');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE id = 3');
         
         $q = new Doctrine_Query();
 
         $q->delete()->from('Entity')->where('id = 3');
         
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity WHERE id = 3');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE id = 3');
     }
+
     public function testDeleteWithLimit() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('DELETE FROM Entity LIMIT 20');
+        $q->parseDqlQuery('DELETE FROM Entity LIMIT 20');
 
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity LIMIT 20');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity LIMIT 20');
         
         $q = new Doctrine_Query();
 
         $q->delete()->from('Entity')->limit(20);
         
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity LIMIT 20');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity LIMIT 20');
     }
+
     public function testDeleteWithLimitAndOffset() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('DELETE FROM Entity LIMIT 10 OFFSET 20');
+        $q->parseDqlQuery('DELETE FROM Entity LIMIT 10 OFFSET 20');
 
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity LIMIT 10 OFFSET 20');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity LIMIT 10 OFFSET 20');
 
         $q = new Doctrine_Query();
 
         $q->delete()->from('Entity')->limit(10)->offset(20);
         
-        $this->assertEqual($q->getQuery(), 'DELETE FROM entity LIMIT 10 OFFSET 20');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity LIMIT 10 OFFSET 20');
     }
+
     public function testDeleteWithFromInDeleteFunction()
     {
         $q = Doctrine::getTable('Entity')->createQuery()->delete();
@@ -117,7 +123,7 @@ class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase
 
         $q = Doctrine::getTable('DeleteTestModel')->createQuery()->delete('DeleteTestModel');
         $this->assertEqual($q->getDql(), 'DELETE FROM DeleteTestModel');
-        $this->assertEqual($q->getSql(), 'DELETE FROM delete_test_model');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM delete_test_model');
         $q->execute();
     }
 }

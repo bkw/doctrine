@@ -17,15 +17,18 @@ class UnitTestCase
             $this->pass();
         } else {
             $seperator = "<br>";
-            if(PHP_SAPI === "cli"){
+            if (PHP_SAPI === "cli") {
                 $seperator = "\n";
-             }
-            if(is_array($value)){
+            }
+
+            if (is_array($value)) {
                 $value = var_export($value, true);
-             }
-            if(is_array($value2)){
+            }
+
+            if (is_array($value2)) {
                 $value2 = var_export($value2, true);
             }
+
             $message = "$seperator Value1: $value $seperator != $seperator Value2: $value2 $seperator";
             $this->_fail($message);
         }
@@ -48,6 +51,7 @@ class UnitTestCase
             $this->_fail();
         }
     }
+
     public function assertTrue($expr)
     {
         if ($expr) {
@@ -56,6 +60,7 @@ class UnitTestCase
             $this->_fail();
         }
     }
+
     public function assertFalse($expr)
     {
         if ( ! $expr) {
@@ -91,10 +96,12 @@ class UnitTestCase
         }
         $this->_passed++;
     }
+
     public function fail($message = "")
     {
         $this->_fail($message);    
     }
+
     public function _fail($message = "")
     {
         $trace = debug_backtrace();
@@ -122,6 +129,7 @@ class UnitTestCase
         }
         self::$_passesAndFails['fails'][$class] = $class;
     }
+
     public function run(DoctrineTest_Reporter $reporter = null, $filter = null) 
     {
         foreach (get_class_methods($this) as $method) {
@@ -132,18 +140,22 @@ class UnitTestCase
             }
         }
     }
+
     public function getMessages() 
     {
         return $this->_messages;
     }
+
     public function getFailCount()
     {
         return $this->_failed;
     }
+
     public function getPassCount()
     {
         return $this->_passed;
     }
+
     public function cachePassesAndFails()
     {
         $tmpFileName = sys_get_temp_dir() . '/' . md5(serialize($this->_testCases));
@@ -157,14 +169,17 @@ class UnitTestCase
         }
         file_put_contents($tmpFileName, serialize(self::$_passesAndFails));
     }
+
     public function getPassesAndFails()
     {
         return self::$_passesAndFails;
     }
+
     public function getLastRunsPassesAndFails()
     {
         return self::$_lastRunsPassesAndFails;
     }
+
     public function getNewFails()
     {
         $newFails = array();
@@ -177,6 +192,7 @@ class UnitTestCase
         }
         return $newFails;;
     }
+
     public function getFixedFails()
     {
         $fixed = array();
@@ -189,10 +205,12 @@ class UnitTestCase
         }
         return $fixed;;
     }
+
     public function getNumNewFails()
     {
         return count($this->getNewFails());
     }
+
     public function getNumFixedFails()
     {
         return count($this->getFixedFails());

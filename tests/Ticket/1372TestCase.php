@@ -39,9 +39,7 @@ class Doctrine_Ticket_1372_TestCase extends Doctrine_UnitTestCase
                          'sqlite',
                          'pgsql',
                          'oracle',
-                         'mssql',
-                         'firebird',
-                         'informix');
+                         'mssql');
 
         foreach ($drivers as $driver)
         {

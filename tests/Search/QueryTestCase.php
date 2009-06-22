@@ -185,7 +185,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
              . 'GROUP BY id ORDER BY relevance DESC';
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
 
@@ -199,7 +199,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'WHERE keyword = ? OR keyword = ? '
              . 'GROUP BY id ORDER BY relevance DESC';
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
 
@@ -212,7 +212,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'FROM search_test_index WHERE keyword = ? GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testSearchSupportsMixingOfOperators()
@@ -227,7 +227,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'dbal'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testSearchSupportsSingleTermWithQuotes()
@@ -241,7 +241,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testSearchSupportsSingleLongTermWithQuotes()
@@ -256,7 +256,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'dbal'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testQuerySupportsMultiWordquery()
@@ -270,7 +270,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
              . 'GROUP BY id ORDER BY relevance DESC';
 
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testQuerySupportsMultiWordSearchAndSingleLetterWildcards()
@@ -285,7 +285,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doct?ine', 'orm'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
     public function testQuerySupportsMultiWordSearchAndMultiLetterWildcards()
     {
@@ -299,7 +299,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doc%', 'orm'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
     public function testSearchSupportsMultipleTermsWithQuotes()
     {
@@ -314,7 +314,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'database'));
-        $this->assertEqual($q->getSql(), $sql);
+        $this->assertEqual($q->getSqlQuery(), $sql);
     }
 
     public function testSearchReturnsFalseForEmptyStrings()

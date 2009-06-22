@@ -30,68 +30,93 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Connection_Mssql_TestCase extends Doctrine_UnitTestCase {
+class Doctrine_Connection_Mssql_TestCase extends Doctrine_UnitTestCase
+{
     public function testAlreadyExistsErrorIsSupported() {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 2714, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_ALREADY_EXISTS);
     }
-    public function testAlreadyExistsErrorIsSupported2() {
+
+    public function testAlreadyExistsErrorIsSupported2()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 1913, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_ALREADY_EXISTS);
     }
-    public function testValueCountOnRowErrorIsSupported() {
+
+    public function testValueCountOnRowErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 110, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_VALUE_COUNT_ON_ROW);
     }
-    public function testNoSuchFieldErrorIsSupported() {
+
+    public function testNoSuchFieldErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 155, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_NOSUCHFIELD);
     }
-    public function testNoSuchFieldErrorIsSupported2() {
+
+    public function testNoSuchFieldErrorIsSupported2()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 207, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_NOSUCHFIELD);
     }
-    public function testNoSuchTableErrorIsSupported() {
+
+    public function testNoSuchTableErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 208, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_NOSUCHTABLE);
     }
-    public function testNoSuchTableErrorIsSupported2() {
+
+    public function testNoSuchTableErrorIsSupported2()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 3701, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_NOSUCHTABLE);
     }
-    public function testSyntaxErrorIsSupported() {
+
+    public function testSyntaxErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 170, '')));
         
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_SYNTAX);
     }
-    public function testInvalidNumberErrorIsSupported() {
+
+    public function testInvalidNumberErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 245, '')));
 
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_INVALID_NUMBER);
     }
-    public function testNotNullConstraintErrorIsSupported() {
+
+    public function testNotNullConstraintErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 515, '')));
 
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_CONSTRAINT_NOT_NULL);
     }
-    public function testConstraintErrorIsSupported() {
+
+    public function testConstraintErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 547, '')));
 
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_CONSTRAINT);
     }
-    public function testConstraintErrorIsSupported2() {
+
+    public function testConstraintErrorIsSupported2()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 2627, '')));
 
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_CONSTRAINT);
     }
-    public function testDivZeroErrorIsSupported() {
+
+    public function testDivZeroErrorIsSupported()
+    {
         $this->assertTrue($this->exc->processErrorInfo(array(0, 8134, '')));
 
         $this->assertEqual($this->exc->getPortableCode(), Doctrine::ERR_DIVZERO);

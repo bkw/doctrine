@@ -33,7 +33,9 @@
 class Doctrine_CustomPrimaryKey_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareData() 
-    { }
+    {
+
+    }
     
     public function prepareTables() 
     {
@@ -41,6 +43,7 @@ class Doctrine_CustomPrimaryKey_TestCase extends Doctrine_UnitTestCase
         
         parent::prepareTables();
     }
+
     public function testOperations() 
     {
         $c = new CustomPK();

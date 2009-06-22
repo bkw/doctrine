@@ -1,24 +1,39 @@
 <?php
-class Transaction_TestLogger implements Doctrine_Overloadable {
+
+class Transaction_TestLogger implements Doctrine_Overloadable
+{
     private $messages = array();
     
-    public function __call($m, $a) {  
+    public function __call($m, $a)
+    {
         $this->messages[] = $m;
     }
-    public function pop() {
+
+    public function pop()
+    {
         return array_pop($this->messages);
     }
-    public function clear() {
+
+    public function clear()
+    {
         $this->messages = array();
     }
-    public function getAll() {
+
+    public function getAll()
+    {
         return $this->messages;
     }
 }
 
-class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase {
-    public function prepareData() { }
-    public function testInsert() {
+class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase
+{
+    public function prepareData()
+    {
+
+    }
+
+    public function testInsert()
+    {
         $count = count($this->dbh);
 
 
@@ -50,7 +65,9 @@ class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($listener->pop(), 'onTransactionCommit');
         $this->assertEqual($listener->pop(), 'onPreTransactionCommit');
     }
-    public function testInsertMultiple() {
+
+    public function testInsertMultiple()
+    {
         $count = count($this->dbh);
 
 
@@ -88,7 +105,9 @@ class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($listener->pop(), 'onTransactionCommit');
         $this->assertEqual($listener->pop(), 'onPreTransactionCommit');
     }
-    public function testUpdate() {
+
+    public function testUpdate()
+    {
         $count = count($this->dbh);
 
 
@@ -119,7 +138,9 @@ class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($listener->pop(), 'onTransactionCommit');
         $this->assertEqual($listener->pop(), 'onPreTransactionCommit');
     }
-    public function testUpdateMultiple() {
+
+    public function testUpdateMultiple()
+    {
         $count = count($this->dbh);
 
         $listener = new Transaction_TestLogger();
@@ -156,7 +177,9 @@ class Doctrine_Connection_Transaction_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($listener->pop(), 'onTransactionCommit');
         $this->assertEqual($listener->pop(), 'onPreTransactionCommit');
     }
-    public function testDelete() {
+
+    public function testDelete()
+    {
         $count = count($this->dbh);
 
         $listener = new Transaction_TestLogger();

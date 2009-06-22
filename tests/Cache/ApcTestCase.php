@@ -48,7 +48,7 @@ class Doctrine_Cache_Apc_TestCase extends Doctrine_UnitTestCase
     
     public function testApcAsResultCache()
     {
-        if (!extension_loaded("apc")) {
+        if ( !extension_loaded("apc")) {
             return;
         }
         

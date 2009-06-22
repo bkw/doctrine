@@ -57,7 +57,8 @@ class DoctrineTest
      *
      * @param UnitTestCase A test case
      */
-    public function addTestCase($testCase){
+    public function addTestCase($testCase)
+    {
         $this->groups[$testCase->getName()] = $testCase;
         $this->testGroup->addTestCase($testCase);
     }
@@ -70,7 +71,8 @@ class DoctrineTest
      * running coverage report. 
      *
      */
-    public function run(){
+    public function run()
+    {
         $testGroup = $this->testGroup;
         if (PHP_SAPI === 'cli') {
             require_once(dirname(__FILE__) . '/DoctrineTest/Reporter/Cli.php');
@@ -81,10 +83,10 @@ class DoctrineTest
         } else {
             require_once(dirname(__FILE__) . '/DoctrineTest/Reporter/Html.php');
             $options = $_GET;
-            if(isset($options["filter"])){
+            if (isset($options["filter"])) {
                 $options["filter"] = explode(",", $options["filter"]);
             }
-            if(isset($options["group"])){
+            if (isset($options["group"])) {
                 $options["group"] = explode(",", $options["group"]);
             }
             $reporter = new DoctrineTest_Reporter_Html();
@@ -173,7 +175,6 @@ class DoctrineTest
         }
         return $testGroup->run($reporter, $filter);
     }
-
 
     /**
      * Require all the models needed in the tests

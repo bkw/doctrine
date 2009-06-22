@@ -36,17 +36,15 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
     protected $cache;
 
     public function prepareTables()
-    { }
-    public function prepareData()
-    { }
-    /**
-    public function testAdapterQueryAddsQueriesToCacheStack()
     {
-        $this->dbh->query('SELECT * FROM user');
 
-        $this->assertEqual($this->cache->getAll(), array('main' => array('SELECT * FROM user')));
     }
-    */
+
+    public function prepareData()
+    {
+
+    }
+
     public function testAdapterQueryChecksCache()
     {
         $query = 'SELECT * FROM user';
@@ -63,6 +61,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($data, $resultSet);
         $this->assertEqual($this->dbh->getAdapter()->count(), $count);
     }
+
     public function testAdapterStatementExecuteChecksCache()
     {
         $query  = 'SELECT * FROM user WHERE id = ?';
@@ -80,6 +79,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($data, $resultSet);
         $this->assertEqual($this->dbh->getAdapter()->count(), $count);
     }
+
     public function testFetchAdvancesCacheDataPointer()
     {
         $query  = 'SELECT * FROM user WHERE id = ?';
@@ -105,6 +105,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($this->cache->getAll(), array('main' => array('SELECT * FROM user')));
     }
+
     public function testAdapterStatementFetchCallsCacheFetch()
     {
         $stmt = $this->dbh->prepare('SELECT * FROM user');
@@ -113,6 +114,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
 
         $a = $stmt->fetchAll();
     }
+
     public function testAdapterStatementExecuteAddsQueriesToCache()
     {
         $this->cache->setOption('savePropability', 1);
@@ -129,6 +131,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($driver->count(), 1);
     }
+
     public function testAppendStatsWritesQueriesToStatsFile()
     {
         $this->cache->setOption('addStatsPropability', 1);
@@ -145,6 +148,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($stats[0], 'SELECT * FROM user');
         $this->assertEqual($stats[1], array('SELECT * FROM user WHERE id = ?', array(1)));
     }
+
     public function testCleanRemovesDriver()
     {
         $this->cache->setOption('cleanPropability', 1);
@@ -175,4 +179,4 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
 
         $this->cache->reset();
     }
-}
+}\

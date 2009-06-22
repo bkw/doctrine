@@ -48,7 +48,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         $q->select("CONCAT(u.name, ' ', e.address) value")
           ->from('User u')->innerJoin('u.Email e');
 
-        $this->assertEqual($q->getQuery(), "SELECT CONCAT(e.name, ' ', e2.address) AS e__0 FROM entity e INNER JOIN email e2 ON e.email_id = e2.id WHERE (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT CONCAT(e.name, ' ', e2.address) AS e__0 FROM entity e INNER JOIN email e2 ON e.email_id = e2.id WHERE (e.type = 0)");
 
         $users = $q->execute();
         $this->assertEqual($users[0]->value, 'zYne zYne@example.com');
@@ -60,7 +60,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         
         $q->distinct()->select('u.name')->from('User u');
 
-        $this->assertEqual($q->getSql(), "SELECT DISTINCT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT DISTINCT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0)");
     }
 
     public function testSelectDistinctIsSupported2()
@@ -69,43 +69,43 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         
         $q->select('DISTINCT u.name')->from('User u');
 
-        $this->assertEqual($q->getSql(), "SELECT DISTINCT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT DISTINCT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 0)");
     }
 
     public function testAggregateFunctionWithDistinctKeyword() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT COUNT(DISTINCT u.name) FROM User u');
+        $q->parseDqlQuery('SELECT COUNT(DISTINCT u.name) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT COUNT(DISTINCT e.name) AS e__0 FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT COUNT(DISTINCT e.name) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
 
     public function testAggregateFunction() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT COUNT(u.id) FROM User u');
+        $q->parseDqlQuery('SELECT COUNT(u.id) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
 
     public function testSelectPartSupportsMultipleAggregateFunctions() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT MAX(u.id), MIN(u.name) FROM User u');
+        $q->parseDqlQuery('SELECT MAX(u.id), MIN(u.name) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX(e.id) AS e__0, MIN(e.name) AS e__1 FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT MAX(e.id) AS e__0, MIN(e.name) AS e__1 FROM entity e WHERE (e.type = 0)');
     }
 
     public function testMultipleAggregateFunctionsWithMultipleComponents()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT MAX(u.id), MIN(u.name), COUNT(p.id) FROM User u, u.Phonenumber p');
+        $q->parseDqlQuery('SELECT MAX(u.id), MIN(u.name), COUNT(p.id) FROM User u, u.Phonenumber p');
 
-        $this->assertEqual($q->getQuery(), 'SELECT MAX(e.id) AS e__0, MIN(e.name) AS e__1, COUNT(p.id) AS p__2 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT MAX(e.id) AS e__0, MIN(e.name) AS e__1, COUNT(p.id) AS p__2 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
 
     public function testChangeUpdateToSelect()
@@ -129,9 +129,9 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         
         try {
-            $q->parseQuery('SELECT UNKNOWN(u.id) FROM User u');
+            $q->parseDqlQuery('SELECT UNKNOWN(u.id) FROM User u');
             
-            $q->getQuery();
+            $q->getSqlQuery();
             $this->fail();
         } catch(Doctrine_Query_Exception $e) {
             $this->pass();
@@ -142,7 +142,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, u.name, COUNT(p.id) FROM User u LEFT JOIN u.Phonenumber p GROUP BY u.id');
+        $q->parseDqlQuery('SELECT u.id, u.name, COUNT(p.id) FROM User u LEFT JOIN u.Phonenumber p GROUP BY u.id');
 
         $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
 
@@ -158,40 +158,40 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.* FROM User u');
+        $q->parseDqlQuery('SELECT u.* FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
     }
     public function testSingleComponentWithMultipleColumns()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.name, u.type FROM User u'); 
+        $q->parseDqlQuery('SELECT u.name, u.type FROM User u'); 
         
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.type AS e__type FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.type AS e__type FROM entity e WHERE (e.type = 0)');
     }
     public function testMultipleComponentsWithAsterisk()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.*, p.* FROM User u, u.Phonenumber p');
+        $q->parseDqlQuery('SELECT u.*, p.* FROM User u, u.Phonenumber p');
 
-        $this->assertEqual($q->getQuery(),'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(),'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id, p.id AS p__id, p.phonenumber AS p__phonenumber, p.entity_id AS p__entity_id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
     public function testMultipleComponentsWithMultipleColumns()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, u.name, p.id FROM User u, u.Phonenumber p');
+        $q->parseDqlQuery('SELECT u.id, u.name, p.id FROM User u, u.Phonenumber p');
 
-        $this->assertEqual($q->getQuery(),'SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(),'SELECT e.id AS e__id, e.name AS e__name, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
     public function testAggregateFunctionValueHydrationWithAliases()
     {
 
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, COUNT(p.id) count FROM User u, u.Phonenumber p GROUP BY u.id');
+        $q->parseDqlQuery('SELECT u.id, COUNT(p.id) count FROM User u, u.Phonenumber p GROUP BY u.id');
 
         $users = $q->execute();
 
@@ -205,7 +205,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, COUNT(p.id) count, MAX(p.phonenumber) max FROM User u, u.Phonenumber p GROUP BY u.id');
+        $q->parseDqlQuery('SELECT u.id, COUNT(p.id) count, MAX(p.phonenumber) max FROM User u, u.Phonenumber p GROUP BY u.id');
 
         $users = $q->execute();
         $this->assertEqual($users[0]->Phonenumber[0]->count, 1);
@@ -226,9 +226,9 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
 
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, COUNT(p.id) count, MAX(p.phonenumber) max FROM User u, u.Phonenumber p GROUP BY u.id');
+        $q->parseDqlQuery('SELECT u.id, COUNT(p.id) count, MAX(p.phonenumber) max FROM User u, u.Phonenumber p GROUP BY u.id');
         
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, COUNT(p.id) AS p__0, MAX(p.phonenumber) AS p__1 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, COUNT(p.id) AS p__0, MAX(p.phonenumber) AS p__1 FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) GROUP BY e.id');
 
         $users = $q->execute();
 

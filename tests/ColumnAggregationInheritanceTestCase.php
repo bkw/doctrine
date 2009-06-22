@@ -63,11 +63,12 @@ class Doctrine_ColumnAggregationInheritance_TestCase extends Doctrine_UnitTestCa
         $user = $q->from('Entity')->where('id=?')->execute(array(5))->getFirst();
         $this->assertTrue($user instanceOf User);
     }
+
     public function testStringColumnInheritance()
     {
         $q = new Doctrine_Query();
         $q->select('g.name')->from('Group g');
-        $this->assertEqual($q->getSql(), "SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 1)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE (e.type = 1)");
     }
 
     public function testSubclassFieldSetWhenCreatingNewSubclassedRecord()

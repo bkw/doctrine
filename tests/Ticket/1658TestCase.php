@@ -40,7 +40,7 @@ class Doctrine_Ticket_1658_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
         try {
             $user = new Ticket_1658_User();
             $user->password = 'test';
@@ -58,7 +58,7 @@ class Doctrine_Ticket_1658_TestCase extends Doctrine_UnitTestCase
             $this->pass();
             $this->assertEqual($e->getMessage(), 'Set password called');
         }
-        Doctrine_Manager::getInstance()->setAttribute('auto_accessor_override', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, false);
     }
 }
 

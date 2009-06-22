@@ -59,7 +59,7 @@ class Doctrine_Ticket_1253_TestCase extends Doctrine_UnitTestCase
                 ->leftJoin('u.Type');
 
         // This will never work because t.type_name is the emulated enum value and t2.name is the actual name
-        $this->assertEqual($q->getSql(), 'SELECT t.id AS t__id, t.name AS t__name, t.type_name AS t__type_name, t2.id AS t2__id, t2.name AS t2__name FROM ticket_1253__user t LEFT JOIN ticket_1253__user_type t2 ON t.type_name = t2.name');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id, t.name AS t__name, t.type_name AS t__type_name, t2.id AS t2__id, t2.name AS t2__name FROM ticket_1253__user t LEFT JOIN ticket_1253__user_type t2 ON t.type_name = t2.name');
         $results = $q->fetchArray();
         $this->assertEqual($results[0]['Type']['name'], 'one');
     }

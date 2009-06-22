@@ -47,7 +47,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
     
         $q->from('User u')->limit(5);
 
-        $this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
     }
 
     public function testLimitQueriesForSqlite()
@@ -60,7 +60,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
     
         $q->from('User u')->limit(5);
 
-        $this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
     }
     
     public function testLimitQueriesForMysql()
@@ -73,7 +73,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
     
         $q->from('User u')->limit(5);
 
-        $this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) LIMIT 5');
     }
 
     public function testLimitQueriesForOracle()
@@ -86,7 +86,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u')->limit(5);
 
-        $this->assertEqual($q->getSql(), 'SELECT a.* FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a WHERE ROWNUM <= 5');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT a.* FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a WHERE ROWNUM <= 5');
     }
 
     public function testLimitOffsetQueriesForOracle()
@@ -99,7 +99,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u')->limit(5)->offset(2);
 
-        $this->assertEqual($q->getSql(), 'SELECT b.* FROM (SELECT a.*, ROWNUM AS doctrine_rownum FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a ) b WHERE doctrine_rownum BETWEEN 3 AND 7');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT b.* FROM (SELECT a.*, ROWNUM AS doctrine_rownum FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a ) b WHERE doctrine_rownum BETWEEN 3 AND 7');
     }
     
     public function testLimitOffsetLimitSubqueriesForOracle()
@@ -128,7 +128,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
                         . "WHERE doctrine_rownum BETWEEN 3 AND 7"
                     . ") AND (e.type = 0)";
         
-        $this->assertEqual($q->getSql(), $correctSql);
+        $this->assertEqual($q->getSqlQuery(), $correctSql);
     }
     
  /**
@@ -168,6 +168,6 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
                               . "WHERE doctrine_rownum BETWEEN 3 AND 7"
                           . ") AND (e.type = 0) GROUP BY e.name ORDER BY p.id";
                          
-              $this->assertEqual($q->getSql(), $correctSql);
+              $this->assertEqual($q->getSqlQuery(), $correctSql);
           }
 }

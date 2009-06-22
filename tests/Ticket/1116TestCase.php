@@ -46,7 +46,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 
 	public function testTicket()
 	{
-	    Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+	    Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 		$q = new Doctrine_Query();
 		$q->select('s.*')
 		  ->from('Ticket_1116_User s')
@@ -56,7 +56,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		$test = $q->fetchOne();  //will only fail with "real" mysql 
 		$this->assertFalse($test);
 
-		$sql    = $q->getSql(); // just getSql()?!?! and it works ? the params are ok after this call  
+		$sql    = $q->getSqlQuery(); // just getSql()?!?! and it works ? the params are ok after this call  
 		$params = $q->getFlattenedParams();
 		$this->assertEqual(count($params), 1); // now we have array('test',null) very strange ..... 
 
@@ -66,7 +66,7 @@ class Doctrine_Ticket_1116_TestCase extends Doctrine_UnitTestCase
 		//now also this works! (always works witch mock only fails with mysql)
 		$test = $q->fetchOne();
 		$this->assertFalse($test);
-		Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+		Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
 	}
 }
 

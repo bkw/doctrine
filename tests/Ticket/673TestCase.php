@@ -30,8 +30,8 @@ class Doctrine_Ticket_673_TestCase extends Doctrine_UnitTestCase
         ->set('s.foo', 's.foo + 1')
         ->where('s.id = 2');
       
-      $this->assertTrue(preg_match_all('/(s_foo)/', $q->getSql(), $m) === 2);
-      $this->assertTrue(preg_match_all('/(s_id)/', $q->getSql(), $m) === 1);
+      $this->assertTrue(preg_match_all('/(s_foo)/', $q->getSqlQuery(), $m) === 2);
+      $this->assertTrue(preg_match_all('/(s_id)/', $q->getSqlQuery(), $m) === 1);
       
       try {
         $q->execute();
@@ -45,8 +45,8 @@ class Doctrine_Ticket_673_TestCase extends Doctrine_UnitTestCase
         ->from('T673_Student s')
         ->where('s.name = ? AND s.foo < ?', 'foo', 3);
       
-      $this->assertTrue(preg_match_all('/(s_name)/', $q->getSql(), $m) === 1);
-      $this->assertTrue(preg_match_all('/(s_foo)/', $q->getSql(), $m) === 1);
+      $this->assertTrue(preg_match_all('/(s_name)/', $q->getSqlQuery(), $m) === 1);
+      $this->assertTrue(preg_match_all('/(s_foo)/', $q->getSqlQuery(), $m) === 1);
 
       try {
         $q->execute();

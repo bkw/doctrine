@@ -82,7 +82,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
 
         $cache = new Doctrine_Cache_Array();
-        $q->useCache($cache)->select('u.name')->from('User u');
+        $q->useResultCache($cache)->select('u.name')->from('User u');
         $coll = $q->execute();
 
         $this->assertEqual($cache->count(), 1);
@@ -99,7 +99,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
 
         $cache = new Doctrine_Cache_Array();
-        $q->useCache($cache);
+        $q->useResultCache($cache);
         $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p');
         $coll = $q->execute();
 
@@ -117,7 +117,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
 
         $cache = new Doctrine_Cache_Array();
-        $q->useCache($cache);
+        $q->useResultCache($cache);
         $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p')
           ->where('u.id = ?');
         
@@ -152,7 +152,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $cache = new Doctrine_Cache_Array();
         $this->conn->setAttribute(Doctrine::ATTR_CACHE, $cache);
 
-        $q->useCache(true);
+        $q->useResultCache(true);
         $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p')
           ->where('u.id = ?');
 

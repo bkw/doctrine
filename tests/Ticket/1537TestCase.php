@@ -40,13 +40,13 @@ class Doctrine_Ticket_1537_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         $q = Doctrine_Query::create()
             ->update('Ticket_1537_User u')
             ->set('password', '?', 'changeme')
             ->set('email_address', '?', 'jonwage@gmail.com')
             ->where('username = ?', 'jwage');
-        $this->assertEqual($q->getSql(), 'UPDATE ticket_1537__user SET password = ?, email_address = ?, updated_at = ? WHERE username = ?');
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE ticket_1537__user SET password = ?, email_address = ?, updated_at = ? WHERE username = ?');
         $params = $q->getFlattenedParams();
 
         // make sure order of params are correct
@@ -56,7 +56,7 @@ class Doctrine_Ticket_1537_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($params[2]);
         $this->assertEqual($params[3], 'jwage');
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

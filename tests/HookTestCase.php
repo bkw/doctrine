@@ -50,7 +50,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['orderby'] = array('u.name ASC');
 
         $hook->hookOrderBy($a['orderby']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name ASC');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name ASC');
     }
 
     public function testHookOrderbyAcceptsDescendingOrder()
@@ -60,7 +60,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['orderby'] = array('u.name DESC');
 
         $hook->hookOrderBy($a['orderby']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name DESC');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name DESC');
     }
 
     public function testHookOrderbyDoesntAcceptUnknownColumn()
@@ -70,7 +70,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['orderby'] = array('u.unknown DESC');
 
         $hook->hookOrderBy($a['orderby']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
 
     public function testHookOrderbyAcceptsMultipleParameters()
@@ -80,7 +80,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['orderby'] = array('u.name ASC', 'u.id DESC');
 
         $hook->hookOrderBy($a['orderby']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name ASC, e.id DESC');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) ORDER BY e.name ASC, e.id DESC');
 
         $users =  $hook->getQuery()->execute();
     }
@@ -93,7 +93,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
                             'u.loginname' => 'TheMan');
 
         $hook->hookWhere($a['where']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.name LIKE ? OR e.name LIKE ?) AND e.loginname LIKE ? AND (e.type = 0)');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.name LIKE ? OR e.name LIKE ?) AND e.loginname LIKE ? AND (e.type = 0)');
         $this->assertEqual($hook->getQuery()->getFlattenedParams(), array('%Jack%', '%Daniels%', '%TheMan%'));
     }
 
@@ -104,7 +104,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['where'] = array('u.id' => 10000);
 
         $hook->hookWhere($a['where']);
-        $this->assertEqual($hook->getQuery()->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id = ? AND (e.type = 0)');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id = ? AND (e.type = 0)');
         $this->assertEqual($hook->getQuery()->getFlattenedParams(), array(10000));
     }
 
@@ -116,7 +116,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
 
         $hook->hookWhere($a['where']);
 
-        $this->assertEqual($hook->getQuery()->getSql(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0)');
     }
 
     public function testEqualParserUsesEqualOperator()

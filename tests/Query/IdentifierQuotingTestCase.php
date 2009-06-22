@@ -51,9 +51,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.id, MAX(u.id), MIN(u.name) FROM User u');
+        $q->parseDqlQuery('SELECT u.id, MAX(u.id), MIN(u.name) FROM User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT "e"."id" AS "e__id", MAX("e"."id") AS "e__0", MIN("e"."name") AS "e__1" FROM "entity" "e" WHERE ("e"."type" = 0)');
 
         $q->execute();
     }
@@ -62,9 +62,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.name FROM User u WHERE u.id = 3');
+        $q->parseDqlQuery('SELECT u.name FROM User u WHERE u.id = 3');
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" WHERE "e"."id" = 3 AND ("e"."type" = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" WHERE "e"."id" = 3 AND ("e"."type" = 0)');
     
         $q->execute();
     }
@@ -74,9 +74,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery("SELECT u.name FROM User u WHERE TRIM(u.name) = 'zYne'");
+        $q->parseDqlQuery("SELECT u.name FROM User u WHERE TRIM(u.name) = 'zYne'");
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" WHERE TRIM(u.name) = 3 AND ("e"."type" = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" WHERE TRIM(u.name) = 3 AND ("e"."type" = 0)');
     }
     */
 
@@ -84,9 +84,9 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.name FROM User u LEFT JOIN u.Phonenumber p');
+        $q->parseDqlQuery('SELECT u.name FROM User u LEFT JOIN u.Phonenumber p');
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" LEFT JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE ("e"."type" = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" LEFT JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE ("e"."type" = 0)');
 
     }
 
@@ -94,25 +94,25 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p')->limit(5);
+        $q->parseDqlQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p')->limit(5);
 
-        $this->assertEqual($q->getQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e2"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e2"."id" = "p2"."entity_id" WHERE ("e2"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT "e"."id" AS "e__id", "e"."name" AS "e__name" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."id" IN (SELECT DISTINCT "e2"."id" FROM "entity" "e2" INNER JOIN "phonenumber" "p2" ON "e2"."id" = "p2"."entity_id" WHERE ("e2"."type" = 0) LIMIT 5) AND ("e"."type" = 0)');
     }
     
     public function testCountQuerySupportsIdentifierQuoting()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p');
+        $q->parseDqlQuery('SELECT u.name FROM User u INNER JOIN u.Phonenumber p');
         
-        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS "num_results" FROM (SELECT "e"."id" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."type" = 0 GROUP BY "e"."id") "dctrn_count_query"');
+        $this->assertEqual($q->getCountSqlQuery(), 'SELECT COUNT(*) AS "num_results" FROM (SELECT "e"."id" FROM "entity" "e" INNER JOIN "phonenumber" "p" ON "e"."id" = "p"."entity_id" WHERE "e"."type" = 0 GROUP BY "e"."id") "dctrn_count_query"');
     }
 
     public function testUpdateQuerySupportsIdentifierQuoting()
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery('UPDATE User u SET u.name = ? WHERE u.id = ?');
+        $q->parseDqlQuery('UPDATE User u SET u.name = ? WHERE u.id = ?');
         
         $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "name" = ? WHERE "id" = ? AND ("type" = 0)');
     }

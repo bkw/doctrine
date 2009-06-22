@@ -39,7 +39,7 @@ class Doctrine_Ticket_1935_TestCase extends Doctrine_UnitTestCase
                 ->having('num_records > 1')
                 ;
             //$results = $q->execute();
-            $this->assertEqual($q->getSql(), 'SELECT COUNT(`t`.`id`) AS `t__0` FROM `ticket_1935_article` `t` HAVING `t__0` > 1');
+            $this->assertEqual($q->getSqlQuery(), 'SELECT COUNT(`t`.`id`) AS `t__0` FROM `ticket_1935_article` `t` HAVING `t__0` > 1');
         }
         catch(Exception $e)
         {

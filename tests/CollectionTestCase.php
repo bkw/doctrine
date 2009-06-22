@@ -87,6 +87,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
 
         $this->connection->clear();
     }
+
     public function testOffsetGetWithNullArgumentReturnsNewRecord() 
     {
         $coll = new Doctrine_Collection('User');
@@ -97,7 +98,6 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($coll->count(), 1);
         $this->assertEqual($coll[0]->name, 'zYne');
     }
-
 
     public function testLoadRelatedForNormalAssociation() 
     {
@@ -165,6 +165,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $coll[0]->Group[0];
         $this->assertEqual($count, $this->connection->count());
     }
+
     public function testLoadRelatedForLocalKeyRelation() 
     {
         $coll = $this->connection->query('FROM User');
@@ -190,6 +191,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
 
         $this->connection->clear();
     }
+
     public function testLoadRelatedForForeignKey() 
     {
         $coll = $this->connection->query("FROM User");
@@ -223,6 +225,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         
         $this->connection->clear();
     }
+
     public function testCount() 
     {
         $coll = new Doctrine_Collection($this->connection->getTable('User'));
@@ -249,6 +252,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         }
 
     }
+
     public function testFetchCollectionWithIdAsIndex() 
     {
         $user = new User();
@@ -258,6 +262,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->assertFalse($users->contains(0));
         $this->assertEqual($users->count(), 8);
     }
+
     public function testFetchCollectionWithNameAsIndex() 
     {
         $user = new User();
@@ -267,6 +272,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->assertFalse($users->contains(0));
         $this->assertEqual($users->count(), 8);
     }
+
     public function testFetchMultipleCollections() 
     {
         $this->connection->clear();

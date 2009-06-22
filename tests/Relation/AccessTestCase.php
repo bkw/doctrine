@@ -30,7 +30,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
             for($i=$count;$i<$count+$onething_g[0];$i++) {
                 $d = new MyOneThing();
                 $d->name = "onething".$i;
-                if($onething_g[1]) {
+                if ($onething_g[1]) {
                     $us[$onething_g[1]]->MyOneThing->add($d);
                 }
             }
@@ -140,7 +140,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
         $other = $this->connection->query($query);
         $check1 = array();
         foreach($other as $oth) {
-            if( ! isset($check1[$oth->other_thing_id])) {
+            if ( ! isset($check1[$oth->other_thing_id])) {
                 $check1[$oth->other_thing_id] = array();
             }
             $check1[$oth->other_thing_id][$oth->id] = $oth;
@@ -149,7 +149,7 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
         $ones = $this->connection->query($query);
         $check2 = array();
         foreach($ones as $one) {
-            if( ! isset($check2[$one->one_thing_id])) {
+            if ( ! isset($check2[$one->one_thing_id])) {
                 $check2[$one->one_thing_id] = array();
             }
             $check2[$one->one_thing_id][$one->id] = $one;
@@ -169,10 +169,10 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
                 $this->assertEqual($o->MyUserOtherThing->count(), $wanted_user_thing_count, "incorrect count of MyUserOtherThing on MyOtherThing");
                 foreach($o->MyUserOtherThing as $uo) {
                     $this->assertEqual($uo->other_thing_id, $o->id, "incorrectly assigned MyOtherThing.id on MyUserOtherThing");
-                    if($in_check) {
+                    if ($in_check) {
                         $wanted_user_thing_exists = array_key_exists($uo->id, $check1[$o->id]);
                         $this->assertTrue($wanted_user_thing_exists, "MyUserOtherThing incorrectly assigned to MyOtherThing.");
-                        if($wanted_user_thing_exists) {
+                        if ($wanted_user_thing_exists) {
                             $this->assertEqual($uo->other_thing_id, $check1[$o->id][$uo->id]->user_id, "incorrect value of MyUserOtherThing.user_id");
                             $this->assertEqual($uo->other_thing_id, $check1[$o->id][$uo->id]->other_thing_id, "incorrect value of MyUserOtherThing.other_thing_id");
                         }
@@ -195,10 +195,10 @@ class Doctrine_Relation_Access_TestCase extends Doctrine_UnitTestCase {
                 $this->assertEqual($o->MyUserOneThing->count(), $wanted_user_thing_count, "incorrect count of MyUserOneThing on MyOneThing");
                 foreach($o->MyUserOneThing as $uo) {
                     $this->assertEqual($uo->one_thing_id, $o->id, "incorrectly assigned MyOneThing.id on MyUserOneThing");
-                    if($in_check) {
+                    if ($in_check) {
                         $wanted_user_thing_exists = array_key_exists($uo->id, $check2[$o->id]);
                         $this->assertTrue($wanted_user_thing_exists, "MyUserOneThing incorrectly assigned to MyOneThing.");
-                        if($wanted_user_thing_exists) {
+                        if ($wanted_user_thing_exists) {
                             $this->assertEqual($uo->one_thing_id, $check2[$o->id][$uo->id]->user_id, "incorrect value of MyUserOneThing.user_id");
                             $this->assertEqual($uo->one_thing_id, $check2[$o->id][$uo->id]->one_thing_id, "incorrect value of MyUserOneThing.one_thing_id");
                         }

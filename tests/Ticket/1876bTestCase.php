@@ -40,7 +40,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
 
     public function testDuplicatedParamsInSubQuery()
     {
-        $this->connection->setAttribute('use_dql_callbacks', true);
+        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 
         for ($i = 0; $i < 2; $i++) {
             $company = new T1876b_Company();
@@ -70,7 +70,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('c.id = ?', 2);
             
             $this->assertEqual(
-                $q->getCountQuery(), 
+                $q->getCountSqlQuery(), 
                 'SELECT COUNT(*) AS num_results FROM ('
                     . 'SELECT t.id FROM t1876b__recipe t '
                     . 'LEFT JOIN t1876b__company t2 ON t.company_id = t2.id AND t2.deleted_at IS NULL '
@@ -83,7 +83,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
 
-        $this->connection->setAttribute('use_dql_callbacks', false);
+        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

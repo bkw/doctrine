@@ -67,10 +67,10 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u');
 
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
 
         // test consequent calls
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
     }
 
 
@@ -125,7 +125,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
     {
     	$q = new Doctrine_Query();
         $q->from('User u')->leftJoin('u.Phonenumber p');
-        $q->getQuery();
+        $q->getSqlQuery();
         //Doctrine::dump($q->getCachedForm(array('foo' => 'bar')));
         $this->assertEqual($q->parseClause("CONCAT('u.name', u.name)"), "CONCAT('u.name', e.name)");
     }
@@ -155,18 +155,18 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
     {
         $query = new Doctrine_Query();
         $query->select('u.*')->from('User u');
-        $sql = $query->getSql();
+        $sql = $query->getSqlQuery();
         
         $data = $query->execute();
         $query2 = $query->copy();
         
-        $this->assertTrue($sql, $query2->getSql());
+        $this->assertTrue($sql, $query2->getSqlQuery());
         
         $query2->limit(0);
         $query2->offset(0);
         $query2->select('COUNT(u.id) as nb');
         
-        $this->assertTrue($query2->getSql(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
+        $this->assertTrue($query2->getSqlQuery(), 'SELECT COUNT(e.id) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
     
     public function testNullAggregateIsSet()
@@ -313,7 +313,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             
         $expected = 'SELECT q.id AS q__id FROM query_test__user q LEFT JOIN query_test__subscription q2 ON q.subscriptionid = q2.id WHERE CURRENT_DATE() BETWEEN q2.begin AND q2.begin AND q.id != 5';
         
-        $this->assertEqual( $q1->getSql(), $expected );
+        $this->assertEqual( $q1->getSqlQuery(), $expected );
         
     } 
 

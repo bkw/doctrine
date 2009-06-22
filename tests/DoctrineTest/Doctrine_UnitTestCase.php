@@ -57,7 +57,8 @@ class Doctrine_UnitTestCase extends UnitTestCase
 
     protected $init = false;
 
-    public function getName(){
+    public function getName()
+    {
         return $this->_name;
     }
 
@@ -108,11 +109,9 @@ class Doctrine_UnitTestCase extends UnitTestCase
             
             $module = $e[1];
     
-            if(count($e) > 3) {
+            if (count($e) > 3) {
                 $driver = $e[2];
                 switch($e[2]) {
-                    case 'Firebird':
-                    case 'Informix':
                     case 'Mysql':
                     case 'Mssql':
                     case 'Oracle':
@@ -135,7 +134,7 @@ class Doctrine_UnitTestCase extends UnitTestCase
             $this->manager->setAttribute(Doctrine::ATTR_LISTENER, $this->listener);
 
         } catch(Doctrine_Manager_Exception $e) {
-            if($this->driverName == 'main') {
+            if ($this->driverName == 'main') {
                 $this->dbh = new PDO('sqlite::memory:');
                 $this->dbh->sqliteCreateFunction('trim', 'trim', 1);
             } else {
@@ -144,7 +143,7 @@ class Doctrine_UnitTestCase extends UnitTestCase
 
             $this->conn = $this->connection = $this->manager->openConnection($this->dbh, $this->driverName);
 
-            if($this->driverName !== 'main') {
+            if ($this->driverName !== 'main') {
                 $exc  = 'Doctrine_Connection_' . ucwords($this->driverName) . '_Exception';
 
                 $this->exc = new $exc();

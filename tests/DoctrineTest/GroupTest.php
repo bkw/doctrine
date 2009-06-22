@@ -11,20 +11,22 @@ class GroupTest extends UnitTestCase
         $this->_name =  $name;
     }
 
-    public function getName(){
+    public function getName()
+    {
         return $this->_name;
     }
 
     public function addTestCase(UnitTestCase $testCase)
     {
-        if($testCase instanceOf GroupTest) {
+        if ($testCase instanceOf GroupTest) {
             $this->_testCases = array_merge($this->_testCases, $testCase->getTestCases());
          } else {
             $this->_testCases[get_class($testCase)] = $testCase;
          }
     }
 
-    public function shouldBeRun($testCase, $filter){
+    public function shouldBeRun($testCase, $filter)
+    {
         if ( ! is_array($filter)) {
             return true;
         }
@@ -75,8 +77,8 @@ class GroupTest extends UnitTestCase
         return count($this->_testCases);
     }
 
-    public function getTestCases(){
+    public function getTestCases()
+    {
         return $this->_testCases;
     }
 }
-

@@ -12,32 +12,39 @@ class AdapterMock implements Doctrine_Adapter_Interface {
     {
         $this->name = $name;
     }
+
     public function getName() 
     {
         return $this->name;
     }
+
     public function pop() 
     {
         return array_pop($this->queries);
     }
+
     public function forceException($name, $message = '', $code = 0) 
     {
         $this->exception = array($name, $message, $code);
     }
+
     public function prepare($query)
     {
         return new AdapterStatementMock($this, $query);
     }
+
     public function addQuery($query)
     {
         $this->queries[] = $query;
     }
-    public function query($query) {
+
+    public function query($query)
+    {
         $this->queries[] = $query;
 
         $e    = $this->exception;
 
-        if( ! empty($e)) {
+        if ( ! empty($e)) {
             $name = $e[0];
 
             $this->exception = array();
@@ -47,18 +54,24 @@ class AdapterMock implements Doctrine_Adapter_Interface {
 
         return new AdapterStatementMock($this, $query);
     }
-    public function getAll() {
+
+    public function getAll()
+    {
         return $this->queries;
     }
-    public function quote($input) {
+
+    public function quote($input)
+    {
         return "'" . addslashes($input) . "'";
     }
-    public function exec($statement) { 
+
+    public function exec($statement)
+    {
         $this->queries[] = $statement;
 
         $e    = $this->exception;
 
-        if( ! empty($e)) {
+        if ( ! empty($e)) {
             $name = $e[0];
 
             $this->exception = array();
@@ -68,7 +81,8 @@ class AdapterMock implements Doctrine_Adapter_Interface {
 
         return 0;
     }
-    public function forceLastInsertIdFail($fail = true) 
+
+    public function forceLastInsertIdFail($fail = true)
     {
         if ($fail) {
             $this->lastInsertIdFail = true;
@@ -76,6 +90,7 @@ class AdapterMock implements Doctrine_Adapter_Interface {
             $this->lastInsertIdFail = false;
         }
     }
+
     public function lastInsertId()
     {
         $this->queries[] = 'LAST_INSERT_ID()';
@@ -85,52 +100,81 @@ class AdapterMock implements Doctrine_Adapter_Interface {
             return 1;
         }
     }
-    public function beginTransaction(){ 
+
+    public function beginTransaction()
+    { 
         $this->queries[] = 'BEGIN TRANSACTION';
     }
-    public function commit(){ 
+
+    public function commit()
+    {
         $this->queries[] = 'COMMIT';
     }
+
     public function rollBack() 
     { 
         $this->queries[] = 'ROLLBACK';
     }
-    public function errorCode(){ }
-    public function errorInfo(){ }
-    public function getAttribute($attribute) {
-        if($attribute == PDO::ATTR_DRIVER_NAME)
-            return strtolower($this->name);
+
+    public function errorCode()
+    {
+
     }
-    public function setAttribute($attribute, $value) {
-                                       
+
+    public function errorInfo()
+    {
+
+    }
+
+    public function getAttribute($attribute)
+    {
+        if ($attribute == PDO::ATTR_DRIVER_NAME) {
+            return strtolower($this->name);
+        }
+    }
+
+    public function setAttribute($attribute, $value)
+    {
+
     }
 }
-class AdapterStatementMock {
-    
+
+class AdapterStatementMock
+{
     private $mock;
     
     private $query;
 
-    public function __construct(AdapterMock $mock, $query) {
+    public function __construct(AdapterMock $mock, $query)
+    {
         $this->mock  = $mock;
         $this->query = $query;
     }
-    public function fetch($fetchMode) { 
+
+    public function fetch($fetchMode)
+    {
         return array();
     }
-    public function fetchAll($fetchMode) {
+
+    public function fetchAll($fetchMode)
+    {
         return array();
     }
-    public function execute() {
+
+    public function execute()
+    {
         $this->mock->addQuery($this->query);
         return true;
     }
-    public function fetchColumn($colnum = 0) {
+
+    public function fetchColumn($colnum = 0)
+    {
         return 0;
     }
 }
 
-class Doctrine_Driver_UnitTestCase extends UnitTestCase {
+class Doctrine_Driver_UnitTestCase extends UnitTestCase
+{
     protected $driverName = false;
     protected $generic = false;
     protected $manager;
@@ -140,35 +184,45 @@ class Doctrine_Driver_UnitTestCase extends UnitTestCase {
     protected $dataDict;
     protected $transaction;
 
-    public function __construct($driverName, $generic = false) {
+    public function __construct($driverName, $generic = false)
+    {
 
         $this->driverName = $driverName;
         $this->generic    = $generic;
     }
-    public function assertDeclarationType($type, $type2) {
+
+    public function assertDeclarationType($type, $type2)
+    {
         $dec = $this->getDeclaration($type);
-        if( ! is_array($type2))
+        if ( ! is_array($type2)) {
             $type2 = array($type2);
+        }
         $this->assertEqual($dec[0], $type2);
     }
-    public function getDeclaration($type) {
+
+    public function getDeclaration($type)
+    {
         return $this->dataDict->getPortableDeclaration(array('type' => $type, 'name' => 'colname', 'length' => 1, 'fixed' => true));
     }
-    public function setDriverName($driverName) {
+
+    public function setDriverName($driverName)
+    {
         $this->driverName = $driverName;
     }
-    public function init() {
+
+    public function init()
+    {
         $this->adapter = new AdapterMock($this->driverName);
         $this->manager = Doctrine_Manager::getInstance();
         $this->manager->setDefaultAttributes();
         $this->conn = $this->manager->openConnection($this->adapter);
 
-        if( ! $this->generic) {
+        if ( ! $this->generic) {
             $this->export   = $this->conn->export;
 
             $name = $this->adapter->getName();
 
-            if($this->adapter->getName() == 'oci')
+            if ($this->adapter->getName() == 'oci')
                 $name = 'Oracle';
             
             $tx = 'Doctrine_Transaction_' . ucwords($name);
@@ -177,9 +231,9 @@ class Doctrine_Driver_UnitTestCase extends UnitTestCase {
             $exc  = 'Doctrine_Connection_' . ucwords($name) . '_Exception';
             
             $this->exc = new $exc();
-            if(class_exists($tx))
+            if (class_exists($tx))
                 $this->transaction = new $tx($this->conn);
-            if(class_exists($dataDict)) {
+            if (class_exists($dataDict)) {
                 $this->dataDict = new $dataDict($this->conn);
             }
             //$this->dataDict = $this->conn->dataDict;
@@ -191,7 +245,7 @@ class Doctrine_Driver_UnitTestCase extends UnitTestCase {
 
     public function setUp() {
         static $init = false;
-        if( ! $init) {
+        if ( ! $init) {
             $this->init();
             $init = true;
         }

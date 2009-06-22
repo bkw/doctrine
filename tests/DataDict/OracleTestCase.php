@@ -30,7 +30,8 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
+class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
+{
     public function testGetPortableDeclarationForUnknownNativeTypeThrowsException() 
     {
         try {
@@ -40,6 +41,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
+
     public function testGetPortableDeclarationSupportsNativeFloatType() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'float'));
@@ -49,6 +51,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'unsigned' => null,
                                         'fixed' => null));
     }
+
     public function testGetPortableDeclarationSupportsNativeIntegerTypes()
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'integer'));
@@ -72,6 +75,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'unsigned' => null,
                                         'fixed' => null));
     }
+
     public function testGetPortableDeclarationSupportsNativeStringTypes() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'varchar'));
@@ -109,6 +113,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'unsigned' => null,
                                         'fixed' => true));
     }
+
     public function testGetPortableDeclarationSupportsNativeNumberType() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'number'));
@@ -127,6 +132,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'fixed' => null));
 
     }
+
     public function testGetPortableDeclarationSupportsNativeTimestampType() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'date'));
@@ -143,6 +149,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'unsigned' => null,
                                         'fixed' => null));
     }
+
     public function testGetPortableDeclarationSupportsNativeClobTypes() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'clob'));
@@ -167,6 +174,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'fixed' => null));
 
     }
+
     public function testGetPortableDeclarationSupportsNativeBlobTypes() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'blob'));
@@ -197,6 +205,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
                                         'unsigned' => null,
                                         'fixed' => null));
     }
+
     public function testGetNativeDefinitionSupportsIntegerType() 
     {
         $a = array('type' => 'integer', 'length' => 20, 'fixed' => false);
@@ -222,78 +231,91 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase {
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER');
     }
+
     public function testGetNativeDefinitionSupportsBooleanType() 
     {
         $a = array('type' => 'boolean', 'fixed' => false);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(1)');
     }
+
     public function testGetNativeDefinitionSupportsDateType() 
     {
         $a = array('type' => 'date', 'fixed' => false);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'DATE');
     }
+
     public function testGetNativeDefinitionSupportsTimestampType() 
     {
         $a = array('type' => 'timestamp', 'fixed' => false);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'DATE');
     }
+
     public function testGetNativeDefinitionSupportsTimeType() 
     {
         $a = array('type' => 'time', 'fixed' => false);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'DATE');
     }
+
     public function testGetNativeDefinitionSupportsClobType() 
     {
         $a = array('type' => 'clob');
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
+
     public function testGetNativeDefinitionSupportsBlobType() 
     {
         $a = array('type' => 'blob');
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'BLOB');
     }
+
     public function testGetNativeDefinitionSupportsCharType() 
     {
         $a = array('type' => 'char', 'length' => 10);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CHAR(10)');
     }
+
     public function testGetNativeDefinitionSupportsVarcharType() 
     {
         $a = array('type' => 'varchar', 'length' => 10);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10)');
     }
+
     public function testGetNativeDefinitionSupportsArrayType() 
     {
         $a = array('type' => 'array', 'length' => 40);
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(40)');
     }
+
     public function testGetNativeDefinitionSupportsStringType() 
     {
         $a = array('type' => 'string');
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
+
     public function testGetNativeDefinitionSupportsArrayType2() 
     {
         $a = array('type' => 'array');
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
+
     public function testGetNativeDefinitionSupportsObjectType() 
     {
         $a = array('type' => 'object');
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
     }
+
     public function testGetNativeDefinitionSupportsLargerStrings()
     {
         $a = array('type' => 'string', 'length' => 4001);

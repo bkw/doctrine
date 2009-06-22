@@ -43,7 +43,7 @@ class Doctrine_NestedSet_TimestampableMultiRoot_TestCase extends Doctrine_UnitTe
     
     
     public function testSavingNewRecordWithRootIdWorks() {
-        Doctrine_Manager::getInstance()->setAttribute("use_dql_callbacks", true );
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true );
         $node = new NestedSet_Timestampable_MultiRootNode();
         $node->name = 'root';
         $node->root_id = 42;

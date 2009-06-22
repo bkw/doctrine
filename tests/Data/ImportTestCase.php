@@ -435,7 +435,7 @@ END;
 
     public function testRecursiveFixturesLoading()
     {
-        Doctrine_Manager::getInstance()->setAttribute('recursive_merge_fixtures', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_RECURSIVE_MERGE_FIXTURES, true);
         self::prepareTables();
         $yml1 = <<<END
 ---
@@ -467,7 +467,7 @@ END;
         unlink('test_data_fixtures/test1.yml');
         unlink('test_data_fixtures/test2.yml');
         rmdir('test_data_fixtures');
-        Doctrine_Manager::getInstance()->setAttribute('recursive_merge_fixtures', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_RECURSIVE_MERGE_FIXTURES, false);
     }
 
     public function testIncorrectYamlRelationThrowsException()
@@ -604,6 +604,7 @@ class I18nTestImport extends Doctrine_Record
         $this->hasColumn('name', 'string', 200);
         $this->hasColumn('title', 'string', 200);
     }
+
     public function setUp()
     {
         $this->actAs('I18n', array('fields' => array('name', 'title')));

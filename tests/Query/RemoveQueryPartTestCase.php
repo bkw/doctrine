@@ -40,7 +40,7 @@ class Doctrine_Query_RemoveQueryPart_TestCase extends Doctrine_UnitTestCase
 
 		$q->removeDqlQueryPart('orderby');
 
-		$this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+		$this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
 	}
 
 	public function testQueryRemoveLimitPart()
@@ -50,7 +50,7 @@ class Doctrine_Query_RemoveQueryPart_TestCase extends Doctrine_UnitTestCase
         $q->limit(20);
 		$q->removeDqlQueryPart('limit');
 
-		$this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+		$this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
 	}
 
 	public function testQueryRemoveOffsetPart()
@@ -60,7 +60,7 @@ class Doctrine_Query_RemoveQueryPart_TestCase extends Doctrine_UnitTestCase
         $q->offset(10);
 		$q->removeDqlQueryPart('offset');
 
-		$this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+		$this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
 	}
 
 	public function testQuerySetLimitToZero()
@@ -70,7 +70,7 @@ class Doctrine_Query_RemoveQueryPart_TestCase extends Doctrine_UnitTestCase
         $q->limit(20);
 		$q->limit(0);
 
-		$this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+		$this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
 	}
 
 	public function testQuerySetOffsetToZero()
@@ -80,6 +80,6 @@ class Doctrine_Query_RemoveQueryPart_TestCase extends Doctrine_UnitTestCase
         $q->offset(20);
 		$q->offset(0);
 
-		$this->assertEqual($q->getSql(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
+		$this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)');
 	}	
 }

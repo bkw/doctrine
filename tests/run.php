@@ -1,4 +1,5 @@
 <?php
+$startTime = time();
 
 // Debug Diagnosic process attacher sleep time needed to link process
 // More info about that: http://bugs.php.net/bugs-generating-backtrace-win32.php
@@ -53,15 +54,11 @@ $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mssql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mysql_TestCase());
-$driver->addTestCase(new Doctrine_Connection_Firebird_TestCase());
-$driver->addTestCase(new Doctrine_Connection_Informix_TestCase());
 $test->addTestCase($driver);
 
 // Transaction Tests (FULLY TESTED)
 $transaction = new GroupTest('Transaction Tests', 'transaction');
 $transaction->addTestCase(new Doctrine_Transaction_TestCase());
-$transaction->addTestCase(new Doctrine_Transaction_Firebird_TestCase());
-$transaction->addTestCase(new Doctrine_Transaction_Informix_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Mysql_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Mssql_TestCase());
 $transaction->addTestCase(new Doctrine_Transaction_Pgsql_TestCase());
@@ -72,8 +69,6 @@ $test->addTestCase($transaction);
 // DataDict Tests (FULLY TESTED)
 $data_dict = new GroupTest('DataDict Tests', 'data_dict');
 $data_dict->addTestCase(new Doctrine_DataDict_TestCase());
-$data_dict->addTestCase(new Doctrine_DataDict_Firebird_TestCase());
-$data_dict->addTestCase(new Doctrine_DataDict_Informix_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Mysql_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Mssql_TestCase());
 $data_dict->addTestCase(new Doctrine_DataDict_Pgsql_TestCase());
@@ -84,8 +79,6 @@ $test->addTestCase($data_dict);
 // Sequence Tests (not yet fully tested)
 $sequence = new GroupTest('Sequence Tests', 'sequence');
 $sequence->addTestCase(new Doctrine_Sequence_TestCase());
-$sequence->addTestCase(new Doctrine_Sequence_Firebird_TestCase());
-$sequence->addTestCase(new Doctrine_Sequence_Informix_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Mysql_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Mssql_TestCase());
 $sequence->addTestCase(new Doctrine_Sequence_Pgsql_TestCase());
@@ -96,8 +89,6 @@ $test->addTestCase($sequence);
 // Export Tests (not yet fully tested)
 $export = new GroupTest('Export Tests', 'export');
 $export->addTestCase(new Doctrine_Export_CheckConstraint_TestCase());
-$export->addTestCase(new Doctrine_Export_Firebird_TestCase());
-$export->addTestCase(new Doctrine_Export_Informix_TestCase());
 $export->addTestCase(new Doctrine_Export_TestCase());
 $export->addTestCase(new Doctrine_Export_Mssql_TestCase());
 $export->addTestCase(new Doctrine_Export_Pgsql_TestCase());
@@ -111,8 +102,6 @@ $test->addTestCase($export);
 // Import Tests (not yet fully tested)
 $import = new GroupTest('Import Tests', 'import');
 $import->addTestCase(new Doctrine_Import_TestCase());
-$import->addTestCase(new Doctrine_Import_Firebird_TestCase());
-$import->addTestCase(new Doctrine_Import_Informix_TestCase());
 $import->addTestCase(new Doctrine_Import_Mysql_TestCase());
 $import->addTestCase(new Doctrine_Import_Mssql_TestCase());
 $import->addTestCase(new Doctrine_Import_Pgsql_TestCase());
@@ -127,8 +116,6 @@ $test->addTestCase($import);
 $expression = new GroupTest('Expression Tests', 'expression');
 $expression->addTestCase(new Doctrine_Expression_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Driver_TestCase());
-$expression->addTestCase(new Doctrine_Expression_Firebird_TestCase());
-$expression->addTestCase(new Doctrine_Expression_Informix_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Mysql_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Mssql_TestCase());
 $expression->addTestCase(new Doctrine_Expression_Pgsql_TestCase());
@@ -323,5 +310,10 @@ $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
 $ret = $test->run();
+
+$endTime = time();
+$time = $endTime - $startTime;
+
+echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
 
 exit($ret ? 0 : 1);

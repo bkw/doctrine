@@ -47,10 +47,10 @@ class Doctrine_Ticket_2105_TestCase extends Doctrine_UnitTestCase
                 ->innerJoin('a.Translation t WITH t.name != ?', 'test')
                 ;
             $q->execute();
-            //echo $q->getSql().PHP_EOL;
+            //echo $q->getSqlQuery().PHP_EOL;
             
             $this->assertEqual(
-                $q->getSql(), 
+                $q->getSqlQuery(), 
                 'SELECT t.id AS t__id, t2.id AS t2__id, t2.lang AS t2__lang '.
                 'FROM ticket_2105__article t '.
                 'INNER JOIN ticket_2105__article_translation t2 '.
@@ -60,10 +60,10 @@ class Doctrine_Ticket_2105_TestCase extends Doctrine_UnitTestCase
             // we need to modify the query here - it can be anything, I've chosen addSelect
             $q->addSelect('t.name');
             $q->execute();
-            //echo $q->getSql().PHP_EOL;
+            //echo $q->getSqlQuery().PHP_EOL;
             
             $this->assertEqual(
-                $q->getSql(), 
+                $q->getSqlQuery(), 
                 'SELECT t.id AS t__id, t2.id AS t2__id, t2.lang AS t2__lang, t2.name AS t2__name '.
                 'FROM ticket_2105__article t '.
                 'INNER JOIN ticket_2105__article_translation t2 '.

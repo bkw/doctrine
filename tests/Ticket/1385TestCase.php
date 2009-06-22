@@ -42,7 +42,7 @@ class Doctrine_Ticket_1385_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'all');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 
         $user = new Ticket_1385_User1();
         $user->username = 'jwage';
@@ -62,7 +62,7 @@ class Doctrine_Ticket_1385_TestCase extends Doctrine_UnitTestCase
         $user->email_address = 'jonwage@ertoihertionerti.com';
         $this->assertFalse($user->isValid());
 
-        Doctrine_Manager::getInstance()->setAttribute('validate', 'none');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
     }
 }
 

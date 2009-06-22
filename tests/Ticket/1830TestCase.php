@@ -35,7 +35,7 @@ class Doctrine_Ticket_1830_TestCase extends Doctrine_UnitTestCase
 
     public function testDuplicatedParamsInSubQuery()
     {
-        $this->connection->setAttribute('use_dql_callbacks', true);
+        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 
         $article = new Ticket_1830_Article();
         $article->Translation['en']->title = 'Node1';
@@ -70,7 +70,7 @@ class Doctrine_Ticket_1830_TestCase extends Doctrine_UnitTestCase
           $this->fail($e->getMessage());
         }
 
-        $this->connection->setAttribute('use_dql_callbacks', false);
+        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

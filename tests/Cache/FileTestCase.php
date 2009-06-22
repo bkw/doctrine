@@ -1,12 +1,16 @@
 <?php
 
 
-class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase {
-    public function setUp() {
+class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase
+{
+    public function setUp()
+    {
         parent::setUp();
         $this->manager->setAttribute(Doctrine::ATTR_CACHE, Doctrine::CACHE_FILE);
     }
-    public function testStore() {
+
+    public function testStore()
+    {
         $this->cache->store($this->old);
         $this->assertTrue($this->cache->exists(4));
 
@@ -16,16 +20,24 @@ class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase {
         
         $this->assertTrue($this->cache->getTable() == $this->objTable);
     }
-    public function testGetFetched() {
+
+    public function testGetFetched()
+    {
         $this->assertTrue(is_array($this->cache->getFetched()));
     }
-    public function testGetFileName() {
+
+    public function testGetFileName()
+    {
         $this->assertEqual($this->manager->getRoot().DIRECTORY_SEPARATOR."cache".DIRECTORY_SEPARATOR."entity".DIRECTORY_SEPARATOR."4.cache", $this->cache->getFileName(4));
     }
-    public function testGetStats() {
+
+    public function testGetStats()
+    {
         $this->assertTrue(gettype($this->cache->getStats()) == "array");
     }
-    public function testDestructor() {
+
+    public function testDestructor()
+    {
         $this->objTable->setAttribute(Doctrine::ATTR_CACHE_TTL,1);
         $this->objTable->setAttribute(Doctrine::ATTR_CACHE_SIZE,5);
         $this->cache->__destruct();
@@ -37,22 +49,30 @@ class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase {
         $this->assertTrue($this->cache->count() == 1);
 
     }
-    public function testDeleteMultiple() {
+
+    public function testDeleteMultiple()
+    {
         $this->objTable->find(5);
         $this->objTable->find(6);
         
         $deleted = $this->cache->deleteMultiple(array(5,6));
         $this->assertTrue($deleted == 2);
     }
-    public function testDeleteAll() {
+
+    public function testDeleteAll()
+    {
         $this->cache->deleteAll();
         $this->assertTrue($this->cache->count() == 0);
     }
-    public function testExists() {
+
+    public function testExists()
+    {
         $this->assertFalse($this->cache->exists(313213123));
         $this->assertTrue($this->cache->exists(4));
     }
-    public function testGetFactory() {
+
+    public function testGetFactory()
+    {
         $this->assertTrue($this->cache->getTable() == $this->objTable);
     }
 }

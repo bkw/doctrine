@@ -1,0 +1,36 @@
+# Upgrade from 1.1 to 1.2
+
+This document details the changes made to Doctrine 1.2 to make it easier for you
+to upgrade your projects to use this version.
+
+## Removed Attribute String Support
+
+The string support of `Doctrine_Configurable::getAttribute()` and `Doctrine_Configurable::setAttribute()` have been removed.
+
+The reason is that the performance of this simple convenience feature is significant and it is totally unneeded.
+
+The following code is no longer supported.
+
+    [php]
+    $connection->setAttribute('use_native_enum', true);
+
+You must now always use the following code.
+
+    [php]
+    $connection->setAttribute(Doctrine::ATTR_USE_NATIVE_ENUM, true);
+
+## Removed all Deprecated Functions
+
+Removed all functions labeled `@deprecated` in the doc blocks.
+
+Affected Classes
+
+* Doctrine_Query
+* Doctrine_Query_Abstract
+
+## Renamed Methods
+
+* Doctrine_Query_Abstract::getSql() to getSqlQuery()
+* Doctrine_Search_Query::getSql() to getSqlQuery()
+* Doctrine_Query_Abstract::getCountQuery() to getCountSqlQuery()
+* Doctrine_RawSql::getCountQuery() to getCountSqlQuery()

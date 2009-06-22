@@ -85,7 +85,7 @@ class Doctrine_Ticket_486_TestCase extends Doctrine_UnitTestCase
             ->where('r.id = 3')
             ->limit(1);
 
-        $this->assertEqual('SELECT "c"."id" AS "c__id" FROM "country" "c" LEFT JOIN "state" "s" ON "c"."id" = "s"."country_id" LEFT JOIN "resort" "r" ON "s"."id" = "r"."state_id" WHERE "c"."id" IN (SELECT DISTINCT "c2"."id" FROM "country" "c2" LEFT JOIN "state" "s2" ON "c2"."id" = "s2"."country_id" LEFT JOIN "resort" "r2" ON "s2"."id" = "r2"."state_id" WHERE "r2"."id" = 3 LIMIT 1) AND "r"."id" = 3', $q->getSql());
+        $this->assertEqual('SELECT "c"."id" AS "c__id" FROM "country" "c" LEFT JOIN "state" "s" ON "c"."id" = "s"."country_id" LEFT JOIN "resort" "r" ON "s"."id" = "r"."state_id" WHERE "c"."id" IN (SELECT DISTINCT "c2"."id" FROM "country" "c2" LEFT JOIN "state" "s2" ON "c2"."id" = "s2"."country_id" LEFT JOIN "resort" "r2" ON "s2"."id" = "r2"."state_id" WHERE "r2"."id" = 3 LIMIT 1) AND "r"."id" = 3', $q->getSqlQuery());
 
         // Restoring quote identifier
         $this->getConnection()->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, $curQuoteIdentifier);

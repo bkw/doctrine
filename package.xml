@@ -1266,9 +1266,6 @@ requiring needless code duplication.</description>
     <name>pdo_sqlite</name>
    </extension>
    <extension>
-    <name>pdo_firebird</name>
-   </extension>
-   <extension>
     <name>pdo_oci</name>
    </extension>
    <extension>

@@ -40,7 +40,7 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
 
     public function testDoctrineRecordDeleteSetsFlag()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         
         $test = new SoftDeleteBCTest();
         $test->name = 'test';
@@ -51,18 +51,18 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $test->free();
 
         
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     public function testDoctrineQueryIsFilteredWithDeleteFlagCondition()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         
         $q = Doctrine_Query::create()
                     ->from('SoftDeleteBCTest s')
                     ->where('s.name = ?', array('test'));
 
-        $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_bc_test s WHERE s.name = ? AND (s.deleted = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_bc_test s WHERE s.name = ? AND (s.deleted = 0)');
         $params = $q->getFlattenedParams();
         $this->assertEqual(count($params), 1);
         $this->assertEqual($params[0], 'test');
@@ -70,12 +70,12 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $test = $q->fetchOne();
         $this->assertFalse($test);
         
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     public function testTicket1132()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         
         $test = new SoftDeleteBCTest();
         $test->name = 'test1';
@@ -88,17 +88,17 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('s.something = ?');
 
         $results = $q->execute(array('test1', 'test2'));
-        $this->assertEqual($q->getSql(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_bc_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT s.name AS s__name, s.something AS s__something, s.deleted AS s__deleted FROM soft_delete_bc_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = 0)');
         $this->assertEqual($q->getFlattenedParams(array('test1', 'test2')), array('test1', 'test2'));
         $this->assertEqual($results->count(), 1);
         
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     // Test Doctrine_Query::count() applies dql hooks
     public function testTicket1170()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         
         Doctrine_Query::create()
             ->delete()
@@ -110,9 +110,9 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
                 ->addWhere('s.name = ?', 'test1')
                 ->addWhere('s.something = ?', 'test2');
 
-        $this->assertEqual($q->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM soft_delete_bc_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = 0)');
+        $this->assertEqual($q->getCountSqlQuery(), 'SELECT COUNT(*) AS num_results FROM soft_delete_bc_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = 0)');
         $this->assertEqual($q->count(), 0);
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }

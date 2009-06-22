@@ -1,31 +1,48 @@
 <?php
-class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
-    public function prepareTables() { }
-    public function prepareData() { }
+class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase
+{
+    public function prepareTables()
+    {
 
-    public function testGetIndexNameFormatAttribute() {
+    }
+
+    public function prepareData()
+    {
+
+    }
+
+    public function testGetIndexNameFormatAttribute()
+    {
         // default index name format is %_idx
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT), '%s_idx');
     }
-    public function testGetSequenceNameFormatAttribute() {
+
+    public function testGetSequenceNameFormatAttribute()
+    {
         // default sequence name format is %_seq
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT), '%s_seq');
     }
-    public function testSetIndexNameFormatAttribute() {
+
+    public function testSetIndexNameFormatAttribute()
+    {
         $original = $this->manager->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT);
         $this->manager->setAttribute(Doctrine::ATTR_IDXNAME_FORMAT, '%_index');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_IDXNAME_FORMAT), '%_index');
         $this->manager->setAttribute(Doctrine::ATTR_IDXNAME_FORMAT, $original);
     }
-    public function testSetSequenceNameFormatAttribute() {
+
+    public function testSetSequenceNameFormatAttribute()
+    {
         $original = $this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT);
         $this->manager->setAttribute(Doctrine::ATTR_SEQNAME_FORMAT, '%_sequence');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQNAME_FORMAT), '%_sequence');
         $this->manager->setAttribute(Doctrine::ATTR_SEQNAME_FORMAT, $original);
     }
-    public function testExceptionIsThrownWhenSettingIndexNameFormatAttributeAtTableLevel() {
+
+    public function testExceptionIsThrownWhenSettingIndexNameFormatAttributeAtTableLevel()
+    {
         try {
             $this->connection->getTable('Entity')->setAttribute(Doctrine::ATTR_IDXNAME_FORMAT, '%s_idx');
             $this->fail();
@@ -33,7 +50,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testExceptionIsThrownWhenSettingSequenceNameFormatAttributeAtTableLevel() {
+
+    public function testExceptionIsThrownWhenSettingSequenceNameFormatAttributeAtTableLevel()
+    {
         try {
             $this->connection->getTable('Entity')->setAttribute(Doctrine::ATTR_SEQNAME_FORMAT, '%s_seq');
             $this->fail();
@@ -41,7 +60,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testSettingFieldCaseIsSuccesfulWithZero() {
+
+    public function testSettingFieldCaseIsSuccesfulWithZero()
+    {
         $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, 0);
@@ -51,7 +72,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         }
         $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
-    public function testSettingFieldCaseIsSuccesfulWithCaseConstants() {
+
+    public function testSettingFieldCaseIsSuccesfulWithCaseConstants()
+    {
         $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, CASE_LOWER);
@@ -61,7 +84,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         }
         $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
-    public function testSettingFieldCaseIsSuccesfulWithCaseConstants2() {
+
+    public function testSettingFieldCaseIsSuccesfulWithCaseConstants2()
+    {
         $original = $this->connection->getAttribute(Doctrine::ATTR_FIELD_CASE);
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, CASE_UPPER);
@@ -71,7 +96,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         }
         $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, $original);
     }
-    public function testExceptionIsThrownWhenSettingFieldCaseToNotZeroOneOrTwo() {
+
+    public function testExceptionIsThrownWhenSettingFieldCaseToNotZeroOneOrTwo()
+    {
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, -1);
             $this->fail();
@@ -79,7 +106,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testExceptionIsThrownWhenSettingFieldCaseToNotZeroOneOrTwo2() {
+
+    public function testExceptionIsThrownWhenSettingFieldCaseToNotZeroOneOrTwo2()
+    {
         try {
             $this->connection->setAttribute(Doctrine::ATTR_FIELD_CASE, 5);
             $this->fail();
@@ -87,52 +116,72 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testDefaultQuoteIdentifierAttributeValueIsFalse() {
+
+    public function testDefaultQuoteIdentifierAttributeValueIsFalse()
+    {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER), false);
     }
-    public function testQuoteIdentifierAttributeAcceptsBooleans() {
+
+    public function testQuoteIdentifierAttributeAcceptsBooleans()
+    {
         $this->manager->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER), true);
         $this->manager->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
     }
-    public function testDefaultSequenceColumnNameAttributeValueIsId() {
+
+    public function testDefaultSequenceColumnNameAttributeValueIsId()
+    {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME), 'id');
     }
-    public function testSequenceColumnNameAttributeAcceptsStrings() {
+
+    public function testSequenceColumnNameAttributeAcceptsStrings()
+    {
         $original = $this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME);
         $this->manager->setAttribute(Doctrine::ATTR_SEQCOL_NAME, 'sequence');
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_SEQCOL_NAME), 'sequence');
         $this->manager->setAttribute(Doctrine::ATTR_SEQCOL_NAME, $original);
     }
-    public function testValidatorAttributeAcceptsBooleans() {
+
+    public function testValidatorAttributeAcceptsBooleans()
+    {
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, true);
         
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_VALIDATE), true);
         $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, false);
     }
-    public function testDefaultPortabilityAttributeValueIsAll() {
+
+    public function testDefaultPortabilityAttributeValueIsAll()
+    {
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), Doctrine::PORTABILITY_NONE);
     }
-    public function testPortabilityAttributeAcceptsPortabilityConstants() {
+
+    public function testPortabilityAttributeAcceptsPortabilityConstants()
+    {
         $this->manager->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_RTRIM | Doctrine::PORTABILITY_FIX_CASE);
 
         $this->assertEqual($this->manager->getAttribute(Doctrine::ATTR_PORTABILITY), 
                            Doctrine::PORTABILITY_RTRIM | Doctrine::PORTABILITY_FIX_CASE);
         $this->manager->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
     }
-    public function testDefaultListenerIsDoctrineEventListener() {
+
+    public function testDefaultListenerIsDoctrineEventListener()
+    {
         $this->assertTrue($this->manager->getAttribute(Doctrine::ATTR_LISTENER) instanceof Doctrine_EventListener);                                                                     
     }
-    public function testListenerAttributeAcceptsEventListenerObjects() {
+
+    public function testListenerAttributeAcceptsEventListenerObjects()
+    {
         $original = $this->manager->getAttribute(Doctrine::ATTR_LISTENER);
         $this->manager->setAttribute(Doctrine::ATTR_LISTENER, new Doctrine_EventListener());
 
         $this->assertTrue($this->manager->getAttribute(Doctrine::ATTR_LISTENER) instanceof Doctrine_EventListener);
         $this->manager->setAttribute(Doctrine::ATTR_LISTENER, $original);
     }
-    public function testCollectionKeyAttributeAcceptsValidColumnName() {
+
+    public function testCollectionKeyAttributeAcceptsValidColumnName()
+    {
         $original = $this->connection->getTable('User')->getAttribute(Doctrine::ATTR_COLL_KEY);
         try {
             $this->connection->getTable('User')->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
@@ -143,7 +192,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
         }
         $this->connection->getTable('User')->setAttribute(Doctrine::ATTR_COLL_KEY, $original);
     }
-    public function testSettingInvalidColumnNameToCollectionKeyAttributeThrowsException() {
+
+    public function testSettingInvalidColumnNameToCollectionKeyAttributeThrowsException()
+    {
         try {
             $this->connection->getTable('User')->setAttribute(Doctrine::ATTR_COLL_KEY, 'unknown');
             
@@ -152,7 +203,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testSettingCollectionKeyAttributeOnOtherThanTableLevelThrowsException() {
+
+    public function testSettingCollectionKeyAttributeOnOtherThanTableLevelThrowsException()
+    {
         try {
             $this->connection->setAttribute(Doctrine::ATTR_COLL_KEY, 'name');
             
@@ -161,7 +214,9 @@ class Doctrine_Configurable_TestCase extends Doctrine_UnitTestCase {
             $this->pass();
         }
     }
-    public function testGetAttributes() {
+
+    public function testGetAttributes()
+    {
         $this->assertTrue(is_array($this->manager->getAttributes()));
     }
 }

@@ -38,9 +38,9 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         
         try {
-            $q->parseQuery('SELECT SOMEUNKNOWNFUNC(u.name, " ", u.loginname) FROM User u');
+            $q->parseDqlQuery('SELECT SOMEUNKNOWNFUNC(u.name, " ", u.loginname) FROM User u');
             
-            $q->getQuery();
+            $q->getSqlQuery();
             $this->fail();
         } catch(Doctrine_Query_Exception $e) {
             $this->pass();
@@ -52,7 +52,7 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         
         try {
-            $q->parseQuery('SELECT CONCAT(u.name, u.unknown) FROM User u');
+            $q->parseDqlQuery('SELECT CONCAT(u.name, u.unknown) FROM User u');
             
             $q->execute();
             $this->fail();
@@ -65,27 +65,27 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         
-        $q->parseQuery('SELECT u.id, CONCAT(u.name, u.loginname) FROM User u');
+        $q->parseDqlQuery('SELECT u.id, CONCAT(u.name, u.loginname) FROM User u');
         
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, CONCAT(e.name, e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, CONCAT(e.name, e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
 
     public function testConcatInSelectClauseSupportsLiteralStrings() 
     {
         $q = new Doctrine_Query();
         
-        $q->parseQuery("SELECT u.id, CONCAT(u.name, 'The Man') FROM User u");
+        $q->parseDqlQuery("SELECT u.id, CONCAT(u.name, 'The Man') FROM User u");
         
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, CONCAT(e.name, 'The Man') AS e__0 FROM entity e WHERE (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, CONCAT(e.name, 'The Man') AS e__0 FROM entity e WHERE (e.type = 0)");
     }
 
     public function testConcatInSelectClauseSupportsMoreThanTwoArgs() 
     {
         $q = new Doctrine_Query();
         
-        $q->parseQuery("SELECT u.id, CONCAT(u.name, 'The Man', u.loginname) FROM User u");
+        $q->parseDqlQuery("SELECT u.id, CONCAT(u.name, 'The Man', u.loginname) FROM User u");
         
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, CONCAT(e.name, 'The Man', e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, CONCAT(e.name, 'The Man', e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)");
     }
 
     public function testNonPortableFunctionsAreSupported()
@@ -106,7 +106,7 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
               ->groupby('l.id')
               ->limit(5);
 
-         $this->assertEqual($query->getSql(), "SELECT l.id AS l__id, l.lat AS l__lat, l.lon AS l__lon, l2.name AS l2__name, l2.id AS l2__id, l2.culture AS l2__culture, GeoDistKM(l.lat, l.lon, 13.23, 33.23) AS l__0 FROM location l LEFT JOIN location_i18n l2 ON l.id = l2.id WHERE l.id IN (SELECT DISTINCT l3.id FROM location l3 LEFT JOIN location_i18n l4 ON l3.id = l4.id WHERE (l3.id <> ? AND l4.culture = ?) GROUP BY l3.id HAVING l__0 < 33 ORDER BY l__0 ASC LIMIT 5) AND (l.id <> ? AND l2.culture = ?) GROUP BY l.id HAVING l__0 < 33 ORDER BY l__0 ASC");
+         $this->assertEqual($query->getSqlQuery(), "SELECT l.id AS l__id, l.lat AS l__lat, l.lon AS l__lon, l2.name AS l2__name, l2.id AS l2__id, l2.culture AS l2__culture, GeoDistKM(l.lat, l.lon, 13.23, 33.23) AS l__0 FROM location l LEFT JOIN location_i18n l2 ON l.id = l2.id WHERE l.id IN (SELECT DISTINCT l3.id FROM location l3 LEFT JOIN location_i18n l4 ON l3.id = l4.id WHERE (l3.id <> ? AND l4.culture = ?) GROUP BY l3.id HAVING l__0 < 33 ORDER BY l__0 ASC LIMIT 5) AND (l.id <> ? AND l2.culture = ?) GROUP BY l.id HAVING l__0 < 33 ORDER BY l__0 ASC");
 
          $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
     }

@@ -31,137 +31,145 @@
  */
 class Doctrine_Ticket_929_TestCase extends Doctrine_UnitTestCase 
 {
-    public function prepareData(){	   
-	      $oPerson = new T929_Person;
-	      $oPerson->name = 'Jonathan';
-	      $oPerson->Country->code = 'us';
-	      $oPerson->Country->Translation['fr']->name = 'Etats Unis';
-	      $oPerson->Country->Translation['en']->name = 'United states';         
-	      $oPerson->save();
+    public function prepareData()
+    {	   
+        $oPerson = new T929_Person;
+        $oPerson->name = 'Jonathan';
+        $oPerson->Country->code = 'us';
+        $oPerson->Country->Translation['fr']->name = 'Etats Unis';
+        $oPerson->Country->Translation['en']->name = 'United states';         
+        $oPerson->save();
 
-        parent :: prepareData();
+        parent::prepareData();
     }
  
-    public function prepareTables(){
-	      $this->tables = array();
-	      $this->tables[] = 'T929_Person';
-	      $this->tables[] = 'T929_Country';
-	      $this->tables[] = 'T929_JobPosition';
-	      $this->tables[] = 'T929_JobCategory';
-	      
-	      parent :: prepareTables();
+    public function prepareTables()
+    {
+        $this->tables = array();
+        $this->tables[] = 'T929_Person';
+        $this->tables[] = 'T929_Country';
+        $this->tables[] = 'T929_JobPosition';
+        $this->tables[] = 'T929_JobCategory';
+
+        parent::prepareTables();
     }
   
-    public function testTicket(){
-	      try { 
-	          $q = new Doctrine_Query();
-	          $r = $q
-	            ->from('T929_Person P')
-	            ->leftJoin('P.Country Ct')
-	            ->leftJoin('Ct.Translation T1 WITH T1.lang = ?', 'fr')
-	            ->leftJoin('P.JobPositions J')
-	            ->leftJoin('J.Category C')
-	            ->leftJoin('C.Translation T2 WITH T2.lang = ?', 'fr')
-	            ->where('P.name = ?', 'Jonathan')
-	            ->fetchOne();
-	      } catch(Exception $e){          
-	        $this->fail($e->getMessage());        
-	      }
+    public function testTicket()
+    {
+        try { 
+            $q = new Doctrine_Query();
+            $r = $q
+                ->from('T929_Person P')
+                ->leftJoin('P.Country Ct')
+                ->leftJoin('Ct.Translation T1 WITH T1.lang = ?', 'fr')
+                ->leftJoin('P.JobPositions J')
+                ->leftJoin('J.Category C')
+                ->leftJoin('C.Translation T2 WITH T2.lang = ?', 'fr')
+                ->where('P.name = ?', 'Jonathan')
+                ->fetchOne();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());        
+        }
     }
 }
 
 class T929_Person extends Doctrine_Record
 {
-	  public function setTableDefinition() {
-	      $this->setTableName('T929_person');
-	      $this->hasColumn('country_id', 'integer');
-	      $this->hasColumn('name', 'string', 200);
-	  }
+    public function setTableDefinition()
+    {
+        $this->setTableName('T929_person');
+        $this->hasColumn('country_id', 'integer');
+        $this->hasColumn('name', 'string', 200);
+    }
 
-	  public function setUp() {
-		    parent :: setUp();
-		    $this->hasOne('T929_Country as Country', array(
-		      'local' => 'country_id',
-		      'foreign' => 'id',
-		      'onDelete' => 'CASCADE'
-		      ));
-		    
-		    $this->hasMany('T929_JobPosition as JobPositions', array(
-		      'local' => 'id',
-		      'foreign' => 'person_id',
-		      'onDelete' => 'CASCADE'
-		      ));
-	  }
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->hasOne('T929_Country as Country', array(
+            'local' => 'country_id',
+            'foreign' => 'id',
+            'onDelete' => 'CASCADE'
+        ));
+
+        $this->hasMany('T929_JobPosition as JobPositions', array(
+            'local' => 'id',
+            'foreign' => 'person_id',
+            'onDelete' => 'CASCADE'
+        ));
+    }
 }
 
-class T929_Country extends Doctrine_Record {
-  
-	  public function setTableDefinition()
-	  {
-	      $this->setTableName('T929_country');
-	      $this->hasColumn('name', 'string', 200);
-	      $this->hasColumn('code', 'string', 200);
-	  }
-	
-	  public function setUp() {
-		    parent :: setUp();
-		    $this->hasMany('T929_Person as Persons', array(
-		      'local' => 'id',
-		      'foreign' => 'country_id',
-		      'onDelete' => 'CASCADE'
-		      ));
-		      
-		    $this->actAs('I18n', array('fields' => array('name')));
-	  }
+class T929_Country extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $this->setTableName('T929_country');
+        $this->hasColumn('name', 'string', 200);
+        $this->hasColumn('code', 'string', 200);
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->hasMany('T929_Person as Persons', array(
+            'local' => 'id',
+            'foreign' => 'country_id',
+            'onDelete' => 'CASCADE'
+        ));
+
+        $this->actAs('I18n', array('fields' => array('name')));
+    }
 }
-
-
 
 class T929_JobPosition extends Doctrine_Record
 {
-	  public function setTableDefinition(){
-	      $this->setTableName('T929_address');
-	      $this->hasColumn('name', 'string', 200);
-	      $this->hasColumn('person_id', 'integer');
-	      $this->hasColumn('job_category_id', 'integer');
-	  }
+    public function setTableDefinition()
+    {
+        $this->setTableName('T929_address');
+        $this->hasColumn('name', 'string', 200);
+        $this->hasColumn('person_id', 'integer');
+        $this->hasColumn('job_category_id', 'integer');
+    }
 
-	  public function setUp() {
-		    parent :: setUp();
-		    $this->hasOne('T929_Person as Person', array(
-		      'local' => 'person_id',
-		      'foreign' => 'id',
-		      'onDelete' => 'CASCADE'
-		      ));
-		      
-		    $this->hasOne('T929_JobCategory as Category', array(
-		      'local' => 'job_category_id',
-		      'foreign' => 'id',
-		      'onDelete' => 'CASCADE'
-		      ));
-	  }
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->hasOne('T929_Person as Person', array(
+            'local' => 'person_id',
+            'foreign' => 'id',
+            'onDelete' => 'CASCADE'
+        ));
+
+        $this->hasOne('T929_JobCategory as Category', array(
+            'local' => 'job_category_id',
+            'foreign' => 'id',
+            'onDelete' => 'CASCADE'
+        ));
+    }
 }
 
 class T929_JobCategory extends Doctrine_Record
 {
-	  public function setTableDefinition() {
-	      $this->setTableName('job_category');
-	      $this->hasColumn('code', 'integer', 4);
-	      $this->hasColumn('name', 'string', 200);
-	  }
-	
-	  public function setUp() {
-		    parent :: setUp();
-		    $this->hasMany('T929_JobPosition as Positions', array(
-		      'local' => 'id',
-		      'foreign' => 'job_category_id',
-		      'onDelete' => 'CASCADE'
-		      ));
-		      
-		    $this->actAs('I18n', array('fields' => array('name')));
-	  }
+    public function setTableDefinition()
+    {
+        $this->setTableName('job_category');
+        $this->hasColumn('code', 'integer', 4);
+        $this->hasColumn('name', 'string', 200);
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->hasMany('T929_JobPosition as Positions', array(
+            'local' => 'id',
+            'foreign' => 'job_category_id',
+            'onDelete' => 'CASCADE'
+        ));
+
+        $this->actAs('I18n', array('fields' => array('name')));
+    }
 }
-
-
-
-

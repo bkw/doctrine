@@ -101,7 +101,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $t = Doctrine::getTable('WikiTranslationIndex');
         $oQuery = new Doctrine_Search_Query($t);
         $oQuery->query("jordan");
-        $out = $this->conn->fetchAll($oQuery->getSql(), $oQuery->getParams());
+        $out = $this->conn->fetchAll($oQuery->getSqlQuery(), $oQuery->getParams());
 
         $this->assertEqual($out[0]['relevance'], 2);
         $this->assertEqual($out[1]['relevance'], 1);

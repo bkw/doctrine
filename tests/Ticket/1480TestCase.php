@@ -41,13 +41,13 @@ class Doctrine_Ticket_1480_TestCase extends Doctrine_UnitTestCase
 
     public function testSubQueryWithSoftDeleteTestCase()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         $q = Doctrine_Query::create()
             ->from('Foo f')
             ->addWhere('f.id IN (SELECT b.user_id FROM Bar b)');
-        $this->assertEqual($q->getSql(), 'SELECT f.id AS f__id, f.name AS f__name, f.password AS f__password, f.deleted_at AS f__deleted_at FROM foo f WHERE f.id IN (SELECT b.user_id AS b__user_id FROM bar b) AND (f.deleted_at IS NULL)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT f.id AS f__id, f.name AS f__name, f.password AS f__password, f.deleted_at AS f__deleted_at FROM foo f WHERE f.id IN (SELECT b.user_id AS b__user_id FROM bar b) AND (f.deleted_at IS NULL)');
         $this->assertEqual(count($q->getFlattenedParams()), 0);
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

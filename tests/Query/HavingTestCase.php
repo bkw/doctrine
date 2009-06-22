@@ -36,24 +36,24 @@ class Doctrine_Query_Having_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         
-        $q->parseQuery('SELECT u.name FROM User u LEFT JOIN u.Phonenumber p HAVING COUNT(p.id) > 2');
+        $q->parseDqlQuery('SELECT u.name FROM User u LEFT JOIN u.Phonenumber p HAVING COUNT(p.id) > 2');
         
-        $this->assertEqual($q->getQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) HAVING COUNT(p.id) > 2');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) HAVING COUNT(p.id) > 2');
     }
     public function testAggregateFunctionsInHavingReturnValidSql2() 
     {
         $q = new Doctrine_Query();
         
-        $q->parseQuery("SELECT u.name FROM User u LEFT JOIN u.Phonenumber p HAVING MAX(u.name) = 'zYne'");
+        $q->parseDqlQuery("SELECT u.name FROM User u LEFT JOIN u.Phonenumber p HAVING MAX(u.name) = 'zYne'");
 
-        $this->assertEqual($q->getQuery(), "SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) HAVING MAX(e.name) = 'zYne'");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.type = 0) HAVING MAX(e.name) = 'zYne'");
     }
 
     public function testAggregateFunctionsInHavingSupportMultipleParameters() 
     {
         $q = new Doctrine_Query();
 
-        $q->parseQuery("SELECT CONCAT(u.name, u.loginname) name FROM User u LEFT JOIN u.Phonenumber p HAVING name = 'xx'");
+        $q->parseDqlQuery("SELECT CONCAT(u.name, u.loginname) name FROM User u LEFT JOIN u.Phonenumber p HAVING name = 'xx'");
     }
 
     public function testReturnFuncIfNumeric()

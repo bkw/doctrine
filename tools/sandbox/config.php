@@ -51,4 +51,4 @@ spl_autoload_register(array('Doctrine', 'autoload'));
 
 Doctrine_Manager::connection(DSN, 'canhr2');
 
-Doctrine_Manager::getInstance()->setAttribute('model_loading', 'conservative');
+Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);

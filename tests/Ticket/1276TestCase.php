@@ -34,11 +34,11 @@ class Doctrine_Ticket_1276_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('auto_free_query_objects', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS, true);
         $q = Doctrine_Query::create()
             ->from('User u');
         $users = $q->fetchArray();
         $this->assertTrue(is_array($users));
-        Doctrine_Manager::getInstance()->setAttribute('auto_free_query_objects', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_FREE_QUERY_OBJECTS, false);
     }
 }

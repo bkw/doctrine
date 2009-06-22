@@ -33,7 +33,9 @@
 class Doctrine_Access_TestCase extends Doctrine_UnitTestCase 
 {
     public function prepareData() 
-    { }
+    {
+
+    }
 
     public function prepareTables() 
     {
@@ -45,6 +47,7 @@ class Doctrine_Access_TestCase extends Doctrine_UnitTestCase
     {
 
     }
+
     public function testIsset() 
     {
         $user = new User();

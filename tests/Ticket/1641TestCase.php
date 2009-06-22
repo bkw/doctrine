@@ -53,17 +53,17 @@ class Doctrine_Ticket_1641_TestCase extends Doctrine_UnitTestCase
 
     public function testTicket()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
 
         $table = Doctrine::getTable('T1641_User');
 
-        $this->assertEqual($table->createQuery()->getCountQuery(), 'SELECT COUNT(*) AS num_results FROM t1641__user t WHERE (t.deleted_at IS NULL)');
+        $this->assertEqual($table->createQuery()->getCountSqlQuery(), 'SELECT COUNT(*) AS num_results FROM t1641__user t WHERE (t.deleted_at IS NULL)');
 	
         $this->assertEqual($table->count(), 1);
         $this->assertEqual($table->createQuery()->execute()->count(), 1);
         $this->assertEqual($table->createQuery()->count(), 1);
 
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

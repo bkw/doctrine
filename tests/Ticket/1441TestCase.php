@@ -48,7 +48,7 @@ class Doctrine_Ticket_1441_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
         $q = Doctrine_Query::create()
             ->update('Ticket_1441_User u')
             ->set('u.password', '?',  'test')
@@ -58,7 +58,7 @@ class Doctrine_Ticket_1441_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getDql(), 'UPDATE Ticket_1441_User u SET u.password = ? u.updated_at = ? WHERE u.username = ?');
         $this->assertEqual($q->getFlattenedParams(), array('test', date('Y-m-d H:i:s', time()), 'jwage'));
-        Doctrine_Manager::getInstance()->setAttribute('use_dql_callbacks', false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

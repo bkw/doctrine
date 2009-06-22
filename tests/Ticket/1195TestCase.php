@@ -88,7 +88,7 @@ class Doctrine_Ticket_1195_TestCase extends Doctrine_UnitTestCase
 				->addComponent('i', 'T1195_Item i')
 				->from('items i');
 
-		if(!method_exists( $q, 'count' ))
+		if ( !method_exists( $q, 'count' ))
 		{
 			$this->fail("The query doesn't have a count() method");
 			return;

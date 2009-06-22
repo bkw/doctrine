@@ -60,7 +60,8 @@ class DoctrineTest_Coverage
      *
      * @return string The path to store the coverage in
      */
-    public function getCoverageDir(){
+    public function getCoverageDir()
+    {
         $dir = Doctrine::getPath() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "tests" . DIRECTORY_SEPARATOR . "coverage" . DIRECTORY_SEPARATOR;
         return $dir;
     }
@@ -71,11 +72,11 @@ class DoctrineTest_Coverage
      */
     public function showSummary()
     {
-        if ( isset($_GET['order'])){
+        if ( isset($_GET['order'])) {
             $this->sortBy = $_GET['order'];
         }
 
-        if ( ! isset($this->result['data'])){
+        if ( ! isset($this->result['data'])) {
             die("Impropper coverage report. Please regenerate");
         }
 
@@ -84,7 +85,7 @@ class DoctrineTest_Coverage
         uasort($coveredArray, array($this,"sortArray"));
 
         //and flip if it perhaps?
-        if (isset($_GET["flip"]) && $_GET["flip"] == "true"){
+        if (isset($_GET["flip"]) && $_GET["flip"] == "true") {
             $coveredArray = array_reverse($coveredArray, true);
         }
 
@@ -97,7 +98,7 @@ class DoctrineTest_Coverage
             $totals['maybe'] , '</td><td>',
             $totals['notcovered'] , '</td><td></tr>';
 
-        foreach($coveredArray as $class => $info){
+        foreach($coveredArray as $class => $info) {
 
             echo '<tr><td>';
             if ( $info['type'] == "covered") {
@@ -109,13 +110,13 @@ class DoctrineTest_Coverage
         }
     }
 
-
     /**
      * Return the revision the coverage was made against
      *
      *@param int The revision number
      */
-    public function getRevision(){
+    public function getRevision()
+    {
         return $this->result["revision"];
     }
 
@@ -135,20 +136,21 @@ class DoctrineTest_Coverage
      * @uses calculateTotalPercentage
      *
      */
-    public function generateReport(){
+    public function generateReport()
+    {
         $svn_info = explode(" ", exec("svn info | grep Revision"));
         $this->result["revision"] = $svn_info[1];
 
         //loop through all files and generate coverage files for them
         $it = new RecursiveDirectoryIterator(Doctrine::getPath());
         $notCoveredArray = array();
-        foreach (new RecursiveIteratorIterator($it) as $file){
+        foreach (new RecursiveIteratorIterator($it) as $file) {
 
-            if(strpos($file->getPathname(), "config.php")){
+            if (strpos($file->getPathname(), "config.php")) {
                 continue;
             }
 
-            if (strpos($file->getPathname(), ".svn")){
+            if (strpos($file->getPathname(), ".svn")) {
                 continue;
             } 
             
@@ -158,13 +160,14 @@ class DoctrineTest_Coverage
                 continue;
             }
 
-            if ( ! class_exists($class)){
+            if ( ! class_exists($class)) {
                 continue;
             }
-            if (isset($this->result['coverage'][$file->getPathname()])){
+
+            if (isset($this->result['coverage'][$file->getPathname()])) {
                 $coverageInfo[$class] = $this->generateCoverageInfoCoveredFile($file->getPathname());
                 $this->saveFile($file->getPathname());
-            }else{
+            } else {
                 $coverageInfo[$class] = $this->generateCoverageInfoNotCoveredFile($class);
             }
         }
@@ -192,7 +195,8 @@ class DoctrineTest_Coverage
      * @param string $fileName The name of the file
      * @return string The name of the class
      */
-    public function getClassNameFromFileName($fileName){
+    public function getClassNameFromFileName($fileName)
+    {
         $path = Doctrine::getPath() . DIRECTORY_SEPARATOR;
         $class = str_replace($path, "", $fileName);
         $class = str_replace(DIRECTORY_SEPARATOR, "_", $class);
@@ -203,9 +207,10 @@ class DoctrineTest_Coverage
     /**
      * Calculate total coverage percentage
      *
-     *@return double The percetage as a double
+     * @return double The percetage as a double
      */
-    public function calculateTotalPercentage(){
+    public function calculateTotalPercentage()
+    {
         return round((($this->totalcovered + $this->totalmaybe) / $this->totallines) * 100, 2);
     }
 
@@ -218,16 +223,17 @@ class DoctrineTest_Coverage
      * @param string $class The name of a class
      * @return array An associative array with coverage information
      */
-    public function generateCoverageInfoNotCoveredFile($class){
-        try{
+    public function generateCoverageInfoNotCoveredFile($class)
+    {
+        try {
             $refClass = new ReflectionClass($class);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
         $lines = 0;
         $methodLines = 0;
-        foreach ($refClass->getMethods() as $refMethod){
-            if ($refMethod->getDeclaringClass() != $refClass){
+        foreach ($refClass->getMethods() as $refMethod) {
+            if ($refMethod->getDeclaringClass() != $refClass) {
                 continue;
             }
             $methodLines = $refMethod->getEndLine() - $refMethod->getStartLine();
@@ -235,7 +241,7 @@ class DoctrineTest_Coverage
         }
         $this->totallines += $lines;
         $this->totalnotcovered += $lines;
-        if ($lines == 0){
+        if ($lines == 0) {
             return array("covered" => 0, "maybe" => 0, "notcovered"=>$lines, "total" => $lines, "percentage" => 100, "type" => "notcovered");
         } else {
             return  array("covered" => 0, "maybe" => 0, "notcovered"=>$lines, "total" => $lines, "percentage" => 0, "type" => "notcovered");
@@ -268,11 +274,11 @@ class DoctrineTest_Coverage
         $fileArray = file($fileName);
 
         $html .= '<table>' . "\n";
-        foreach ($fileArray as $num => $line){
+        foreach ($fileArray as $num => $line) {
             $linenum = $num+1;
             $html .= '<tr><td>' . $linenum . '</td>' . "\n";
             $class ="normal";
-            if (isset($coveredLines[$linenum]) && $coveredLines[$linenum] == self::COVERED){
+            if (isset($coveredLines[$linenum]) && $coveredLines[$linenum] == self::COVERED) {
                 $class = "covered";
             } else if (isset($coveredLines[$linenum]) && $coveredLines[$linenum] == self::NOTCOVERED) {
                 $class ="red";
@@ -300,8 +306,8 @@ class DoctrineTest_Coverage
         $covered = 0;
         $maybe = 0;
         $notcovered = 0;
-        foreach ($lines as $result){
-            switch($result){
+        foreach ($lines as $result) {
+            switch($result) {
             case self::COVERED:
                 $covered++;
                 break;

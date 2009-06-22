@@ -73,7 +73,7 @@ class Doctrine_Ticket_1254_TestCase extends Doctrine_UnitTestCase
     	$q->where('x.created_at IN (SELECT MAX(x2.created_at) latestInCategory FROM RelX x2 WHERE x.category = x2.category)');
     	$q->limit(5);
 
-        //echo $sql = $q->getSql();
+        //echo $sql = $q->getSqlQuery();
         //	echo $sql;
 
         $xs = $q->execute();

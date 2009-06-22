@@ -927,7 +927,7 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
     {
         try {
             $query = Doctrine_Query::create()->from('EntityAddress e')->groupby('COALESCE(e.user_id, e.address_id)');
-            $this->assertEqual($query->getSql(), 'SELECT e.user_id AS e__user_id, e.address_id AS e__address_id FROM entity_address e GROUP BY COALESCE(e.user_id, e.address_id)');
+            $this->assertEqual($query->getSqlQuery(), 'SELECT e.user_id AS e__user_id, e.address_id AS e__address_id FROM entity_address e GROUP BY COALESCE(e.user_id, e.address_id)');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }

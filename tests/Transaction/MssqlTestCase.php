@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Transaction_Firebird_TestCase
+ * Doctrine_Transaction_Mssql_TestCase
  *
  * @package     Doctrine
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
