@@ -69,3 +69,18 @@ Now the `arrayToXml()` method can be called directly because it is static.
       'key2' => 'value'
     );
     $xml = Doctrine_Parser_Xml::arrayToXml($array);
+
+## Refactored Migrations to better handle multiple connections
+
+Now when working with `Doctrine_Migration` instance you can specify as the 2nd
+argument to the constructor the connection instance to use for the migrations.
+
+Migrations for different databases should be handled with a different set of 
+migration classes.
+
+Previous method of finding connection based on the table name is flawed since 
+databases could have the same table name multiple times.
+
+    [php]
+    $conn = Doctrine_Manager::connection();
+    $migration = new Doctrine_Migration('/path/to/migrations', $conn);
