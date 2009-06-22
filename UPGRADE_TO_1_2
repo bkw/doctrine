@@ -151,3 +151,16 @@ The `Doctrine_Adapter_Oracle` now will use persistent connections if specified.
     );
 
     Doctrine_Manager::connection($info, 'conn_name');
+
+## New Class/File Prefix Option for Model Builder
+
+You can now set a prefix for your generated models and choose to not have the generated filename include that prefix as well.
+
+    [php]
+    $builder = new Doctrine_Import_Builder();
+    $builder->setOption('classPrefixFiles', false);
+    $builder->setOption('classPrefix', 'MyClassPrefix_');
+
+Without the first option you'd get a file like `MyClassPrefix_ModelName.php` but 
+now you will get `ModelName.php` with a class named `MyClassPrefix_ModelName` 
+inside.
