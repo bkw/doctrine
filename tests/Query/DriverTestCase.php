@@ -161,7 +161,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
                                           . "SELECT e2.id, p2.id "
                                           . "FROM entity e2 "
                                           . "INNER JOIN phonenumber p2 ON e2.id = p2.entity_id "
-                                          . "WHERE (e2.type = 0) GROUP BY e2.name ORDER BY p2.id"
+                                          . "WHERE (e2.type = 0) GROUP BY e2.name"
                                       . ") doctrine_subquery_alias GROUP BY doctrine_subquery_alias.id ORDER BY MIN(ROWNUM)"
                                   . ") a"
                               . " ) b "
