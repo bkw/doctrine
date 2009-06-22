@@ -42,16 +42,6 @@ class Doctrine_DataDict_Mysql_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($this->dataDict->getCollationFieldDeclaration('xx'), 'COLLATE xx');
     }
 
-    public function testGetPortableDeclarationForUnknownNativeTypeThrowsException() 
-    {
-        try {
-            $this->dataDict->getPortableDeclaration(array('type' => 'some_unknown_type'));
-            $this->fail();
-        } catch(Doctrine_DataDict_Exception $e) {
-            $this->pass();
-        }
-    }
-
     public function testGetPortableDeclarationSupportsNativeIntegerTypes() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('type' => 'tinyint'));

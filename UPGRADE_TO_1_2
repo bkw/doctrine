@@ -132,3 +132,9 @@ method to check to avoid this behavior.
     if ($user->relatedExists('Profile')) {
       // do something if the user has a profile
     }
+
+## Reverse Engineered Columns
+
+If Doctrine does not recognize a column from a database when reverse engineering a schema, instead of throwing an exception, it will default to a string.
+
+This allows custom column types or proprietary column types to be reverse engineered without stopping the schema from being built completely.

@@ -36,16 +36,7 @@ class Doctrine_DataDict_Pgsql_TestCase extends Doctrine_UnitTestCase
     {
         return $this->dataDict->getPortableDeclaration(array('type' => $type, 'name' => 'colname', 'length' => 2, 'fixed' => true));
     }
-
-    public function testGetPortableDeclarationForUnknownNativeTypeThrowsException() 
-    {
-        try {
-            $this->dataDict->getPortableDeclaration(array('type' => 'some_unknown_type'));
-            $this->fail();
-        } catch(Doctrine_DataDict_Exception $e) {
-            $this->pass();
-        }
-    }   
+ 
     public function testGetPortableDeclarationSupportsNativeBlobTypes() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('type' => 'blob'));

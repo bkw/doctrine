@@ -32,16 +32,6 @@
  */
 class Doctrine_DataDict_Mssql_TestCase extends Doctrine_UnitTestCase 
 {
-    public function testGetPortableDeclarationForUnknownNativeTypeThrowsException() 
-    {
-        try {
-            $this->dataDict->getPortableDeclaration(array('type' => 'some_unknown_type'));
-            $this->fail();
-        } catch(Doctrine_DataDict_Exception $e) {
-            $this->pass();
-        }
-    }
-
     public function testGetPortableDeclarationSupportsNativeBitType() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('type' => 'bit'));

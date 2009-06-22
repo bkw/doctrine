@@ -32,16 +32,6 @@
  */
 class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
 {
-    public function testGetPortableDeclarationForUnknownNativeTypeThrowsException() 
-    {
-        try {
-            $this->dataDict->getPortableDeclaration(array('data_type' => 'some_unknown_type'));
-            $this->fail();
-        } catch(Doctrine_DataDict_Exception $e) {
-            $this->pass();
-        }
-    }
-
     public function testGetPortableDeclarationSupportsNativeFloatType() 
     {
         $type = $this->dataDict->getPortableDeclaration(array('data_type' => 'float'));
