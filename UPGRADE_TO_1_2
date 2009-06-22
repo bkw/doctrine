@@ -111,3 +111,24 @@ following.
 
     [php]
     Doctrine::setPath('/path/to/the/doctrine/libs');
+
+## Ability to clear an individual reference
+
+Previously the `Doctrine_Record::clearRelated()` would only allow the clearing 
+of ALL references. It will now accept a relationship name and you can clear an 
+individual reference.
+
+    [php]
+    $user->clearRelated('Phonenumber');
+
+## Check related exists
+
+Often you want to check if a relationship exists in the database, but if it 
+doesn't exist you get a newly created blank relationship that will try to be 
+saved when you call save on the parent record. Use the new `relatedExists()` 
+method to check to avoid this behavior.
+
+    [php]
+    if ($user->relatedExists('Profile')) {
+      // do something if the user has a profile
+    }
