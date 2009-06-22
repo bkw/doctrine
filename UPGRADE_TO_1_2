@@ -58,3 +58,14 @@ Before Doctrine 1.2 it was hard coded internally to always use the `Doctrine_Que
     $q = Doctrine_Query::create();
 
     echo get_class($q); // MyQuery
+
+## Changed Doctrine_Parser_Xml::arrayToXml() to be static
+
+Now the `arrayToXml()` method can be called directly because it is static.
+
+    [php]
+    $array = array(
+      'key1' => 'value',
+      'key2' => 'value'
+    );
+    $xml = Doctrine_Parser_Xml::arrayToXml($array);
