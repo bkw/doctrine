@@ -113,4 +113,12 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
 
         Doctrine_Lib::removeDirectories($path);
     }
+
+    public function testBaseTableClass()
+    {
+        $builder = new Doctrine_Import_Builder();
+        $builder->setOption('baseTableClassName', 'MyBaseTable');
+        $class = $builder->buildTableClassDefinition('MyTest');
+        $this->assertTrue(strpos($class, 'class MyTest extends MyBaseTable'));
+    }
 }

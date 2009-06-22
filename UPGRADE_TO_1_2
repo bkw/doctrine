@@ -34,3 +34,11 @@ Affected Classes
 * Doctrine_Search_Query::getSql() to getSqlQuery()
 * Doctrine_Query_Abstract::getCountQuery() to getCountSqlQuery()
 * Doctrine_RawSql::getCountQuery() to getCountSqlQuery()
+
+## Added ability to configure base table class for class builder
+
+Introduced option named `baseTableClassName` to configure the class child `Doctrine_Table` instances use which defaults to `Doctrine_Table`.
+
+    [php]
+    $builder = new Doctrine_Import_Builder();
+    $builder->setOption('baseTableClassName', 'MyBaseTable');
