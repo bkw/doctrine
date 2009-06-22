@@ -100,3 +100,14 @@ See: http://trac.doctrine-project.org/ticket/1623
     $manager->setAttribute(Doctrine::ATTR_CASCADE_SAVES, false);
 
 Disabling this will increase performance significantly when saving objects.
+
+## Added Doctrine::setPath()
+
+Now you can specify the path to your Doctrine libraries if Doctrine.php is outside of the location of your libraries.
+
+So if `Doctrine.php` is located at `/path/to/Doctrine.php` and the actual 
+libraries are at `/path/to/the/doctrine/libs` you would need to do the 
+following.
+
+    [php]
+    Doctrine::setPath('/path/to/the/doctrine/libs');
