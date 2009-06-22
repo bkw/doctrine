@@ -337,8 +337,39 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'Total Kjeldahl Nitrogen (TKN) as N' AND (e.type = 0)");
     }
-}
 
+    public function testSetQueryClassManagerAttribute()
+    {
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+
+        $q = Doctrine_Query::create();
+        $this->assertTrue($q instanceof MyQuery);
+
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+    }
+
+    public function testSetQueryClassConnectionAttribute()
+    {
+        $userTable = Doctrine::getTable('User');
+        $userTable->getConnection()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+
+        $q = $userTable->createQuery();
+        $this->assertTrue($q instanceof MyQuery);
+
+        $userTable->getConnection()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+    }
+
+    public function testSetQueryClassTableAttribute()
+    {
+        $userTable = Doctrine::getTable('User');
+        $userTable->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+
+        $q = $userTable->createQuery();
+        $this->assertTrue($q instanceof MyQuery);
+
+        $userTable->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+    }
+}
 
 class MyQuery extends Doctrine_Query
 {

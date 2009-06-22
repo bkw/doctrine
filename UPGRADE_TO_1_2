@@ -42,3 +42,19 @@ Introduced option named `baseTableClassName` to configure the class child `Doctr
     [php]
     $builder = new Doctrine_Import_Builder();
     $builder->setOption('baseTableClassName', 'MyBaseTable');
+
+## Added ability to configure query class
+
+Before Doctrine 1.2 it was hard coded internally to always use the `Doctrine_Query` class whenever you instantiate a new query. Now you can configure which class this is to use by setting the `Doctrine::ATTR_QUERY_CLASS` attribute.
+
+    [php]
+    class MyQuery extends Doctrine_Query
+    {
+      
+    }
+
+    $manager->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+
+    $q = Doctrine_Query::create();
+
+    echo get_class($q); // MyQuery
