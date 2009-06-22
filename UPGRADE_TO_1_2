@@ -138,3 +138,16 @@ method to check to avoid this behavior.
 If Doctrine does not recognize a column from a database when reverse engineering a schema, instead of throwing an exception, it will default to a string.
 
 This allows custom column types or proprietary column types to be reverse engineered without stopping the schema from being built completely.
+
+## Oracle Adapter Persistent Connections
+
+The `Doctrine_Adapter_Oracle` now will use persistent connections if specified.
+
+    [php]
+    $info = array(
+      'oracle:dbname=SID;charset=NLS_CHARACTERSET;persistent=true',
+      'usr',
+      'pass'
+    );
+
+    Doctrine_Manager::connection($info, 'conn_name');
