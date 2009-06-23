@@ -154,7 +154,8 @@ The `Doctrine_Adapter_Oracle` now will use persistent connections if specified.
 
 ## New Class/File Prefix Option for Model Builder
 
-You can now set a prefix for your generated models and choose to not have the generated filename include that prefix as well.
+You can now set a prefix for your generated models and choose to not have the 
+generated filename include that prefix as well.
 
     [php]
     $builder = new Doctrine_Import_Builder();
@@ -164,3 +165,24 @@ You can now set a prefix for your generated models and choose to not have the ge
 Without the first option you'd get a file like `MyClassPrefix_ModelName.php` but 
 now you will get `ModelName.php` with a class named `MyClassPrefix_ModelName` 
 inside.
+
+## Expanded Magic Finders to Multiple Fields
+
+You can now `findBy` multiple fields and specify conditions between the fields.
+
+    [php]
+    $user = $userTable->findOneByUsernameAndPassword('jwage', md5('changeme'));
+
+Or you could do something like the following and find admin users and moderator 
+users.
+
+    [php]
+    $users = $userTable->findByIsAdminOrIsModerator(true, true);
+
+You can mix the conditions.
+
+    [php]
+    $users = $userTable->findByIsAdminAndIsModeratorOrIsSuperAdmin(true, true, true);
+
+> **CAUTION**
+> These are very limited magic finders and it is always recommended to expand your queries to be manually written DQL queries. These methods are meant for only quickly accessing single records, no relationships, and are good for prototyping code quickly.

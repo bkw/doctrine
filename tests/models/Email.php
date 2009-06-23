@@ -5,6 +5,4 @@ class Email extends Doctrine_Record
     {
         $this->hasColumn('address', 'string', 150, 'email|unique');
     }
-    
-    
 }
