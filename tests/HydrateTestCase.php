@@ -73,6 +73,7 @@ class Doctrine_Hydrate_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->password, 'DEFAULT PASS');
     }
 }
+
 class HydrationListener extends Doctrine_Record_Listener
 {
     public function preHydrate(Doctrine_Event $event) 
@@ -89,6 +90,7 @@ class HydrationListener extends Doctrine_Record_Listener
         }
     }
 }
+
 class Doctrine_Hydrate_Mock extends Doctrine_Hydrator_Abstract
 {
     protected $data;
@@ -98,7 +100,7 @@ class Doctrine_Hydrate_Mock extends Doctrine_Hydrator_Abstract
         $this->data = $data;
     }
     
-    public function hydrateResultSet($stmt, $tableAliases, $hydrationMode = null)
+    public function hydrateResultSet($stmt)
     {
         return true;
     }

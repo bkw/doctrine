@@ -153,17 +153,4 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
         
         $q->free();
     }
-    
-    public function testHydrateSingleScalarThrowsExceptionIfResultNotUnique()
-    {
-        $q = Doctrine_Query::create();
-        $q->select("u.*")->from("User u");
-        try {
-            $q->execute(array(), Doctrine::HYDRATE_SINGLE_SCALAR);
-            $this->fail("HYDRATE_SCALAR with non-unique result did not trigger exception.");
-        } catch (Doctrine_Hydrator_Exception $e) {
-            $this->pass();
-        }
-        $q->free();
-    }
 }

@@ -139,6 +139,7 @@ $core->addTestCase(new Doctrine_Collection_Snapshot_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_FetchMode_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_CollectionInitialization_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_Scalar_TestCase());
+$core->addTestCase(new Doctrine_Hydrate_Driver_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
 $core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());

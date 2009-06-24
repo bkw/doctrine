@@ -5,9 +5,11 @@ to upgrade your projects to use this version.
 
 ## Removed Attribute String Support
 
-The string support of `Doctrine_Configurable::getAttribute()` and `Doctrine_Configurable::setAttribute()` have been removed.
+The string support of `Doctrine_Configurable::getAttribute()` and 
+`Doctrine_Configurable::setAttribute()` have been removed.
 
-The reason is that the performance of this simple convenience feature is significant and it is totally unneeded.
+The reason is that the performance of this simple convenience feature is 
+significant and it is totally unneeded.
 
 The following code is no longer supported.
 
@@ -37,7 +39,8 @@ Affected Classes
 
 ## Added ability to configure base table class for class builder
 
-Introduced option named `baseTableClassName` to configure the class child `Doctrine_Table` instances use which defaults to `Doctrine_Table`.
+Introduced option named `baseTableClassName` to configure the class child 
+`Doctrine_Table` instances use which defaults to `Doctrine_Table`.
 
     [php]
     $builder = new Doctrine_Import_Builder();
@@ -45,7 +48,10 @@ Introduced option named `baseTableClassName` to configure the class child `Doctr
 
 ## Added ability to configure query class
 
-Before Doctrine 1.2 it was hard coded internally to always use the `Doctrine_Query` class whenever you instantiate a new query. Now you can configure which class this is to use by setting the `Doctrine::ATTR_QUERY_CLASS` attribute.
+Before Doctrine 1.2 it was hard coded internally to always use the 
+`Doctrine_Query` class whenever you instantiate a new query. Now you can 
+configure which class this is to use by setting the `Doctrine::ATTR_QUERY_CLASS` 
+attribute.
 
     [php]
     class MyQuery extends Doctrine_Query
@@ -72,8 +78,9 @@ Now the `arrayToXml()` method can be called directly because it is static.
 
 ## Refactored Migrations to better handle multiple connections
 
-Now when working with `Doctrine_Migration` instance you can specify as the 2nd
-argument to the constructor the connection instance to use for the migrations.
+Now when working with `Doctrine_Migration` instance you can specify as the 
+second argument to the constructor the connection instance to use for the 
+migrations.
 
 Migrations for different databases should be handled with a different set of 
 migration classes.
@@ -103,7 +110,8 @@ Disabling this will increase performance significantly when saving objects.
 
 ## Added Doctrine::setPath()
 
-Now you can specify the path to your Doctrine libraries if Doctrine.php is outside of the location of your libraries.
+Now you can specify the path to your Doctrine libraries if Doctrine.php is 
+outside of the location of your libraries.
 
 So if `Doctrine.php` is located at `/path/to/Doctrine.php` and the actual 
 libraries are at `/path/to/the/doctrine/libs` you would need to do the 
@@ -135,9 +143,11 @@ method to check to avoid this behavior.
 
 ## Reverse Engineered Columns
 
-If Doctrine does not recognize a column from a database when reverse engineering a schema, instead of throwing an exception, it will default to a string.
+If Doctrine does not recognize a column from a database when reverse engineering 
+a schema, instead of throwing an exception, it will default to a string.
 
-This allows custom column types or proprietary column types to be reverse engineered without stopping the schema from being built completely.
+This allows custom column types or proprietary column types to be reverse 
+engineered without stopping the schema from being built completely.
 
 ## Oracle Adapter Persistent Connections
 
@@ -185,11 +195,15 @@ You can mix the conditions.
     $users = $userTable->findByIsAdminAndIsModeratorOrIsSuperAdmin(true, true, true);
 
 > **CAUTION**
-> These are very limited magic finders and it is always recommended to expand your queries to be manually written DQL queries. These methods are meant for only quickly accessing single records, no relationships, and are good for prototyping code quickly.
+> These are very limited magic finders and it is always recommended to expand 
+> your queries to be manually written DQL queries. These methods are meant for 
+> only quickly accessing single records, no relationships, and are good for 
+> prototyping code quickly.
 
 ## Custom Collection Class
 
-You can now specify a custom child class to use for all collections inside Doctrine.
+You can now specify a custom child class to use for all collections inside 
+Doctrine.
 
     [php]
     $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyCollection');
@@ -206,3 +220,32 @@ Now define the simple child class.
     }
 
 This option can be set at the manager, connection and table levels.
+
+## Custom Hydrators
+
+As of Doctrine 1.2 it is now possible to register your own custom data 
+hydrators. The core hydration process has been decoupled to proper drivers and 
+now you can register your own to handle the hydration process.
+
+First lets register our custom hydrator class.
+
+    [php]
+    $manager->registerHydrator('MyHydrator');
+
+> **NOTE**
+> The first argument is the name of the hydration method and the second argument 
+> is the name of the class. The second argument is optional and if omitted the 
+> name of the hydration method will be used as the class name.
+
+So now we need to define a hydrator class named `MyHydrator` and it must 
+implement a method named `hydrateResultSet($stmt)` method which accepts a 
+query statement object.
+
+    [php]
+    class MyHydrator extends Doctrine_Hydrator_Abstract
+    {
+        public function hydrateResultSet($stmt)
+        {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
