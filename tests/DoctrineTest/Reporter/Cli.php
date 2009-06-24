@@ -16,11 +16,6 @@ class DoctrineTest_Reporter_Cli extends DoctrineTest_Reporter
     public function paintFooter()
     {
         echo "\n";
-        echo "\n";
-        foreach ($this->_test->getMessages() as $message) {
-            echo $this->formatter->format($message, 'ERROR') . "\n\n";
-        }
-        echo "\n";
         echo $this->formatter->format("Tested: " . $this->_test->getTestCaseCount() . ' test cases.', 'INFO') . "\n";
         echo $this->formatter->format("Successes: " . $this->_test->getPassCount() . " passes.", 'INFO') . "\n";
         echo $this->formatter->format("Failures: " . $this->_test->getFailCount() . " fails.", $this->_test->getFailCount() ? 'ERROR':'INFO') . "\n";
