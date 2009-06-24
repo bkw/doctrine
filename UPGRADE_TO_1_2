@@ -186,3 +186,23 @@ You can mix the conditions.
 
 > **CAUTION**
 > These are very limited magic finders and it is always recommended to expand your queries to be manually written DQL queries. These methods are meant for only quickly accessing single records, no relationships, and are good for prototyping code quickly.
+
+## Custom Collection Class
+
+You can now specify a custom child class to use for all collections inside Doctrine.
+
+    [php]
+    $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyCollection');
+    
+    $phonenumbers = $user->Phonenumbers;
+    echo get_class($phonenumbers); // MyCollection
+
+Now define the simple child class.
+
+    [php]
+    class MyCollection extends Doctrine_Collection
+    {
+      
+    }
+
+This option can be set at the manager, connection and table levels.

@@ -293,4 +293,49 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[4]->Phonenumber[0]->exists(), false);
         $this->assertEqual($users[4]->Phonenumber[1]->exists(), false);
     }
+
+    public function testCustomManagerCollectionClass()
+    {
+        $manager = Doctrine_Manager::getInstance();
+        $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyCollection');
+
+        $user = new User();
+        $this->assertTrue($user->Phonenumber instanceof MyCollection);
+
+        $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'Doctrine_Collection');
+    }
+
+    public function testCustomConnectionCollectionClass()
+    {
+        $conn = Doctrine::getTable('Phonenumber')->getConnection();
+        $conn->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyConnectionCollection');
+
+        $user = new User();
+        $this->assertTrue($user->Phonenumber instanceof MyConnectionCollection);
+
+        $conn->unsetAttribute(Doctrine::ATTR_COLLECTION_CLASS);
+    }
+
+    public function testCustomTableCollectionClass()
+    {
+        $userTable = Doctrine::getTable('Phonenumber');
+        $userTable->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyPhonenumberCollection');
+
+        $user = new User();
+        $this->assertTrue($user->Phonenumber instanceof MyPhonenumberCollection);
+
+        $userTable->unsetAttribute(Doctrine::ATTR_COLLECTION_CLASS);
+    }
+}
+
+class MyCollection extends Doctrine_Collection
+{
+}
+
+class MyConnectionCollection extends MyCollection
+{
+}
+
+class MyPhonenumberCollection extends MyConnectionCollection
+{
 }
