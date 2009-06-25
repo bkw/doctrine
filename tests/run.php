@@ -310,6 +310,12 @@ $unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase())
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
 
+/*
+$unsorted = new GroupTest('Performance', 'performance');
+$unsorted->addTestCase(new Doctrine_Hydrate_Performance_TestCase());
+$test->addTestCase($unsorted);
+*/
+
 $ret = $test->run();
 
 $endTime = time();
