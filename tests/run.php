@@ -30,7 +30,8 @@ $excludeTickets = array(
     '1830', // MySQL specific error
     '1876b',
     '1935',
-    '2158'
+    '2158',
+    '2292'
 );
 
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
