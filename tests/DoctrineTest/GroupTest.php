@@ -70,7 +70,7 @@ class GroupTest extends UnitTestCase
             $strRepeatLength = $max - strlen($class);
             
             echo $class.str_repeat('.', $strRepeatLength).$formatter->format($failed ? 'failed':'passed', $failed ? 'ERROR':'INFO')."\n";
-            if ($failed && ! empty($this->_messages)) {
+            if (! empty($this->_messages)) {
                 echo "\n";
                 echo "\n";
                 foreach ($this->_messages as $message) {

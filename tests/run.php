@@ -54,6 +54,7 @@ $driver->addTestCase(new Doctrine_Connection_Oracle_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Sqlite_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mssql_TestCase());
 $driver->addTestCase(new Doctrine_Connection_Mysql_TestCase());
+$driver->addTestCase(new Doctrine_Connection_Custom_TestCase());
 $test->addTestCase($driver);
 
 // Transaction Tests (FULLY TESTED)

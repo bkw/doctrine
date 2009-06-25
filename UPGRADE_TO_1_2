@@ -230,19 +230,14 @@ now you can register your own to handle the hydration process.
 First lets register our custom hydrator class.
 
     [php]
-    $manager->registerHydrator('MyHydrator');
-
-> **NOTE**
-> The first argument is the name of the hydration method and the second argument 
-> is the name of the class. The second argument is optional and if omitted the 
-> name of the hydration method will be used as the class name.
+    $manager->registerHydrator('MyHydrator', 'Doctrine_Hydrator_MyHydrator');
 
 So now we need to define a hydrator class named `MyHydrator` and it must 
 implement a method named `hydrateResultSet($stmt)` method which accepts a 
 query statement object.
 
     [php]
-    class MyHydrator extends Doctrine_Hydrator_Abstract
+    class Doctrine_Hydrator_MyHydrator extends Doctrine_Hydrator_Abstract
     {
         public function hydrateResultSet($stmt)
         {
