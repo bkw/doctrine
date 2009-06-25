@@ -78,9 +78,11 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
         
 
         $this->assertEqual($this->adapter->pop(), 'COMMIT');
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10) DEFAULT \'def\', type NUMBER(3) DEFAULT 12, PRIMARY KEY(name, type))');
+        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10 BYTE) DEFAULT \'def\', type NUMBER(8) DEFAULT 12, PRIMARY KEY(name, type))');
         $this->assertEqual($this->adapter->pop(), 'BEGIN TRANSACTION');
     }
+    
+    
     public function testCreateTableSupportsMultiplePks() 
     {
         $name = 'mytable';
@@ -92,7 +94,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
         
 
         $this->assertEqual($this->adapter->pop(), 'COMMIT');
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10), type NUMBER(3), PRIMARY KEY(name, type))');
+        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (name CHAR(10 BYTE), type NUMBER(8), PRIMARY KEY(name, type))');
         $this->assertEqual($this->adapter->pop(), 'BEGIN TRANSACTION');
     }
     public function testCreateTableSupportsAutoincPks() 
@@ -121,7 +123,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
         $this->export->createTable($name, $fields);
 
         $this->adapter->pop();
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id CHAR(3))');
+        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id CHAR(3 BYTE))');
     }
     public function testCreateTableSupportsUniqueConstraint()
     {
@@ -134,7 +136,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
 
         $sql = $this->export->createTableSql('sometable', $fields, $options);
 
-        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT UNIQUE, name VARCHAR2(4), PRIMARY KEY(id))');
+        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT UNIQUE, name VARCHAR2(4 BYTE), PRIMARY KEY(id))');
     }
     public function testCreateTableSupportsIndexes()
     {
@@ -148,7 +150,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
 
         $sql = $this->export->createTableSql('sometable', $fields, $options);
 
-        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT UNIQUE, name VARCHAR2(4), PRIMARY KEY(id))');
+        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT UNIQUE, name VARCHAR2(4 BYTE), PRIMARY KEY(id))');
         $this->assertEqual($sql[4], 'CREATE INDEX myindex ON sometable (id, name)');
         
         $fields = array('id'=> array('type'=>'integer', 'unisgned' => 1, 'autoincrement' => true),
@@ -159,7 +161,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
                          'indexes' => array('category_index' => array('fields'=> array('category')), 'unique_index' => array('type'=> 'unique', 'fields'=> array('id', 'name'))),
                          );
         $sql = $this->export->createTableSql('sometable', $fields, $options);
-        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT, name VARCHAR2(4), category NUMBER(2), PRIMARY KEY(id), CONSTRAINT unique_index UNIQUE (id, name))');
+        $this->assertEqual($sql[0], 'CREATE TABLE sometable (id INT, name VARCHAR2(4 BYTE), category NUMBER(5), PRIMARY KEY(id), CONSTRAINT unique_index UNIQUE (id, name))');
         $this->assertEqual($sql[4], 'CREATE INDEX category_index ON sometable (category)');
     }
     
@@ -175,7 +177,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
                          );
                          
         $sql  = $this->export->createTableSql('sometable', $fields, $options);
-        $this->assertEqual($sql[0], 'CREATE TABLE "sometable" ("id" INT, "name" VARCHAR2(4), PRIMARY KEY("id"))');
+        $this->assertEqual($sql[0], 'CREATE TABLE "sometable" ("id" INT, "name" VARCHAR2(4 BYTE), PRIMARY KEY("id"))');
         $this->assertEqual($sql[1], 'DECLARE
   constraints_Count NUMBER;
 BEGIN

@@ -202,13 +202,25 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(20)');
         
+        $a['length'] = 8;
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(20)');
+        
         $a['length'] = 4;
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(4)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(10)');
 
+        $a['length'] = 3;
+
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(8)');
+        
         $a['length'] = 2;
-
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(2)');
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(5)');
+        
+        $a['length'] = 1;
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(3)');
         
         unset($a['length']);
         
@@ -268,21 +280,21 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'char', 'length' => 10);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CHAR(10)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CHAR(10 BYTE)');
     }
 
     public function testGetNativeDefinitionSupportsVarcharType() 
     {
         $a = array('type' => 'varchar', 'length' => 10);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10 BYTE)');
     }
 
     public function testGetNativeDefinitionSupportsArrayType() 
     {
         $a = array('type' => 'array', 'length' => 40);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(40)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(40 BYTE)');
     }
 
     public function testGetNativeDefinitionSupportsStringType() 
