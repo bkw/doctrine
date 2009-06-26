@@ -264,7 +264,7 @@ from.
 Now we can check out one of the first available extensions in to our extensions 
 directory and then register it.
 
-    $ svn co http://svn.doctrine-project.org/extensions/Sortable/branches/1.2/ /path/to/extensions/Sortable
+    $ svn co http://svn.doctrine-project.org/extensions/Sortable/branches/1.2-1.0/ /path/to/extensions/Sortable
 
 The directory structure of this extension looks like the following.
 
