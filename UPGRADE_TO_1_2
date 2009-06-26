@@ -244,3 +244,67 @@ query statement object.
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
+
+# Doctrine Extensions
+
+Doctrine now has support for creating, loading and testing extensions in to your 
+projects.
+
+First we need to simply tell `Doctrine` where the extensions are being loaded 
+from.
+
+    [php]
+    Doctrine::setExtensionsPath('/path/to/extensions');
+
+Now we can check out one of the first available extensions in to our extensions 
+directory and then register it.
+
+    $ svn co http://svn.doctrine-project.org/extensions/Sortable/branches/1.2/ /path/to/extensions/Sortable
+
+You can even run the tests that come bundled with it. We just need to tell your 
+CLI where your Doctrine code is.
+
+    $ export DOCTRINE_DIR=/path/to/doctrine
+
+> **NOTE**
+> The above path to Doctrine must be the path to the main folder, not just the 
+> lib folder. In order to run the tests it must have access to the `tests` 
+> directory included with Doctrine.
+
+Now you can run the tests included.
+
+    $ cd /path/to/extensions/Sortable/tests
+    $ php run.php
+
+It should output something like the following.
+
+    Doctrine Unit Tests
+    ===================
+    Doctrine_Template_Sortable_TestCase.............................................passed
+
+    Tested: 1 test cases.
+    Successes: 26 passes.
+    Failures: 0 fails.
+    Number of new Failures: 0 
+    Number of fixed Failures: 0 
+
+    Tests ran in 1 seconds and used 13024.9414062 KB of memory
+
+Now if you want to use the extension in your project you will need register the 
+extension with Doctrine and setup the extension autoloading mechanism.
+
+First lets setup the extension autoloading.
+
+    [php]
+    spl_autoload_register(array('Doctrine', 'extensionsAutoload'));
+
+Now you can register the extension and the classes inside that extension will be 
+autoloaded.
+
+    [php]
+    $manager->registerExtension('Sortable');
+
+> **NOTE**
+> If you need to register an extension from a different location you can specify 
+> the full path to the extension directory as the second argument to the 
+> `registerExtension()` method.
