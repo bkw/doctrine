@@ -245,6 +245,11 @@ query statement object.
         }
     }
 
+Now you can run a query like the following which would use the new `MyHydrator`.
+
+    [php]
+    $q->execute(array(), 'MyHydrator');
+
 # Doctrine Extensions
 
 Doctrine now has support for creating, loading and testing extensions in to your 
