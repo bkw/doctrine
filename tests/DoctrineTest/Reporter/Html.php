@@ -1,8 +1,8 @@
 <?php
-class DoctrineTest_Reporter_Html extends DoctrineTest_Reporter {
-    public $progress = false;
-    
-    public function paintHeader($name) {
+class DoctrineTest_Reporter_Html extends DoctrineTest_Reporter
+{
+    public function paintHeader($name)
+    {
 ?>
 <html>
 <head>
@@ -18,15 +18,18 @@ class DoctrineTest_Reporter_Html extends DoctrineTest_Reporter {
       font-family: courier new, monospace;
       border-left: 1px solid #333333;
       border-right: 1px solid #333333;
-      background-color: #CCCCCC;
+      border-top: 1px solid #333333;
+      background-color: #f5f5f5;
       padding: 10px;
   }
   
   #summary
   {
-      background-color: red;
+      border: 1px solid #333333;
+      background-color: #ffc;
       padding: 8px;
       color: white;
+      margin-bottom: 10px;
   }
   
   #wrapper
@@ -48,37 +51,32 @@ class DoctrineTest_Reporter_Html extends DoctrineTest_Reporter {
 <div id="wrapper">
 <h1><?php echo $name ?></h1>
 
+<div id="messages">
 <?php
-        }
-
-        public function paintFooter()
-        {
-            $this->paintSummary();
-            $this->paintMessages();
-            $this->paintSummary();
-            print '</div>';
-        }
-        
-        public function paintMessages()
-        {
-            print '<div id="messages">';
-            foreach ($this->_test->getMessages() as $message) {
-                print "<p>$message</p>";
-            }
-            print '</div>';
-        }
-        
-        public function paintSummary()
-        {
-            $color = ($this->_test->getFailCount() > 0 ? 'red' : 'green');
-            print '<div id="summary" style="';
-            print "background-color: $color;";
-            print '">';
-            print $this->_test->getTestCaseCount() . ' test cases. ';
-            print '<strong>' . $this->_test->getPassCount() . '</strong> passes and ';
-            print '<strong>' . $this->_test->getFailCount() . '</strong> fails.';
-            print '</div>';
-        }
-
-        public function getProgressIndicator() {}
     }
+
+    public function paintFooter()
+    {
+        print '</div></div>';
+        
+            $this->paintSummary();
+    }
+
+    public function paintMessages()
+    {
+        parent::paintMessages();
+    }
+
+    public function paintSummary()
+    {
+        print '<div id="summary">';
+
+        echo $this->format("Tested: " . $this->_test->getTestCaseCount() . ' test cases.', 'INFO') . "<br/>";
+        echo $this->format("Successes: " . $this->_test->getPassCount() . " passes.", 'INFO') . "<br/>";
+        echo $this->format("Failures: " . $this->_test->getFailCount() . " fails.", $this->_test->getFailCount() ? 'ERROR':'INFO') . "<br/>";
+        echo $this->format("Number of new Failures: " . $this->_test->getNumNewFails(), $this->_test->getNumNewFails() ? 'ERROR':'INFO') . ' ' . implode(", ", $this->_test->getNewFails()) . "<br/>";
+        echo $this->format("Number of fixed Failures: " . $this->_test->getNumFixedFails(), $this->_test->getNumFixedFails() ? 'INFO':'HEADER') . ' ' . implode(", ", $this->_test->getFixedFails()) . "<br/>";
+
+        print '</div>';
+    }
+}

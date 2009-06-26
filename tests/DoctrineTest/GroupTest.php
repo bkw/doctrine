@@ -9,6 +9,10 @@ class GroupTest extends UnitTestCase
     {
         $this->_title = $title;
         $this->_name =  $name;
+        if ( PHP_SAPI != 'cli' && ! defined('STDOUT')) {
+            define('STDOUT', '');
+        }
+        $this->_formatter = new Doctrine_Cli_AnsiColorFormatter();
     }
 
     public function getName()
@@ -44,8 +48,12 @@ class GroupTest extends UnitTestCase
     {
         set_time_limit(900);
 
+        $reporter->setTestCase($this);
         $reporter->paintHeader($this->_title);
+
         foreach ($this->_testCases as $k => $testCase) {
+            $reporter->setTestCase($testCase);
+
             $this->_messages = array();
             if ( ! $this->shouldBeRun($testCase, $filter)) {
                 continue;
@@ -57,37 +65,25 @@ class GroupTest extends UnitTestCase
                 $this->_messages[] = 'Unexpected ' . get_class($e) . ' thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();
             }
 
-            $failed = $testCase->getFailCount() ? true:false;
             $this->_passed += $testCase->getPassCount();
             $this->_failed += $testCase->getFailCount();
             $this->_messages = array_merge($this->_messages, $testCase->getMessages());
 
             $this->_testCases[$k] = null;
-            $formatter = new Doctrine_Cli_AnsiColorFormatter();
 
-            $max = 80;
-            $class = get_class($testCase);
-            $strRepeatLength = $max - strlen($class);
-            
-            echo $class.str_repeat('.', $strRepeatLength).$formatter->format($failed ? 'failed':'passed', $failed ? 'ERROR':'INFO')."\n";
-            if (! empty($this->_messages)) {
-                echo "\n";
-                echo "\n";
-                foreach ($this->_messages as $message) {
-                    echo $formatter->format($message, 'ERROR') . "\n\n";
-                }
-                echo "\n";
-            }
+            $reporter->paintMessages();
         }
+
         $reporter->setTestCase($this);
-        
+
+        $reporter->paintMessages();
+
         $this->cachePassesAndFails();
 
         $reporter->paintFooter();
 
         return $this->_failed ? false : true;
     }
-
 
     public function getTestCaseCount()
     {

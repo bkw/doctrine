@@ -1,25 +1,8 @@
 <?php
-$startTime = time();
 
-// Debug Diagnosic process attacher sleep time needed to link process
-// More info about that: http://bugs.php.net/bugs-generating-backtrace-win32.php
-//sleep(10);
+$_SERVER['DOCTRINE_DIR'] = realpath(dirname(__FILE__).'/../');
 
-error_reporting(E_ALL | E_STRICT);
-ini_set('max_execution_time', 900);
-ini_set('date.timezone', 'GMT+0');
-
-if ( ! defined('DOCTRINE_DIR')) {
-    define('DOCTRINE_DIR', dirname(__FILE__) . '/../lib/');
-}
-
-require_once(DOCTRINE_DIR . 'Doctrine.php');
-
-spl_autoload_register(array('Doctrine', 'autoload'));
-
-require_once(dirname(__FILE__) . '/DoctrineTest.php');
-
-spl_autoload_register(array('DoctrineTest','autoload'));
+require 'bootstrap.php';
 
 $test = new DoctrineTest();
 
@@ -145,6 +128,7 @@ $core->addTestCase(new Doctrine_Hydrate_Driver_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
 $core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());
+$core->addTestCase(new Doctrine_Extension_TestCase());
 $test->addTestCase($core);
 
 // Relation Tests
@@ -318,11 +302,4 @@ $unsorted->addTestCase(new Doctrine_Hydrate_Performance_TestCase());
 $test->addTestCase($unsorted);
 */
 
-$ret = $test->run();
-
-$endTime = time();
-$time = $endTime - $startTime;
-
-echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
-
-exit($ret ? 0 : 1);
+exit($test->run() ? 0 : 1);

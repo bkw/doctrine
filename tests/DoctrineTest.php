@@ -46,7 +46,7 @@ class DoctrineTest
     public function __construct()
     {
         $this->requireModels();
-        $this->testGroup = new GroupTest('Doctrine Framework Unit Tests', 'main');
+        $this->testGroup = new GroupTest('Doctrine Unit Tests', 'main');
     }
 
     /**
@@ -83,18 +83,22 @@ class DoctrineTest
         } else {
             require_once(dirname(__FILE__) . '/DoctrineTest/Reporter/Html.php');
             $options = $_GET;
-            if (isset($options["filter"])) {
-                $options["filter"] = explode(",", $options["filter"]);
+            if (isset($options['filter'])) {
+                if ( ! is_array($options['filter'])) {
+                    $options['filter'] = explode(',', $options['filter']);
+                }
             }
-            if (isset($options["group"])) {
-                $options["group"] = explode(",", $options["group"]);
+            if (isset($options['group'])) {
+                if ( ! is_array($options['group'])) {
+                    $options['group'] = explode(',', $options['group']);
+                }
             }
             $reporter = new DoctrineTest_Reporter_Html();
         }
 
         //replace global group with custom group if we have group option set
         if (isset($options['group'])) {
-            $testGroup = new GroupTest('Doctrine Framework Custom test', 'custom');
+            $testGroup = new GroupTest('Doctrine Custom Test', 'custom');
             foreach($options['group'] as $group) {
                 if (isset($this->groups[$group])) {
                     $testGroup->addTestCase($this->groups[$group]);
@@ -107,7 +111,7 @@ class DoctrineTest
         } 
 
         if (isset($options['ticket'])) {
-            $testGroup = new GroupTest('Doctrine Framework Custom test', 'custom');
+            $testGroup = new GroupTest('Doctrine Custom Test', 'custom');
             foreach ($options['ticket'] as $ticket) {
                 $class = 'Doctrine_Ticket_' . $ticket. '_TestCase';
                 $testGroup->addTestCase(new $class);
@@ -173,7 +177,16 @@ class DoctrineTest
             // */
 
         }
-        return $testGroup->run($reporter, $filter);
+        $result = $testGroup->run($reporter, $filter);
+
+        global $startTime;
+
+        $endTime = time();
+        $time = $endTime - $startTime;
+
+        echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
+
+        return $result;
     }
 
     /**
@@ -250,7 +263,7 @@ class DoctrineTest
 
         // create a test case file if it doesn't exist
         if ( ! file_exists($file)) {
-            $contents = file_get_contents('template.tpl');
+            $contents = file_get_contents(DOCTRINE_DIR.'/tests/template.tpl');
             $contents = sprintf($contents, $class, $class);
 
             if ( ! file_exists($dir)) {
