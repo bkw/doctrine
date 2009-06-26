@@ -42,20 +42,13 @@ class Doctrine_Ticket_2292_TestCase extends Doctrine_UnitTestCase
     
     public function prepareData()
     {
-        $article = new mkArticle();
-        $article->title = 'First article';
-        $article->content->body = 'Some content...';
-        $article->save();
     }
     
-    public function testRelationInsert()
+    public function testOwningSideRelationToArray()
     {
-        $articles = Doctrine::getTable('mkArticle')->findAll();
+        $article = new mkArticle();
         
-        foreach ($articles as $article)
-        {
-            $this->assertEqual($article->id, $article->content->id);
-        }
+        $this->assertEqual($article->content->toArray(false), array('id'=>null, 'body'=>null));
     }
 }
 
@@ -72,7 +65,7 @@ class mkArticle extends Doctrine_Record
     {
         $this->hasOne('mkContent as content', array('local'=>'id', 
                                                     'foreign'=>'id',
-                                                    'owningSide' => true));
+                                                    'owningSide' => false));
     }
 }
 
@@ -89,7 +82,7 @@ class mkContent extends Doctrine_Record
     {
         $this->hasOne('mkArticle as article', array('local'=>'id', 
                                                     'foreign'=>'id',
-                                                    'owningSide' => false));
+                                                    'owningSide' => true));
     }
 }
 
