@@ -261,6 +261,20 @@ directory and then register it.
 
     $ svn co http://svn.doctrine-project.org/extensions/Sortable/branches/1.2/ /path/to/extensions/Sortable
 
+The directory structure of this extension looks like the following.
+
+    Sortable/
+    	lib/
+    		Doctrine/
+    			Template/
+    				Listener/
+    					Sortable.php
+    				Sortable.php
+    	tests/
+    		run.php
+    		Template/
+    			SortableTestCase.php
+
 You can even run the tests that come bundled with it. We just need to tell your 
 CLI where your Doctrine code is.
 
