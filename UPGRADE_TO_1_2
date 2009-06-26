@@ -250,6 +250,38 @@ Now you can run a query like the following which would use the new `MyHydrator`.
     [php]
     $q->execute(array(), 'MyHydrator');
 
+# Custom Connections
+
+You can now write and register your own custom Doctrine connection drivers and 
+adapters.
+
+    [php]
+    class Doctrine_Connection_Test extends Doctrine_Connection_Common
+    {
+    }
+
+    class Doctrine_Adapter_Test implements Doctrine_Adapter_Interface
+    {
+      // ... all the methods defined in the interface
+    }
+
+Now we can register this with Doctrine so we can utilize it as our connection.
+
+    [php]
+    $manager->registerConnectionDriver('test', 'Doctrine_Connection_Test');
+
+Now you can utilize that type of connection in your DSN when connecting.
+
+    [php]
+    $conn = $manager->openConnection('test://username:password@localhost/dbname');
+
+Now if we were to check what classes are used for the connection you will notice
+that they are the classes we defined above.
+
+    [php]
+    echo get_class($conn); // Doctrine_Connection_Test
+    echo get_class($conn->getDbh()); // Doctrine_Adapter_Test
+
 # Doctrine Extensions
 
 Doctrine now has support for creating, loading and testing extensions in to your 
