@@ -280,21 +280,41 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'char', 'length' => 10);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CHAR(10 BYTE)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CHAR(10)');
     }
 
     public function testGetNativeDefinitionSupportsVarcharType() 
     {
         $a = array('type' => 'varchar', 'length' => 10);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10 BYTE)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10)');
+    }
+
+    public function testGetNativeDefinitionSupportsVarcharOwnParams()
+    {
+        $a = array('type' => 'varchar', 'length' => 10);
+        
+        $this->conn->setParam('char_unit', 'CHAR');
+        $this->conn->setParam('varchar2_max_length', 1000);
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(10 CHAR)');
+        
+        $a['length'] = 1001;
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'CLOB');
+        
+        $this->conn->setParam('char_unit', 'BYTE');
+        $this->conn->setParam('varchar2_max_length', 4000);
+        
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(1001 BYTE)');
+        
+        $this->conn->setParam('char_unit', null);
     }
 
     public function testGetNativeDefinitionSupportsArrayType() 
     {
         $a = array('type' => 'array', 'length' => 40);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(40 BYTE)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'VARCHAR2(40)');
     }
 
     public function testGetNativeDefinitionSupportsStringType() 
