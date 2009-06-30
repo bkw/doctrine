@@ -13,6 +13,7 @@ $excludeTickets = array(
     '1830', // MySQL specific error
     '1876b',
     '1935',
+    '2015',
     '2158',
     '2292'
 );
