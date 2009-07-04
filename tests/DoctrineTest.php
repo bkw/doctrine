@@ -184,7 +184,11 @@ class DoctrineTest
         $endTime = time();
         $time = $endTime - $startTime;
 
-        echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
+        if (PHP_SAPI === 'cli') {
+          echo "\nTests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory\n\n";
+        } else {
+          echo "<p>Tests ran in " . $time . " seconds and used " . (memory_get_peak_usage() / 1024) . " KB of memory</p>";
+        }
 
         return $result;
     }
