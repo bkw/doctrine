@@ -547,7 +547,7 @@ final class Doctrine
                 }
             }
         }
-
+        asort($loadedModels);
         return $loadedModels;
     }
 
