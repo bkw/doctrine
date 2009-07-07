@@ -41,12 +41,11 @@ class Doctrine_Ticket_1123_TestCase extends Doctrine_UnitTestCase
     public function testExportSql()
     {
         $sql = $this->conn->export->exportClassesSql(array('Ticket_1123_User', 'Ticket_1123_UserReference'));
-        $this->assertEqual(count($sql), 5);
+        $this->assertEqual(count($sql), 4);
         $this->assertEqual($sql[0], 'CREATE TABLE ticket_1123__user_reference (user1 BIGINT, user2 BIGINT, PRIMARY KEY(user1, user2)) ENGINE = INNODB');
         $this->assertEqual($sql[1], 'CREATE TABLE ticket_1123__user (id BIGINT AUTO_INCREMENT, name VARCHAR(30), PRIMARY KEY(id)) ENGINE = INNODB');
         $this->assertEqual($sql[2], 'ALTER TABLE ticket_1123__user_reference ADD CONSTRAINT ticket_1123__user_reference_user2_ticket_1123__user_id FOREIGN KEY (user2) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
-        $this->assertEqual($sql[3], 'ALTER TABLE ticket_1123__user_reference ADD CONSTRAINT ticket_1123__user_reference_user1_ticket_1123__user_id_1 FOREIGN KEY (user1) REFERENCES ticket_1123__user(id)');
-        $this->assertEqual($sql[4], 'ALTER TABLE ticket_1123__user_reference ADD CONSTRAINT ticket_1123__user_reference_user1_ticket_1123__user_id FOREIGN KEY (user1) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
+        $this->assertEqual($sql[3], 'ALTER TABLE ticket_1123__user_reference ADD CONSTRAINT ticket_1123__user_reference_user1_ticket_1123__user_id FOREIGN KEY (user1) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
     }
 }
 
