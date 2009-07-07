@@ -97,11 +97,13 @@ databases could have the same table name multiple times.
 Added a new attribute to control whether cascading save operations are done by 
 default. Previous to Doctrine 1.2 they were always cascaded.
 
-As of 1.2 it will now only cascade if the record is dirty. The cost of this is 
-that you can't cascade and save records who are dirty that are more then one 
-level deep in the hierarchy.
+As of 1.2 you have the option to disable cascading saves and will only cascade 
+if the record is dirty. The cost of this is that you can't cascade and save 
+records who are dirty that are more then one level deep in the hierarchy.
 
 See: http://trac.doctrine-project.org/ticket/1623
+
+You can disable cascading saves with the following code.
 
     [php]
     $manager->setAttribute(Doctrine::ATTR_CASCADE_SAVES, false);
