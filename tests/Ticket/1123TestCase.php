@@ -44,8 +44,8 @@ class Doctrine_Ticket_1123_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($sql), 4);
         $this->assertEqual($sql[0], 'CREATE TABLE ticket_1123__user_reference (user1 BIGINT, user2 BIGINT, PRIMARY KEY(user1, user2)) ENGINE = INNODB');
         $this->assertEqual($sql[1], 'CREATE TABLE ticket_1123__user (id BIGINT AUTO_INCREMENT, name VARCHAR(30), PRIMARY KEY(id)) ENGINE = INNODB');
-        $this->assertEqual($test = isset($sql[3]) ? $sql[3]:null, 'ALTER TABLE ticket_1123__user_reference ADD FOREIGN KEY (user1) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
-        $this->assertEqual($test = isset($sql[2]) ? $sql[2]:null, 'ALTER TABLE ticket_1123__user_reference ADD FOREIGN KEY (user2) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
+        $this->assertEqual($sql[2], 'ALTER TABLE ticket_1123__user_reference ADD FOREIGN KEY (user2) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
+        $this->assertEqual($sql[3], 'ALTER TABLE ticket_1123__user_reference ADD FOREIGN KEY (user1) REFERENCES ticket_1123__user(id) ON DELETE CASCADE');
  
     }
 }

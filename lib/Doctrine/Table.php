@@ -640,21 +640,15 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                                  'foreign'      => $relation->getForeignColumnName(),
                                  'foreignTable' => $relation->getTable()->getTableName());
 
-                    if (($key = array_search($def, $options['foreignKeys'])) === false) {
+                    if ($integrity !== $emptyIntegrity) {
+                        $def = array_merge($def, $integrity);
+                    }
+                    if (($key = $this->_checkForeignKeyExists($def, $options['foreignKeys'])) === false) {
                         $options['foreignKeys'][] = $def;
-                        if ($integrity !== $emptyIntegrity) {
-                            $constraints[] = $integrity;
-                        }
                     } else {
-                        if ($integrity !== $emptyIntegrity) {
-                            $constraints[$key] = $integrity;
-                        }
+                        $options['foreignKeys'][$key] = array_merge($options['foreignKeys'][$key], $def);
                     }
                 }
-            }
-
-            foreach ($constraints as $k => $def) {
-                $options['foreignKeys'][$k] = array_merge($options['foreignKeys'][$k], $def);
             }
         }
 
@@ -663,6 +657,24 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         return array('tableName' => $this->getOption('tableName'),
                      'columns'   => $columns,
                      'options'   => array_merge($this->getOptions(), $options));
+    }
+
+    /**
+     * Check if a foreign definition already exists in the fks array for a 
+     * foreign table, local and foreign key
+     *
+     * @param  array $def          Foreign key definition to check for
+     * @param  array $foreignKeys  Array of existing foreign key definitions to check in
+     * @return boolean $result     Whether or not the foreign key was found
+     */
+    protected function _checkForeignKeyExists($def, $foreignKeys)
+    {
+        foreach ($foreignKeys as $key => $foreignKey) {
+            if ($def['local'] == $foreignKey['local'] && $def['foreign'] == $foreignKey['foreign'] && $def['foreignTable'] == $foreignKey['foreignTable']) {
+                return $key;
+            }
+        }
+        return false;
     }
 
     /**
