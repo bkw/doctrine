@@ -102,7 +102,7 @@ class Doctrine_Query_Subquery_TestCase extends Doctrine_UnitTestCase
 
             $count = $users->count();
         } catch (Doctrine_Exception $e) {
-            $this->fail();
+            $this->fail($e->getMessage());
         }
 
         $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, COUNT(DISTINCT a.id) AS a__0 FROM entity e LEFT JOIN album a ON e.id = a.user_id WHERE e.id IN (SELECT DISTINCT e2.id FROM entity e2 LEFT JOIN album a2 ON e2.id = a2.user_id WHERE (e2.type = 0) GROUP BY e2.id ORDER BY a__0 LIMIT 5) AND (e.type = 0) GROUP BY e.id ORDER BY a__0');
