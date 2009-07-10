@@ -1041,6 +1041,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
 
         if ($length == null) {
             switch ($type) {
+                case 'integer':
+                    $length = 8;
+                break;
                 case 'decimal':
                     $length = 18;
                 break;
@@ -1052,8 +1055,11 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 case 'object':
                 case 'blob':
                 case 'gzip':
-                    // use php int max
-                    $length = 2147483647;
+                    //$length = 2147483647;
+                    
+                    //All the DataDict driver classes have work-arounds to deal
+                    //with unset lengths.
+                    $length = null;
                 break;
                 case 'boolean':
                     $length = 1;

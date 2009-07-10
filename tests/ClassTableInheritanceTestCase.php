@@ -50,8 +50,8 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
     {
         $sql = $this->conn->export->exportClassesSql(array('CTITest', 'CTITestOneToManyRelated', 'NoIdTestParent', 'NoIdTestChild'));
 
-        $this->assertEqual($sql[0], 'CREATE TABLE no_id_test_parent (myid INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(2147483647))');
-        $this->assertEqual($sql[1], 'CREATE TABLE no_id_test_child (myid INTEGER, child_column VARCHAR(2147483647), PRIMARY KEY(myid))');
+        $this->assertEqual($sql[0], 'CREATE TABLE no_id_test_parent (myid INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)');
+        $this->assertEqual($sql[1], 'CREATE TABLE no_id_test_child (myid INTEGER, child_column TEXT, PRIMARY KEY(myid))');
         $this->assertEqual($sql[2], 'CREATE TABLE c_t_i_test_parent4 (id INTEGER, age INTEGER, PRIMARY KEY(id))');
         $this->assertEqual($sql[3], 'CREATE TABLE c_t_i_test_parent3 (id INTEGER, added INTEGER, PRIMARY KEY(id))');
         $this->assertEqual($sql[4], 'CREATE TABLE c_t_i_test_parent2 (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(200), verified INTEGER)');
