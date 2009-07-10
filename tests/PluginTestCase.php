@@ -44,9 +44,9 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $sql = $this->conn->export->exportSortedClassesSql(array('Wiki'));
         $sql = current($sql);
 
-        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content VARCHAR(2147483647), version INTEGER, PRIMARY KEY(id, lang, version))');
+        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content TEXT, version INTEGER, PRIMARY KEY(id, lang, version))');
         $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))');
-        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (id INTEGER, title VARCHAR(255), content VARCHAR(2147483647), lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))');
+        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))');
         $this->assertEqual($sql[3], 'CREATE TABLE wiki (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)');
 
         foreach ($sql as $query) {
@@ -63,7 +63,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
         $fi = $wiki->Translation['FI'];
         $fi->title = 'Michael Jeffrey Jordan';
-        $fi->content = "Michael Jeffrey Jordan (s. 17. helmikuuta 1963, Brooklyn, New York) on yhdysvaltalainen entinen NBA-koripalloilija, jota pidetään yleisesti kaikkien aikojen parhaana pelaajana.";
+        $fi->content = "Michael Jeffrey Jordan (s. 17. helmikuuta 1963, Brooklyn, New York) on yhdysvaltalainen entinen NBA-koripalloilija, jota pidetï¿½ï¿½n yleisesti kaikkien aikojen parhaana pelaajana.";
 
         $fi->save();
         $this->assertEqual($fi->version, 1);
