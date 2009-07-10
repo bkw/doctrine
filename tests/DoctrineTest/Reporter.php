@@ -36,8 +36,8 @@ class DoctrineTest_Reporter
     {
         $max = 80;
         $class = get_class($this->_test);
-        $failed = $this->_test->getFailCount() ? true:false;
         $messages = $this->_test->getMessages();
+        $failed = ($this->_test->getFailCount() || count($messages)) ? true:false;
 
         if ($class != 'GroupTest') {
             $strRepeatLength = $max - strlen($class);

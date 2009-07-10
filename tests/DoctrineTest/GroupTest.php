@@ -54,7 +54,6 @@ class GroupTest extends UnitTestCase
         foreach ($this->_testCases as $k => $testCase) {
             $reporter->setTestCase($testCase);
 
-            $this->_messages = array();
             if ( ! $this->shouldBeRun($testCase, $filter)) {
                 continue;
             }
@@ -62,12 +61,12 @@ class GroupTest extends UnitTestCase
                 $testCase->run();
             } catch (Exception $e) {
                 $this->_failed += 1;
-                $this->_messages[] = 'Unexpected ' . get_class($e) . ' thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();
+                $message = 'Unexpected ' . get_class($e) . ' thrown in [' . get_class($testCase) . '] with message [' . $e->getMessage() . '] in ' . $e->getFile() . ' on line ' . $e->getLine() . "\n\nTrace\n-------------\n\n" . $e->getTraceAsString();
+                $testCase->addMessage($message);
             }
 
             $this->_passed += $testCase->getPassCount();
             $this->_failed += $testCase->getFailCount();
-            $this->_messages = array_merge($this->_messages, $testCase->getMessages());
 
             $this->_testCases[$k] = null;
 

@@ -11,6 +11,11 @@ class UnitTestCase
 
     protected static $_lastRunsPassesAndFails = array('passes' => array(), 'fails' => array());
 
+    public function addMessage($msg)
+    {
+        $this->_messages[] = $msg;
+    }
+
     public function assertEqual($value, $value2)
     {
         if ($value == $value2) {

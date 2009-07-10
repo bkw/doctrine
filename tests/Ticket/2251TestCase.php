@@ -37,6 +37,7 @@ class Doctrine_Ticket_2251_TestCase extends Doctrine_UnitTestCase
         $this->tables[] = 'Ticket_2251_TestStringLength';
         parent::prepareTables();
     }
+
     public function testEmptyStringLengthSQLExport()
     {
         $drivers = array(
@@ -44,9 +45,7 @@ class Doctrine_Ticket_2251_TestCase extends Doctrine_UnitTestCase
             'sqlite',
             'pgsql',
             'oracle',
-            'mssql',
-            'firebird',
-            'informix'
+            'mssql'
         );
         
         $expected = array(
@@ -54,9 +53,7 @@ class Doctrine_Ticket_2251_TestCase extends Doctrine_UnitTestCase
             'sqlite'    => 'CREATE TABLE test_string_length (id INTEGER PRIMARY KEY AUTOINCREMENT, test_string TEXT)',
             'pgsql'     => 'CREATE TABLE test_string_length (id BIGSERIAL, test_string TEXT, PRIMARY KEY(id))',
             'oracle'    => 'CREATE TABLE test_string_length (id NUMBER(20), test_string CLOB, PRIMARY KEY(id))',
-            'mssql'     => 'CREATE TABLE test_string_length (id INT identity, test_string TEXT NULL, PRIMARY KEY([id]))',
-            'firebird'  => 'CREATE TABLE test_string_length (id INT, test_string VARCHAR(16777215), PRIMARY KEY(id))',
-            'informix'  => 'CREATE TABLE test_string_length (id DECIMAL(20), test_string NVARCHAR, PRIMARY KEY(id))'
+            'mssql'     => 'CREATE TABLE test_string_length (id INT identity, test_string TEXT NULL, PRIMARY KEY([id]))'
         );
 
         foreach ($drivers as $driver)
@@ -77,14 +74,14 @@ class Doctrine_Ticket_2251_TestCase extends Doctrine_UnitTestCase
 
 class Ticket_2251_TestStringLength extends Doctrine_Record
 {
-        public function setTableDefinition()
-        {
-                $this->setTableName('test_string_length');
-                $this->hasColumn('test_string', 'string');
-        }
+    public function setTableDefinition()
+    {
+            $this->setTableName('test_string_length');
+            $this->hasColumn('test_string', 'string');
+    }
 
-        public function setUp()
-        {
-            parent::setUp();
-        }
+    public function setUp()
+    {
+        parent::setUp();
+    }
 }
