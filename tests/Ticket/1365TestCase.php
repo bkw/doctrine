@@ -61,14 +61,14 @@ class Doctrine_Ticket_1365_TestCase extends Doctrine_UnitTestCase
             ->select('s.*, phs.*')
             ->from('T1365_Skill s')
             ->leftJoin('s.T1365_PersonHasSkill phs')
-            ->where('phs.value1 > phs.value2');
+            ->where('phs.value0 > phs.value1');
 
         $this->assertEqual(
-            $q->getSqlQuery(), 
+            $q->getSqlQuery(),
             'SELECT l.id AS l__id, l.name AS l__name, ' .
             'l2.id AS l2__id, l2.fk_person_id AS l2__fk_person_id, l2.fk_skill_id AS l2__fk_skill_id, l2.value0 AS l2__value0, l2.value1 AS l2__value1 ' .
             'FROM la__skill l LEFT JOIN la__person_has_skill l2 ON l.id = l2.fk_skill_id ' .
-            'WHERE l2.value1 > l2.value2'
+            'WHERE l2.value0 > l2.value1'
         );
     }
 }

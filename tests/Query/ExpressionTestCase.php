@@ -32,28 +32,54 @@
  */
 class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase 
 {
-
-    public function testUnknownExpressionInSelectClauseThrowsException() 
+    public function testUnknownExpressionInSelectClauseThrowsException()
     {
-        $q = new Doctrine_Query();
-        
+        // Activate portability all
+        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+
         try {
-            $q->parseDqlQuery('SELECT SOMEUNKNOWNFUNC(u.name, " ", u.loginname) FROM User u');
-            
-            $q->getSqlQuery();
-            $this->fail();
+            $q = Doctrine_Query::create()
+                ->parseDqlQuery("SELECT SOMEUNKNOWNFUNC(u.name, ' ', u.loginname) FROM User u");
+
+            $sql = $q->getSqlQuery();
+
+            $this->fail('SOMEUNKNOWNFUNC() should throw an Exception, but actually it passed and generated the SQL: ' . $sql);
         } catch(Doctrine_Query_Exception $e) {
             $this->pass();
         }
+
+        // Reassign old portability mode
+        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
     }
 
-    public function testUnknownColumnWithinFunctionInSelectClauseThrowsException() 
+
+    public function testUnknownExpressionInSelectClauseDoesntThrowException()
+    {
+        // Deactivate portability expression mode
+        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL ^ Doctrine::PORTABILITY_EXPR);
+
+        try {
+            $q = Doctrine_Query::create()
+                ->parseDqlQuery("SELECT SOMEUNKNOWNFUNC(u.name, ' ', u.loginname) FROM User u");
+
+            $sql = $q->getSqlQuery();
+
+            $this->pass();
+        } catch(Doctrine_Query_Exception $e) {
+            $this->fail('SOMEUNKNOWNFUNC() should pass, but actually it fail with message: ' . $e->getMessage());
+        }
+
+        // Reassign old portability mode
+        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+    }
+
+    public function testUnknownColumnWithinFunctionInSelectClauseThrowsException()
     {
         $q = new Doctrine_Query();
-        
+
         try {
             $q->parseDqlQuery('SELECT CONCAT(u.name, u.unknown) FROM User u');
-            
+
             $q->execute();
             $this->fail();
         } catch(Doctrine_Query_Exception $e) {
@@ -61,10 +87,10 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
         }
     }
 
-    public function testConcatIsSupportedInSelectClause() 
+    public function testConcatIsSupportedInSelectClause()
     {
         $q = new Doctrine_Query();
-        
+
         $q->parseDqlQuery('SELECT u.id, CONCAT(u.name, u.loginname) FROM User u');
         
         $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, CONCAT(e.name, e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)');
