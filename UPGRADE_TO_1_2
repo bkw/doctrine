@@ -361,3 +361,22 @@ autoloaded.
 > If you need to register an extension from a different location you can specify 
 > the full path to the extension directory as the second argument to the 
 > `registerExtension()` method.
+
+## Generator Cascading Delete Configuration
+
+It is now possible to configure the cascading delete operation of a 
+`Doctrine_Record_Generator`. For example you can now configure the `I18n` 
+behavior to use app level cascade deletes instead of database level.
+
+    [yml]
+    Article:
+      actAs:
+        I18n:
+          fields: [title, body]
+          appLevelDelete: true
+      columns:
+        title: string(255)
+        body: clob
+
+You can also completely disable cascading deletes by using the `cascadeDelete` 
+option and setting it to `false.`
