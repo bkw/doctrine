@@ -71,21 +71,21 @@ WHERE tc.table_name = :tableName ORDER BY column_id";
     {
         $this->import->listTables();
         
-        $q = 'SELECT table_name FROM sys.user_tables';
+        $q = "SELECT * FROM user_objects WHERE object_type = 'TABLE'";
         $this->assertEqual($this->adapter->pop(), $q);
     }
     public function testListDatabasesExecutesSql()
     {
         $this->import->listDatabases();
         
-        $q = 'SELECT username FROM sys.dba_users';
+        $q = 'SELECT username FROM sys.user_users';
         $this->assertEqual($this->adapter->pop(), $q);
     }
     public function testListUsersExecutesSql()
     {
         $this->import->listUsers();
         
-        $q = 'SELECT username FROM sys.dba_users';
+        $q = 'SELECT username FROM sys.all_users';
         $this->assertEqual($this->adapter->pop(), $q);
     }
     public function testListViewsExecutesSql()
