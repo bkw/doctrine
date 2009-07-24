@@ -1640,7 +1640,7 @@ abstract class Doctrine_Record extends Doctrine_Record_Abstract implements Count
                 if (is_array($value)) {
                     $this->get($key)->synchronizeWithArray($value);
                 }
-            } else if ($this->getTable()->hasField($key) || isset($this->_values[$key])) {
+            } else if ($this->getTable()->hasField($key) || array_key_exists($key, $this->_values)) {
                 $this->set($key, $value);
             }
         }
