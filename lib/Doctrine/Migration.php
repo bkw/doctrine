@@ -501,8 +501,6 @@ class Doctrine_Migration
 
             $method = 'post' . $direction;
             $migration->$method();
-
-            $this->setCurrentVersion($num);
         } catch (Exception $e) {
             $this->addError($e);
         }
