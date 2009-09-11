@@ -54,7 +54,7 @@ class Doctrine_Ticket_2251_TestCase extends Doctrine_UnitTestCase
             'sqlite'    => 'CREATE TABLE test_string_length (id INTEGER PRIMARY KEY AUTOINCREMENT, test_string TEXT)',
             'pgsql'     => 'CREATE TABLE test_string_length (id BIGSERIAL, test_string TEXT, PRIMARY KEY(id))',
             'oracle'    => 'CREATE TABLE test_string_length (id NUMBER(8), test_string CLOB, PRIMARY KEY(id))',
-            'mssql'     => 'CREATE TABLE test_string_length (id INT identity, test_string TEXT NULL, PRIMARY KEY([id]))',
+            'mssql'     => 'CREATE TABLE test_string_length (id INT NOT NULL identity, test_string TEXT NULL, PRIMARY KEY([id]))',
             'firebird'  => 'CREATE TABLE test_string_length (id INT, test_string VARCHAR(16777215), PRIMARY KEY(id))',
             'informix'  => 'CREATE TABLE test_string_length (id DECIMAL(20), test_string NVARCHAR, PRIMARY KEY(id))'
         );
