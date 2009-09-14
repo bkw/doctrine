@@ -67,11 +67,13 @@ class Doctrine_Query_Having extends Doctrine_Query_Condition
                     $map       = $this->query->load($reference, false);
                     $field     = $map['table']->getColumnName($field);
                     $func      = $this->query->getTableAlias($reference) . '.' . $field;
+
+                    return $this->query->getConnection()->quoteIdentifier($this->query->getTableAlias($reference) . '.' . $field);
                 } else {
                     $field = end($a);
-                    $func  = $this->query->getAggregateAlias($field);
+
+                    return $this->query->getAggregateAlias($field);
                 }
-                return $this->query->getConnection()->quoteIdentifier($func);
             } else {
                 return $this->query->getConnection()->quoteIdentifier($func);
             }
