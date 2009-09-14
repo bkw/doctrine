@@ -49,7 +49,8 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
      * @param Doctrine_Connection  The connection object the query will use.
      * @param Doctrine_Hydrator_Abstract  The hydrator that will be used for generating result sets.
      */
-    function __construct(Doctrine_Connection $connection = null, Doctrine_Hydrator_Abstract $hydrator = null) {
+    function __construct(Doctrine_Connection $connection = null, Doctrine_Hydrator_Abstract $hydrator = null)
+    {
         parent::__construct($connection, $hydrator);
 
         // Fix #1472. It's alid to disable QueryCache since there's no DQL for RawSql.
@@ -104,6 +105,11 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
      	return $this;
     }
     
+    protected function _hasDqlQueryPart($queryPartName)
+    {
+        return count($this->_sqlParts[$queryPartName]) > 0;
+    }
+    
     /**
      * Adds a DQL query part. Overrides Doctrine_Query_Abstract::_addDqlQueryPart().
      * This implementation for RawSql parses the new parts right away, generating the SQL.
@@ -118,7 +124,8 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
      *
      * @param $queryPart sting The name of the querypart
      */
-    private function _parseSelectFields($queryPart){
+    private function _parseSelectFields($queryPart)
+    {
         preg_match_all('/{([^}{]*)}/U', $queryPart, $m);
         $this->fields = $m[1];
         $this->_sqlParts['select'] = array();
@@ -278,7 +285,7 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
         }
 
         $q .= ( ! empty($this->_sqlParts['from']))?    ' FROM '     . implode(' ', $this->_sqlParts['from']) : '';
-        $q .= ( ! empty($this->_sqlParts['where']))?   ' WHERE '    . implode(' AND ', $this->_sqlParts['where']) : '';
+        $q .= ( ! empty($this->_sqlParts['where']))?   ' WHERE '    . implode(' ', $this->_sqlParts['where']) : '';
         $q .= ( ! empty($this->_sqlParts['groupby']))? ' GROUP BY ' . implode(', ', $this->_sqlParts['groupby']) : '';
         $q .= ( ! empty($this->_sqlParts['having']))?  ' HAVING '   . implode(' AND ', $this->_sqlParts['having']) : '';
         $q .= ( ! empty($this->_sqlParts['orderby']))? ' ORDER BY ' . implode(', ', $this->_sqlParts['orderby']) : '';
@@ -321,7 +328,7 @@ class Doctrine_RawSql extends Doctrine_Query_Abstract
         }
 
         $q .= ( ! empty($this->_sqlParts['from']))?    ' FROM '     . implode(' ', $this->_sqlParts['from']) : '';
-        $q .= ( ! empty($this->_sqlParts['where']))?   ' WHERE '    . implode(' AND ', $this->_sqlParts['where']) : '';
+        $q .= ( ! empty($this->_sqlParts['where']))?   ' WHERE '    . implode(' ', $this->_sqlParts['where']) : '';
         $q .= ( ! empty($this->_sqlParts['groupby']))? ' GROUP BY ' . implode(', ', $this->_sqlParts['groupby']) : '';
         $q .= ( ! empty($this->_sqlParts['having']))?  ' HAVING '   . implode(' AND ', $this->_sqlParts['having']) : '';
 
