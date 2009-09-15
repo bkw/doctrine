@@ -37,10 +37,24 @@ Affected Classes
 * Doctrine_Query_Abstract::getCountQuery() to getCountSqlQuery()
 * Doctrine_RawSql::getCountQuery() to getCountSqlQuery()
 
-## Added ability to configure base table class for class builder
+## Added ability to configure table class
 
-Introduced option named `baseTableClassName` to configure the class child 
-`Doctrine_Table` instances use which defaults to `Doctrine_Table`.
+Added ability to specify the base `Doctrine_Table` class to use if no custom 
+`UserModelTable` class exists.
+
+    [php]
+    $manager->setAttribute(Doctrine::ATTR_TABLE_CLASS, 'MyTable');
+
+Now just make sure the class exists somewhere and is loaded.
+
+    [php]
+    class MyTable extends Doctrine_Table
+    {
+
+    }
+
+This attribute value will be used for the following new option if you don't 
+specify it.
 
     [php]
     $builder = new Doctrine_Import_Builder();
