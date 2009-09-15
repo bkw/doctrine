@@ -202,7 +202,6 @@ sfUserEmailAddressType:
 sfUserEmailAddress:
   actAs:
     Timestampable:
-    Userstampable:
   columns:
     email_address_type_id: integer
     address:
