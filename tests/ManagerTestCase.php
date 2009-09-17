@@ -157,19 +157,13 @@ class Doctrine_Manager_TestCase extends Doctrine_UnitTestCase {
         $this->conn2 = Doctrine_Manager::connection('sqlite:///' . $this->conn2_database, 'doctrine2');
         
         $result1 = $this->conn1->createDatabase();
-        $this->assertEqual($result1, 'Successfully created database for connection "doctrine1" at path "'.$this->conn1_database.'"');
-        
         $result2 = $this->conn2->createDatabase();
-        $this->assertEqual($result2, 'Successfully created database for connection "doctrine2" at path "'.$this->conn2_database.'"');
     }
     
     public function testDropDatabases()
     {
         $result1 = $this->conn1->dropDatabase();
-        $this->assertEqual($result1, 'Successfully dropped database for connection "doctrine1" at path "'.$this->conn1_database.'"');
-        
         $result2 = $this->conn2->dropDatabase();
-        $this->assertEqual($result2, 'Successfully dropped database for connection "doctrine2" at path "'.$this->conn2_database.'"');
     }
     
     public function testConnectionInformationDecoded()
