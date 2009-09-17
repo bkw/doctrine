@@ -40,8 +40,7 @@ class Doctrine_Ticket_DC7_TestCase extends Doctrine_UnitTestCase
 
     public function prepareData()
     {
-        for ($i = 0; $i < 10; $i++)
-        {
+        for ($i = 0; $i < 10; $i++) {
             $user = new Ticket_DC7_User();
             $user->username = $i;
             $user->password = $i;
@@ -53,8 +52,7 @@ class Doctrine_Ticket_DC7_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine::getTable('Ticket_DC7_User')
             ->createQuery('u')
-            ->setHydrationPolicy(Doctrine::HYDRATE_POLICY_ON_DEMAND)
-            ->setHydrationMode(Doctrine::HYDRATE_RECORD);
+            ->setHydrationMode(Doctrine::HYDRATE_ON_DEMAND);
 
         $results = $q->execute();
         $this->assertEqual(get_class($results), 'Doctrine_Collection_OnDemand');
@@ -64,21 +62,6 @@ class Doctrine_Ticket_DC7_TestCase extends Doctrine_UnitTestCase
             $count++;
         }
         $this->assertEqual($count, 10);
-    }
-
-    public function testOnDemandHydrationWithInvalidModeThrowsException()
-    {
-        try {
-            $q = Doctrine::getTable('Ticket_DC7_User')
-                ->createQuery('u')
-                ->setHydrationPolicy(Doctrine::HYDRATE_POLICY_ON_DEMAND)
-                ->setHydrationMode(Doctrine::HYDRATE_ARRAY);
-
-            $results = $q->execute();
-            $this->fail();
-        } catch (Exception $e) {
-            $this->pass();
-        }
     }
 }
 
