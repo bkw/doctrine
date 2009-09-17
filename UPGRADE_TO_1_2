@@ -394,3 +394,27 @@ behavior to use app level cascade deletes instead of database level.
 
 You can also completely disable cascading deletes by using the `cascadeDelete` 
 option and setting it to `false.`
+
+## Column Aggregation Key Column
+
+The column aggregation key column is now automatically indexed.
+
+    [yml]
+    User:
+      tableName: users
+      columns:
+        username: string(255)
+        password: string(255)
+
+    Employee:
+      inheritance:
+        extends: User
+        type: column_aggregation
+
+The above schema would add a `type` column to the `User` model. This is a flag 
+tell Doctrine which subclass each record in the database belongs to. This column
+is now automatically indexed where before it was not.
+
+    [sql]
+    CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(255), password VARCHAR(255), type VARCHAR(255));
+    CREATE INDEX type_idx ON users (type);
