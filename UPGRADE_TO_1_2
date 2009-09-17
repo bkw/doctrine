@@ -418,3 +418,19 @@ is now automatically indexed where before it was not.
     [sql]
     CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(255), password VARCHAR(255), type VARCHAR(255));
     CREATE INDEX type_idx ON users (type);
+
+## On Demand Hydration
+
+You can now utilize a new hydration mode which utilizes much less memory. It only
+hydrates one object in to memory at a time. So it uses less memory and is faster
+for larger results.
+
+    [php]
+    // Returns instance of Doctrine_Collection_OnDemand
+    $result = $q->execute(array(), Doctrine::HYDRATE_ON_DEMAND);
+    foreach ($result as $obj) {
+      // ...
+    }
+
+`Doctrine_Collection_OnDemand` hydrates each object one at a time as you iterate
+over it.
