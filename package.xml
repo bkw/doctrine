@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-06-15</date>
- <time>08:01:32</time>
+ <date>2009-09-18</date>
+ <time>21:17:16</time>
  <version>
-  <release>1.1.2</release>
-  <api>1.1.2</api>
+  <release>1.2.0</release>
+  <api>1.2.0</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>alpha</release>
+  <api>alpha</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -43,11 +43,9 @@ requiring needless code duplication.</description>
        <file name="Mock.php" role="php" />
        <file name="Oracle.php" role="php" />
       </dir> <!-- /lib/Doctrine/Adapter/Statement -->
-      <file name="Db2.php" role="php" />
       <file name="Exception.php" role="php" />
       <file name="Interface.php" role="php" />
       <file name="Mock.php" role="php" />
-      <file name="Mysqli.php" role="php" />
       <file name="Oracle.php" role="php" />
       <file name="Statement.php" role="php" />
      </dir> <!-- /lib/Doctrine/Adapter -->
@@ -78,17 +76,12 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
       <file name="Iterator.php" role="php" />
       <file name="Offset.php" role="php" />
+      <file name="OnDemand.php" role="php" />
      </dir> <!-- /lib/Doctrine/Collection -->
      <dir name="Compiler">
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/Compiler -->
      <dir name="Connection">
-      <dir name="Firebird">
-       <file name="Exception.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Connection/Firebird -->
-      <dir name="Informix">
-       <file name="Exception.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Connection/Informix -->
       <dir name="Mssql">
        <file name="Exception.php" role="php" />
       </dir> <!-- /lib/Doctrine/Connection/Mssql -->
@@ -110,8 +103,6 @@ requiring needless code duplication.</description>
       <file name="Common.php" role="php" />
       <file name="Db2.php" role="php" />
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mock.php" role="php" />
       <file name="Module.php" role="php" />
       <file name="Mssql.php" role="php" />
@@ -130,8 +121,6 @@ requiring needless code duplication.</description>
      </dir> <!-- /lib/Doctrine/Data -->
      <dir name="DataDict">
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
@@ -145,9 +134,6 @@ requiring needless code duplication.</description>
      </dir> <!-- /lib/Doctrine/EventListener -->
      <dir name="Export">
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Frontbase.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
@@ -159,8 +145,6 @@ requiring needless code duplication.</description>
      <dir name="Expression">
       <file name="Driver.php" role="php" />
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mock.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
@@ -184,7 +168,11 @@ requiring needless code duplication.</description>
       <file name="Abstract.php" role="php" />
       <file name="ArrayDriver.php" role="php" />
       <file name="Exception.php" role="php" />
+      <file name="Graph.php" role="php" />
+      <file name="NoneDriver.php" role="php" />
       <file name="RecordDriver.php" role="php" />
+      <file name="ScalarDriver.php" role="php" />
+      <file name="SingleScalarDriver.php" role="php" />
      </dir> <!-- /lib/Doctrine/Hydrator -->
      <dir name="I18n">
       <file name="Exception.php" role="php" />
@@ -195,8 +183,6 @@ requiring needless code duplication.</description>
       </dir> <!-- /lib/Doctrine/Import/Builder -->
       <file name="Builder.php" role="php" />
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
@@ -257,9 +243,6 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
-      <dir name="Spyc">
-       <file name="YamlNode.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Parser/Spyc -->
       <dir name="YamlSf">
        <file name="Dumper.php" role="php" />
        <file name="Inline.php" role="php" />
@@ -268,7 +251,6 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
-      <file name="Spyc.php" role="php" />
       <file name="Xml.php" role="php" />
       <file name="YamlSf.php" role="php" />
       <file name="Yml.php" role="php" />
@@ -365,8 +347,6 @@ requiring needless code duplication.</description>
      <dir name="Sequence">
       <file name="Db2.php" role="php" />
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
       <file name="Oracle.php" role="php" />
@@ -421,8 +401,6 @@ requiring needless code duplication.</description>
      </dir> <!-- /lib/Doctrine/Template -->
      <dir name="Transaction">
       <file name="Exception.php" role="php" />
-      <file name="Firebird.php" role="php" />
-      <file name="Informix.php" role="php" />
       <file name="Mock.php" role="php" />
       <file name="Mssql.php" role="php" />
       <file name="Mysql.php" role="php" />
@@ -466,7 +444,6 @@ requiring needless code duplication.</description>
       <file name="Exception.php" role="php" />
      </dir> <!-- /lib/Doctrine/View -->
      <file name="Access.php" role="php" />
-     <file name="Adapter.php" role="php" />
      <file name="AuditLog.php" role="php" />
      <file name="Builder.php" role="php" />
      <file name="Cache.php" role="php" />
@@ -533,8 +510,7 @@ requiring needless code duplication.</description>
      <file name="SnapshotTestCase.php" role="test" />
     </dir> <!-- /tests/Collection -->
     <dir name="Connection">
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
+     <file name="CustomTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -548,8 +524,6 @@ requiring needless code duplication.</description>
      <file name="ImportTestCase.php" role="test" />
     </dir> <!-- /tests/Data -->
     <dir name="DataDict">
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -579,8 +553,6 @@ requiring needless code duplication.</description>
     </dir> <!-- /tests/EventListener -->
     <dir name="Export">
      <file name="CheckConstraintTestCase.php" role="test" />
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -591,23 +563,33 @@ requiring needless code duplication.</description>
     </dir> <!-- /tests/Export -->
     <dir name="Expression">
      <file name="DriverTestCase.php" role="test" />
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
      <file name="PgsqlTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Expression -->
+    <dir name="Extension">
+     <dir name="TestExtension">
+      <dir name="lib">
+       <dir name="Doctrine">
+        <dir name="Template">
+         <file name="TestBehavior.php" role="test" />
+        </dir> <!-- /tests/Extension/TestExtension/lib/Doctrine/Template -->
+        <file name="Test.php" role="test" />
+       </dir> <!-- /tests/Extension/TestExtension/lib/Doctrine -->
+      </dir> <!-- /tests/Extension/TestExtension/lib -->
+     </dir> <!-- /tests/Extension/TestExtension -->
+    </dir> <!-- /tests/Extension -->
     <dir name="Hydrate">
      <file name="CollectionInitializationTestCase.php" role="test" />
+     <file name="DriverTestCase.php" role="test" />
      <file name="FetchModeTestCase.php" role="test" />
+     <file name="PerformanceTestCase.php" role="test" />
      <file name="ScalarTestCase.php" role="test" />
     </dir> <!-- /tests/Hydrate -->
     <dir name="Import">
      <file name="BuilderTestCase.php" role="test" />
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -915,8 +897,6 @@ requiring needless code duplication.</description>
      <file name="QueryWeightTestCase.php" role="test" />
     </dir> <!-- /tests/Search -->
     <dir name="Sequence">
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -938,6 +918,17 @@ requiring needless code duplication.</description>
        <file name="Ticket_1727_Model4.php" role="test" />
       </dir> <!-- /tests/Ticket/1727/models2 -->
      </dir> <!-- /tests/Ticket/1727 -->
+     <dir name="2375">
+      <dir name="models1">
+       <file name="Ticket_2375_Model1.php" role="test" />
+       <file name="Ticket_2375_Model2.php" role="test" />
+      </dir> <!-- /tests/Ticket/2375/models1 -->
+      <dir name="models2">
+       <file name="Ticket_2375_Model3.php" role="test" />
+       <file name="Ticket_2375_Model4.php" role="test" />
+       <file name="Ticket_2375_Model5.php" role="test" />
+      </dir> <!-- /tests/Ticket/2375/models2 -->
+     </dir> <!-- /tests/Ticket/2375 -->
      <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
@@ -1018,7 +1009,6 @@ requiring needless code duplication.</description>
      <file name="1208TestCase.php" role="test" />
      <file name="1211TestCase.php" role="test" />
      <file name="1213TestCase.php" role="test" />
-     <file name="1215TestCase.php" role="test" />
      <file name="1225TestCase.php" role="test" />
      <file name="1228TestCase.php" role="test" />
      <file name="1230TestCase.php" role="test" />
@@ -1093,13 +1083,16 @@ requiring needless code duplication.</description>
      <file name="1621bTestCase.php" role="test" />
      <file name="1621TestCase.php" role="test" />
      <file name="1622TestCase.php" role="test" />
+     <file name="1623TestCase.php" role="test" />
      <file name="1628TestCase.php" role="test" />
      <file name="1629TestCase.php" role="test" />
      <file name="1630TestCase.php" role="test" />
      <file name="1636TestCase.php" role="test" />
      <file name="1641TestCase.php" role="test" />
+     <file name="1652TestCase.php" role="test" />
      <file name="1653TestCase.php" role="test" />
      <file name="1658TestCase.php" role="test" />
+     <file name="1674TestCase.php" role="test" />
      <file name="1703TestCase.php" role="test" />
      <file name="1706TestCase.php" role="test" />
      <file name="1713TestCase.php" role="test" />
@@ -1116,6 +1109,7 @@ requiring needless code duplication.</description>
      <file name="1793TestCase.php" role="test" />
      <file name="1795TestCase.php" role="test" />
      <file name="1799TestCase.php" role="test" />
+     <file name="1808TestCase.php" role="test" />
      <file name="1818TestCase.php" role="test" />
      <file name="1821TestCase.php" role="test" />
      <file name="1824TestCase.php" role="test" />
@@ -1135,21 +1129,38 @@ requiring needless code duplication.</description>
      <file name="1986TestCase.php" role="test" />
      <file name="1991TestCase.php" role="test" />
      <file name="1992TestCase.php" role="test" />
+     <file name="2007TestCase.php" role="test" />
+     <file name="2015TestCase.php" role="test" />
      <file name="2032TestCase.php" role="test" />
      <file name="2105TestCase.php" role="test" />
+     <file name="2123TestCase.php" role="test" />
      <file name="2158TestCase.php" role="test" />
      <file name="2159TestCase.php" role="test" />
+     <file name="2160TestCase.php" role="test" />
      <file name="2184TestCase.php" role="test" />
      <file name="2190TestCase.php" role="test" />
      <file name="2204TestCase.php" role="test" />
      <file name="2229TestCase.php" role="test" />
+     <file name="2251TestCase.php" role="test" />
+     <file name="2292TestCase.php" role="test" />
+     <file name="2295TestCase.php" role="test" />
+     <file name="2298TestCase.php" role="test" />
+     <file name="2334TestCase.php" role="test" />
+     <file name="2355TestCase.php" role="test" />
+     <file name="2367TestCase.php" role="test" />
+     <file name="2375TestCase.php" role="test" />
+     <file name="2377TestCase.php" role="test" />
+     <file name="2398TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
+     <file name="DC7TestCase.php" role="test" />
+     <file name="DC14TestCase.php" role="test" />
+     <file name="DC23bTestCase.php" role="test" />
+     <file name="DC23TestCase.php" role="test" />
+     <file name="DC24TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
     <dir name="Transaction">
-     <file name="FirebirdTestCase.php" role="test" />
-     <file name="InformixTestCase.php" role="test" />
      <file name="MssqlTestCase.php" role="test" />
      <file name="MysqlTestCase.php" role="test" />
      <file name="OracleTestCase.php" role="test" />
@@ -1165,6 +1176,7 @@ requiring needless code duplication.</description>
     <file name="AuditLogTestCase.php" role="test" />
     <file name="BaseTestCase.php" role="test" />
     <file name="BatchIteratorTestCase.php" role="test" />
+    <file name="bootstrap.php" role="test" />
     <file name="CacheSqliteTestCase.php" role="test" />
     <file name="CacheTestCase.php" role="test" />
     <file name="ClassTableInheritanceTestCase.php" role="test" />
@@ -1189,6 +1201,7 @@ requiring needless code duplication.</description>
     <file name="EventListenerTestCase.php" role="test" />
     <file name="ExportTestCase.php" role="test" />
     <file name="ExpressionTestCase.php" role="test" />
+    <file name="ExtensionTestCase.php" role="test" />
     <file name="ForeignKeyTestCase.php" role="test" />
     <file name="HookTestCase.php" role="test" />
     <file name="HydrateTestCase.php" role="test" />
@@ -1275,6 +1288,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-09-18</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.1.2</release>

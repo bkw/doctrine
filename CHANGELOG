@@ -1,0 +1,86 @@
+1.2.0-ALPHA1
+------------
+     * [r5285] [1.2] Updating UPGRADE file to document the changes to SoftDelete.
+     * [r5900] [1.2] Creating 1.2 branch
+     * [r5901] [1.2] Massive cleanup before new development begins
+     * [r5902] [1.2] Fixing tests related to limit subquery not maintaining orderby anymore.
+     * [r5903] [1.2] Added ability to configure the class generated Doctrine_Table classes extend from
+     * [r5904] [1.2] Added ability to configure a query class by use of the attribute Doctrine::ATTR_QUERY_CLASS
+     * [r5905] [1.2] Changed arrayToXml() to be static (closes #1673)
+     * [r5906] [1.2] Fixing converting to xml in the file parser (closes #1674)
+     * [r5907] [1.2] Refactored migrations to allow you to specify the connection it should use.
+     * [r5908] [1.2] Splitting getSqlQuery() in to 2 methods by adding buildSqlQuery()
+     * [r5910] [1.2] Adding configuration to turn off cascading saves by default (closes #1623)
+     * [r5911] [1.2] Removing unused methods related to string attribute support
+     * [r5919] [1.2] Making setAttribute() slightly dumber to improve performance
+     * [r5920] [1.2] Adding Doctrine::setPath() method
+     * [r5921] [1.2] Added new methods for checking related records existence for and clearing related records.
+     * [r5922] [1.2] Allowing unknown column types to be reverse engineered. Simply defaults to string if we can't map it to a Doctrine type
+     * [r5923] [1.2] Updating Doctrine_Adapter_Oracle to allow persistent connections (closes #2195)
+     * [r5924] [1.2] Making generated base classes call parent::setUp() to allow base classes to add global setup (closes #2239)
+     * [r5925] [1.2] Added new option to not add class prefixes to file names when generating models (closes #2250)
+     * [r5926] [1.2] Performance patch for events and profiler
+     * [r5927] [1.2] Removing commented code
+     * [r5928] [1.2] Adding Doctrine::VALIDATE_USER attribute
+     * [r5929] [1.2] Making findBy() and findOneBy() public methods
+     * [r5930] [1.2] Expanded support for magic table finders
+     * [r5932] [1.2] Refactoring output of tests
+     * [r5933] [1.2] Fixing sandbox config
+     * [r5934] [1.2] Added ability to configure a custom child Doctrine_Collection class instead of having it hardcoded inside Doctrine
+     * [r5936] [1.2] Refactoring hydration methods to drivers and adding ability to register custom drivers
+     * [r5938] [1.2] Fixes #1592: Oracle integers are compatible with INT types from MySQL or Postgresql
+     * [r5939] [1.2] More hydration refactoring.
+     * [r5942] [1.2] Starting refactoring of connection code to allow custom connection/adapters
+     * [r5943] [1.2] Excluding failing ticket test case
+     * [r5946] [1.2] Initial entry of extensions system
+     * [r5948] [1.2] Enhancing sandbox to have support for extensions
+     * [r5949] [1.2] Updating UPGRADE file to include information about extensions
+     * [r5950] [1.2] Adding directory structure of Sortable behavior as an example
+     * [r5956] [1.2] Updating readme to show example using new hydration type
+     * [r5957] [1.2] Updating path to Sortable
+     * [r5959] [1.2] Adding documentation about custom connection drivers
+     * [r5960] [1.2] Removing some more code related to attribute string support
+     * [r5968] [1.2] Possibility to avoid exporting table and relations to it by setting ATTR_EXPORT to EXPORT_NONE at a table level.
+     * [r5969] [1.2] Added ability to drop/create db using the Doctrine_Oracle_Adapter, moved varchar2_max_length from property to params to allow user change it.
+     * [r5971] [1.2] Fixed unpredictable ordering of resultset. This fixes the last remaining PHP 5.3 related issue we found until now.
+     * [r5972] [1.2] Commented known to fail ticket #2015 . Test cases that are known to fail should be only uncommented when patch is applied, otherwise Continuous Integration server keeps
+     * [r6002] [1.2] Fix for html vs cli output
+     * [r6008] [1.2] Reversing change to remove order by from limit subquery
+     * [r6010] [1.2] Fixing failing tests related to reversing a bug fix related to limit subquery orderby
+     * [r6016] [1.2] Fixing mistake in upgrade doc (closes #2319)
+     * [r6054] [1.2] Fixing failing test case and fixing test suite issue where messages are not reported to you
+     * [r6057] [1.2] Adding exception message to fail
+     * [r6064] [1.2] Fixed various tokenizer issues. This patch closes #671, #1885, #2104, #2107, #2111, #2298
+     * [r6065] [1.2] Uncomment needed code to get DATE(u.created_at, INTERVAL '-1 month') to work.
+     * [r6075] [1.2] Fixed author credits on Tokenizer class.
+     * [r6122] [1.2] Fixes for oracle connecting using adapter, and the drop/create db functionality (closes #2359)
+     * [r6126] [1.2] Changed skipOperation behavior on preSave() event to skip the entire operation and not just the insert()/update() calls (closes #2325)
+     * [r6128] [1.2] Removing try, catch and rethrow from Doctrine_Export (closes #2285)
+     * [r6131] [1.2] Fixes issue with previous commit and oracle create/drop db functionality
+     * [r6132] [1.2] Fixes issue with importing from existing database and unsigned flag as well as other flags (closes #2354)
+     * [r6136] [1.2] Added option to allow configuration of cascading delete operations on generators (closes #2367)
+     * [r6149] [1.2] Fixes mistake in previous commit (addresses #2367)
+     * [r6204] [1.2] Fixed #2398. Thanks to Russ Flynn.
+     * [r6218] [1.2] optimized logic in autoload so only doctrine classes are handled
+     * [r6244] [1.0][1.1][1.2] Fixed E_STRICT notice on PHP
+     * [r6345] [1.2] Mssql now supports renaming tables, columns, altering tables. Exporting Mssql SQL automatically turn all primary keys to "NOT NULL".
+     * [r6346] [1.2] Fixed #2487. Patch provided by Stefan Klug.
+     * [r6349] [1.2] Fixed minor issues which was breaking unit test suite under certain environments
+     * [r6350] [1.2] Semi-reverted my previous commit since it reveals a hidden bug and it's now bugging CI server. Need to do more efforts to effectively fix all related issues of my previous
+     * [r6357] [1.2][DC-1] Fixes issue with data fixtures import keys being overriden
+     * [r6362] [1.2] Fixed a couple of issues that were preventing Unit Test Suite to run in certain situations
+     * [r6363] [1.2] Fix for class_exists
+     * [r6365] [1.2][DC-12] Added Doctrine::ATTR_TABLE_CLASS
+     * [r6366] [1.2][DC-14] Fixes issue with DQL parser and NOT BETWEEN where conditions
+     * [r6367] [1.2][DC-12] Updating doc block for Doctrine_Migration_Base::changeColumn()
+     * [r6368] [1.2][DC-10] Fixed exception catching and rethrowing from CLI
+     * [r6370] [1.2][DC-7] Implementing first draft of ON DEMAND hydration
+     * [r6371] [1.2][DC-5] Automatically indexing column aggregation inheritance type column
+     * [r6372] [1.2][DC-17] Removing exception suppressing for dropping and creating databases
+     * [r6373] [1.2][DC-9] Modified yaml schema parser to allow comment on table and fields
+     * [r6376] [1.2][DC-32] Making change so non portable types are passed through instead of throwing exceptions
+     * [r6377] [1.2][DC-23] Fixed issue with referencing fixtures more than 1 level deep and self referencing fixtures
+     * [r6378] [1.2] Cleaning up on demand hydration so it is much simpler and just a hydration mode. No more policies.
+     * [r6379] [1.2] Updating upgrade file
+     * [r6381] [1.2][DC-24] Removing deprecated aggregate values in relationships when hydrating
+     * [r6382] [1.2][DC-24] Updating upgrade file for previous changeset
