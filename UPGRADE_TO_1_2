@@ -429,8 +429,57 @@ for larger results.
     // Returns instance of Doctrine_Collection_OnDemand
     $result = $q->execute(array(), Doctrine::HYDRATE_ON_DEMAND);
     foreach ($result as $obj) {
-      // ...
+        // ...
     }
 
 `Doctrine_Collection_OnDemand` hydrates each object one at a time as you iterate
 over it.
+
+## Aggregate Values Hydration
+
+Now aggregate/calculated values can only be found in the root component of your 
+queries. Previously they could be found in both the root component and the 
+relationship. This causes lots of problems, for example this query.
+
+    [php]
+    $master = Doctrine_Query::create()
+			  ->select('m.*, s.bar AS joe')
+			  ->from('Ticket_DC24_Master m')
+			  ->innerJoin('m.Ticket_DC24_Servant s')
+			  ->where('m.id = 1')
+			  ->fetchOne();
+
+This produces a data structure like this.
+
+    Array
+    (
+        [id] => 1
+        [foo] => 6
+        [servant_id] =>
+        [Ticket_DC24_Servant] => Array
+            (
+                [id] =>
+                [bar] =>
+                [joe] => 6
+            )
+
+        [joe] => 6
+    )
+
+Now we have a blank `Ticket_DC24_Servant` instance and if we were to try and call
+`save()` like below we would get an error.
+
+    [php]
+    $master->some_field = 'test';
+    $master->save();
+
+Now as of 1.2 the structure will only look like this.
+
+    [php]
+    Array
+    (
+        [id] => 1
+        [foo] => 6
+        [servant_id] => 1
+        [joe] => 6
+    )
