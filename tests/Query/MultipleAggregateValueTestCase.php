@@ -62,8 +62,8 @@ class Doctrine_Query_MultipleAggregateValue_TestCase extends Doctrine_UnitTestCa
         
         try {
             $name = $user->name;
-            $num_albums = $user->Album[0]->num_albums;
-            $num_books = $user->Book[0]->num_books;    
+            $num_albums = $user->num_albums;
+            $num_books = $user->num_books;    
         } catch (Doctrine_Exception $e) {
             $this->fail();
         }
@@ -84,8 +84,8 @@ class Doctrine_Query_MultipleAggregateValue_TestCase extends Doctrine_UnitTestCa
 
         try {
             $name = $users[0]['name'];
-            $num_albums = $users[0]['Album'][0]['num_albums'];
-            $num_books = $users[0]['Book'][0]['num_books'];
+            $num_albums = $users[0]['num_albums'];
+            $num_books = $users[0]['num_books'];
         } catch (Doctrine_Exception $e) {
             $this->fail();
         }

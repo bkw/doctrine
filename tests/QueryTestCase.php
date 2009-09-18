@@ -187,7 +187,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $users = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
 
-        $this->assertTrue(isset($users[0]['Phonenumber'][0]) && array_key_exists('summ', $users[0]['Phonenumber'][0]));
+        $this->assertTrue(array_key_exists('summ', $users[0]));
     }
 
     public function testQueryWithNoSelectFromRootTableThrowsException()

@@ -135,10 +135,10 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(count($users), 4);
 
-        $this->assertEqual($users[0]['Phonenumber'][0]['count'], 3);
-        $this->assertEqual($users[1]['Phonenumber'][0]['count'], 0);
-        $this->assertEqual($users[2]['Phonenumber'][0]['count'], 2);
-        $this->assertEqual($users[3]['Phonenumber'][0]['count'], 1);
+        $this->assertEqual($users[0]['count'], 3);
+        $this->assertEqual($users[1]['count'], 0);
+        $this->assertEqual($users[2]['count'], 2);
+        $this->assertEqual($users[3]['count'], 1);
     }
 
     public function testAggregateValueMappingSupportsLeftJoins2()
@@ -160,8 +160,8 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
         $q->select('u.name, COUNT(p.id) count, MAX(p.id) max')->from('User u')->innerJoin('u.Phonenumber p')->groupby('u.id');
 
         $users = $q->execute();
-        $this->assertEqual($users[0]->Phonenumber[0]->max, 3);
-        $this->assertEqual($users[0]->Phonenumber[0]->count, 3);
+        $this->assertEqual($users[0]->max, 3);
+        $this->assertEqual($users[0]->count, 3);
     }
     
     public function testAggregateValueMappingSupportsMultipleValues2()
@@ -172,7 +172,7 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
 
         $users = $q->execute();
 
-        $this->assertEqual($users[0]['Phonenumber'][0]['max'], 3);
+        $this->assertEqual($users[0]['max'], 3);
         $this->assertEqual($users[0]['count'], 3);
     }
     
@@ -186,9 +186,9 @@ class Doctrine_Query_AggregateValue_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($users->count(), 3);
 
-        $this->assertEqual($users[0]->Phonenumber[0]->count, 3);
-        $this->assertEqual($users[1]->Phonenumber[0]->count, 2);
-        $this->assertEqual($users[2]->Phonenumber[0]->count, 1);
+        $this->assertEqual($users[0]->count, 3);
+        $this->assertEqual($users[1]->count, 2);
+        $this->assertEqual($users[2]->count, 1);
     }
     public function testAggregateFunctionParser()
     {

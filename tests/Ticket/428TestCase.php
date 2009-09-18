@@ -46,12 +46,9 @@ class Doctrine_Ticket_428_TestCase extends Doctrine_UnitTestCase
         $q->select('a.name, COUNT(s.id) count')->from('Album a')->leftJoin('a.Song s')->groupby('a.id');
         $albums = $q->execute();
 
-        // Should not reuse the existing collection in this case
-        $this->assertEqual(count($albums[0]->Song), 1);
-
         try {
             // Collection[0] should refer to the object with aggregate value
-            $this->assertEqual($albums[0]['Song'][0]['count'], 4);
+            $this->assertEqual($albums[0]['count'], 4);
         } catch (Exception $e) {
             $this->fail('count aggregate value should be available');
         }

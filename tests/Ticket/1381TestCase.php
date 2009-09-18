@@ -77,7 +77,7 @@ class Doctrine_Ticket_1381_TestCase extends Doctrine_UnitTestCase
             $items = Doctrine_Query::create()->query($dql, array(1), Doctrine::HYDRATE_ARRAY);
             $comment = $items[0];
 
-            $this->assertTrue(array_key_exists('ArticleTitle', $comment['T1381_Article']));
+            $this->assertTrue(array_key_exists('ArticleTitle', $comment));
         } catch (Doctrine_Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -92,7 +92,7 @@ class Doctrine_Ticket_1381_TestCase extends Doctrine_UnitTestCase
             $items = Doctrine_Query::create()->query($dql, array(1), Doctrine::HYDRATE_ARRAY);
             $comment = $items[0];
 
-            $this->assertTrue(array_key_exists('ArticleTitle', $comment['T1381_Article']));
+            $this->assertTrue(array_key_exists('ArticleTitle', $comment));
 
             // Now we fetch with data we want (it seems it overrides calculates columns of already fetched objects)
             $dql = 'SELECT c.*, a.* FROM T1381_Comment c INNER JOIN c.T1381_Article a';
@@ -102,18 +102,18 @@ class Doctrine_Ticket_1381_TestCase extends Doctrine_UnitTestCase
             $this->assertFalse(array_key_exists('ArticleTitle', $items[0]['T1381_Article']));
 
             // Assert that our existent component still has the column, even after new hydration on same object
-            $this->assertTrue(array_key_exists('ArticleTitle', $comment['T1381_Article']));
+            $this->assertTrue(array_key_exists('ArticleTitle', $comment));
 
             // Fetch including new columns again
             $dql = 'SELECT c.id, a.*, a.id as ArticleTitle FROM T1381_Comment c INNER JOIN c.T1381_Article a';
             $items = Doctrine_Query::create()->query($dql, array(), Doctrine::HYDRATE_ARRAY);
 
             // Assert that new calculated column with different content do not override the already fetched one
-            $this->assertTrue(array_key_exists('ArticleTitle', $items[0]['T1381_Article']));
+            $this->assertTrue(array_key_exists('ArticleTitle', $items[0]));
             
             // Assert that our existent component still has the column, even after new hydration on same object
-            $this->assertTrue(array_key_exists('ArticleTitle', $comment['T1381_Article']));
-            $this->assertTrue($comment['T1381_Article']['ArticleTitle'], 'When cleanData worked as expected!');
+            $this->assertTrue(array_key_exists('ArticleTitle', $comment));
+            $this->assertTrue($comment, 'When cleanData worked as expected!');
         } catch (Doctrine_Exception $e) {
             $this->fail($e->getMessage());
         }

@@ -40,6 +40,5 @@ class Doctrine_Ticket_1380_TestCase extends Doctrine_UnitTestCase
             ->leftJoin('u.Phonenumber p');
         $users = $q->fetchArray();
         $this->assertTrue(isset($users[0]['num_phonenumbers']));
-        $this->assertTrue(isset($users[0]['Phonenumber'][0]['num_phonenumbers']));
     }
 }
