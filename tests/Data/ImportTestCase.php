@@ -503,7 +503,7 @@ END;
             $this->fail();
         } catch (Exception $e) {
             $this->pass();
-            $this->assertEqual($e->getMessage(), 'Invalid row key specified: UserGroup_1, referred to in GroupuserGroupuser_1');
+            $this->assertEqual($e->getMessage(), 'Class referred to in "(groupuser) Groupuser_1" is expected to be "User" and "Group" was given');
         }
 
         unlink('test.yml');
