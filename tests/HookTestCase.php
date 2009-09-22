@@ -104,7 +104,7 @@ class Doctrine_Hook_TestCase extends Doctrine_UnitTestCase
         $a['where'] = array('u.id' => 10000);
 
         $hook->hookWhere($a['where']);
-        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE e.id = ? AND (e.type = 0)');
+        $this->assertEqual($hook->getQuery()->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.id = ? AND (e.type = 0))');
         $this->assertEqual($hook->getQuery()->getFlattenedParams(), array(10000));
     }
 

@@ -7,17 +7,17 @@ class Doctrine_Ticket_2298_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create()
             ->from('Address a')
             ->where("a.address = '(a) and c'");
-        $this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE a.address = '(a) and c'");
+        $this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE (a.address = '(a) and c')");
 
         $q = Doctrine_Query::create()
             ->from('Address a')
             ->where("a.address = ' or what'");
-        $this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE a.address = ' or what'");
+        $this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE (a.address = ' or what')");
 
         $q = Doctrine_Query::create()
             ->from('Address a')
             ->where("a.address = ' or      6spaces'");
-       	$this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE a.address = ' or      6spaces'");
+       	$this->assertEqual($q->getSqlQuery(), "SELECT a.id AS a__id, a.address AS a__address FROM address a WHERE (a.address = ' or      6spaces')");
     }
 
 

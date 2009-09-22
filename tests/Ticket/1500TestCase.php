@@ -60,11 +60,11 @@ class Doctrine_Ticket_1500_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine_Query::create()
             ->from('T1500_User u')->innerJoin('u.Group g')->where('u.id = 1');
-        $this->assertEqual($q->getSqlQuery(), 'SELECT t.user_id AS t__user_id, t.group_id AS t__group_id, t.name AS t__name, t2.group_id AS t2__group_id, t2.name AS t2__name FROM t1500__user t INNER JOIN t1500__group t2 ON t.group_id = t2.group_id WHERE t.user_id = 1');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.user_id AS t__user_id, t.group_id AS t__group_id, t.name AS t__name, t2.group_id AS t2__group_id, t2.name AS t2__name FROM t1500__user t INNER JOIN t1500__group t2 ON t.group_id = t2.group_id WHERE (t.user_id = 1)');
 
         $q = Doctrine_Query::create()
             ->from('T1500_Group g')->innerJoin('g.Users u')->where('g.id = 1');
-        $this->assertEqual($q->getSqlQuery(), 'SELECT t.group_id AS t__group_id, t.name AS t__name, t2.user_id AS t2__user_id, t2.group_id AS t2__group_id, t2.name AS t2__name FROM t1500__group t INNER JOIN t1500__user t2 ON t.group_id = t2.group_id WHERE t.group_id = 1');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.group_id AS t__group_id, t.name AS t__name, t2.user_id AS t2__user_id, t2.group_id AS t2__group_id, t2.name AS t2__name FROM t1500__group t INNER JOIN t1500__user t2 ON t.group_id = t2.group_id WHERE (t.group_id = 1)');
     }
 }
 

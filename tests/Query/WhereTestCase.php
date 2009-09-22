@@ -68,7 +68,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $users = $q->execute();
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE TRIM(e.name) = ? AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name FROM entity e WHERE (TRIM(e.name) = ? AND (e.type = 0))');
         $this->assertEqual($users->count(), 1);
         $this->assertEqual($users[0]->name, 'someone');
     }
@@ -87,7 +87,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $accounts = $q->execute();
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT a.id AS a__id, a.entity_id AS a__entity_id, a.amount AS a__amount FROM account a WHERE ((a.amount + 5000) * a.amount + 3) < 10000000');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT a.id AS a__id, a.entity_id AS a__entity_id, a.amount AS a__amount FROM account a WHERE (((a.amount + 5000) * a.amount + 3) < 10000000)');
         $this->assertEqual($accounts->count(), 1);
         $this->assertEqual($accounts[0]->amount, 1000);
     }
@@ -115,7 +115,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
             ->from('User')
             ->where('User.id IN (?, ?)', array(1, 2));
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id IN (?, ?) AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.id IN (?, ?) AND (e.type = 0))');
 
         $users = $q->execute();
 
@@ -218,7 +218,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $users = $q->execute();
         $this->assertEqual($users->count(), 1);
         
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'someone' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'someone' AND (e.type = 0))");
     }
 
     public function testOperatorWithNoTrailingSpaces2() 
@@ -230,7 +230,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $users = $q->execute();
         $this->assertEqual($users->count(), 0);
         
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'foo.bar' AND (e.type = 0))");
     }
 
     public function testOperatorWithSingleTrailingSpace() 
@@ -242,7 +242,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $users = $q->execute();
         $this->assertEqual($users->count(), 0);
         
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'foo.bar' AND (e.type = 0))");
     }
 
     public function testOperatorWithSingleTrailingSpace2() 
@@ -254,7 +254,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $users = $q->execute();
         $this->assertEqual($users->count(), 0);
         
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'foo.bar' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'foo.bar' AND (e.type = 0))");
     }
 
     public function testDeepComponentReferencingIsSupported()
@@ -263,7 +263,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $q->select('u.id')->from('User u')->where("u.Group.name ='some group'");
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON (e.id = g.user_id) LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE e2.name = 'some group' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON (e.id = g.user_id) LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE (e2.name = 'some group' AND (e.type = 0))");
     }
 
     public function testDeepComponentReferencingIsSupported2()
@@ -272,7 +272,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
 
         $q->select('u.id')->from('User u')->addWhere("u.Group.name ='some group'");
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON (e.id = g.user_id) LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE e2.name = 'some group' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e LEFT JOIN groupuser g ON (e.id = g.user_id) LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE (e2.name = 'some group' AND (e.type = 0))");
     }
 
     public function testLiteralValueAsInOperatorOperandIsSupported()
@@ -281,7 +281,7 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $q->select('u.id')->from('User u')->where('1 IN (1, 2)');
         
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id FROM entity e WHERE 1 IN (1, 2) AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id FROM entity e WHERE (1 IN (1, 2) AND (e.type = 0))');
     }
 
     public function testCorrelatedSubqueryWithInOperatorIsSupported()
@@ -290,6 +290,6 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         
         $q->select('u.id')->from('User u')->where('u.name IN (SELECT u2.name FROM User u2 WHERE u2.id = u.id)');
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id FROM entity e WHERE e.name IN (SELECT e2.name AS e2__name FROM entity e2 WHERE e2.id = e.id AND (e2.type = 0)) AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id FROM entity e WHERE (e.name IN (SELECT e2.name AS e2__name FROM entity e2 WHERE (e2.id = e.id AND (e2.type = 0))) AND (e.type = 0))');
     }
 }

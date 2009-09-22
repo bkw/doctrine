@@ -51,7 +51,7 @@ class Doctrine_Ticket_1540_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create()
             ->from('Ticket_1540_TableName t')
 			->where('if(1 AND 2, 1, 2)', 1);
-        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM ticket_1540__table_name t WHERE if(1 AND 2, 1, 2)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM ticket_1540__table_name t WHERE (if(1 AND 2, 1, 2))');
     }
 }
 

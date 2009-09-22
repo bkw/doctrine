@@ -238,7 +238,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
           ->where("e.status = 'verified'")
           ->execute();
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE e.status = 'verified'");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.status AS e__status, e.text AS e__text, e2.text AS e2__text FROM enum_test e LEFT JOIN enum_test3 e2 ON e.text = e2.text WHERE (e.status = 'verified')");
     }
 
     public function testInvalidValueErrors()

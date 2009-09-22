@@ -46,7 +46,7 @@ class Doctrine_Ticket_1537_TestCase extends Doctrine_UnitTestCase
             ->set('password', '?', 'changeme')
             ->set('email_address', '?', 'jonwage@gmail.com')
             ->where('username = ?', 'jwage');
-        $this->assertEqual($q->getSqlQuery(), 'UPDATE ticket_1537__user SET password = ?, email_address = ?, updated_at = ? WHERE username = ?');
+        $this->assertEqual($q->getSqlQuery(), 'UPDATE ticket_1537__user SET password = ?, email_address = ?, updated_at = ? WHERE (username = ?)');
         $params = $q->getFlattenedParams();
 
         // make sure order of params are correct

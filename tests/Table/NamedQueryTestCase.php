@@ -63,12 +63,12 @@ class Doctrine_Table_NamedQuery_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(
             $table->createNamedQuery('get.by.id')->getSqlQuery(),
-            'SELECT m.id AS m__id, m.name AS m__name, m.value0 AS m__value0 FROM my_foo m WHERE m.id = ?'
+            'SELECT m.id AS m__id, m.name AS m__name, m.value0 AS m__value0 FROM my_foo m WHERE (m.id = ?)'
         );
         
         $this->assertEqual(
             $table->createNamedQuery('get.by.similar.names')->getSqlQuery(),
-            'SELECT m.id AS m__id, m.value0 AS m__value0 FROM my_foo m WHERE LOWER(m.name) LIKE LOWER(?)'
+            'SELECT m.id AS m__id, m.value0 AS m__value0 FROM my_foo m WHERE (LOWER(m.name) LIKE LOWER(?))'
         );
         
         $this->assertEqual($table->createNamedQuery('get.by.similar.names')->count(array('%jon%wage%')), 2);

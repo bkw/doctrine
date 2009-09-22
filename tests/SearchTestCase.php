@@ -76,7 +76,7 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         $query = Doctrine_Query::create()
             ->from('SearchTest s');
         $query = Doctrine::getTable('SearchTest')->search('orm', $query);
-        $this->assertEqual($query->getSqlQuery(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE s.id IN (SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id)');
+        $this->assertEqual($query->getSqlQuery(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE (s.id IN (SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id))');
         $results = $query->fetchArray();
         $this->assertEqual($results[0]['id'], 1);
     }

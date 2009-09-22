@@ -49,7 +49,7 @@ class Doctrine_Ticket_668_TestCase extends Doctrine_UnitTestCase {
                 ->from('T668_User u')
                 ->where("u.name LIKE '%foo OR bar%'");
         $this->assertEqual("SELECT u.id FROM T668_User u WHERE u.name LIKE '%foo OR bar%'", $query->getDql());
-        $this->assertEqual($query->getSqlQuery(), "SELECT t.id AS t__id FROM t668_user t WHERE t.name LIKE '%foo OR bar%'");
+        $this->assertEqual($query->getSqlQuery(), "SELECT t.id AS t__id FROM t668_user t WHERE (t.name LIKE '%foo OR bar%')");
     }
 }
 

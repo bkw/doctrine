@@ -51,7 +51,7 @@ class Doctrine_Ticket_1858_TestCase extends Doctrine_UnitTestCase
             )
             ->where('id = :id', array(':id' => $foo_id));
             
-        $this->assertEqual($query->getSqlQuery(), 'UPDATE t1858__foo SET quantity = GREATEST(CAST(quantity AS SIGNED + :adjustment,0)) WHERE id = :id');        
+        $this->assertEqual($query->getSqlQuery(), 'UPDATE t1858__foo SET quantity = GREATEST(CAST(quantity AS SIGNED + :adjustment,0)) WHERE (id = :id)');
     }
 }
 

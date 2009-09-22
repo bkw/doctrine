@@ -43,7 +43,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(
             $q->getSqlQuery(),
-            'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id IN (?, ?, ?) AND e.name NOT IN (?, ?) AND e.id NOT IN (?, ?, ?, ?) AND (e.type = 0)'
+            'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.id IN (?, ?, ?) AND e.name NOT IN (?, ?) AND e.id NOT IN (?, ?, ?, ?) AND (e.type = 0))'
         );
     }
     
@@ -56,7 +56,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(
             $q->getSqlQuery(),
-            'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id IN (?) AND (e.type = 0)'
+            'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.id IN (?) AND (e.type = 0))'
         );
     }
 
@@ -67,10 +67,10 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u');
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.id = 4 AND (e.type = 0))');
 
         // test consequent calls
-        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE e.id = 4 AND (e.type = 0)');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.id = 4 AND (e.type = 0))');
     }
 
 
@@ -223,7 +223,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(
             $q1->getSqlQuery(),
             'SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id ' .
-            'WHERE e.name = ? OR e.loginname = ? AND (e.type = 0)'
+            'WHERE (e.name = ? OR e.loginname = ? AND (e.type = 0))'
         );
         
         $items1 = $q1->execute(array('zYne', 'jwage'), Doctrine::HYDRATE_ARRAY);
@@ -255,7 +255,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(
             $q1->getSqlQuery(),
             'SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id ' .
-            'WHERE e.name = ? AND e.loginname = ? OR e.id = ? AND (e.type = 0)'
+            'WHERE (e.name = ? AND e.loginname = ? OR e.id = ? AND (e.type = 0))'
         );
         
         $items1 = $q1->execute(array('jon', 'jwage', 4), Doctrine::HYDRATE_ARRAY);
@@ -289,7 +289,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(
             $q1->getSqlQuery(),
             "SELECT e.id AS e__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id " .
-            "WHERE e.name = 'jon' AND e.loginname = 'jwage' OR e.id = 4 OR e.id = 5 AND e.name LIKE 'Arnold%' AND (e.type = 0)"
+            "WHERE (e.name = 'jon' AND e.loginname = 'jwage' OR e.id = 4 OR e.id = 5 AND e.name LIKE 'Arnold%' AND (e.type = 0))"
         );
         
         $items1 = $q1->execute(array(), Doctrine::HYDRATE_ARRAY);
@@ -311,7 +311,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             ->addWhere( 'u.id != 5' )
             ;
             
-        $expected = 'SELECT q.id AS q__id FROM query_test__user q LEFT JOIN query_test__subscription q2 ON q.subscriptionid = q2.id WHERE CURRENT_DATE() BETWEEN q2.begin AND q2.begin AND q.id != 5';
+        $expected = 'SELECT q.id AS q__id FROM query_test__user q LEFT JOIN query_test__subscription q2 ON q.subscriptionid = q2.id WHERE (CURRENT_DATE() BETWEEN q2.begin AND q2.begin AND q.id != 5)';
         
         $this->assertEqual( $q1->getSqlQuery(), $expected );
         
@@ -325,7 +325,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             ->from('User u')
             ->where("u.name = 'John O\'Connor (West)'");
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'John O\'Connor (West)' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'John O\'Connor (West)' AND (e.type = 0))");
     }
 
     public function testAsAndBracketUsageAsValueInQuery()
@@ -335,7 +335,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             ->from('User u')
             ->where("u.name = 'Total Kjeldahl Nitrogen (TKN) as N'");
 
-        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE e.name = 'Total Kjeldahl Nitrogen (TKN) as N' AND (e.type = 0)");
+        $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id FROM entity e WHERE (e.name = 'Total Kjeldahl Nitrogen (TKN) as N' AND (e.type = 0))");
     }
 
     public function testSetQueryClassManagerAttribute()

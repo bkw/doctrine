@@ -75,13 +75,13 @@ class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase
 
         $q->parseDqlQuery('DELETE FROM Entity WHERE id = 3');
 
-        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE id = 3');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE (id = 3)');
         
         $q = new Doctrine_Query();
 
         $q->delete()->from('Entity')->where('id = 3');
         
-        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE id = 3');
+        $this->assertEqual($q->getSqlQuery(), 'DELETE FROM entity WHERE (id = 3)');
     }
 
     public function testDeleteWithLimit() 

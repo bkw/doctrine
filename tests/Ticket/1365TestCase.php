@@ -68,7 +68,7 @@ class Doctrine_Ticket_1365_TestCase extends Doctrine_UnitTestCase
             'SELECT l.id AS l__id, l.name AS l__name, ' .
             'l2.id AS l2__id, l2.fk_person_id AS l2__fk_person_id, l2.fk_skill_id AS l2__fk_skill_id, l2.value0 AS l2__value0, l2.value1 AS l2__value1 ' .
             'FROM la__skill l LEFT JOIN la__person_has_skill l2 ON l.id = l2.fk_skill_id ' .
-            'WHERE l2.value0 > l2.value1'
+            'WHERE (l2.value0 > l2.value1)'
         );
     }
 }
