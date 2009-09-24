@@ -277,7 +277,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             $attribute = $this->getAttributeFromString($attribute);
         }
 
-        if ($attribute >= 100) {
+        if ($attribute >= 100 && $attribute < 1000) {
             if ( ! isset($this->attributes[$attribute])) {
                 return parent::getAttribute($attribute);
             }
@@ -340,7 +340,7 @@ abstract class Doctrine_Connection extends Doctrine_Configurable implements Coun
             $value = parent::getAttributeValueFromString($attributeString, $value);
         }
 
-        if ($attribute >= 100) {
+        if ($attribute >= 100 && $attribute < 1000) {
             parent::setAttribute($attribute, $value);
         } else {
             if ($this->isConnected) {
