@@ -1329,6 +1329,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
 
         $this->_sql = $q;
 
+        $this->clear();
+
         return $q;
     }
 
