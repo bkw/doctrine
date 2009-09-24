@@ -1716,7 +1716,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                         $this->_subqueryAliases[] = $assocTableName;
                     }
 
-                    $assocPath = $prevPath . '.' . $asf->getComponentName();
+                    $assocPath = $prevPath . '.' . $asf->getComponentName() . $componentAlias;
 
                     $this->_queryComponents[$assocPath] = array(
                         'parent' => $prevPath,
