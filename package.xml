@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.phpdoctrine.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-06-15</date>
- <time>08:01:32</time>
+ <date>2009-09-25</date>
+ <time>17:12:07</time>
  <version>
-  <release>1.1.2</release>
-  <api>1.1.2</api>
+  <release>1.1.4</release>
+  <api>1.1.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -938,6 +938,17 @@ requiring needless code duplication.</description>
        <file name="Ticket_1727_Model4.php" role="test" />
       </dir> <!-- /tests/Ticket/1727/models2 -->
      </dir> <!-- /tests/Ticket/1727 -->
+     <dir name="2375">
+      <dir name="models1">
+       <file name="Ticket_2375_Model1.php" role="test" />
+       <file name="Ticket_2375_Model2.php" role="test" />
+      </dir> <!-- /tests/Ticket/2375/models1 -->
+      <dir name="models2">
+       <file name="Ticket_2375_Model3.php" role="test" />
+       <file name="Ticket_2375_Model4.php" role="test" />
+       <file name="Ticket_2375_Model5.php" role="test" />
+      </dir> <!-- /tests/Ticket/2375/models2 -->
+     </dir> <!-- /tests/Ticket/2375 -->
      <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
@@ -1135,15 +1146,30 @@ requiring needless code duplication.</description>
      <file name="1986TestCase.php" role="test" />
      <file name="1991TestCase.php" role="test" />
      <file name="1992TestCase.php" role="test" />
+     <file name="2007TestCase.php" role="test" />
+     <file name="2015TestCase.php" role="test" />
      <file name="2032TestCase.php" role="test" />
      <file name="2105TestCase.php" role="test" />
      <file name="2158TestCase.php" role="test" />
      <file name="2159TestCase.php" role="test" />
+     <file name="2160TestCase.php" role="test" />
      <file name="2184TestCase.php" role="test" />
      <file name="2190TestCase.php" role="test" />
      <file name="2204TestCase.php" role="test" />
      <file name="2229TestCase.php" role="test" />
+     <file name="2251TestCase.php" role="test" />
+     <file name="2292TestCase.php" role="test" />
+     <file name="2295TestCase.php" role="test" />
+     <file name="2334TestCase.php" role="test" />
+     <file name="2355TestCase.php" role="test" />
+     <file name="2375TestCase.php" role="test" />
+     <file name="2377TestCase.php" role="test" />
+     <file name="2398TestCase.php" role="test" />
      <file name="AyoubTestCase.php" role="test" />
+     <file name="DC25TestCase.php" role="test" />
+     <file name="DC28TestCase.php" role="test" />
+     <file name="DC56TestCase.php" role="test" />
+     <file name="DC57TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1189,6 +1215,7 @@ requiring needless code duplication.</description>
     <file name="EventListenerTestCase.php" role="test" />
     <file name="ExportTestCase.php" role="test" />
     <file name="ExpressionTestCase.php" role="test" />
+    <file name="foo.sq3" role="test" />
     <file name="ForeignKeyTestCase.php" role="test" />
     <file name="HookTestCase.php" role="test" />
     <file name="HydrateTestCase.php" role="test" />
@@ -1278,6 +1305,32 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.4</release>
+    <api>1.1.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-09-25</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.3</release>
+    <api>1.1.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-07-27</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.1.2</release>
