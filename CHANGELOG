@@ -1,3 +1,99 @@
+1.0.12
+------
+     * [r6202] [1.0] Fixed #2398. Thanks to Russ Flynn.
+     * [r6229] [1.0] Removed ezku as author on his request.
+     * [r6244] [1.0][1.1][1.2] Fixed E_STRICT notice on PHP
+     * [r6343] [1.0] Mssql now supports renaming tables, columns, altering tables. Exporting Mssql SQL automatically turn all primary keys to "NOT NULL".
+     * [r6351] [1.0] Fixing sandbox index file
+     * [r6352] [1.0, 1.1, 1.2] Fixing issue with non aliased pks which are not id with Doctrine_Search::batchUpdateIndex() (closes #2007)
+     * [r6353] [1.0, 1,1, 1.2] Added new check for oracle returning non hex data (closes #2086)
+     * [r6354] [1.0, 1.1, 1.2] Fixing orWhere() for RawSql (closes #2300)
+     * [r6358] [1.0, 1.1, 1.2][DC-2] Fixes issue with Doctrine_Null and iterating Doctrine records
+     * [r6360] [1.0][DC-4] Fixes issue with identifier quoting dbl quoting in some cases
+     * [r6369] [1.0, 1.1, 1.2] reverted r6354 due to an apparent regression in `Doctrine_Relation_Nest` in combination with column aggregation (refs #2300)
+     * [r6374] [1.0, 1.1, 1.2][DC-27] Fixed issue with identifier quoting and replace()
+     * [r6380] [1.0, 1.1, 1.2] fixed possible invalid parameter number error if making a nested set node root when columns are null
+     * [r6383] [1.0, 1.1, 1.2][DC-38] Fixes issue with generator model options
+     * [r6393] [1.0, 1.1, 1.2] Fixed typo in PostgreSQL Export driver
+     * [r6395] [1.0, 1.1] Fixes for unit test suite in branches
+     * [r6398] [1.0, 1.1, 1.2] Fized issue with Unique validator. Fixes #2356
+     * [r6399] [1.0, 1.1, 1.2] Fized issue with length validator. Fixes #2310
+     * [r6401] [1.0, 1.1] Fixed missing setUp build when using inheritance. Fixes #2453
+     * [r6402] [1.0, 1.1, 1.2][DC-56] Fixes issue with Geographical behavior and customized column names
+     * [r6403] [1.0, 1.1, 1.2][DC-57] Fixes issue with validation and timestamp columns
+     * [r6404] [1.0, 1.1, 1.2][DC-46] Fixed wrong code that was not throwing exception if whereIn was passed without any parameter argument (empty array)
+     * [r6405] [1.0, 1.1, 1.2][DC-58] Fixed not so verbose exception thrown when using findBy. Fixes #2458 which is the original report
+     * [r6406] [1.0, 1.1, 1.2][DC-59] Fixed issue with mysql attributes. Fixes #2449, the original ticket reference
+     * [r6407] [1.0, 1.1, 1.2][DC-25] Fixed issue with multiple join to same alias generated wrong SQL.
+
+1.0.11
+------
+     * [r5885] [1.0] Releasing Doctrine 1.0.10
+     * [r5891] [1.0, 1.1] Fixing test that should not have been passing
+     * [r5892] [1.0] Fixing failing test case
+     * [r5893] [1.0, 1.1] Fixing oracle issues with dropping/creating databases and creating autoincrements
+     * [r5974] [1.0, 1.1] Fixed unpredictable ordering of resultset that is related to SQL drivers and PHP 5.3.
+     * [r5976] [1.0, 1.1, 1.2] fixes #2284 Issue with Doctrine/Import.php that was throughing E_NOTICE for non-defined variable.
+     * [r6011] [1.0, 1.1, 1.2] Adding sorting to loadModels to keep the resulting array consistant in order across operating systems
+     * [r6017] [1.0, 1.1, 1.2] Fixes issue with exported foreign keys as well as #1123 incorrectly testing the generated sql
+     * [r6049] [1.0, 1.1, 1.2] Fixed issue with MSSQL export of empty length 'string' types. Also fixed exporting of INT UNSIGNED to MSSQL (which does not support INT UNSIGNED, instead use BIGINT)
+	  (closes #2251 and #2334)
+     * [r6055] [1.0, 1.1, 1.2] Fix to delicate test that can fail sometimes
+     * [r6056] [1.0, 1.1, 1.2] Fix issue with fixtures order when from filesystem in some sysops
+     * [r6066] [1.0] fixes #2309. Fixed migration builder that was not picking all possible options.
+     * [r6067] [1.0, 1.1, 1.2] Fixes #2292: toArray doesn't works well with owningSide defined
+     * [r6123] [1.0, 1.1, 1.2] Fixes Searchable behavior with batchUpdates() and aliased primary key (closes #2007)
+     * [r6124] [1.0, 1,1, 1.2] Fixes issue with UnitOfWork::buildFlushTree() ordering (closes #2355)
+     * [r6125] [1.0, 1.1, 1.2] Adding missing test case for ticket #2355
+     * [r6130] [1.0, 1.1, 1.2] Fixes issue with fromArray() and synchronizeWithArray() skipping mapped values (closes #2295)
+     * [r6137] [1.0, 1.1, 1.2] Added owningSide => true to auto generated relationships when using Doctrine_Record_Generator (closes #2362)
+     * [r6138] [1.0, 1.1, 1.2] Fixing issue with identifier quoting (closes #2358)
+     * [r6139] [1.0] Fixing delicate test
+     * [r6142] [1.0, 1.1, 1.2] Fixes issue with Sluggable not translating german umlauts correctly (closes #2160)
+     * [r6143] [1.0, 1.1, 1.2] Adding missing test case for #2160
+     * [r6144] [1.0, 1.1, 1.2] Fixing list constraints for oracle
+     * [r6145] [1.0, 1.1] Fixing listTableRelations() for oracle
+     * [r6148] [1.0, 1.1, 1.2] Fixes issue with db cache driver and oracle (closes #1987)
+     * [r6151] [1.0, 1.1, 1.2] Fixing a few issues with oracle reverse engineering (closes #2336)
+     * [r6160] [1.0, 1.1, 1.2] Fixes issue with model loading
+     * [r6161] [1.0, 1.1, 1.2] Fixes issue with mapValue() and fromArray() not working for null values (closes #2384)
+     * [r6162] [1.0, 1.1, 1.2] Fixes issue with Doctrine_View::create() with prepared statements (closes #2382)
+     * [r6163] [1.0, 1.1, 1.2] Fixes issue with toArray() and columns containing a Doctrine_Record and being converted to an array instead of the fk (closes #2377)
+
+1.0.11
+------
+     * [r5885] [1.0] Releasing Doctrine 1.0.10
+     * [r5891] [1.0, 1.1] Fixing test that should not have been passing
+     * [r5892] [1.0] Fixing failing test case
+     * [r5893] [1.0, 1.1] Fixing oracle issues with dropping/creating databases and creating autoincrements
+     * [r5974] [1.0, 1.1] Fixed unpredictable ordering of resultset that is related to SQL drivers and PHP 5.3.
+     * [r5976] [1.0, 1.1, 1.2] fixes #2284 Issue with Doctrine/Import.php that was throughing E_NOTICE for non-defined variable.
+     * [r6011] [1.0, 1.1, 1.2] Adding sorting to loadModels to keep the resulting array consistant in order across operating systems
+     * [r6017] [1.0, 1.1, 1.2] Fixes issue with exported foreign keys as well as #1123 incorrectly testing the generated sql
+     * [r6049] [1.0, 1.1, 1.2] Fixed issue with MSSQL export of empty length 'string' types. Also fixed exporting of INT UNSIGNED to MSSQL (which does not support INT UNSIGNED, instead use BIGINT)
+	  (closes #2251 and #2334)
+     * [r6055] [1.0, 1.1, 1.2] Fix to delicate test that can fail sometimes
+     * [r6056] [1.0, 1.1, 1.2] Fix issue with fixtures order when from filesystem in some sysops
+     * [r6066] [1.0] fixes #2309. Fixed migration builder that was not picking all possible options.
+     * [r6067] [1.0, 1.1, 1.2] Fixes #2292: toArray doesn't works well with owningSide defined
+     * [r6123] [1.0, 1.1, 1.2] Fixes Searchable behavior with batchUpdates() and aliased primary key (closes #2007)
+     * [r6124] [1.0, 1,1, 1.2] Fixes issue with UnitOfWork::buildFlushTree() ordering (closes #2355)
+     * [r6125] [1.0, 1.1, 1.2] Adding missing test case for ticket #2355
+     * [r6130] [1.0, 1.1, 1.2] Fixes issue with fromArray() and synchronizeWithArray() skipping mapped values (closes #2295)
+     * [r6137] [1.0, 1.1, 1.2] Added owningSide => true to auto generated relationships when using Doctrine_Record_Generator (closes #2362)
+     * [r6138] [1.0, 1.1, 1.2] Fixing issue with identifier quoting (closes #2358)
+     * [r6139] [1.0] Fixing delicate test
+     * [r6142] [1.0, 1.1, 1.2] Fixes issue with Sluggable not translating german umlauts correctly (closes #2160)
+     * [r6143] [1.0, 1.1, 1.2] Adding missing test case for #2160
+     * [r6144] [1.0, 1.1, 1.2] Fixing list constraints for oracle
+     * [r6145] [1.0, 1.1] Fixing listTableRelations() for oracle
+     * [r6148] [1.0, 1.1, 1.2] Fixes issue with db cache driver and oracle (closes #1987)
+     * [r6151] [1.0, 1.1, 1.2] Fixing a few issues with oracle reverse engineering (closes #2336)
+     * [r6160] [1.0, 1.1, 1.2] Fixes issue with model loading
+     * [r6161] [1.0, 1.1, 1.2] Fixes issue with mapValue() and fromArray() not working for null values (closes #2384)
+     * [r6162] [1.0, 1.1, 1.2] Fixes issue with Doctrine_View::create() with prepared statements (closes #2382)
+     * [r6163] [1.0, 1.1, 1.2] Fixes issue with toArray() and columns containing a Doctrine_Record and being converted to an array instead of the fk (closes #2377)
+
 1.0.10
 ------
      * [r5709] [1.0] Releasing Doctrine 1.0.9
