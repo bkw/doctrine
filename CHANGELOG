@@ -1,3 +1,24 @@
+1.2.0-ALPHA2
+------------
+     * [r6384] [1.2] Releasing Doctrine 1.2.0-ALPHA1
+     * [r6393] [1.0, 1.1, 1.2] Fixed typo in PostgreSQL Export driver
+     * [r6394] [1.2][DC-1] fixed regression introduced in r6357 when a column aggregation subclass is referenced
+     * [r6396] [1.2][DC-26] Fixed wrong behavior of query conditions (lack of parenthesis). Since this changes the generated SQL a lot, we are still validating if we will backport to 1.0 and 1.1
+	  branches
+     * [r6398] [1.0, 1.1, 1.2] Fized issue with Unique validator. Fixes #2356
+     * [r6399] [1.0, 1.1, 1.2] Fized issue with length validator. Fixes #2310
+     * [r6400] [1.1, 1.2][DC-28] Fixes issue with pending join conditions not being properly cleared
+     * [r6402] [1.0, 1.1, 1.2][DC-56] Fixes issue with Geographical behavior and customized column names
+     * [r6403] [1.0, 1.1, 1.2][DC-57] Fixes issue with validation and timestamp columns
+     * [r6404] [1.0, 1.1, 1.2][DC-46] Fixed wrong code that was not throwing exception if whereIn was passed without any parameter argument (empty array)
+     * [r6405] [1.0, 1.1, 1.2][DC-58] Fixed not so verbose exception thrown when using findBy. Fixes #2458 which is the original report
+     * [r6406] [1.0, 1.1, 1.2][DC-59] Fixed issue with mysql attributes. Fixes #2449, the original ticket reference
+     * [r6407] [1.0, 1.1, 1.2][DC-25] Fixed issue with multiple join to same alias generated wrong SQL.
+     * [r6409] [1.2] optimized collection of class names for flush tree in data import
+     * [r6410] [1.2] Removing tabs from generated migration classes
+     * [r6438] [1.2][DC-66] Fixing validation for expressions
+     * [r6439] [1.0, 1.1, 1.2][DC-80] Fixing pgsql importing issue with varchars that have a default value
+
 1.2.0-ALPHA1
 ------------
      * [r5285] [1.2] Updating UPGRADE file to document the changes to SoftDelete.
