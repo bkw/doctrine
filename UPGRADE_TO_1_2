@@ -597,3 +597,33 @@ You can also simply reset an instance back to the state when it was first create
 
     [php]
     $manager->reset();
+
+## Registering Custom CLI Tasks
+
+Thanks to Dan Bettles, he contributed some refactorings to the Doctrine 1 CLI
+to allow us to register custom tasks with the `registerTask()` method.
+
+    [php]
+    $cli = new Doctrine_Cli($config);
+    $cli->registerTask('/path/to/MyCustomTask', 'my-task');
+    $cli->run($_SERVER['argv']);
+
+Now you can execute:
+
+    $ php doctrine my-task
+
+Be sure to define the class like this.
+
+    [php]
+    class MyCustomTask extends Doctrine_Task
+    {
+        public $description       =   'My custom task',
+               $requiredArguments =   array('arg1' => 'Required first argument.'),
+               $optionalArguments =   array('arg2' => 'Optional second argument.');
+
+        public function execute()
+        {
+            $arg1 = $this->getArgument('arg1');
+            $arg2 = $this->getArgument('arg2');
+        }
+    }

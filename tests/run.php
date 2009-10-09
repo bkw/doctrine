@@ -129,6 +129,7 @@ $core->addTestCase(new Doctrine_Hydrate_Driver_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
 $core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());
+$core->addTestCase(new Doctrine_Cli_TestCase());
 $core->addTestCase(new Doctrine_Extension_TestCase());
 $test->addTestCase($core);
 

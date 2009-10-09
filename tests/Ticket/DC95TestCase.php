@@ -32,16 +32,6 @@
  */
 class Doctrine_Ticket_DC95_TestCase extends Doctrine_UnitTestCase 
 {
-    public function testLoadModelsDoesNotWorkWithPear()
-    {
-        try {
-            Doctrine::loadModels(dirname(__FILE__), Doctrine::MODEL_LOADING_PEAR);
-            $this->fail();
-        } catch (Exception $e) {
-            $this->pass();
-        }
-    }
-
     public function testClassDoesNotExistBeforeImport()
     {
         $this->assertFalse(class_exists('Base_DC95_Article'));
