@@ -564,7 +564,8 @@ It will autoload the file from `lib/MyProject/Models/Article.php`
 
 Often when you generate models from a database, you want to customize and improve
 your models by overriding the `setTableDefinition()` and tweaking things. To make
-this easier we added a new method to customize column validators.
+this easier we added a new method to customize column options but not completely
+override it.
 
     [php]
     class User extends BaseUser
@@ -573,6 +574,6 @@ this easier we added a new method to customize column validators.
         {
             parent::setTableDefinition();
 
-            $this->setColumnValidators('username', array('unique' => true));
+            $this->setColumnOptions('username', array('unique' => true));
         }
     }

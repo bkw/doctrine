@@ -41,7 +41,7 @@ class Doctrine_Ticket_DC63_TestCase extends Doctrine_UnitTestCase
     public function testTest()
     {
         $sql = Doctrine::generateSqlFromArray(array('Ticket_DC63_User'));
-        $this->assertEqual($sql[0], 'CREATE TABLE ticket__d_c63__user (id INTEGER PRIMARY KEY AUTOINCREMENT, email_address VARCHAR(255) UNIQUE, username VARCHAR(255) UNIQUE, password VARCHAR(255))');
+        $this->assertEqual($sql[0], 'CREATE TABLE ticket__d_c63__user (id INTEGER PRIMARY KEY AUTOINCREMENT, email_address VARCHAR(255) UNIQUE, username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255))');
     }
 }
 
@@ -53,6 +53,7 @@ class Ticket_DC63_User extends Doctrine_Record
         $this->hasColumn('username', 'string', 255);
         $this->hasColumn('password', 'string', 255);
 
-        $this->setColumnValidators(array('username', 'email_address'), array('unique' => true));
+        $this->setColumnOptions(array('username', 'email_address'), array('unique' => true));
+        $this->setColumnOption('username', 'notnull', true);
     }
 }
