@@ -559,3 +559,20 @@ Now if we use this code.
     $article = MyProject_Models_Article();
 
 It will autoload the file from `lib/MyProject/Models/Article.php`
+
+## Customizing Column Validators
+
+Often when you generate models from a database, you want to customize and improve
+your models by overriding the `setTableDefinition()` and tweaking things. To make
+this easier we added a new method to customize column validators.
+
+    [php]
+    class User extends BaseUser
+    {
+        public function setTableDefinition()
+        {
+            parent::setTableDefinition();
+
+            $this->setColumnValidators('username', array('unique' => true));
+        }
+    }
