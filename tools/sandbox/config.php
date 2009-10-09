@@ -54,4 +54,4 @@ spl_autoload_register(array('Doctrine', 'extensionsAutoload'));
 
 $manager = Doctrine_Manager::getInstance();
 $manager->openConnection(DSN, 'doctrine');
-$manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_PEAR);
+$manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
