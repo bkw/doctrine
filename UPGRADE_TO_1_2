@@ -483,3 +483,79 @@ Now as of 1.2 the structure will only look like this.
         [servant_id] => 1
         [joe] => 6
     )
+
+## PEAR Style Model Loading and Generation
+
+Doctrine 1.2 now has the ability to generate PEAR style naming conventions for your
+models and can autoload them.
+
+First we have a new method for setting the path to our models for the autoloader.
+
+    [php]
+    Doctrine::setModelsDirectory('/path/to/my/models');
+
+Make sure you have registered the `modelsAutoload()` method:
+
+    [php]
+    spl_autoload_register(array('Doctrine', 'modelsAutoload'));
+
+Now when you ask for a class named `My_Test_Model` it will try and autoload it 
+from `/path/to/my/models/My/Test/Model.php`.
+
+So now you can autoload PEAR style models, but what about generating them? For this
+we had to add a new option to the model builder called `pearStyle`. When this option
+is enabled it will string replace any `_` in the path to the file and replace it with the directory
+separator `/` right before creating the directories and writing the file.
+
+Here I'll show an example how you can use the options to convert this schema and
+what it would result in.
+
+    [yml]
+    Article:
+      columns:
+        title: string(255)
+        content: clob
+
+    Article_Category:
+      columns:
+        name: string(255)
+
+Now if we configure a schema importer like the following.
+
+    [php]
+    $import = new Doctrine_Import_Schema();
+    $import->setOptions(array(
+        'pearStyle' => true,
+        'baseClassesDirectory' => null,
+        'baseClassPrefix' => 'Base_',
+        'classPrefix' => 'MyProject_Models_',
+        'classPrefixFiles' => true
+    ));
+    $import->importSchema('schema.yml', 'yml', 'lib');
+
+This will result in some files and directories like the following.
+
+    lib/
+      MyProject/
+        Models/
+          Article/
+            Category.php
+          Article.php
+          Base/
+            Article/
+              Category.php
+            Article.php
+
+So now you can easily use our autoloader or your own to load our models with the
+PEAR style naming convention.
+
+    [php]
+    spl_autoload_register(array('Doctrine', 'autoload'));
+    Doctrine::setModelsDirectory('lib');
+
+Now if we use this code.
+
+    [php]
+    $article = MyProject_Models_Article();
+
+It will autoload the file from `lib/MyProject/Models/Article.php`
