@@ -577,3 +577,23 @@ override it.
             $this->setColumnOptions('username', array('unique' => true));
         }
     }
+
+## Resetting Manager Instances
+
+Sometimes when performing unit tests using Doctrine, you will want to reset
+the static manager instance held in `Doctrine_Manager`.
+
+We've added a static method `resetInstance()` and a public method `reset()`
+to help you with this.
+
+    [php]
+    $manager1 = Doctrine_Manager::getInstance();
+    Doctrine_Manager::resetInstance();
+    $manager2 = Doctrine_Manager::getInstance();
+    
+    // $manager1 !== $manager2
+
+You can also simply reset an instance back to the state when it was first created.
+
+    [php]
+    $manager->reset();
