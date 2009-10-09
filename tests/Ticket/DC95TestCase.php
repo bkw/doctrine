@@ -62,12 +62,13 @@ class Doctrine_Ticket_DC95_TestCase extends Doctrine_UnitTestCase
             'classPrefix' => 'DC95_',
             'classPrefixFiles' => true
         ));
-        $import->importSchema(dirname(__FILE__) . '/DC95/schema.yml', 'yml', dirname(__FILE__) . '/DC95/models');
+        $modelsPath = dirname(__FILE__) . '/DC95/models';
+        $import->importSchema(dirname(__FILE__) . '/DC95/schema.yml', 'yml', $modelsPath);
 
-        $this->assertTrue(class_exists('DC95_Base_Article'));
-        $this->assertTrue(class_exists('DC95_Base_Article_Category'));
-        $this->assertTrue(class_exists('DC95_Article'));
-        $this->assertTrue(class_exists('DC95_Article_Category'));
+        $this->assertTrue(file_exists($modelsPath . '/DC95/Base/Article.php'));
+        $this->assertTrue(file_exists($modelsPath . '/DC95/Base/Article/Category.php'));
+        $this->assertTrue(file_exists($modelsPath . '/DC95/Article.php'));
+        $this->assertTrue(file_exists($modelsPath . '/DC95/Article/Category.php'));
 
         Doctrine::setModelsDirectory(null);
         Doctrine_Lib::removeDirectories(dirname(__FILE__) . '/DC95/models');

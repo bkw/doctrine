@@ -36,7 +36,7 @@ class Doctrine_Connection_Custom_TestCase extends Doctrine_UnitTestCase
     {
         $manager = Doctrine_Manager::getInstance();
         $manager->registerConnectionDriver('test', 'Doctrine_Connection_Test');
-        $this->_conn = $manager->openConnection('test://username:password@localhost/dbname');
+        $this->_conn = $manager->openConnection('test://username:password@localhost/dbname', false);
         $this->_dbh = $this->_conn->getDbh();
     }
 
