@@ -263,7 +263,9 @@ class Doctrine_Export_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $this->export->dropDatabase('db');
 
+        $this->assertEqual($this->adapter->pop(), 'SET FOREIGN_KEY_CHECKS = 1');
         $this->assertEqual($this->adapter->pop(), 'DROP DATABASE db');
+        $this->assertEqual($this->adapter->pop(), 'SET FOREIGN_KEY_CHECKS = 0');
     }
 
     public function testDropIndexExecutesSql() 
