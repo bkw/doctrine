@@ -671,3 +671,31 @@ The hierarchy a collection can be converted to an array as well.
 
 For integration purposes we have deprecated the `Doctrine` class and moved it to
 `Doctrine_Core`. The old class still exists and extends `Doctrine_Core` for BC.
+
+## Specify Relationship Foreign Key Name
+
+Up until now, Doctrine would always try and generate a foreign key name for you
+for your relationships. Sometimes you may want to customize this name or Doctrine
+generates a name that is too long for you. You can customize the foreign key name
+now with the `foreignKeyName` option.
+
+    [php]
+    public function setUp()
+    {
+        $this->hasOne('User', array(
+            'local' => 'user_id',
+            'foreign' => 'id',
+            'foreignKeyName' => 'user_id_fk'
+        ));
+    }
+
+Or in YAML you can do the following.
+
+    [yml]
+    Profile:
+      columns:
+      # ...
+        user_id: integer
+      relations:
+        User:
+          foreignKeyName: user_id_fk
