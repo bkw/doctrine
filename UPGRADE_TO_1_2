@@ -627,3 +627,42 @@ Be sure to define the class like this.
             $arg2 = $this->getArgument('arg2');
         }
     }
+
+## Doctrine Nested Set Hierarchy Structure
+
+When working with the `NestedSet` behavior in Doctrine 1.2 it has some very nice
+features that make working with hierarchical data very easy. One of the things
+it has always missed is a way to hydrate that data in to a hierarchical structure.
+With 1.2 this is now possible with some new hydration types.
+
+    [php]
+    $categories = Doctrine::getTable('Category')
+        ->createQuery('c')
+        ->execute(array(), Doctrine::HYDRATE_RECORD_HIERARCHY);
+
+Now you can access the children of a record by accessing the mapped value property
+named `__children`. It is named with the underscores prefixed to avoid any conflicts.
+
+    [php]
+    foreach ($categories->getFirst()->get('__children') as $child) {
+        // ...
+    }
+
+You can also execute this structure using array hydration and get back the same
+structure except as an array.
+
+    [php]
+    $results = Doctrine::getTable('NestedSetTest_SingleRootNode')
+        ->createQuery('n')
+        ->execute(array(), Doctrine::HYDRATE_ARRAY_HIERARCHY);
+
+If you have an existing `Doctrine_Colletion` instance you can convert that to a
+hierarchy as well.
+
+    [php]
+    $hierarchy = $coll->toHierarchy();
+
+The hierarchy a collection can be converted to an array as well.
+
+    [php]
+    print_r($hierarchy->toArray());

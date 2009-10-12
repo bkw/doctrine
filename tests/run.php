@@ -292,11 +292,15 @@ $unsorted->addTestCase(new Doctrine_ColumnAlias_TestCase());
 $unsorted->addTestCase(new Doctrine_RawSql_TestCase());
 $unsorted->addTestCase(new Doctrine_NewCore_TestCase());
 $unsorted->addTestCase(new Doctrine_Template_TestCase());
-$unsorted->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
-$unsorted->addTestCase(new Doctrine_NestedSet_MultiRoot_TestCase());
-$unsorted->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase());
 $unsorted->addTestCase(new Doctrine_PessimisticLocking_TestCase());
 $test->addTestCase($unsorted);
+
+$nestedSet = new GroupTest('Nested set tests', 'nestedset');
+$nestedSet->addTestCase(new Doctrine_NestedSet_SingleRoot_TestCase());
+$nestedSet->addTestCase(new Doctrine_NestedSet_MultiRoot_TestCase());
+$nestedSet->addTestCase(new Doctrine_NestedSet_TimestampableMultiRoot_TestCase());
+$nestedSet->addTestCase(new Doctrine_NestedSet_Hydration_TestCase());
+$test->addTestCase($nestedSet);
 
 /*
 $unsorted = new GroupTest('Performance', 'performance');
