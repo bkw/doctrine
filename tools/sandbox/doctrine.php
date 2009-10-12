@@ -8,7 +8,13 @@ $config = array(
     'models_path'         =>  MODELS_PATH,
     'migrations_path'     =>  MIGRATIONS_PATH,
     'sql_path'            =>  SQL_PATH,
-    'yaml_schema_path'    =>  YAML_SCHEMA_PATH
+    'yaml_schema_path'    =>  YAML_SCHEMA_PATH,
+    'generate_models_options' => array(
+        'pearStyle' => true,
+        'generateTableClasses' => true,
+        'baseClassPrefix' => 'Base',
+        'baseClassesDirectory' => null,
+    )
 );
 
 $cli = new Doctrine_Cli($config);
