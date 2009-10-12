@@ -62,7 +62,7 @@ class DoctrineTest_Coverage
      */
     public function getCoverageDir()
     {
-        $dir = Doctrine::getPath() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "tests" . DIRECTORY_SEPARATOR . "coverage" . DIRECTORY_SEPARATOR;
+        $dir = Doctrine_Core::getPath() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "tests" . DIRECTORY_SEPARATOR . "coverage" . DIRECTORY_SEPARATOR;
         return $dir;
     }
 
@@ -142,7 +142,7 @@ class DoctrineTest_Coverage
         $this->result["revision"] = $svn_info[1];
 
         //loop through all files and generate coverage files for them
-        $it = new RecursiveDirectoryIterator(Doctrine::getPath());
+        $it = new RecursiveDirectoryIterator(Doctrine_Core::getPath());
         $notCoveredArray = array();
         foreach (new RecursiveIteratorIterator($it) as $file) {
 
@@ -197,7 +197,7 @@ class DoctrineTest_Coverage
      */
     public function getClassNameFromFileName($fileName)
     {
-        $path = Doctrine::getPath() . DIRECTORY_SEPARATOR;
+        $path = Doctrine_Core::getPath() . DIRECTORY_SEPARATOR;
         $class = str_replace($path, "", $fileName);
         $class = str_replace(DIRECTORY_SEPARATOR, "_", $class);
         $class = substr($class, 0,-4);

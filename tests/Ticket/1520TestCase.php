@@ -50,7 +50,7 @@ class Doctrine_Ticket_1520_TestCase extends Doctrine_UnitTestCase
         $id = $user->id;
         $user->free();
 
-        $user = Doctrine::getTable('Ticket_1520_Product')->find($id);
+        $user = Doctrine_Core::getTable('Ticket_1520_Product')->find($id);
         $user->price = $price;
         $this->assertEqual($user->getModified(), array());
     }

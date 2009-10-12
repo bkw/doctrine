@@ -40,7 +40,7 @@ class Doctrine_Ticket_1071_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $versionTable = Doctrine::getTable('Ticket_1071_TableNameVersion');
+        $versionTable = Doctrine_Core::getTable('Ticket_1071_TableNameVersion');
         $this->assertEqual($versionTable->getTableName(), 'my_custom_table_name');
     }
 }

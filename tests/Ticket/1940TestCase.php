@@ -40,7 +40,7 @@ class Doctrine_Ticket_1940_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
 
         $user = new Ticket_1940_User();
         $user->fromArray(array('username' => 'jwage', 'password' => 'changeme', 'email_address' => 'jonwage@gmail.com'));
@@ -50,7 +50,7 @@ class Doctrine_Ticket_1940_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($userArray['password'], md5('changeme'));
         $this->assertEqual($userArray['email_address'], 'jonwage@gmail.com-modified-modified');
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE, false);
     }
 }
 

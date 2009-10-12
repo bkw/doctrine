@@ -95,10 +95,10 @@ class Doctrine_Ticket_NewTicket_TestCase extends Doctrine_UnitTestCase
         $q2->leftJoin('a.Definition ad');
 
         // This query works perfect
-        $r1 = $q1->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $r1 = $q1->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         //var_dump($r1);
         // This query throws an exception!!!
-        $r2 = $q2->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $r2 = $q2->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         //$r2 = $q2->execute();
         //var_dump($r2);
     }

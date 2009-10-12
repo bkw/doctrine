@@ -53,7 +53,7 @@ class Doctrine_Ticket_1113_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
 
-        $reopend = Doctrine::getTable('VIH_Model_Course_Registration')->findOneById($registrar->id);
+        $reopend = Doctrine_Core::getTable('VIH_Model_Course_Registration')->findOneById($registrar->id);
 
         try {
             $reopend->Subjects[] = $subject1;

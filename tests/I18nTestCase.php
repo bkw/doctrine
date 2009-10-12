@@ -45,11 +45,11 @@ class Doctrine_I18n_TestCase extends Doctrine_UnitTestCase
 
     public function testTranslationTableGetsExported()
     {
-    	$this->conn->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
+    	$this->conn->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL);
     	
-    	$this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_TABLES);
-        $this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_CONSTRAINTS);
-        $this->assertTrue(Doctrine::EXPORT_ALL & Doctrine::EXPORT_PLUGINS);
+    	$this->assertTrue(Doctrine_Core::EXPORT_ALL & Doctrine_Core::EXPORT_TABLES);
+        $this->assertTrue(Doctrine_Core::EXPORT_ALL & Doctrine_Core::EXPORT_CONSTRAINTS);
+        $this->assertTrue(Doctrine_Core::EXPORT_ALL & Doctrine_Core::EXPORT_PLUGINS);
 
         $sql = $this->conn->export->exportClassesSql(array('I18nTest'));
 
@@ -115,7 +115,7 @@ class Doctrine_I18n_TestCase extends Doctrine_UnitTestCase
 
     public function testDataFetching()
     {
-        $i = Doctrine_Query::create()->from('I18nTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+        $i = Doctrine_Query::create()->from('I18nTest i')->innerJoin('i.Translation t INDEXBY t.lang')->orderby('t.lang')->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual($i['Translation']['EN']['name'], 'updated name');
         $this->assertEqual($i['Translation']['EN']['title'], 'updated title');

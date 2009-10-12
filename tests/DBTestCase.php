@@ -51,7 +51,7 @@ class Doctrine_Db_TestCase extends Doctrine_UnitTestCase
         $this->conn->exec("INSERT INTO entity (id, name) VALUES (2, 'John')");
         
         
-        $this->assertEqual($this->conn->getAttribute(Doctrine::ATTR_DRIVER_NAME), 'sqlite');
+        $this->assertEqual($this->conn->getAttribute(Doctrine_Core::ATTR_DRIVER_NAME), 'sqlite');
     }
 
     public function testAddValidEventListener() 
@@ -183,7 +183,7 @@ class Doctrine_Db_TestCase extends Doctrine_UnitTestCase
 
     public function testListeningErrorHandlingMethodsOnExec()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_THROW_EXCEPTIONS, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_THROW_EXCEPTIONS, false);
         $listener = $this->conn->getListener()->get(0);
         $this->conn->exec('DELETE FROM unknown');
 
@@ -195,7 +195,7 @@ class Doctrine_Db_TestCase extends Doctrine_UnitTestCase
 
     public function testListeningErrorHandlingMethodsOnQuery()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_THROW_EXCEPTIONS, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_THROW_EXCEPTIONS, false);
         $listener = $this->conn->getListener()->get(0);
         $this->conn->execute('DELETE FROM unknown');
 
@@ -207,7 +207,7 @@ class Doctrine_Db_TestCase extends Doctrine_UnitTestCase
 
     public function testListeningErrorHandlingMethodsOnPrepare()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_THROW_EXCEPTIONS, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_THROW_EXCEPTIONS, false);
         $listener = $this->conn->getListener()->get(0);
 
         $this->conn->prepare('INSERT INTO unknown (id) VALUES (?)');
@@ -220,7 +220,7 @@ class Doctrine_Db_TestCase extends Doctrine_UnitTestCase
 
     public function testListeningErrorHandlingMethodsOnStatementExecute()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_THROW_EXCEPTIONS, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_THROW_EXCEPTIONS, false);
         $listener = $this->conn->getListener()->get(0);
 
         $stmt = $this->conn->prepare('INSERT INTO entity (id) VALUES (?)');

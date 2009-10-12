@@ -40,7 +40,7 @@ class Doctrine_Ticket_1562_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $table = Doctrine::getTable('Ticket_1562_User');
+        $table = Doctrine_Core::getTable('Ticket_1562_User');
         $this->assertEqual(get_class($table), 'Ticket_1562_UserTable');
         $user = new Ticket_1562_User();
         $this->assertEqual($user->getTestAccessor(), 'Ticket_1562_Template::getTestAccessor');

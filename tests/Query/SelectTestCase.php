@@ -144,7 +144,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
 
         $q->parseDqlQuery('SELECT u.id, u.name, COUNT(p.id) FROM User u LEFT JOIN u.Phonenumber p GROUP BY u.id');
 
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual($users[0]['COUNT'], 1);
 
@@ -260,7 +260,7 @@ class Doctrine_Query_Select_TestCase extends Doctrine_UnitTestCase
             'SELECT e.id AS e__id, p.id AS p__id FROM entity e LEFT JOIN phonenumber p ON e.id = p.entity_id WHERE (e.id IN (?, ?, ?) AND (e.type = 0))'
         );
 
-        $users = $q->execute($params, Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute($params, Doctrine_Core::HYDRATE_ARRAY);
         
         $this->assertEqual(count($users), 3);
     }

@@ -39,7 +39,7 @@ class Doctrine_Ticket_626C_TestCase extends Doctrine_UnitTestCase
       try {
         $students = Doctrine_Query::create()
           ->from('T626C_Student1 s INDEXBY s.id')
-          ->execute(array(), Doctrine::HYDRATE_ARRAY);
+          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         $this->pass();
       } catch (Exception $e) {
         $this->fail($e->__toString());
@@ -53,7 +53,7 @@ class Doctrine_Ticket_626C_TestCase extends Doctrine_UnitTestCase
       try {
         $students = Doctrine_Query::create()
           ->from('T626C_Student2 s INDEXBY s.id')
-          ->execute(array(), Doctrine::HYDRATE_ARRAY);
+          ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         $this->pass();
       } catch (Exception $e) {
         $this->fail($e->__toString());

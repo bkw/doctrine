@@ -99,7 +99,7 @@ class Doctrine_Export_Sqlite_TestCase extends Doctrine_UnitTestCase
     }
     public function testIdentifierQuoting()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
 
         $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true, 'unique' => true),
                          'name' => array('type' => 'string', 'length' => 4),
@@ -119,11 +119,11 @@ class Doctrine_Export_Sqlite_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($this->adapter->pop(), 'CREATE TABLE "sometable" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" VARCHAR(4))');
 
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
     public function testQuoteMultiplePks() 
     {
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
 
         $name = 'mytable';
         $fields  = array('name' => array('type' => 'char', 'length' => 10),
@@ -134,7 +134,7 @@ class Doctrine_Export_Sqlite_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($this->adapter->pop(), 'CREATE TABLE "mytable" ("name" CHAR(10), "type" INTEGER, PRIMARY KEY("name", "type"))');
 
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
     public function testUnknownIndexSortingAttributeThrowsException()
     {

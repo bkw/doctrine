@@ -77,7 +77,7 @@ Episode:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 

@@ -51,8 +51,8 @@ class Doctrine_Ticket_1821_TestCase extends Doctrine_UnitTestCase
     public function execTest($klass)
     {
         //stores old validation setting
-        $validation = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_VALIDATE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $validation = Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_VALIDATE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         
         $record = new $klass();
 		$record->name = 'test';
@@ -67,7 +67,7 @@ class Doctrine_Ticket_1821_TestCase extends Doctrine_UnitTestCase
 		}
 		$this->pass();
 		
-		Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, $validation);
+		Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, $validation);
     }
     
     public function testShouldAllowNotUsingAliases()

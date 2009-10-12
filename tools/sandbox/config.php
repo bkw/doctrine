@@ -46,7 +46,7 @@ define('DSN', 'sqlite:///' . DB_PATH);
 
 require_once(DOCTRINE_PATH . DIRECTORY_SEPARATOR . 'Doctrine.php');
 
-Doctrine::setExtensionsPath(dirname(__FILE__).'/extensions');
+Doctrine_Core::setExtensionsPath(dirname(__FILE__).'/extensions');
 
 spl_autoload_register(array('Doctrine', 'autoload'));
 spl_autoload_register(array('Doctrine', 'modelsAutoload'));
@@ -54,4 +54,4 @@ spl_autoload_register(array('Doctrine', 'extensionsAutoload'));
 
 $manager = Doctrine_Manager::getInstance();
 $manager->openConnection(DSN, 'doctrine');
-$manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
+$manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);

@@ -54,7 +54,7 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
             ->from("User u")
             ->innerJoin("u.Phonenumber p");
         
-        $res = $q->execute(array(), Doctrine::HYDRATE_SCALAR);
+        $res = $q->execute(array(), Doctrine_Core::HYDRATE_SCALAR);
         
         $this->assertTrue(is_array($res));
         $this->assertEqual(2, count($res));
@@ -91,7 +91,7 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Query::create();
         $q->select("u.*")->from("User u");
         
-        $res = $q->execute(array(), Doctrine::HYDRATE_SCALAR);
+        $res = $q->execute(array(), Doctrine_Core::HYDRATE_SCALAR);
         
         $this->assertTrue(is_array($res));
         $this->assertEqual(1, count($res));
@@ -112,7 +112,7 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine_Query::create();
         $q->select("u.name")->from("User u");
-        $res = $q->execute(array(), Doctrine::HYDRATE_SINGLE_SCALAR);
+        $res = $q->execute(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
         $this->assertEqual('romanb', $res);
         $q->free();
     }
@@ -121,7 +121,7 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine_Query::create();
         $q->select("COUNT(u.id) num_ids")->from("User u");
-        $res = $q->execute(array(), Doctrine::HYDRATE_SINGLE_SCALAR);
+        $res = $q->execute(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
         $this->assertEqual(1, $res);
         $q->free();
     }
@@ -133,7 +133,7 @@ class Doctrine_Hydrate_Scalar_TestCase extends Doctrine_UnitTestCase
             ->from("User u")
             ->innerJoin("u.Phonenumber p");
         
-        $res = $q->execute(array(), Doctrine::HYDRATE_SCALAR);
+        $res = $q->execute(array(), Doctrine_Core::HYDRATE_SCALAR);
         
         $this->assertTrue(is_array($res));
         $this->assertEqual(2, count($res));

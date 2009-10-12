@@ -55,7 +55,7 @@ END;
         
         require_once($path . '/generated/BaseTicket_1527_User.php');
         require_once($path . '/Ticket_1527_User.php');
-        $username = Doctrine::getTable('Ticket_1527_User')->getDefinitionOf('username');
+        $username = Doctrine_Core::getTable('Ticket_1527_User')->getDefinitionOf('username');
         $this->assertEqual($username['extra']['test'], '123');
     }
 }

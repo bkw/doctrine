@@ -45,7 +45,7 @@ class Doctrine_Ticket_1028_TestCase extends Doctrine_UnitTestCase
 
     public function testRelationIsNotInOriginalTableAnymore()
     {
-        $i18n = Doctrine::getTable('I18nRelationTest');
+        $i18n = Doctrine_Core::getTable('I18nRelationTest');
         $relation = NULL;
         try {
             $relation = $i18n->getRelation('I18nAuthorTest');
@@ -58,7 +58,7 @@ class Doctrine_Ticket_1028_TestCase extends Doctrine_UnitTestCase
 
     public function testRelationsAreMovedToTranslationTable()
     {
-        $translation = Doctrine::getTable('I18nRelationTestTranslation');
+        $translation = Doctrine_Core::getTable('I18nRelationTestTranslation');
         $relation = NULL;
         try {
             $relation = $translation->getRelation('I18nAuthorTest');

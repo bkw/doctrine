@@ -40,7 +40,7 @@ class Doctrine_Ticket_DC14_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $q = Doctrine::getTable('Ticket_DC14_Search')
+        $q = Doctrine_Core::getTable('Ticket_DC14_Search')
             ->createQuery('s')
             ->where("? NOT BETWEEN s.date_from AND s.date_to", '1985-09-01 00:00:00');
 

@@ -40,7 +40,7 @@ class Doctrine_Ticket_DC63_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $sql = Doctrine::generateSqlFromArray(array('Ticket_DC63_User'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('Ticket_DC63_User'));
         $this->assertEqual($sql[0], 'CREATE TABLE ticket__d_c63__user (id INTEGER PRIMARY KEY AUTOINCREMENT, email_address VARCHAR(255) UNIQUE, username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255))');
     }
 }

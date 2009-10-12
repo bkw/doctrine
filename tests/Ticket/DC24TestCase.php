@@ -72,7 +72,7 @@ class Doctrine_Ticket_DC24_TestCase extends Doctrine_UnitTestCase
 				->select('m.*')
 				->from('Ticket_DC24_Master m')
 				->where('m.id = 1')
-				->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+				->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
             $this->assertEqual($master2['servant_id'], 1);
 		}
 		catch(Exception $e)

@@ -40,7 +40,7 @@ class Doctrine_Ticket_2204_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         $model = new Ticket_2204_Model();
         $model->test_decimal = '-123.456789';
         try {
@@ -49,7 +49,7 @@ class Doctrine_Ticket_2204_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

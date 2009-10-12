@@ -34,7 +34,7 @@ class Doctrine_Ticket_2159_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $q = Doctrine::getTable('User')
+        $q = Doctrine_Core::getTable('User')
           ->createQuery('u');
 
         $sql = 'SELECT COUNT(*) AS num_results FROM entity e WHERE e.type = 0';

@@ -43,7 +43,7 @@ class Doctrine_Ticket_1818_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         try {
             $foo = new Ticket_1818_Foo();
             $foo->Bar = new Ticket_1818_BarA();
@@ -53,7 +53,7 @@ class Doctrine_Ticket_1818_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail();
         }
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

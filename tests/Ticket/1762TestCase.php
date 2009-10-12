@@ -34,7 +34,7 @@ class Doctrine_Ticket_1762_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
         $adapter = new Doctrine_Adapter_Mock('pgsql');
         $conn = Doctrine_Manager::connection($adapter);
         $profiler = new Doctrine_Connection_Profiler();
@@ -50,7 +50,7 @@ class Doctrine_Ticket_1762_TestCase extends Doctrine_UnitTestCase
         $queries = $adapter->getAll();
         $this->assertEqual($queries[0], 'SELECT COUNT(*) AS "num_results" FROM (SELECT "u"."id" FROM "user2" "u" LEFT JOIN "user_role2" "u2" ON ("u"."id" = "u2"."user_id") LEFT JOIN "role2" "r" ON "r"."id" = "u2"."role_id" GROUP BY "u"."id") "dctrn_count_query"');
         $this->assertEqual($queries[1], 'SELECT "u"."id" AS "u__id", "u"."username" AS "u__username", "r"."id" AS "r__id", "r"."name" AS "r__name" FROM "user2" "u" LEFT JOIN "user_role2" "u2" ON ("u"."id" = "u2"."user_id") LEFT JOIN "role2" "r" ON "r"."id" = "u2"."role_id" WHERE "u"."id" IN (SELECT "doctrine_subquery_alias"."id" FROM (SELECT DISTINCT "u3"."id" FROM "user2" "u3" LEFT JOIN "user_role2" "u4" ON ("u3"."id" = "u4"."user_id") LEFT JOIN "role2" "r2" ON "r2"."id" = "u4"."role_id" ORDER BY "u3"."id" LIMIT 20) AS "doctrine_subquery_alias") ORDER BY "u"."id"');
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
 }
 

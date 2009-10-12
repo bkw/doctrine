@@ -126,7 +126,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
     	$q = new Doctrine_Query();
         $q->from('User u')->leftJoin('u.Phonenumber p');
         $q->getSqlQuery();
-        //Doctrine::dump($q->getCachedForm(array('foo' => 'bar')));
+        //Doctrine_Core::dump($q->getCachedForm(array('foo' => 'bar')));
         $this->assertEqual($q->parseClause("CONCAT('u.name', u.name)"), "CONCAT('u.name', e.name)");
     }
     
@@ -185,7 +185,7 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
                     ->leftJoin('u.Phonenumber p')
                     ->where('u.id = ?', $id);
 
-        $users = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertTrue(array_key_exists('summ', $users[0]));
     }
@@ -226,8 +226,8 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             'WHERE (e.name = ? OR e.loginname = ? AND (e.type = 0))'
         );
         
-        $items1 = $q1->execute(array('zYne', 'jwage'), Doctrine::HYDRATE_ARRAY);
-        $items2 = $q2->execute(array('zYne', 'jwage'), Doctrine::HYDRATE_ARRAY);
+        $items1 = $q1->execute(array('zYne', 'jwage'), Doctrine_Core::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array('zYne', 'jwage'), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($items1), count($items2));
         
@@ -258,8 +258,8 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             'WHERE (e.name = ? AND e.loginname = ? OR e.id = ? AND (e.type = 0))'
         );
         
-        $items1 = $q1->execute(array('jon', 'jwage', 4), Doctrine::HYDRATE_ARRAY);
-        $items2 = $q2->execute(array('jon', 'jwage', 4), Doctrine::HYDRATE_ARRAY);
+        $items1 = $q1->execute(array('jon', 'jwage', 4), Doctrine_Core::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array('jon', 'jwage', 4), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($items1), count($items2));
 
@@ -292,8 +292,8 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
             "WHERE (e.name = 'jon' AND e.loginname = 'jwage' OR e.id = 4 OR e.id = 5 AND e.name LIKE 'Arnold%' AND (e.type = 0))"
         );
         
-        $items1 = $q1->execute(array(), Doctrine::HYDRATE_ARRAY);
-        $items2 = $q2->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $items1 = $q1->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+        $items2 = $q2->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($items1), count($items2));
 
@@ -340,34 +340,34 @@ class Doctrine_Query_TestCase extends Doctrine_UnitTestCase
 
     public function testSetQueryClassManagerAttribute()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'MyQuery');
 
         $q = Doctrine_Query::create();
         $this->assertTrue($q instanceof MyQuery);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'Doctrine_Query');
     }
 
     public function testSetQueryClassConnectionAttribute()
     {
-        $userTable = Doctrine::getTable('User');
-        $userTable->getConnection()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+        $userTable = Doctrine_Core::getTable('User');
+        $userTable->getConnection()->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'MyQuery');
 
         $q = $userTable->createQuery();
         $this->assertTrue($q instanceof MyQuery);
 
-        $userTable->getConnection()->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+        $userTable->getConnection()->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'Doctrine_Query');
     }
 
     public function testSetQueryClassTableAttribute()
     {
-        $userTable = Doctrine::getTable('User');
-        $userTable->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+        $userTable = Doctrine_Core::getTable('User');
+        $userTable->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'MyQuery');
 
         $q = $userTable->createQuery();
         $this->assertTrue($q instanceof MyQuery);
 
-        $userTable->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'Doctrine_Query');
+        $userTable->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'Doctrine_Query');
     }
     
     public function testNoLimitSubqueryIfXToOneSelected()

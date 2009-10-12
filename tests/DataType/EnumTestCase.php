@@ -63,7 +63,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($test->status, 'open');
         $test->save();
 
-        $test_update = Doctrine::getTable('EnumTest2')->find(1);
+        $test_update = Doctrine_Core::getTable('EnumTest2')->find(1);
         $test_update->status = 'verified';
         $this->assertEqual($test_update->status, 'verified');
         $test_update->save();
@@ -221,7 +221,7 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         $q->select('e.*')
           ->from('EnumTest e')
           ->limit(1);
-        $ret = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $ret = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         if (is_numeric($ret[0]['status'])) {
             $this->fail();
@@ -243,8 +243,8 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
 
     public function testInvalidValueErrors()
     {
-        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_VALIDATE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_VALIDATE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         try {
             $test = new EnumTest();
             $test->status = 'opeerertn';
@@ -253,6 +253,6 @@ class Doctrine_DataType_Enum_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->pass();
         }
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, $orig);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, $orig);
     }
 }

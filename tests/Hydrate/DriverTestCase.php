@@ -37,7 +37,7 @@ class Doctrine_Hydrate_Driver_TestCase extends Doctrine_UnitTestCase
         Doctrine_Manager::getInstance()
             ->registerHydrator('MyHydrator', 'MyHydrator');
 
-        $result = Doctrine::getTable('User')
+        $result = Doctrine_Core::getTable('User')
             ->createQuery('u')
             ->execute(array(), 'MyHydrator');
 

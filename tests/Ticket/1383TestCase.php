@@ -42,8 +42,8 @@ class Doctrine_Ticket_1383_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_VALIDATE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_VALIDATE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         try {
             $brand = new Ticket_1383_Brand;
             $brand->name = 'The Great Brand';
@@ -55,7 +55,7 @@ class Doctrine_Ticket_1383_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, $orig);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, $orig);
     }
 }
 

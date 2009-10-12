@@ -50,7 +50,7 @@ class Doctrine_Import_Schema_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
 
-        $this->assertEqual(Doctrine::getTable('AliasTest')->getFieldName('test_col'), 'test_col_alias');
+        $this->assertEqual(Doctrine_Core::getTable('AliasTest')->getFieldName('test_col'), 'test_col_alias');
 
         Doctrine_Lib::removeDirectories($path);
     }

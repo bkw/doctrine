@@ -9,14 +9,14 @@ class Doctrine_Ticket_1783_TestCase extends Doctrine_UnitTestCase
 	
     public function testValidateLargeIntegers()
     {
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);        
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);        
 
         $test = new Ticket_1783();
         $test->bigint = PHP_INT_MAX + 1;
         
         $this->assertTrue($test->isValid());
 
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

@@ -92,10 +92,10 @@ class Doctrine_Ticket_1621_TestCase extends Doctrine_UnitTestCase
         
         //here is the testcode
         try {
-            $user = Doctrine::getTable('Ticket_1621_User')->findOneByName('floriank');
-            $newChild = Doctrine::getTable('Ticket_1621_User')->findOneByName('test');
-            $newFriend = Doctrine::getTable('Ticket_1621_User')->findOneByName('test2');
-            $newGroup = Doctrine::getTable('Ticket_1621_Group')->findOneByName('group2');
+            $user = Doctrine_Core::getTable('Ticket_1621_User')->findOneByName('floriank');
+            $newChild = Doctrine_Core::getTable('Ticket_1621_User')->findOneByName('test');
+            $newFriend = Doctrine_Core::getTable('Ticket_1621_User')->findOneByName('test2');
+            $newGroup = Doctrine_Core::getTable('Ticket_1621_Group')->findOneByName('group2');
             
             $user->children[] = $newChild;
             $user->groups[] = $newGroup;

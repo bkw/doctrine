@@ -36,7 +36,7 @@ class Doctrine_Record_Generator_TestCase extends Doctrine_UnitTestCase
     {
         Doctrine_Manager::connection('sqlite::memory:', 'test_tmp_conn', false);
         Doctrine_Manager::getInstance()->bindComponent('I18nGeneratorComponentBinding', 'test_tmp_conn');
-        Doctrine::createTablesFromArray(array('I18nGeneratorComponentBinding'));
+        Doctrine_Core::createTablesFromArray(array('I18nGeneratorComponentBinding'));
 
         try {
             $i = new I18nGeneratorComponentBinding();

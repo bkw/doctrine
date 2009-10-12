@@ -204,7 +204,7 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
     
     public function testValidationSkipsOwnerOption()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         $record = $this->conn->getTable('CTITest')->find(1);
         try {
             $record->name = "winston";
@@ -213,7 +213,7 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail();
         }
-        $this->conn->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
     
     public function testDeleteIssuesQueriesOnAllJoinedTables()
@@ -246,7 +246,7 @@ class Doctrine_ClassTableInheritance_TestCase extends Doctrine_UnitTestCase
         $NoIdTestChild->child_column = 'test';
         $NoIdTestChild->save();
         
-        $NoIdTestChild = Doctrine::getTable('NoIdTestChild')->find(1);
+        $NoIdTestChild = Doctrine_Core::getTable('NoIdTestChild')->find(1);
         $this->assertEqual($NoIdTestChild->myid, 1);
         $this->assertEqual($NoIdTestChild->name, 'test');
         $this->assertEqual($NoIdTestChild->child_column, 'test');

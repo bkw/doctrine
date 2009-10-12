@@ -101,7 +101,7 @@ class Doctrine_Relation_CircularSaving_TestCase extends Doctrine_UnitTestCase
         $n2->save();
 
         $q = new Doctrine_Query();
-        $coll = $q->from('NestReference')->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $coll = $q->from('NestReference')->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($coll), 1);
     }

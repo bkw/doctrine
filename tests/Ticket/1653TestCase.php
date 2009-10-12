@@ -47,7 +47,7 @@ class Doctrine_Ticket_1653_TestCase extends Doctrine_UnitTestCase
 
     public function testValidate()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         
         $user = new Ticket_1653_User();
         $mail = new Ticket_1653_Email();
@@ -61,7 +61,7 @@ class Doctrine_Ticket_1653_TestCase extends Doctrine_UnitTestCase
         $this->assertFalse($user->isValid(true));
 
         //reset validation to default for further testcases
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 
     public function testModified()

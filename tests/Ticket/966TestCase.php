@@ -48,7 +48,7 @@ class Doctrine_Ticket_966_TestCase extends Doctrine_UnitTestCase
       ->leftJoin('s.Courses c')
       ->leftJoin('c.Weekdays cw');
 
-    $semesters = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+    $semesters = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
     $semester = $semesters[0];    
     
     $this->assertAllWeekdaysArePopulated($semester);

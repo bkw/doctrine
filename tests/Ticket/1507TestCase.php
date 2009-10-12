@@ -64,7 +64,7 @@ class Doctrine_Ticket_1507_TestCase extends Doctrine_UnitTestCase
 		$this->assertEqual(array('foo' => 'bar'), $c->getParams());
 		$this->assertEqual('bar', $c->getParam('foo'));
 		
-		$this->assertEqual(array($c->getAttribute(Doctrine::ATTR_DEFAULT_PARAM_NAMESPACE)), $c->getParamNamespaces());
+		$this->assertEqual(array($c->getAttribute(Doctrine_Core::ATTR_DEFAULT_PARAM_NAMESPACE)), $c->getParamNamespaces());
 	}
 	
 	public function testSetGetParamWithNamespaceParent()

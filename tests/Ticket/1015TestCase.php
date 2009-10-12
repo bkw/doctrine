@@ -56,7 +56,7 @@ class Doctrine_Ticket_1015_TestCase extends Doctrine_UnitTestCase {
         ->from('T1015_Person person')
         ->innerJoin('person.T1015_Points points WITH person.id = 1');
 
-        $results = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         //var_dump($results);
         $person = $results[0];
 
@@ -73,7 +73,7 @@ class Doctrine_Ticket_1015_TestCase extends Doctrine_UnitTestCase {
         ->addComponent('person', 'T1015_Person person')
         ->addComponent('points', 'person.T1015_Points points');
 
-        $results = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         //var_dump($results);
         $person = $results[0];
 

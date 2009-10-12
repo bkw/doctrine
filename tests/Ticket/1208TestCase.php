@@ -50,7 +50,7 @@ class Doctrine_Ticket_1208_TestCase extends Doctrine_UnitTestCase
     {
         $q = Doctrine_Query::create()
             ->from('Ticket_1208_User u');
-        $user = $q->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+        $user = $q->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertTrue(isset($user['pre_hydrate']));
         $this->assertTrue(isset($user['post_hydrate']));

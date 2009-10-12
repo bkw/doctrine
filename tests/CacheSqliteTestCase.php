@@ -7,8 +7,8 @@ class Doctrine_Cache_SqliteTestCase extends Doctrine_UnitTestCase
     {
         parent::setUp();
 
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE,Doctrine::CACHE_NONE);
-        $dir = $this->connection->getAttribute(Doctrine::ATTR_CACHE_DIR);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_CACHE,Doctrine_Core::CACHE_NONE);
+        $dir = $this->connection->getAttribute(Doctrine_Core::ATTR_CACHE_DIR);
 
         if (file_exists($dir.DIRECTORY_SEPARATOR."stats.cache")) {
             unlink($dir.DIRECTORY_SEPARATOR."stats.cache");
@@ -119,7 +119,7 @@ class Doctrine_Cache_SqliteTestCase extends Doctrine_UnitTestCase
         $this->cache->fetchMultiple(array(4,5,6,7,8,9));
         $this->assertTrue($this->cache->saveStats());
         
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE_SIZE, 3);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_CACHE_SIZE, 3);
         $this->assertEqual($this->cache->clean(), 3);
     }
 }

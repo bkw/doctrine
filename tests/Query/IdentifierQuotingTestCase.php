@@ -47,7 +47,7 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
 
     public function testQuerySupportsIdentifierQuoting() 
     {
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
 
         $q = new Doctrine_Query();
 
@@ -179,6 +179,6 @@ class Doctrine_Query_IdentifierQuoting_TestCase extends Doctrine_UnitTestCase
         
         $this->assertEqual($q->getSqlQuery(), 'UPDATE "entity" SET "id" = "id" + 1 WHERE ("name" = ? AND ("type" = 0))');
 
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
 }

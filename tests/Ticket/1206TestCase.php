@@ -34,16 +34,16 @@ class Doctrine_Ticket_1206_TestCase extends Doctrine_UnitTestCase
 {
     public function prepareTables()
     {
-        Doctrine_Manager::connection()->setAttribute(Doctrine::ATTR_TBLNAME_FORMAT, 'prefix_%s');
+        Doctrine_Manager::connection()->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, 'prefix_%s');
         $this->tables[] = 'Ticket_1206_BlogPost';
         parent::prepareTables();
     }
 
     public function testTest()
     {
-        $this->assertEqual(Doctrine::getTable('Ticket_1206_BlogPost')->getTableName(), 'prefix_ticket_1206__blog_post');
-        $this->assertEqual(Doctrine::getTable('Ticket_1206_BlogPostTranslation')->getTableName(), 'prefix_ticket_1206__blog_post_translation');
-        Doctrine_Manager::connection()->setAttribute(Doctrine::ATTR_TBLNAME_FORMAT, '%s');
+        $this->assertEqual(Doctrine_Core::getTable('Ticket_1206_BlogPost')->getTableName(), 'prefix_ticket_1206__blog_post');
+        $this->assertEqual(Doctrine_Core::getTable('Ticket_1206_BlogPostTranslation')->getTableName(), 'prefix_ticket_1206__blog_post_translation');
+        Doctrine_Manager::connection()->setAttribute(Doctrine_Core::ATTR_TBLNAME_FORMAT, '%s');
     }
 }
 

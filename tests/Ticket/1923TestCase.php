@@ -42,10 +42,10 @@ class Doctrine_Ticket_1923_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $sql = Doctrine::generateSqlFromArray(array('Ticket_1923_User'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('Ticket_1923_User'));
         $this->assertEqual($sql[1], 'CREATE INDEX username_idx ON ticket_1923__user (login)');
 
-        $sql = Doctrine::generateSqlFromArray(array('Ticket_1923_User2'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('Ticket_1923_User2'));
         $this->assertEqual($sql[1], 'CREATE INDEX username2_idx ON ticket_1923__user2 (login DESC)');
     }
 }

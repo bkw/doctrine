@@ -167,7 +167,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         }
 
         try {
-            $record = $this->objTable->find('4', Doctrine::HYDRATE_ARRAY);
+            $record = $this->objTable->find('4', Doctrine_Core::HYDRATE_ARRAY);
             $this->assertTrue(is_array($record));
             $this->assertTrue( ! is_object($record));
             $this->assertTrue(array_key_exists('id', $record));
@@ -205,7 +205,7 @@ class Doctrine_Table_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users->count(), 8);
         $this->assertTrue($users instanceof Doctrine_Collection);
 
-        $users = $this->objTable->findAll(Doctrine::HYDRATE_ARRAY);
+        $users = $this->objTable->findAll(Doctrine_Core::HYDRATE_ARRAY);
         $this->assertTrue( ! $users instanceof Doctrine_Collection);
         $this->assertTrue(is_array($users));
         $this->assertTrue( ! is_object($users));

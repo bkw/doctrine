@@ -37,17 +37,17 @@ class Doctrine_Ticket_1706_TestCase extends Doctrine_UnitTestCase
         $cacheDriver = new Doctrine_Cache_Array();
 
         $conn1 = Doctrine_Manager::connection('sqlite::memory:', 'conn_1');
-        $conn1->setAttribute(Doctrine::ATTR_RESULT_CACHE, $cacheDriver);
+        $conn1->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
 
         $conn2 = Doctrine_Manager::connection('sqlite::memory:', 'conn_2');
-        $conn2->setAttribute(Doctrine::ATTR_RESULT_CACHE, $cacheDriver);
+        $conn2->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
         $this->assertNotEqual($conn1, $conn2);
 
         $manager = Doctrine_Manager::getInstance();
         $manager->setCurrentConnection('conn_1');
         $this->assertEqual($conn1, Doctrine_Manager::connection());
 
-        Doctrine::createTablesFromArray(array('Ticket_1706_User'));
+        Doctrine_Core::createTablesFromArray(array('Ticket_1706_User'));
 
         $user = new Ticket_1706_User();
         $user->name = 'Allen';
@@ -56,7 +56,7 @@ class Doctrine_Ticket_1706_TestCase extends Doctrine_UnitTestCase
         $manager->setCurrentConnection('conn_2');
         $this->assertEqual($conn2, Doctrine_Manager::connection());
 
-        Doctrine::createTablesFromArray(array('Ticket_1706_User'));
+        Doctrine_Core::createTablesFromArray(array('Ticket_1706_User'));
 
         $user = new Ticket_1706_User();
         $user->name = 'Bob';

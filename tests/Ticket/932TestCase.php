@@ -16,7 +16,7 @@ class Doctrine_Ticket_932_TestCase extends Doctrine_UnitTestCase
 	{
 		$this->dbh = new Doctrine_Adapter_Mock('pgsql');
 		$this->conn = Doctrine_Manager::getInstance()->openConnection($this->dbh);
-		$this->assertEqual(Doctrine::IDENTIFIER_NATURAL, $this->conn->getTable('UserNoAutoIncrement')->getIdentifierType());
+		$this->assertEqual(Doctrine_Core::IDENTIFIER_NATURAL, $this->conn->getTable('UserNoAutoIncrement')->getIdentifierType());
 	}
 
 	public function testCreateNewUserNoAutoIncrement()

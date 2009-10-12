@@ -85,8 +85,8 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
     
     public function testTicketWithOverloadingAndTwoQueries()
     {
-        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
+        $orig = Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
         
         $user = Doctrine_Query::create()
             ->from('Ticket_1131_User u')
@@ -101,7 +101,7 @@ class Doctrine_Ticket_1131_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($user->Role->id, 1);
         $this->assertFalse($user->role_id instanceof Doctrine_Record);
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, $orig);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE, $orig);
     }
 }
 

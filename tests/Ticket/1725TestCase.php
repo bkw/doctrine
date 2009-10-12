@@ -40,7 +40,7 @@ class Doctrine_Ticket_1725_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
         $user = new Ticket_1725_User();
         $user->username = 'jwage';
@@ -51,7 +51,7 @@ class Doctrine_Ticket_1725_TestCase extends Doctrine_UnitTestCase
         $version = $user->getAuditLog()->getVersion($user, 2);
         $this->assertTrue(isset($version[0]['deleted_at']) && $version[0]['deleted_at']);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

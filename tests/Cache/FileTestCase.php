@@ -6,7 +6,7 @@ class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->manager->setAttribute(Doctrine::ATTR_CACHE, Doctrine::CACHE_FILE);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_CACHE, Doctrine_Core::CACHE_FILE);
     }
 
     public function testStore()
@@ -38,13 +38,13 @@ class Doctrine_Cache_File_TestCase extends Doctrine_UnitTestCase
 
     public function testDestructor()
     {
-        $this->objTable->setAttribute(Doctrine::ATTR_CACHE_TTL,1);
-        $this->objTable->setAttribute(Doctrine::ATTR_CACHE_SIZE,5);
+        $this->objTable->setAttribute(Doctrine_Core::ATTR_CACHE_TTL,1);
+        $this->objTable->setAttribute(Doctrine_Core::ATTR_CACHE_SIZE,5);
         $this->cache->__destruct();
         $this->assertTrue($this->cache->count() == 5);
 
-        $this->objTable->setAttribute(Doctrine::ATTR_CACHE_TTL,1);
-        $this->objTable->setAttribute(Doctrine::ATTR_CACHE_SIZE,1);
+        $this->objTable->setAttribute(Doctrine_Core::ATTR_CACHE_TTL,1);
+        $this->objTable->setAttribute(Doctrine_Core::ATTR_CACHE_SIZE,1);
         $this->cache->__destruct();
         $this->assertTrue($this->cache->count() == 1);
 

@@ -40,7 +40,7 @@ class Doctrine_Ticket_1230_TestCase extends Doctrine_UnitTestCase
 
     public function testTicket()
     {
-        $categoriesTable = Doctrine::getTable('Ticket_1230_Category');
+        $categoriesTable = Doctrine_Core::getTable('Ticket_1230_Category');
         $categoriesTreeObject = $categoriesTable->getTree();
 
         $category = new Ticket_1230_Category();
@@ -52,7 +52,7 @@ class Doctrine_Ticket_1230_TestCase extends Doctrine_UnitTestCase
         $baseQuery = Doctrine_Query::create()
             ->select('*')
             ->from('Ticket_1230_Category c')
-            ->setHydrationMode(Doctrine::HYDRATE_ARRAY);
+            ->setHydrationMode(Doctrine_Core::HYDRATE_ARRAY);
 
         $categoriesTreeObject->setBaseQuery($baseQuery);
         $categoriesArray = $categoriesTreeObject->fetchTree();

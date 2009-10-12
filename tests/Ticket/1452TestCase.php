@@ -50,7 +50,7 @@ class Doctrine_Ticket_1452_TestCase extends Doctrine_UnitTestCase
             $item->Translation['EN']->description = 'Some english description';
             $item->save();
 
-            $reopened = Doctrine::getTable('Model_Product')->findOneById($item->id);
+            $reopened = Doctrine_Core::getTable('Model_Product')->findOneById($item->id);
             $this->assertEqual($name, $reopened->name);
             $this->assertEqual($description, $reopened->Translation['DK']->description);
 

@@ -68,13 +68,13 @@ class Doctrine_Ticket_1623_TestCase extends Doctrine_UnitTestCase
 
     public function testPerformance()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         
         $newChild = new Ticket_1623_User();
         $newChild->name = 'myChild';
         $newChild->save();
         
-        $user = Doctrine::getTable('Ticket_1623_User')->findOneByName('floriank');
+        $user = Doctrine_Core::getTable('Ticket_1623_User')->findOneByName('floriank');
         $user->children[] = $newChild;
         
         $start = microtime(true);
@@ -87,24 +87,24 @@ class Doctrine_Ticket_1623_TestCase extends Doctrine_UnitTestCase
     
     public function testImplicitSave()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_CASCADE_SAVES, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_CASCADE_SAVES, false);
 
         $newChild = new Ticket_1623_User();
         $newChild->name = 'myGrandGrandChild';
         
-        $user = Doctrine::getTable('Ticket_1623_User')->findOneByName('floriank');
+        $user = Doctrine_Core::getTable('Ticket_1623_User')->findOneByName('floriank');
         $user->children[0]->children[0]->children[] = $newChild;
         
         $user->save();
         
-        $user = Doctrine::getTable('Ticket_1623_User')->findByName('myGrandGrandChild');
+        $user = Doctrine_Core::getTable('Ticket_1623_User')->findByName('myGrandGrandChild');
         //as of Doctrine's default behaviour $newChild should have 
         //been implicitly saved with $user->save()  
         $this->assertEqual($user->count(), 0);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_CASCADE_SAVES, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_CASCADE_SAVES, true);
     }
 }
     

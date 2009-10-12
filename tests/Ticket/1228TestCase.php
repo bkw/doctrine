@@ -116,7 +116,7 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $q->leftJoin('ab.c abc');
         $q->orderBy('a.id ASC');
         $res = $q->execute();
-        //$res = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        //$res = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         
         //var_dump($res/*->toArray(true)*/);
         
@@ -135,7 +135,7 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $q->leftJoin('abc.d abcd');
         $q->orderBy('a.id ASC');
         $res = $q->execute();
-        //$res = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        //$res = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         
         //var_dump($res/*->toArray(true)*/);
         
@@ -156,7 +156,7 @@ class Doctrine_Ticket_1228_TestCase extends Doctrine_UnitTestCase
         $q->leftJoin('abcd.e abcde');
         $q->orderBy('a.id ASC');
         $res = $q->execute();
-        //$res = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        //$res = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         
         //var_dump($res/*->toArray(true)*/);
         

@@ -38,7 +38,7 @@ class Doctrine_Ticket_1365_TestCase extends Doctrine_UnitTestCase
         $this->conn = Doctrine_Manager::getInstance()->openConnection($this->dbh);
 
         $this->conn->setCharset('utf8');
-        $this->conn->setAttribute(Doctrine::ATTR_USE_NATIVE_ENUM, true);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_USE_NATIVE_ENUM, true);
 	}
 
     public function prepareData()

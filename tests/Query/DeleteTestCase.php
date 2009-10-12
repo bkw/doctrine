@@ -116,12 +116,12 @@ class Doctrine_Query_Delete_TestCase extends Doctrine_UnitTestCase
 
     public function testDeleteWithFromInDeleteFunction()
     {
-        $q = Doctrine::getTable('Entity')->createQuery()->delete();
+        $q = Doctrine_Core::getTable('Entity')->createQuery()->delete();
         $this->assertEqual($q->getDql(), 'DELETE FROM Entity');
         $q = Doctrine_Query::create()->delete('Entity');
         $this->assertEqual($q->getDql(), 'DELETE FROM Entity');
 
-        $q = Doctrine::getTable('DeleteTestModel')->createQuery()->delete('DeleteTestModel');
+        $q = Doctrine_Core::getTable('DeleteTestModel')->createQuery()->delete('DeleteTestModel');
         $this->assertEqual($q->getDql(), 'DELETE FROM DeleteTestModel');
         $this->assertEqual($q->getSqlQuery(), 'DELETE FROM delete_test_model');
         $q->execute();

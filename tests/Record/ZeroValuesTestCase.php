@@ -60,7 +60,7 @@ class Doctrine_Record_ZeroValues_TestCase extends Doctrine_UnitTestCase
     {
         $q = new Doctrine_Query();
         $q->from('ZeroValueTest');
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertIdentical($users[0]['is_super_admin'], false);
         // check for aggregate bug

@@ -50,9 +50,9 @@ class Doctrine_Ticket_DC7_TestCase extends Doctrine_UnitTestCase
 
     public function testOnDemandHydration()
     {
-        $q = Doctrine::getTable('Ticket_DC7_User')
+        $q = Doctrine_Core::getTable('Ticket_DC7_User')
             ->createQuery('u')
-            ->setHydrationMode(Doctrine::HYDRATE_ON_DEMAND);
+            ->setHydrationMode(Doctrine_Core::HYDRATE_ON_DEMAND);
 
         $results = $q->execute();
         $this->assertEqual(get_class($results), 'Doctrine_Collection_OnDemand');

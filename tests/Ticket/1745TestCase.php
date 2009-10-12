@@ -59,19 +59,19 @@ class Doctrine_Ticket_1745_TestCase extends Doctrine_UnitTestCase {
     {
       $query = Doctrine_Query::create()
           ->from('Locality l');
-      $query = Doctrine::getTable('Locality')->search('martigny', $query);
+      $query = Doctrine_Core::getTable('Locality')->search('martigny', $query);
       $results = $query->fetchArray();
       $this->assertEqual($results[0]['city'], 'Martigny');
       
       $query = Doctrine_Query::create()
           ->from('Locality l');
-      $query = Doctrine::getTable('Locality')->search('saviese', $query);
+      $query = Doctrine_Core::getTable('Locality')->search('saviese', $query);
       $results = $query->fetchArray();
       $this->assertEqual($results[0]['city'], 'Savièse');
       
       $query = Doctrine_Query::create()
           ->from('Locality l');
-      $query = Doctrine::getTable('Locality')->search('neuchatel', $query);
+      $query = Doctrine_Core::getTable('Locality')->search('neuchatel', $query);
       $results = $query->fetchArray();
       $this->assertEqual($results[0]['city'], 'Neuchâtel');
     }

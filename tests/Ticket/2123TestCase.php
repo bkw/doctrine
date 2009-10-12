@@ -35,7 +35,7 @@ class Doctrine_Ticket_2123_TestCase extends Doctrine_UnitTestCase
     public function testCheckingRelatedExistsOnCollectionThrowsException()
     {
         try {
-            $user = Doctrine::getTable('User')
+            $user = Doctrine_Core::getTable('User')
                 ->createQuery('u')
                 ->fetchOne();
             $user->relatedExists('Phonenumber');

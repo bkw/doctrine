@@ -50,7 +50,7 @@ class Doctrine_Ticket_2367_TestCase extends Doctrine_UnitTestCase
                 'content' => 'contenu de l\'article'))));
         $article->save();
         $article->delete();
-        $check = (bool) Doctrine::getTable('Ticket_2367_ArticleTranslation')->count();
+        $check = (bool) Doctrine_Core::getTable('Ticket_2367_ArticleTranslation')->count();
         $this->assertFalse($check);
     }
 }

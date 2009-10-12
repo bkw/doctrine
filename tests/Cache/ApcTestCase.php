@@ -57,7 +57,7 @@ class Doctrine_Cache_Apc_TestCase extends Doctrine_UnitTestCase
         apc_clear_cache("user");
         
         $cacheDriver = new Doctrine_Cache_Apc();
-        $this->conn->setAttribute(Doctrine::ATTR_RESULT_CACHE, $cacheDriver);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE, $cacheDriver);
         
         $queryCountBefore = $this->conn->count();
         

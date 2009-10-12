@@ -6,7 +6,7 @@ class Doctrine_Cache_Query_SqliteTestCase extends Doctrine_UnitTestCase
     {
         parent::setUp();
 
-        $dir = $this->connection->getAttribute(Doctrine::ATTR_CACHE_DIR);
+        $dir = $this->connection->getAttribute(Doctrine_Core::ATTR_CACHE_DIR);
 
         if (file_exists($dir.DIRECTORY_SEPARATOR."stats.cache"))
             unlink($dir.DIRECTORY_SEPARATOR."stats.cache");

@@ -34,13 +34,13 @@ class Doctrine_Ticket_753_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $origOptions = $this->conn->getAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS);
-        $this->conn->setAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS, array('type' => 'string', 'length' => 255, 'notnull' => true));
+        $origOptions = $this->conn->getAttribute(Doctrine_Core::ATTR_DEFAULT_COLUMN_OPTIONS);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_DEFAULT_COLUMN_OPTIONS, array('type' => 'string', 'length' => 255, 'notnull' => true));
 
-        $origIdOptions = $this->conn->getAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS);
-        $this->conn->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'length' => 25, 'type' => 'string', 'autoincrement' => false));
+        $origIdOptions = $this->conn->getAttribute(Doctrine_Core::ATTR_DEFAULT_IDENTIFIER_OPTIONS);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_DEFAULT_IDENTIFIER_OPTIONS, array('name' => '%s_id', 'length' => 25, 'type' => 'string', 'autoincrement' => false));
 
-        $userTable = Doctrine::getTable('Ticket_753_User');
+        $userTable = Doctrine_Core::getTable('Ticket_753_User');
 
         $definition = $userTable->getDefinitionOf('username');
         $this->assertEqual($definition, array('type' => 'string', 'length' => 255, 'notnull' => true));
@@ -48,8 +48,8 @@ class Doctrine_Ticket_753_TestCase extends Doctrine_UnitTestCase
         $definition = $userTable->getDefinitionOf('ticket_753__user_id');
         $this->assertEqual($definition, array('type' => 'string', 'length' => 25, 'autoincrement' => false, 'primary' => true, 'notnull' => true));
 
-        $this->conn->setAttribute(Doctrine::ATTR_DEFAULT_COLUMN_OPTIONS, $origOptions);
-        $this->conn->setAttribute(Doctrine::ATTR_DEFAULT_IDENTIFIER_OPTIONS, $origIdOptions);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_DEFAULT_COLUMN_OPTIONS, $origOptions);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_DEFAULT_IDENTIFIER_OPTIONS, $origIdOptions);
     }
 }
 

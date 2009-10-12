@@ -40,7 +40,7 @@ class Doctrine_Ticket_1763_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         $user = new Ticket_1763_User();
         $valid = $user->isValid();
         $this->assertFalse($valid);
@@ -55,7 +55,7 @@ class Doctrine_Ticket_1763_TestCase extends Doctrine_UnitTestCase
             $this->_validateErrorString($e->getMessage());
         }
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 
     protected function _validateErrorString($string)

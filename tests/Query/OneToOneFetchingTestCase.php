@@ -107,7 +107,7 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
                     ->leftJoin("b.lastEntry le")
                     ->leftJoin("le.author a")
                     ->leftJoin("a.visibleRank vr")
-                    ->execute(array(), Doctrine::HYDRATE_ARRAY);
+                    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
             // --> currently quits here with a fatal error! <--
                     
@@ -162,7 +162,7 @@ class Doctrine_Query_OneToOneFetching_TestCase extends Doctrine_UnitTestCase
                     ->leftJoin("b.lastEntry le")
                     ->leftJoin("le.author a")
                     ->leftJoin("a.visibleRank vr")
-                    ->execute(array(), Doctrine::HYDRATE_ARRAY);
+                    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
 
             // check boards/categories

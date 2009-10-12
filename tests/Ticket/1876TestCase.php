@@ -67,7 +67,7 @@ class Doctrine_Ticket_1876_TestCase extends Doctrine_UnitTestCase
     
     public function testTicket()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         
         try {
             $q = Doctrine_Query::create()
@@ -90,7 +90,7 @@ class Doctrine_Ticket_1876_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
         

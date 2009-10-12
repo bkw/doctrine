@@ -55,7 +55,7 @@ class Doctrine_Ticket_1992_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
         $person = Doctrine_Query::create()
             ->from('Ticket_1992_Person p')
@@ -95,7 +95,7 @@ class Doctrine_Ticket_1992_TestCase extends Doctrine_UnitTestCase
             ->fetchOne();
         $this->assertEqual($person, false);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

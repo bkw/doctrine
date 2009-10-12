@@ -64,7 +64,7 @@ class Doctrine_Ticket_632_TestCase extends Doctrine_UnitTestCase
         $user->save(); // This deletes the UserGroup association and the Group record
 
         // We should still have 3 groups
-        $groups = Doctrine::getTable('Ticket_632_Group')->findAll();
+        $groups = Doctrine_Core::getTable('Ticket_632_Group')->findAll();
         $this->assertEqual($groups->count(), 3);
     }
 }

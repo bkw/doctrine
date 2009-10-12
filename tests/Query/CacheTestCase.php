@@ -59,7 +59,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
     {
         $cache = new Doctrine_Cache_Array();
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_QUERY_CACHE, $cache);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cache);
         
         $q = Doctrine_Query::create()
             ->select('u.id, u.name, p.id')
@@ -150,7 +150,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         
         $cache = new Doctrine_Cache_Array();
-        $this->conn->setAttribute(Doctrine::ATTR_CACHE, $cache);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_CACHE, $cache);
 
         $q->useResultCache(true);
         $q->select('u.name')->from('User u')->leftJoin('u.Phonenumber p')
@@ -166,7 +166,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($cache->count(), 1);
         $this->assertEqual(count($coll), 1);
         
-        $this->conn->setAttribute(Doctrine::ATTR_CACHE, null);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_CACHE, null);
     }
     
     public function testResultCacheLifeSpan()
@@ -177,18 +177,18 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q->free();
         
         // 0 = cache forever
-        $this->manager->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 0);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 0);
         $q = new Doctrine_Query();
         $this->assertIdentical(0, $q->getResultCacheLifeSpan());
         $q->free();
         
-        $this->manager->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 3600);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 3600);
         $q = new Doctrine_Query();
         $this->assertIdentical(3600, $q->getResultCacheLifeSpan());
         $q->free();
         
         // test that value set on connection level has precedence
-        $this->conn->setAttribute(Doctrine::ATTR_RESULT_CACHE_LIFESPAN, 42);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_RESULT_CACHE_LIFESPAN, 42);
         $q = new Doctrine_Query();
         $this->assertIdentical(42, $q->getResultCacheLifeSpan());
         $q->free();
@@ -210,18 +210,18 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $q->free();
         
         // 0 = forever
-        $this->manager->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 0);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE_LIFESPAN, 0);
         $q = new Doctrine_Query();
         $this->assertIdentical(0, $q->getQueryCacheLifeSpan());
         $q->free();
         
-        $this->manager->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 3600);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE_LIFESPAN, 3600);
         $q = new Doctrine_Query();
         $this->assertIdentical(3600, $q->getQueryCacheLifeSpan());
         $q->free();
         
         // test that value set on connection level has precedence
-        $this->conn->setAttribute(Doctrine::ATTR_QUERY_CACHE_LIFESPAN, 42);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE_LIFESPAN, 42);
         $q = new Doctrine_Query();
         $this->assertIdentical(42, $q->getQueryCacheLifeSpan());
         $q->free();

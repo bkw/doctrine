@@ -54,7 +54,7 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
     public function testRelationsAreCorrect() {
         $this->resetData();
         
-        $f = Doctrine::getTable("T1323User")->findOneByName("Father");
+        $f = Doctrine_Core::getTable("T1323User")->findOneByName("Father");
         $childLinks = $f->childLinks;
         $this->assertEqual(2, count($childLinks));
         $this->assertEqual($f->id, $childLinks[0]->parent_id);
@@ -65,7 +65,7 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($f->id, $parentLinks[0]->child_id);
         $this->assertEqual($f->id, $parentLinks[1]->child_id);
         
-        $m = Doctrine::getTable("T1323User")->findOneByName("Mother");
+        $m = Doctrine_Core::getTable("T1323User")->findOneByName("Mother");
         $childLinks = $m->childLinks;
         $this->assertEqual(2, count($childLinks));
         $this->assertEqual($m->id, $childLinks[0]->parent_id);
@@ -74,7 +74,7 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
         $parentLinks = $m->parentLinks;
         $this->assertEqual(0, count($parentLinks));
         
-        $s = Doctrine::getTable("T1323User")->findOneByName("Son");
+        $s = Doctrine_Core::getTable("T1323User")->findOneByName("Son");
         $childLinks = $s->childLinks;
         $this->assertEqual(0, count($childLinks));
         $parentLinks = $s->parentLinks;
@@ -82,7 +82,7 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($s->id, $parentLinks[0]->child_id);
         $this->assertEqual($s->id, $parentLinks[1]->child_id);
         
-        $d = Doctrine::getTable("T1323User")->findOneByName("Daughter");
+        $d = Doctrine_Core::getTable("T1323User")->findOneByName("Daughter");
         $childLinks = $d->childLinks;
         $this->assertEqual(0, count($childLinks));
         $parentLinks = $d->parentLinks;
@@ -90,14 +90,14 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
         $this->assertEqual($d->id, $parentLinks[0]->child_id);
         $this->assertEqual($d->id, $parentLinks[1]->child_id);
         
-        $gm = Doctrine::getTable("T1323User")->findOneByName("Grandmother");
+        $gm = Doctrine_Core::getTable("T1323User")->findOneByName("Grandmother");
         $childLinks = $gm->childLinks;
         $this->assertEqual(1, count($childLinks));
         $this->assertEqual($gm->id, $childLinks[0]->parent_id);
         $parentLinks = $gm->parentLinks;
         $this->assertEqual(0, count($parentLinks));
         
-        $gf = Doctrine::getTable("T1323User")->findOneByName("Grandfather");
+        $gf = Doctrine_Core::getTable("T1323User")->findOneByName("Grandfather");
         $childLinks = $gf->childLinks;
         $this->assertEqual(1, count($childLinks));
         $this->assertEqual($gf->id, $childLinks[0]->parent_id);
@@ -128,17 +128,17 @@ class Doctrine_Ticket_1323_TestCase extends Doctrine_UnitTestCase {
     public function runTests() {
         
       // change "Father"'s name...
-      $f = Doctrine::getTable("T1323User")->findOneByName("Father");
+      $f = Doctrine_Core::getTable("T1323User")->findOneByName("Father");
       $f->name = "Dad";
       $f->save(); 
       
       /*  just playing; makes no difference: 
           remove "Dad"'s relation to "Son"... */
-      //$s = Doctrine::getTable("T1323User")->findOneByName("Son");
+      //$s = Doctrine_Core::getTable("T1323User")->findOneByName("Son");
       //$f->unlink("Children", array($s->id));
       //$f->save();
       
-      $relations = Doctrine::getTable("T1323UserReference")->findAll();
+      $relations = Doctrine_Core::getTable("T1323UserReference")->findAll();
       foreach ($relations as $relation) {
         /*  never directly touched any relation; so no user should have 
             himself as parent or child */ 
@@ -175,7 +175,7 @@ class T1323User extends Doctrine_Record
      * just a little function to show all users and their relations
      */         
     public static function showAllRelations() {
-        $users = Doctrine::getTable("T1323User")->findAll();
+        $users = Doctrine_Core::getTable("T1323User")->findAll();
         
         //echo "=========================================<br/>".PHP_EOL;
         //echo "list of all existing users and their relations:<br/> ".PHP_EOL;

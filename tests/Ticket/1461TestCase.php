@@ -41,7 +41,7 @@ class Doctrine_Ticket_1461_TestCase extends Doctrine_UnitTestCase
         ->innerJoin('u.Phonenumber p')
         ->where("u.name = 'zYne'");
         
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual($users[0]['concat1'], 'zYne_1');
 
@@ -57,7 +57,7 @@ class Doctrine_Ticket_1461_TestCase extends Doctrine_UnitTestCase
         ->innerJoin('u.Phonenumber p')
         ->where("u.name = 'zYne'");
         
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual($users[0]['concat2'], '123 123_2');
         
@@ -73,7 +73,7 @@ class Doctrine_Ticket_1461_TestCase extends Doctrine_UnitTestCase
         ->innerJoin('u.Phonenumber p')
         ->where("u.name = 'zYne'");
         
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual($users[0]['concat1'], 'zYne_1');
 

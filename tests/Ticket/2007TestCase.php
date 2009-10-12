@@ -40,7 +40,7 @@ class Doctrine_Ticket_2007_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $table = Doctrine::getTable('Ticket_2007_Faq');
+        $table = Doctrine_Core::getTable('Ticket_2007_Faq');
         $table->batchUpdateIndex();
     }
 }

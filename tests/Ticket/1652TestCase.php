@@ -50,17 +50,17 @@ class Doctrine_Ticket_1652_TestCase extends Doctrine_UnitTestCase
     public function testValidate() {
         $doctrine = new ReflectionClass('Doctrine');
         if ($doctrine->hasConstant('VALIDATE_USER')) {
-            Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_USER);
+            Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_USER);
         } else {
             //I only want my overridden Record->validate()-methods for validation
-            Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, 
-                                                    Doctrine::VALIDATE_ALL & 
-                                                    ~Doctrine::VALIDATE_LENGTHS & 
-                                                    ~Doctrine::VALIDATE_CONSTRAINTS & 
-                                                    ~Doctrine::VALIDATE_TYPES);
+            Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, 
+                                                    Doctrine_Core::VALIDATE_ALL & 
+                                                    ~Doctrine_Core::VALIDATE_LENGTHS & 
+                                                    ~Doctrine_Core::VALIDATE_CONSTRAINTS & 
+                                                    ~Doctrine_Core::VALIDATE_TYPES);
         }
         
-        $user = Doctrine::getTable('Ticket_1652_User')->findOneById(1);
+        $user = Doctrine_Core::getTable('Ticket_1652_User')->findOneById(1);
         $user->name = "test";
         if ($user->isValid()) {
             try {
@@ -70,11 +70,11 @@ class Doctrine_Ticket_1652_TestCase extends Doctrine_UnitTestCase
             }
         } 
 
-        $user = Doctrine::getTable('Ticket_1652_User')->findOneById(1);
+        $user = Doctrine_Core::getTable('Ticket_1652_User')->findOneById(1);
         
         $this->assertNotEqual($user->name, 'test');
         //reset validation to default for further testcases
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
     

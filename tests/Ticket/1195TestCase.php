@@ -73,11 +73,11 @@ class Doctrine_Ticket_1195_TestCase extends Doctrine_UnitTestCase
 				->leftJoin('items i ON r.item_id=i.id');
 
 
-		$res = $q->execute(array(),Doctrine::HYDRATE_ARRAY);
+		$res = $q->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 		$this->assertEqual(sizeof($res), 2);
 
 		$q->distinct();
-		$res = $q->execute(array(),Doctrine::HYDRATE_ARRAY);
+		$res = $q->execute(array(),Doctrine_Core::HYDRATE_ARRAY);
 		$this->assertEqual(sizeof($res), 1);
     }
 

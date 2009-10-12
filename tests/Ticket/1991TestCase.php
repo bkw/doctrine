@@ -55,7 +55,7 @@ class Doctrine_Ticket_1991_TestCase extends Doctrine_UnitTestCase {
         $q = new Doctrine_Query();
         $q->select('t.name')->from('NewTag t INDEXBY t.name');        
         try {
-            $results = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+            $results = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }

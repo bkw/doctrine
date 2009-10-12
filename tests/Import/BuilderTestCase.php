@@ -40,7 +40,7 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $import->setOption('generateTableClasses', true);
         $import->importSchema('schema.yml', 'yml', $path);
 
-        $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models = Doctrine_Core::loadModels($path, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 
         $schemaTestInheritanceParent = new ReflectionClass('SchemaTestInheritanceParent');
         $schemaTestInheritanceChild1 = new ReflectionClass('SchemaTestInheritanceChild1');
@@ -93,21 +93,21 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $schemaTestColumnAggregationInheritanceParent = new ReflectionClass('SchemaTestColumnAggregationInheritanceParent');
         $schemaTestColumnAggregationInheritanceChild = new ReflectionClass('SchemaTestColumnAggregationInheritanceChild');
 
-        $sql = Doctrine::generateSqlFromArray(array('SchemaTestSimpleInheritanceParent', 'SchemaTestSimpleInheritanceChild'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('SchemaTestSimpleInheritanceParent', 'SchemaTestSimpleInheritanceChild'));
         $this->assertEqual(count($sql), 1);
         $this->assertEqual($sql[0], 'CREATE TABLE schema_test_simple_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), description VARCHAR(255))');
 
-        $sql = Doctrine::generateSqlFromArray(array('SchemaTestClassTableInheritanceParent', 'SchemaTestClassTableInheritanceChild'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('SchemaTestClassTableInheritanceParent', 'SchemaTestClassTableInheritanceChild'));
         $this->assertEqual(count($sql), 2);
         $this->assertEqual($sql[0], 'CREATE TABLE schema_test_class_table_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))');
         $this->assertEqual($sql[1], 'CREATE TABLE schema_test_class_table_inheritance_child (id INTEGER, title VARCHAR(255), description VARCHAR(255), PRIMARY KEY(id))');
 
-        $sql = Doctrine::generateSqlFromArray(array('SchemaTestConcreteInheritanceParent', 'SchemaTestConcreteInheritanceChild'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('SchemaTestConcreteInheritanceParent', 'SchemaTestConcreteInheritanceChild'));
         $this->assertEqual(count($sql), 2);
         $this->assertEqual($sql[0], 'CREATE TABLE schema_test_concrete_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))');
         $this->assertEqual($sql[1], 'CREATE TABLE schema_test_concrete_inheritance_child (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), title VARCHAR(255), description VARCHAR(255))');
 
-        $sql = Doctrine::generateSqlFromArray(array('SchemaTestColumnAggregationInheritanceParent', 'SchemaTestColumnAggregationInheritanceChild'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('SchemaTestColumnAggregationInheritanceParent', 'SchemaTestColumnAggregationInheritanceChild'));
         $this->assertEqual(count($sql), 2);
         $this->assertEqual($sql[0], 'CREATE TABLE schema_test_column_aggregation_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), type VARCHAR(255), title VARCHAR(255), description VARCHAR(255))');
         $this->assertEqual($sql[1], 'CREATE INDEX type_idx ON schema_test_column_aggregation_inheritance_parent (type)');

@@ -60,7 +60,7 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
             $i->Translation->delete();
             $i->delete();
 
-            Doctrine::loadData('test.yml');
+            Doctrine_Core::loadData('test.yml');
 
             $q = Doctrine_Query::create()
                 ->from('I18nTestExport e')

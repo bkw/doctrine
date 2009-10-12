@@ -50,7 +50,7 @@ class Doctrine_Ticket_Ayoub_TestCase extends Doctrine_UnitTestCase
             $sura->Ticket_Ayoub_Place->Translation['transliteration']->name = $placeName;
             $sura->Ticket_Ayoub_Place->state('TDIRTY');
             $sura->save();
-            $reopened = Doctrine::getTable('Ticket_Ayoub_Sura')->findOneById($sura->id);
+            $reopened = Doctrine_Core::getTable('Ticket_Ayoub_Sura')->findOneById($sura->id);
             $this->assertEqual($name, $reopened->Translation['transliteration']->name);
             $this->assertEqual(1, $reopened->place_id);
             $this->assertEqual($placeName, $reopened->Ticket_Ayoub_Place->Translation['transliteration']->name);

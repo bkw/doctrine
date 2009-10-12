@@ -5,7 +5,7 @@ class EventListenerTest extends Doctrine_Record {
         $this->hasColumn("password", "string", 8);
     }
     public function setUp() {
-        //$this->attribute(Doctrine::ATTR_LISTENER, new Doctrine_EventListener_AccessorInvoker());
+        //$this->attribute(Doctrine_Core::ATTR_LISTENER, new Doctrine_EventListener_AccessorInvoker());
     }
     public function getName($name) {
         return strtoupper($name);

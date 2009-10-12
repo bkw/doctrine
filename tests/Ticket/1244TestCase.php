@@ -40,8 +40,8 @@ class Doctrine_Ticket_1244_TestCase extends Doctrine_UnitTestCase
 
     public function testTicket()
     {
-        $original = Doctrine_Manager::getInstance()->getAttribute(Doctrine::ATTR_VALIDATE);
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $original = Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_VALIDATE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
         try {
             $test = new Ticket_1244_Test();
@@ -52,7 +52,7 @@ class Doctrine_Ticket_1244_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, $original);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, $original);
     }
 }
 

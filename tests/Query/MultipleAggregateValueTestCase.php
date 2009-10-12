@@ -80,7 +80,7 @@ class Doctrine_Query_MultipleAggregateValue_TestCase extends Doctrine_UnitTestCa
         $query->where("u.name = 'jon'");
         $query->limit(1);
         
-        $users = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         try {
             $name = $users[0]['name'];

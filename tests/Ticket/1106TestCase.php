@@ -75,7 +75,7 @@ class Doctrine_Ticket_1106_TestCase extends Doctrine_UnitTestCase
     
     public function testQueryAfterSave()
     {
-        $user = Doctrine::getTable('User')->find($this->user_id);
+        $user = Doctrine_Core::getTable('User')->find($this->user_id);
         $this->assertEqual($user->name, 'Stephen');
         $this->assertEqual($user->Group[0]->name, 'New Group');
     }

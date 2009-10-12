@@ -40,7 +40,7 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
 
     public function testDoctrineRecordDeleteSetsFlag()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         
         $test = new SoftDeleteBCTest();
         $test->name = 'test';
@@ -51,12 +51,12 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $test->free();
 
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     public function testDoctrineQueryIsFilteredWithDeleteFlagCondition()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         
         $q = Doctrine_Query::create()
                     ->from('SoftDeleteBCTest s')
@@ -70,12 +70,12 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $test = $q->fetchOne();
         $this->assertFalse($test);
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     public function testTicket1132()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         
         $test = new SoftDeleteBCTest();
         $test->name = 'test1';
@@ -92,13 +92,13 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getFlattenedParams(array('test1', 'test2')), array('test1', 'test2'));
         $this->assertEqual($results->count(), 1);
         
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 
     // Test Doctrine_Query::count() applies dql hooks
     public function testTicket1170()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         
         Doctrine_Query::create()
             ->delete()
@@ -113,6 +113,6 @@ class Doctrine_SoftDeleteBC_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getCountSqlQuery(), 'SELECT COUNT(*) AS num_results FROM soft_delete_bc_test s WHERE s.name = ? AND s.something = ? AND (s.deleted = 0)');
         $this->assertEqual($q->count(), 0);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }

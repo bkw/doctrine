@@ -40,7 +40,7 @@ class Doctrine_Ticket_1729_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
         $user = new Ticket_1729_User();
         $user->username = 'jwage';
@@ -61,7 +61,7 @@ class Doctrine_Ticket_1729_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getSqlQuery(), 'SELECT t.id AS t__id FROM ticket_1729__user t WHERE (t.deleted_at IS NULL)');
         $this->assertEqual(count($results), 1);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

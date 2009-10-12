@@ -68,7 +68,7 @@ class Doctrine_Ticket_969_TestCase extends Doctrine_UnitTestCase {
                 ->from('T1 a')
                 ->leftJoin('a.T2 b')
                 ->leftJoin('b.T3 c')
-                ->setHydrationMode(Doctrine::HYDRATE_ARRAY)
+                ->setHydrationMode(Doctrine_Core::HYDRATE_ARRAY)
                 ->fetchOne();
       
       // there are 10 rows in T3, and they all have hello_id = 10, so we should have 10 rows here

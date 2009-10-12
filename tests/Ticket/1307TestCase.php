@@ -40,7 +40,7 @@ class Doctrine_Ticket_1307_TestCase extends Doctrine_UnitTestCase
         $conn->setCharset($charset);
         $conn->setCollate($collate);
 
-        $userTable = Doctrine::getTable('Ticket_1307_User');
+        $userTable = Doctrine_Core::getTable('Ticket_1307_User');
         $this->assertEqual($charset, $userTable->getOption('charset'));
         $this->assertEqual($collate, $userTable->getOption('collate'));
     }

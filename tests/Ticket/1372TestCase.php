@@ -113,7 +113,7 @@ class Ticket_1372_ParentClass extends Doctrine_Record
         $this->index('type_idx', array('fields' => array(0 => 'type')));
         $this->index('values_idx', array('fields' => array(0 => 'value_1', 1 => 'value_2')));
 
-        $this->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
+        $this->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL);
 
         $this->setSubClasses(array('Child_1' => array('type' => 1), 'Child_2' => array('type' => 2)));
     }

@@ -34,8 +34,8 @@ class Doctrine_Ticket_1315_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
-        $userTable = Doctrine::getTable('User');
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
+        $userTable = Doctrine_Core::getTable('User');
         $userTable->addRecordListener(new Ticket_1315_Listener());
 
         try {
@@ -48,7 +48,7 @@ class Doctrine_Ticket_1315_TestCase extends Doctrine_UnitTestCase
             $this->pass();
         }
 
-        $userTable->setAttribute(Doctrine::ATTR_RECORD_LISTENER, null);
+        $userTable->setAttribute(Doctrine_Core::ATTR_RECORD_LISTENER, null);
 
         try {
             $q = Doctrine_Query::create()
@@ -60,7 +60,7 @@ class Doctrine_Ticket_1315_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

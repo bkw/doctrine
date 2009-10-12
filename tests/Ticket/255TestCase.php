@@ -40,7 +40,7 @@ class Doctrine_Ticket_255_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, true);
         $user = new Ticket_255_User();
         $user->username = 'jwage';
         $user->email_address = 'jonwage@gmail.com';
@@ -58,7 +58,7 @@ class Doctrine_Ticket_255_TestCase extends Doctrine_UnitTestCase
             $this->pass();
         }
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, false);
     }
 
     public function testTest2()

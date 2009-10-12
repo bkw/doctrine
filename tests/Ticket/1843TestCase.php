@@ -40,7 +40,7 @@ class Doctrine_Ticket_1843_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         $user = new Ticket_1843_User();
         $user->username = 'jwage';
         $user->password = 'changeme';
@@ -67,7 +67,7 @@ class Doctrine_Ticket_1843_TestCase extends Doctrine_UnitTestCase
         $user->save();
         $this->assertEqual($check, $user->hooks);
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

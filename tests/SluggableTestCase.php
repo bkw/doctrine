@@ -46,7 +46,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->name = 'My item';
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
-        $itemTable  = Doctrine::getTable('SluggableItem2');
+        $itemTable  = Doctrine_Core::getTable('SluggableItem2');
         $this->assertTrue($index = $itemTable->getIndex('sluggable'));
         $this->assertEqual($index['type'], 'unique');
         $this->assertEqual($index['fields'], array('slug'));
@@ -114,7 +114,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->user_id = 1;
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
-        $itemTable  = Doctrine::getTable('SluggableItem5');
+        $itemTable  = Doctrine_Core::getTable('SluggableItem5');
         $this->assertTrue($index = $itemTable->getIndex('sluggable'));
         $this->assertEqual($index['type'], 'unique');
         $this->assertEqual($index['fields'], array('slug', 'user_id'));
@@ -164,7 +164,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
     public function testSluggableWithFieldsOptionAndNoIndex()
     {
         parent::prepareTables();
-        $itemTable  = Doctrine::getTable('SluggableItem7');
+        $itemTable  = Doctrine_Core::getTable('SluggableItem7');
         $this->assertFalse($itemTable->getIndex('sluggable'));
     }
     
@@ -192,7 +192,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
 
     public function testSluggableWithSoftDeleteFailWithSameSlug()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
         parent::prepareTables();
         $item0 = new SluggableItem9();
@@ -212,7 +212,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item1->save();
         $this->assertEqual($item1->slug, 'test-1');
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
     }
 }
 

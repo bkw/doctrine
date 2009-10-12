@@ -43,7 +43,7 @@ class Doctrine_Ticket_576_TestCase extends Doctrine_UnitTestCase
         $data = Doctrine_Query::create()
             ->select('name')
             ->from('Entity')
-            ->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            ->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $user->hydrate($data);
         $this->assertEqual($user->name, 'myname');

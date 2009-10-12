@@ -2,4 +2,4 @@
 
 require_once('config.php');
 
-$models = Doctrine::loadModels('models');
+$models = Doctrine_Core::loadModels('models');

@@ -77,7 +77,7 @@ class gImage extends Doctrine_Record
         $this->hasColumn('owner_id', 'integer', 4);
         $this->hasColumn('filename', 'string', 64);
         $this->hasColumn('otype','integer',4);
-        $this->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL ^ Doctrine::EXPORT_CONSTRAINTS);
+        $this->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL ^ Doctrine_Core::EXPORT_CONSTRAINTS);
 
         $this->setSubClasses(array('gUserImage' => array('otype' => 1),'gBlogImage' => array('otype' => 2)));
     }
@@ -110,7 +110,7 @@ class gFile extends Doctrine_Record
         $this->hasColumn('owner_id', 'integer', 4);
         $this->hasColumn('filename', 'string', 64);
         $this->hasColumn('otype','integer',4);
-        $this->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL ^ Doctrine::EXPORT_CONSTRAINTS);
+        $this->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL ^ Doctrine_Core::EXPORT_CONSTRAINTS);
 
         $this->setSubClasses(array('gUserFile' => array('otype' => 1),'gBlogFile' => array('otype' => 2)));
     }

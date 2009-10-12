@@ -45,7 +45,7 @@ class Doctrine_Validator_Future_TestCase extends Doctrine_UnitTestCase
     
     public function testValidFutureDates()
     {
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         
         // one year ahead
         $user1 = new ValidatorTest_DateModel();
@@ -61,12 +61,12 @@ class Doctrine_Validator_Future_TestCase extends Doctrine_UnitTestCase
         $user1->death = date('Y-m-d', time() + 24 * 60 * 60);
         $this->assertTrue($user1->trySave());
         
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
     
     public function testInvalidFutureDates()
     {
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
         $user1 = new ValidatorTest_DateModel();
         $user1->death = date('Y-m-d', 42);
@@ -78,7 +78,7 @@ class Doctrine_Validator_Future_TestCase extends Doctrine_UnitTestCase
         $user1->death = date('Y-m-d', time() + 60);
         $this->assertFalse($user1->trySave());
         
-        $this->manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 
 }

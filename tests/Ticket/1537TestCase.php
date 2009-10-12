@@ -40,7 +40,7 @@ class Doctrine_Ticket_1537_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
         $q = Doctrine_Query::create()
             ->update('Ticket_1537_User u')
             ->set('password', '?', 'changeme')
@@ -56,7 +56,7 @@ class Doctrine_Ticket_1537_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue($params[2]);
         $this->assertEqual($params[3], 'jwage');
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

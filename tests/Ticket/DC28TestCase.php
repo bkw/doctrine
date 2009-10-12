@@ -58,7 +58,7 @@ class Doctrine_Ticket_DC28_TestCase extends Doctrine_UnitTestCase
             );
             
             //echo $q->getSqlQuery().PHP_EOL;
-            $tree_table = Doctrine::getTable('Ticket_DC28_Tree');
+            $tree_table = Doctrine_Core::getTable('Ticket_DC28_Tree');
             $tree = $tree_table->getTree();
             $tree->setBaseQuery($q);
             //echo $q->getSqlQuery().PHP_EOL;

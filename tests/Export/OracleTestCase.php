@@ -184,7 +184,7 @@ class Doctrine_Export_Oracle_TestCase extends Doctrine_UnitTestCase
     
     public function testIdentifierQuoting()
     {
-    	$this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+    	$this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
         
         $fields = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
                         'name' => array('type' => 'string', 'length' => 4),
@@ -230,6 +230,6 @@ END;');
 		$sql = $this->export->dropSequenceSql('sometable');
 		$this->assertEqual($sql, 'DROP SEQUENCE "sometable_seq"');
 		
-        $this->conn->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
 }

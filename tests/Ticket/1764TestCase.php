@@ -40,7 +40,7 @@ class Doctrine_Ticket_1764_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
 
         $user = new Ticket_1764_User();
         $user->username = 'jwage';
@@ -48,10 +48,10 @@ class Doctrine_Ticket_1764_TestCase extends Doctrine_UnitTestCase
         $user->rate = 1;
         $this->assertEqual($user->isValid(), true);
 
-        $sql = Doctrine::generateSqlFromArray(array('Ticket_1764_User'));
+        $sql = Doctrine_Core::generateSqlFromArray(array('Ticket_1764_User'));
         $this->assertEqual($sql[0], 'CREATE TABLE ticket_1764__user (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(255), password VARCHAR(255), rate DECIMAL(18,2) NOT NULL)');
 
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

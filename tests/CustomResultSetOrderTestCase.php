@@ -105,7 +105,7 @@ class Doctrine_CustomResultSetOrder_TestCase extends Doctrine_UnitTestCase {
                 ->from('CategoryWithPosition c')
                 ->leftJoin('c.Boards b')
                 ->orderBy('c.position ASC, b.position ASC')
-                ->execute(array(), Doctrine::HYDRATE_ARRAY);
+                ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(3, count($categories), 'Some categories were doubled!');
                 

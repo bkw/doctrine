@@ -56,7 +56,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
         $count = $this->dbh->getAdapter()->count();
 
         $stmt = $this->dbh->query($query);
-        $data = $stmt->fetchAll(Doctrine::FETCH_ASSOC);
+        $data = $stmt->fetchAll(Doctrine_Core::FETCH_ASSOC);
 
         $this->assertEqual($data, $resultSet);
         $this->assertEqual($this->dbh->getAdapter()->count(), $count);
@@ -74,7 +74,7 @@ class Doctrine_Cache_TestCase extends Doctrine_UnitTestCase
 
         $stmt = $this->dbh->prepare($query);
         $stmt->execute($params);
-        $data = $stmt->fetchAll(Doctrine::FETCH_ASSOC);
+        $data = $stmt->fetchAll(Doctrine_Core::FETCH_ASSOC);
 
         $this->assertEqual($data, $resultSet);
         $this->assertEqual($this->dbh->getAdapter()->count(), $count);

@@ -39,8 +39,8 @@ class Doctrine_Ticket_2375_TestCase extends Doctrine_UnitTestCase
 
         // try loading a couple initial models
 
-        $models1 = Doctrine::loadModels($models1Dir);
-        //$models2 = Doctrine::loadModels($models2Dir);
+        $models1 = Doctrine_Core::loadModels($models1Dir);
+        //$models2 = Doctrine_Core::loadModels($models2Dir);
 
         // make sure two models were loaded
         $this->assertEqual(2, count($models1));
@@ -50,7 +50,7 @@ class Doctrine_Ticket_2375_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(key_exists('Ticket_2375_Model2', $models1));
 
         // get a list of all models that have been loaded
-        $loadedModels = Doctrine::getLoadedModelFiles();
+        $loadedModels = Doctrine_Core::getLoadedModelFiles();
 
         // make sure the paths are correct
         $this->assertEqual($loadedModels['Ticket_2375_Model1'], $models1Dir . DIRECTORY_SEPARATOR . 'Ticket_2375_Model1.php');
@@ -58,7 +58,7 @@ class Doctrine_Ticket_2375_TestCase extends Doctrine_UnitTestCase
 
         // try loading a few more models
 
-        $models2 = Doctrine::loadModels($models2Dir);
+        $models2 = Doctrine_Core::loadModels($models2Dir);
 
         // make sure the right models were loaded
         $this->assertTrue(key_exists('Ticket_2375_Model3', $models2));
@@ -67,7 +67,7 @@ class Doctrine_Ticket_2375_TestCase extends Doctrine_UnitTestCase
         $this->assertTrue(key_exists('Ticket_2375_Model6', $models2));
 
         // get a list of all models that have been loaded
-        $loadedModels = Doctrine::getLoadedModelFiles();
+        $loadedModels = Doctrine_Core::getLoadedModelFiles();
 
         // make sure the paths are correct
         $this->assertEqual($loadedModels['Ticket_2375_Model1'], $models1Dir . DIRECTORY_SEPARATOR . 'Ticket_2375_Model1.php');
@@ -79,14 +79,14 @@ class Doctrine_Ticket_2375_TestCase extends Doctrine_UnitTestCase
 
         // try loading the first models again
 
-        $models1 = Doctrine::loadModels($models1Dir);
+        $models1 = Doctrine_Core::loadModels($models1Dir);
 
         // make sure the right models were loaded
         $this->assertTrue(key_exists('Ticket_2375_Model1', $models1));
         $this->assertTrue(key_exists('Ticket_2375_Model2', $models1));
 
         // get a list of all models that have been loaded
-        $loadedModels = Doctrine::getLoadedModelFiles();
+        $loadedModels = Doctrine_Core::getLoadedModelFiles();
 
         // make sure the paths are correct
         $this->assertEqual($loadedModels['Ticket_2375_Model1'], $models1Dir . DIRECTORY_SEPARATOR . 'Ticket_2375_Model1.php');

@@ -59,7 +59,7 @@ class Doctrine_Table_NamedQuery_TestCase extends Doctrine_UnitTestCase
     
     public function testNamedQuerySupport()
     {
-        $table = Doctrine::getTable('MyFoo');
+        $table = Doctrine_Core::getTable('MyFoo');
 
         $this->assertEqual(
             $table->createNamedQuery('get.by.id')->getSqlQuery(),

@@ -52,7 +52,7 @@ Ticket_1351_Article:
         body: Test body french
 END;
         file_put_contents('test.yml', $yml);
-        Doctrine::loadData('test.yml', true);
+        Doctrine_Core::loadData('test.yml', true);
         unlink('test.yml');
         $results = Doctrine_Query::create()
                     ->from('Ticket_1351_Article a, a.Translation t')

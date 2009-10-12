@@ -78,7 +78,7 @@ class Doctrine_ColumnAlias_TestCase extends Doctrine_UnitTestCase
         $q->select('c.*, b.name')->from('ColumnAliasTest c')
                 ->innerJoin('c.book b')
                 ->where('c.anotherField = ?', 'camelCase')
-                ->setHydrationMode(Doctrine::HYDRATE_ARRAY);
+                ->setHydrationMode(Doctrine_Core::HYDRATE_ARRAY);
         $result = $q->execute();
         $this->assertEqual($result[0]['alias1'], 'first');
         $this->assertEqual($result[0]['alias2'], 123);

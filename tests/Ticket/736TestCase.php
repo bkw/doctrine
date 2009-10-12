@@ -33,7 +33,7 @@ class Doctrine_Ticket_736_TestCase extends Doctrine_UnitTestCase
 
     public function testForHydrationOverwrintingLocalInstancesWhenItShouldnt()
     {
-        $module = Doctrine::getTable("T736_Module")->find(1);
+        $module = Doctrine_Core::getTable("T736_Module")->find(1);
         $module->moduledata->content = "foo";
         $module->moduledata->save();
 	    $this->assertTrue($module->moduledata->content == "foo"); // should be "foo" is "Lorem Ipsum and so on..."
@@ -84,7 +84,7 @@ class T736_ModuleLoaderListener extends Doctrine_Record_Listener
     public function postHydrate(Doctrine_Event $event)
     {
         $contents = $event->data;
-        $delegate = Doctrine::getTable("T736_ModuleDelegate")->find($contents["moduledelegateid"], ($contents instanceof Doctrine_Record) ? Doctrine::HYDRATE_RECORD :Doctrine::HYDRATE_ARRAY );
+        $delegate = Doctrine_Core::getTable("T736_ModuleDelegate")->find($contents["moduledelegateid"], ($contents instanceof Doctrine_Record) ? Doctrine_Core::HYDRATE_RECORD :Doctrine_Core::HYDRATE_ARRAY );
         if ($contents instanceof Doctrine_Record)
         {
             $contents->mapValue("moduledata", $delegate);

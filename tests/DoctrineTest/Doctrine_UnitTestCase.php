@@ -67,7 +67,7 @@ class Doctrine_UnitTestCase extends UnitTestCase
         $this->_name = get_class($this);
 
         $this->manager   = Doctrine_Manager::getInstance();
-        $this->manager->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL);
 
         $this->tables = array_merge($this->tables, 
                         array('entity',
@@ -129,9 +129,9 @@ class Doctrine_UnitTestCase extends UnitTestCase
 
             $this->connection->evictTables();
             $this->dbh      = $this->adapter = $this->connection->getDbh();
-            $this->listener = $this->manager->getAttribute(Doctrine::ATTR_LISTENER);
+            $this->listener = $this->manager->getAttribute(Doctrine_Core::ATTR_LISTENER);
 
-            $this->manager->setAttribute(Doctrine::ATTR_LISTENER, $this->listener);
+            $this->manager->setAttribute(Doctrine_Core::ATTR_LISTENER, $this->listener);
 
         } catch(Doctrine_Manager_Exception $e) {
             if ($this->driverName == 'main') {
@@ -152,7 +152,7 @@ class Doctrine_UnitTestCase extends UnitTestCase
             }
 
             $this->listener = new Doctrine_EventListener();
-            $this->manager->setAttribute(Doctrine::ATTR_LISTENER, $this->listener);
+            $this->manager->setAttribute(Doctrine_Core::ATTR_LISTENER, $this->listener);
         }
         if ($this->driverName !== 'main') {
 

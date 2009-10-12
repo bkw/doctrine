@@ -58,8 +58,8 @@ class Doctrine_Ticket_1630_TestCase extends Doctrine_UnitTestCase
 		$cacheDriver = new Doctrine_Cache_Db(array('tableName' => 'cache', 'connection' => $cacheConn));
 		$cacheDriver->createTable();
 
-        $currentCacheDriver = $this->conn->getAttribute(Doctrine::ATTR_QUERY_CACHE);
-		$this->conn->setAttribute(Doctrine::ATTR_QUERY_CACHE, $cacheDriver);
+        $currentCacheDriver = $this->conn->getAttribute(Doctrine_Core::ATTR_QUERY_CACHE);
+		$this->conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $cacheDriver);
 
         try {
             $q = Doctrine_Query::create()
@@ -73,7 +73,7 @@ class Doctrine_Ticket_1630_TestCase extends Doctrine_UnitTestCase
             $this->fail();
         }
 
-        $this->conn->setAttribute(Doctrine::ATTR_QUERY_CACHE, $currentCacheDriver);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_QUERY_CACHE, $currentCacheDriver);
     }
 }
 

@@ -42,7 +42,7 @@ class Doctrine_Ticket_DC25_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        $q = Doctrine::getTable('Ticket_DC25_Article')
+        $q = Doctrine_Core::getTable('Ticket_DC25_Article')
             ->createQuery('a')
             ->leftJoin('a.Tags t1')
             ->leftJoin('a.Tags t2');

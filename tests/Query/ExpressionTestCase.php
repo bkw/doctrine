@@ -35,7 +35,7 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
     public function testUnknownExpressionInSelectClauseThrowsException()
     {
         // Activate portability all
-        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL);
 
         try {
             $q = Doctrine_Query::create()
@@ -49,14 +49,14 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
         }
 
         // Reassign old portability mode
-        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL);
     }
 
 
     public function testUnknownExpressionInSelectClauseDoesntThrowException()
     {
         // Deactivate portability expression mode
-        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL ^ Doctrine::PORTABILITY_EXPR);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL ^ Doctrine_Core::PORTABILITY_EXPR);
 
         try {
             $q = Doctrine_Query::create()
@@ -70,7 +70,7 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
         }
 
         // Reassign old portability mode
-        $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL);
     }
 
     public function testUnknownColumnWithinFunctionInSelectClauseThrowsException()
@@ -118,7 +118,7 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
     {
          $query = new Doctrine_Query();
          // we are using stored procedure here, so adjust portability settings
-         $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL ^ Doctrine::PORTABILITY_EXPR);
+         $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL ^ Doctrine_Core::PORTABILITY_EXPR);
 
          $lat = '13.23';
          $lon = '33.23';
@@ -134,6 +134,6 @@ class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase
 
          $this->assertEqual($query->getSqlQuery(), "SELECT l.id AS l__id, l.lat AS l__lat, l.lon AS l__lon, l2.name AS l2__name, l2.id AS l2__id, l2.culture AS l2__culture, GeoDistKM(l.lat, l.lon, 13.23, 33.23) AS l__0 FROM location l LEFT JOIN location_i18n l2 ON l.id = l2.id WHERE l.id IN (SELECT DISTINCT l3.id FROM location l3 LEFT JOIN location_i18n l4 ON l3.id = l4.id WHERE (l3.id <> ? AND l4.culture = ?) GROUP BY l3.id HAVING l__0 < 33 ORDER BY l__0 ASC LIMIT 5) AND (l.id <> ? AND l2.culture = ?) GROUP BY l.id HAVING l__0 < 33 ORDER BY l__0 ASC");
 
-         $this->conn->setAttribute(Doctrine::ATTR_PORTABILITY, Doctrine::PORTABILITY_ALL);
+         $this->conn->setAttribute(Doctrine_Core::ATTR_PORTABILITY, Doctrine_Core::PORTABILITY_ALL);
     }
 }

@@ -34,7 +34,7 @@ class Doctrine_Ticket_1808_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $userTable = Doctrine::getTable('User');
+        $userTable = Doctrine_Core::getTable('User');
 
         $this->assertEqual($userTable->buildFindByWhere('NameAndPassword'), 'dctrn_find.name = ? AND dctrn_find.password = ?');
         $this->assertEqual($userTable->buildFindByWhere('NameOrLoginname'), '(dctrn_find.name = ? OR dctrn_find.loginname = ?)');
@@ -50,7 +50,7 @@ class Doctrine_Ticket_1808_TestCase extends Doctrine_UnitTestCase
         $user2 = $userTable->findOneByNameAndLoginnameAndEmailId($user->name, $user->loginname, $user->email_id);
         $this->assertIdentical($user, $user2);
 
-        $test = $userTable->findOneByNameAndLoginnameAndEmailId($user->name, $user->loginname, $user->email_id, Doctrine::HYDRATE_ARRAY);
+        $test = $userTable->findOneByNameAndLoginnameAndEmailId($user->name, $user->loginname, $user->email_id, Doctrine_Core::HYDRATE_ARRAY);
         $this->assertTrue(is_array($test));   
     }
 }

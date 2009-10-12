@@ -283,7 +283,7 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
 
     public function testLimitAttribute() 
     {
-        $this->manager->setAttribute(Doctrine::ATTR_QUERY_LIMIT, Doctrine::LIMIT_ROWS);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_QUERY_LIMIT, Doctrine_Core::LIMIT_ROWS);
         
         $this->connection->clear();
         $q = new Doctrine_Query();
@@ -293,7 +293,7 @@ class Doctrine_Query_Limit_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users->count(), 3);
 
         $this->assertEqual($q->getSqlQuery(), "SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e LEFT JOIN groupuser g ON (e.id = g.user_id) LEFT JOIN entity e2 ON e2.id = g.group_id AND e2.type = 1 WHERE (e2.name = ? AND (e.type = 0)) ORDER BY e.id DESC LIMIT 5");
-        $this->manager->setAttribute(Doctrine::ATTR_QUERY_LIMIT, Doctrine::LIMIT_RECORDS);
+        $this->manager->setAttribute(Doctrine_Core::ATTR_QUERY_LIMIT, Doctrine_Core::LIMIT_RECORDS);
     }
 
     public function testLimitWithManyToManyAndColumnAggregationInheritance() 

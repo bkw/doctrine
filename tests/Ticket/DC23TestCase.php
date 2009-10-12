@@ -83,7 +83,7 @@ Ticket_DC23_Address:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $q = Doctrine_Query::create()
                 ->from('Ticket_DC23_User u')

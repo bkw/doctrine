@@ -30,7 +30,7 @@ class Doctrine_Ticket_1935_TestCase extends Doctrine_UnitTestCase
 
     public function testDuplicatedParamsInSubQuery()
     {
-        $this->connection->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);
+        $this->connection->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
 
         try
         {
@@ -46,7 +46,7 @@ class Doctrine_Ticket_1935_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
 
-        $this->connection->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, false);
+        $this->connection->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, false);
     }
 }
 

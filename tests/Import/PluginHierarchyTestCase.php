@@ -63,7 +63,7 @@ END;
 
         // check that the plugin hierarchy will produce the right sql statements
         // this is almost an end-to-end testing :-)
-        $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models = Doctrine_Core::loadModels($path, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 
         $sql = $this->conn->export->exportSortedClassesSql(array('WikiTest'));
         $sql = current($sql);

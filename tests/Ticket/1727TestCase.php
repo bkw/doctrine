@@ -34,36 +34,36 @@ class Doctrine_Ticket_1727_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine::MODEL_LOADING_CONSERVATIVE);
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1');
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1');
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1');
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1');
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine::MODEL_LOADING_CONSERVATIVE);
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models1', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine::MODEL_LOADING_CONSERVATIVE);
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2');
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2');
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2');
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2');
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine::MODEL_LOADING_CONSERVATIVE);
-        $models2 = Doctrine::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models1 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+        $models2 = Doctrine_Core::loadModels(dirname(__FILE__) . '/1727/models2', Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'));
-        $models2 = Doctrine::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'));
+        $models1 = Doctrine_Core::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'));
+        $models2 = Doctrine_Core::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'));
         $this->assertEqual($models1, $models2);
 
-        $models1 = Doctrine::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'), Doctrine::MODEL_LOADING_CONSERVATIVE);
-        $models2 = Doctrine::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'), Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models1 = Doctrine_Core::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'), Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
+        $models2 = Doctrine_Core::loadModels(array(dirname(__FILE__) . '/1727/models1', dirname(__FILE__) . '/1727/models2'), Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
         $this->assertEqual($models1, $models2);
     }
 }

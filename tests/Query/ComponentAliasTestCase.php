@@ -75,7 +75,7 @@ class Doctrine_Query_ComponentAlias_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u, u.Group g, g.Phonenumber');
 
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $count = count($this->conn);
 
@@ -112,7 +112,7 @@ class Doctrine_Query_ComponentAlias_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Query();
         $q->from('User u, u.Phonenumber, u.Group g, g.Phonenumber')->where('u.id IN (5,6)');
 
-        $users = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $users = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($users), 2);
         $this->assertEqual(count($users[0]['Group']), 1);

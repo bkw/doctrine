@@ -35,7 +35,7 @@ class Doctrine_Query_HydrateNone_TestCase extends Doctrine_UnitTestCase
     public function testCheckParserSupportsStandardFunctions()
     {
         $q = Doctrine_Query::create();
-        $res = $q->select('u.name')->from('User u')->execute(array(), Doctrine::HYDRATE_NONE);
+        $res = $q->select('u.name')->from('User u')->execute(array(), Doctrine_Core::HYDRATE_NONE);
         foreach ($res as $row) {
             $this->assertEqual(1, count($row)); // just 1 column, the name
         }

@@ -245,7 +245,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
 
         $this->assertTrue($coll["name"] === $user);
 
-        $this->connection->getTable("email")->setAttribute(Doctrine::ATTR_COLL_KEY,"address");
+        $this->connection->getTable("email")->setAttribute(Doctrine_Core::ATTR_COLL_KEY,"address");
         $emails = $this->connection->getTable("email")->findAll();
         foreach($emails as $k => $v) {
             $this->assertTrue(gettype($k), "string");
@@ -256,7 +256,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
     public function testFetchCollectionWithIdAsIndex() 
     {
         $user = new User();
-        $user->attribute(Doctrine::ATTR_COLL_KEY, 'id');
+        $user->attribute(Doctrine_Core::ATTR_COLL_KEY, 'id');
         
         $users = $user->getTable()->findAll();
         $this->assertFalse($users->contains(0));
@@ -266,7 +266,7 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
     public function testFetchCollectionWithNameAsIndex() 
     {
         $user = new User();
-        $user->attribute(Doctrine::ATTR_COLL_KEY, 'name');
+        $user->attribute(Doctrine_Core::ATTR_COLL_KEY, 'name');
         
         $users = $user->getTable()->findAll();
         $this->assertFalse($users->contains(0));
@@ -278,9 +278,9 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
         $this->connection->clear();
         
         $user = new User();
-        $user->attribute(Doctrine::ATTR_COLL_KEY, 'id');
+        $user->attribute(Doctrine_Core::ATTR_COLL_KEY, 'id');
         $phonenumber = new Phonenumber();
-        $phonenumber->attribute(Doctrine::ATTR_COLL_KEY, 'id');
+        $phonenumber->attribute(Doctrine_Core::ATTR_COLL_KEY, 'id');
 
 
         $q = new Doctrine_Query();
@@ -297,34 +297,34 @@ class Doctrine_Collection_TestCase extends Doctrine_UnitTestCase
     public function testCustomManagerCollectionClass()
     {
         $manager = Doctrine_Manager::getInstance();
-        $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyCollection');
+        $manager->setAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS, 'MyCollection');
 
         $user = new User();
         $this->assertTrue($user->Phonenumber instanceof MyCollection);
 
-        $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'Doctrine_Collection');
+        $manager->setAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS, 'Doctrine_Collection');
     }
 
     public function testCustomConnectionCollectionClass()
     {
-        $conn = Doctrine::getTable('Phonenumber')->getConnection();
-        $conn->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyConnectionCollection');
+        $conn = Doctrine_Core::getTable('Phonenumber')->getConnection();
+        $conn->setAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS, 'MyConnectionCollection');
 
         $user = new User();
         $this->assertTrue($user->Phonenumber instanceof MyConnectionCollection);
 
-        $conn->unsetAttribute(Doctrine::ATTR_COLLECTION_CLASS);
+        $conn->unsetAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS);
     }
 
     public function testCustomTableCollectionClass()
     {
-        $userTable = Doctrine::getTable('Phonenumber');
-        $userTable->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyPhonenumberCollection');
+        $userTable = Doctrine_Core::getTable('Phonenumber');
+        $userTable->setAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS, 'MyPhonenumberCollection');
 
         $user = new User();
         $this->assertTrue($user->Phonenumber instanceof MyPhonenumberCollection);
 
-        $userTable->unsetAttribute(Doctrine::ATTR_COLLECTION_CLASS);
+        $userTable->unsetAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS);
     }
 }
 

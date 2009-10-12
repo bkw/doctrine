@@ -55,7 +55,7 @@ class Doctrine_Hydrate_Performance_TestCase extends Doctrine_UnitTestCase
     {
         $s = microtime(true);
 
-        $q = Doctrine::getTable('HydratePerformance')
+        $q = Doctrine_Core::getTable('HydratePerformance')
             ->createQuery('u');
 
         $records = $q->execute();

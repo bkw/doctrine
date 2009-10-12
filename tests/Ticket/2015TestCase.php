@@ -45,10 +45,10 @@ class Doctrine_Ticket_2015_TestCase extends Doctrine_UnitTestCase
     
     public function testColumnAggregation()
     {
-        $animal = Doctrine::getTable('mkNode')->findOneById(1);
+        $animal = Doctrine_Core::getTable('mkNode')->findOneById(1);
         $this->assertTrue($animal instanceof mkAnimal);
         
-        $plant = Doctrine::getTable('mkOrganism')->findOneById(2);
+        $plant = Doctrine_Core::getTable('mkOrganism')->findOneById(2);
         $this->assertTrue($plant instanceof mkPlant);
     }
     

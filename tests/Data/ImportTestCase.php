@@ -58,7 +58,7 @@ User:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -93,7 +93,7 @@ Album:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -131,7 +131,7 @@ Phonenumber:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -169,7 +169,7 @@ I18nTestImport:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -209,14 +209,14 @@ ImportNestedSet:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
             $query = new Doctrine_Query();
             $query->from('ImportNestedSet');
 
-            $i = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+            $i = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
             $this->assertEqual($i[0]['name'], 'Root');
             $this->assertEqual($i[0]['lft'], 1);
@@ -282,7 +282,7 @@ ImportNestedSetMultipleTree:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -290,7 +290,7 @@ END;
                 ->from('ImportNestedSetMultipleTree insmt')
                 ->orderBy('insmt.root_id ASC, insmt.lft ASC');
 
-            $i = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+            $i = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
             $this->assertEqual($i[0]['name'], 'Item 1');
             $this->assertEqual($i[0]['lft'], 1);
@@ -351,7 +351,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -389,7 +389,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
             $this->fail();
         } catch (Exception $e) {
             $this->pass();
@@ -435,7 +435,7 @@ END;
 
     public function testRecursiveFixturesLoading()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_RECURSIVE_MERGE_FIXTURES, true);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_RECURSIVE_MERGE_FIXTURES, true);
         self::prepareTables();
         $yml1 = <<<END
 ---
@@ -467,7 +467,7 @@ END;
         unlink('test_data_fixtures/test1.yml');
         unlink('test_data_fixtures/test2.yml');
         rmdir('test_data_fixtures');
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_RECURSIVE_MERGE_FIXTURES, false);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_RECURSIVE_MERGE_FIXTURES, false);
     }
 
     public function testIncorrectYamlRelationThrowsException()
@@ -491,7 +491,7 @@ Group:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 
@@ -526,7 +526,7 @@ I18nNumberLang:
 END;
         try {
             file_put_contents('test.yml', $yml);
-            Doctrine::loadData('test.yml', true);
+            Doctrine_Core::loadData('test.yml', true);
 
             $this->conn->clear();
 

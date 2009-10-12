@@ -98,7 +98,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
         $fi->save();
 
-        $t = Doctrine::getTable('WikiTranslationIndex');
+        $t = Doctrine_Core::getTable('WikiTranslationIndex');
         $oQuery = new Doctrine_Search_Query($t);
         $oQuery->query("jordan");
         $out = $this->conn->fetchAll($oQuery->getSqlQuery(), $oQuery->getParams());

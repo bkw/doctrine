@@ -56,9 +56,9 @@ class Doctrine_NestedSet_Hydration_TestCase extends Doctrine_UnitTestCase
 
     public function testRecordHierarchyHydration()
     {
-        $results = Doctrine::getTable('NestedSetTest_SingleRootNode')
+        $results = Doctrine_Core::getTable('NestedSetTest_SingleRootNode')
             ->createQuery('n')
-            ->execute(array(), Doctrine::HYDRATE_RECORD_HIERARCHY);
+            ->execute(array(), Doctrine_Core::HYDRATE_RECORD_HIERARCHY);
 
         $this->assertEqual($results[0]['__children'][0]['__children'][0]['name'], 'node3');
         $this->assertTrue($results instanceof Doctrine_Collection);
@@ -66,9 +66,9 @@ class Doctrine_NestedSet_Hydration_TestCase extends Doctrine_UnitTestCase
 
     public function testArrayHierarchyHydration()
     {
-        $results = Doctrine::getTable('NestedSetTest_SingleRootNode')
+        $results = Doctrine_Core::getTable('NestedSetTest_SingleRootNode')
             ->createQuery('n')
-            ->execute(array(), Doctrine::HYDRATE_ARRAY_HIERARCHY);
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY_HIERARCHY);
 
         $this->assertEqual($results[0]['__children'][0]['__children'][0]['name'], 'node3');
         $this->assertTrue(is_array($results));
@@ -76,13 +76,13 @@ class Doctrine_NestedSet_Hydration_TestCase extends Doctrine_UnitTestCase
 
     public function testArrayHierarchyToArray()
     {
-        $array = Doctrine::getTable('NestedSetTest_SingleRootNode')
+        $array = Doctrine_Core::getTable('NestedSetTest_SingleRootNode')
             ->createQuery('n')
-            ->execute(array(), Doctrine::HYDRATE_ARRAY_HIERARCHY);
+            ->execute(array(), Doctrine_Core::HYDRATE_ARRAY_HIERARCHY);
 
-        $coll = Doctrine::getTable('NestedSetTest_SingleRootNode')
+        $coll = Doctrine_Core::getTable('NestedSetTest_SingleRootNode')
             ->createQuery('n')
-            ->execute(array(), Doctrine::HYDRATE_RECORD_HIERARCHY);
+            ->execute(array(), Doctrine_Core::HYDRATE_RECORD_HIERARCHY);
 
         $this->assertEqual($array, $coll->toArray());
     }
@@ -90,9 +90,9 @@ class Doctrine_NestedSet_Hydration_TestCase extends Doctrine_UnitTestCase
     public function testHierarchyHydrationNotAllowedOnInvalidModel()
     {
         try {
-            $results = Doctrine::getTable('User')
+            $results = Doctrine_Core::getTable('User')
                 ->createQuery('u')
-                ->execute(array(), Doctrine::HYDRATE_RECORD_HIERARCHY);
+                ->execute(array(), Doctrine_Core::HYDRATE_RECORD_HIERARCHY);
 
             $this->fail();
         } catch (Exception $e) {
@@ -100,9 +100,9 @@ class Doctrine_NestedSet_Hydration_TestCase extends Doctrine_UnitTestCase
         }
 
         try {
-            $results = Doctrine::getTable('User')
+            $results = Doctrine_Core::getTable('User')
                 ->createQuery('u')
-                ->execute(array(), Doctrine::HYDRATE_ARRAY_HIERARCHY);
+                ->execute(array(), Doctrine_Core::HYDRATE_ARRAY_HIERARCHY);
 
             $this->fail();
         } catch (Exception $e) {

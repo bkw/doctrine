@@ -34,7 +34,7 @@ class Doctrine_Ticket_1281_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
-        $users = Doctrine::getTable('User')->findAll();
+        $users = Doctrine_Core::getTable('User')->findAll();
         $user = $users->getFirst();
         $user->name = 'zYne-';
 

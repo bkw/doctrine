@@ -40,7 +40,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
 
     public function testDuplicatedParamsInSubQuery()
     {
-        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);
+        $this->connection->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
         for ($i = 0; $i < 2; $i++) {
             $company = new T1876b_Company();
@@ -83,7 +83,7 @@ class Doctrine_Ticket_1876b_TestCase extends Doctrine_UnitTestCase
             $this->fail($e->getMessage());
         }
 
-        $this->connection->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);
+        $this->connection->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
 }
 

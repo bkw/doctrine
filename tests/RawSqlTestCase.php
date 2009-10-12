@@ -235,7 +235,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         $query->addComponent('entity', 'Entity');
         $query->addComponent('phonenumber', 'Entity.Phonenumber');
         $this->assertEqual($query->getSqlQuery(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
-        $coll = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $coll = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($coll), 3);
     }
@@ -248,7 +248,7 @@ class Doctrine_RawSql_TestCase extends Doctrine_UnitTestCase
         $query->addComponent('entity', 'Entity');
         $query->addComponent('phonenumber', 'Entity.Phonenumber');
         $this->assertEqual($query->getSqlQuery(), 'SELECT entity.name AS entity__name, entity.id AS entity__id, phonenumber.id AS phonenumber__id, phonenumber.phonenumber AS phonenumber__phonenumber, phonenumber.entity_id AS phonenumber__entity_id FROM entity LEFT JOIN phonenumber ON phonenumber.entity_id = entity.id LIMIT 3');
-        $coll = $query->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $coll = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $this->assertEqual(count($coll), 3);
     }

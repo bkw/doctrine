@@ -47,7 +47,7 @@ class Doctrine_Ticket_1325_TestCase extends Doctrine_UnitTestCase
         
         $res = Doctrine_Query::create()
             ->from('Ticket_1325_TableName_NoAlias')
-            ->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            ->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $now = time();
         $time = strtotime($res['event_date']);
@@ -62,7 +62,7 @@ class Doctrine_Ticket_1325_TestCase extends Doctrine_UnitTestCase
         
         $res = Doctrine_Query::create()
             ->from('Ticket_1325_TableName_Aliased')
-            ->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            ->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $now = time();
         $time = strtotime($res['eventDate']);

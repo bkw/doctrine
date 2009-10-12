@@ -40,7 +40,7 @@ class Doctrine_Ticket_1464_TestCase extends Doctrine_UnitTestCase
 
     public function testTest()
     {
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_ALL);
         try {
             $user = new Ticket_1464_User();
             $user->username = 'jwage';
@@ -52,7 +52,7 @@ class Doctrine_Ticket_1464_TestCase extends Doctrine_UnitTestCase
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-        Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_NONE);
+        Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
     }
 }
 

@@ -36,7 +36,7 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
     {
         $path = realpath('ModelLoadingTest/Aggressive');
         
-        $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_AGGRESSIVE);
+        $models = Doctrine_Core::loadModels($path, Doctrine_Core::MODEL_LOADING_AGGRESSIVE);
 
         // Ensure the correct model names were returned
         $this->assertTrue(isset($models['AggressiveModelLoadingUser']) && $models['AggressiveModelLoadingUser'] == 'AggressiveModelLoadingUser');
@@ -46,7 +46,7 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
         // Make sure it does not include the base classes
         $this->assertTrue( ! isset($models['BaseAggressiveModelLoadingUser']));
         
-        $filteredModels = Doctrine::filterInvalidModels($models);
+        $filteredModels = Doctrine_Core::filterInvalidModels($models);
 
         // Make sure filterInvalidModels filters out base abstract classes
         $this->assertTrue( ! isset($models['BaseAggressiveModelLoadingUser']));
@@ -56,7 +56,7 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
     {
         $path = realpath('ModelLoadingTest/Conservative');
 
-        $models = Doctrine::loadModels($path, Doctrine::MODEL_LOADING_CONSERVATIVE);
+        $models = Doctrine_Core::loadModels($path, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);
 
         $this->assertTrue( ! class_exists('ConservativeModelLoadingUser', false));
         $this->assertTrue( ! class_exists('ConservativeModelLoadingProfile', false));
@@ -80,13 +80,13 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
 
     public function testModelLoadingCacheInformation()
     {
-        $models = Doctrine::getLoadedModels();
+        $models = Doctrine_Core::getLoadedModels();
 
         $this->assertTrue(in_array('AggressiveModelLoadingUser', $models));
         $this->assertTrue(in_array('ConservativeModelLoadingProfile', $models));
         $this->assertTrue(in_array('ConservativeModelLoadingContact', $models));
         
-        $modelFiles = Doctrine::getLoadedModelFiles();
+        $modelFiles = Doctrine_Core::getLoadedModelFiles();
         $this->assertTrue(file_exists($modelFiles['ConservativeModelLoadingUser']));
         $this->assertTrue(file_exists($modelFiles['ConservativeModelLoadingProfile']));
         $this->assertTrue(file_exists($modelFiles['ConservativeModelLoadingContact']));
@@ -94,18 +94,18 @@ class Doctrine_Base_TestCase extends Doctrine_UnitTestCase
 
     public function testGetConnectionByTableName()
     {
-        $connectionBefore = Doctrine::getConnectionByTableName('entity');
+        $connectionBefore = Doctrine_Core::getConnectionByTableName('entity');
 
         Doctrine_Manager::connection('sqlite::memory:', 'test_memory');
         Doctrine_Manager::getInstance()->bindComponent('Entity', 'test_memory');
 
-        $connectionAfter = Doctrine::getConnectionByTableName('entity');
+        $connectionAfter = Doctrine_Core::getConnectionByTableName('entity');
 
         $this->assertEqual($connectionAfter->getName(), 'test_memory');
 
         Doctrine_Manager::getInstance()->bindComponent('Entity', $connectionBefore->getName());
 
-        $connectionAfter = Doctrine::getConnectionByTableName('entity');
+        $connectionAfter = Doctrine_Core::getConnectionByTableName('entity');
         
         $this->assertEqual($connectionBefore->getName(), $connectionAfter->getName());
     }

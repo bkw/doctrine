@@ -53,8 +53,8 @@ class Doctrine_Ticket_1622_TestCase extends Doctrine_UnitTestCase
     }
 
     public function testUnlink() {
-        $user = Doctrine::getTable('Ticket_1622_User')->findOneByName('floriank');
-        $child = Doctrine::getTable('Ticket_1622_User')->findOneByName('test');
+        $user = Doctrine_Core::getTable('Ticket_1622_User')->findOneByName('floriank');
+        $child = Doctrine_Core::getTable('Ticket_1622_User')->findOneByName('test');
         
         $user->unlink('children', $child->id);
         
@@ -65,7 +65,7 @@ class Doctrine_Ticket_1622_TestCase extends Doctrine_UnitTestCase
         $user->save();
 
         $user->refresh();
-        $user = Doctrine::getTable('Ticket_1622_User')->findOneByName('floriank');
+        $user = Doctrine_Core::getTable('Ticket_1622_User')->findOneByName('floriank');
         $this->assertEqual(count($user->children), 0);
     }
 }

@@ -175,7 +175,7 @@ class Doctrine_Query_Join_TestCase extends Doctrine_UnitTestCase
           ->from('Record_Country c')->leftJoin('c.City c2')->leftJoin('c2.District d')
           ->where('c.id = ?', array(1));
 
-        $countries = $q->execute(array(), Doctrine::HYDRATE_ARRAY);
+        $countries = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
         $c = $countries[0];
         $this->assertEqual($c['City'][0]['name'], 'City 1');

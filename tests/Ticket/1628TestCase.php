@@ -37,19 +37,19 @@ class Doctrine_Ticket_1628_TestCase extends Doctrine_UnitTestCase
         // String values for non-constant values
         $builder = new Doctrine_Import_Builder();
         $code = trim($builder->buildAttributes(array('coll_key' => 'id')));
-        $this->assertEqual($code, "\$this->setAttribute(Doctrine::ATTR_COLL_KEY, 'id');");
+        $this->assertEqual($code, "\$this->setAttribute(Doctrine_Core::ATTR_COLL_KEY, 'id');");
 
         // Boolean values
         $code = trim($builder->buildAttributes(array('use_dql_callbacks' => true)));
-        $this->assertEqual($code, "\$this->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, true);");
+        $this->assertEqual($code, "\$this->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);");
         $code = trim($builder->buildAttributes(array('use_dql_callbacks' => false)));
-        $this->assertEqual($code, "\$this->setAttribute(Doctrine::ATTR_USE_DQL_CALLBACKS, false);");
+        $this->assertEqual($code, "\$this->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);");
 
         // Constant values
         $code = trim($builder->buildAttributes(array('model_loading' => 'conservative')));
-        $this->assertEqual($code, "\$this->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);");
+        $this->assertEqual($code, "\$this->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_CONSERVATIVE);");
 
         $code = trim($builder->buildAttributes(array('export' => array('all', 'constraints'))));
-        $this->assertEqual($code, "\$this->setAttribute(Doctrine::ATTR_EXPORT, Doctrine::EXPORT_ALL ^ Doctrine::EXPORT_CONSTRAINTS);");
+        $this->assertEqual($code, "\$this->setAttribute(Doctrine_Core::ATTR_EXPORT, Doctrine_Core::EXPORT_ALL ^ Doctrine_Core::EXPORT_CONSTRAINTS);");
     }
 }

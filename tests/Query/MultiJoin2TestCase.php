@@ -106,7 +106,7 @@ class Doctrine_Query_MultiJoin2_TestCase extends Doctrine_UnitTestCase
                     ->leftJoin('le.author a')
                     ->where('c.parentCategoryId = 0')
                     ->orderBy('c.position ASC, subCats.position ASC, b.position ASC')
-                    ->execute(array(), Doctrine::HYDRATE_ARRAY);
+                    ->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
             $this->pass();
         } catch (Doctrine_Exception $e) {
             $this->fail($e->getMessage());

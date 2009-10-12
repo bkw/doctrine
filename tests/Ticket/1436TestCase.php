@@ -124,7 +124,7 @@ class Doctrine_Ticket_1436_TestCase extends Doctrine_UnitTestCase
 
     public function testSynchronizeMNRecordsDontDeleteAfterUnlink()
     {
-        $group = Doctrine::getTable('Group')->find($this->group_one);
+        $group = Doctrine_Core::getTable('Group')->find($this->group_one);
         
         $this->assertTrue(!empty($group));
         $this->assertEqual($group->name, 'Group One');

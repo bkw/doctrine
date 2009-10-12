@@ -34,7 +34,7 @@ class Doctrine_Import_Oracle_TestCase extends Doctrine_UnitTestCase
 {
     public function testListSequencesExecutesSql()
     {
-        $this->conn->setAttribute(Doctrine::ATTR_EMULATE_DATABASE, true);
+        $this->conn->setAttribute(Doctrine_Core::ATTR_EMULATE_DATABASE, true);
 
         $this->import->listSequences('table');
         
