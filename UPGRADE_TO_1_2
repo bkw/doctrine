@@ -666,3 +666,8 @@ The hierarchy a collection can be converted to an array as well.
 
     [php]
     print_r($hierarchy->toArray());
+
+## Moved Doctrine to Doctrine_Core
+
+For integration purposes we have deprecated the `Doctrine` class and moved it to
+`Doctrine_Core`. The old class still exists and extends `Doctrine_Core` for BC.
