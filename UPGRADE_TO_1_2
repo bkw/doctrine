@@ -699,3 +699,81 @@ Or in YAML you can do the following.
       relations:
         User:
           foreignKeyName: user_id_fk
+
+## Behavior Nesting
+
+In Doctrine 1.2 in order to make nesting behaviors work 100% we had to make
+a few changes to the `Doctrine_Record_Generator` class.
+
+Previously when you had a model named `Article` and you enabled `I18n` on it,
+you would end up with some models like the following.
+
+    [yml]
+    Article:
+      columns:
+        id:
+          type: integer
+          primary: true
+          autoincrement: true
+
+    ArticleTranslation:
+      columns:
+        id: # ArticleTranslation.id = Article.id
+          type: integer
+        lang:
+          type: string(2)
+        title: string(255)
+        content: clob
+
+Now if you were to nest a behavior on `ArticleTranslation` you would have issues
+trying to create a foreign key on that generator back to the `ArticleTranslation`.
+To fix this we had to adjust the generated schema a bit to allow nesting.
+
+    [yml]
+    Article:
+      columns:
+        id:
+          type: integer
+          primary: true
+          autoincrement: true
+
+    ArticleTranslation:
+      columns:
+        generator_auto_id:
+          type: integer
+          primary: true
+          autoincrement: true
+        parent_id: # ArticleTranslation.parent_id = Article.id
+          type: integer
+        lang:
+          type: string(2)
+        title: string(255)
+        content: clob
+
+Notice how we have `parent_id` which was `id` previously, and we have a new 
+`generator_auto_id` column which is the primary auto increment column for the 
+generator. This allows other things to create foreign keys back to it.
+
+This also fixes the notorious behavior nesting schema example.
+
+    [yml]
+    Wiki:
+      tableName: wiki
+      actAs:
+        Timestampable:
+        I18n:
+          fields: [title, content]
+          actAs:
+            Versionable:
+              fields: [title, content]
+            Searchable:
+              fields: [title, content]
+            Sluggable:
+              fields: [title]
+      columns:
+        title: string(255)
+        content: clob
+
+This example will now work properly under MySQL and other databases which have 
+foreign key constraints. This example already worked in Sqlite because it does
+not have any foreign key constraints.

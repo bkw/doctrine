@@ -63,8 +63,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('doctrine AND orm');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -74,7 +73,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('((doctrine OR orm) AND dbal) OR database');
 
-        $sql = '(id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)) OR keyword = ?';
+        $sql = '(generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)) OR keyword = ?';
 
         $this->assertEqual($ret, $sql);
     }
@@ -84,7 +83,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('doctrine OR orm AND dbal');
 
-        $sql = 'keyword = ? OR id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = 'keyword = ? OR generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -94,7 +93,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('(doctrine OR orm) AND dbal');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -104,7 +103,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('(doctrine OR orm) dbal');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -114,7 +113,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('(((doctrine OR orm) AND dbal) OR database) AND rdbms');
 
-        $sql = '((id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)) OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = '((generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)) OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -124,7 +123,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('rdbms (dbal OR database)');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -134,7 +133,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('rdbms (((doctrine OR orm) AND dbal) OR database)');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND ((id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND id IN (SELECT id FROM search_test_index WHERE keyword = ?)) OR keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND ((generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)) OR keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -144,8 +143,8 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('rdbms -doctrine');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND '
-             . 'id NOT IN (SELECT id FROM search_test_index WHERE keyword = ?)';
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND '
+             . 'generator_auto_id NOT IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?)';
 
         $this->assertEqual($ret, $sql);
     }
@@ -155,8 +154,8 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('rdbms doctrine OR database');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND '
-             . 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND '
+             . 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
              . 'OR keyword = ?';
 
         $this->assertEqual($ret, $sql);
@@ -167,8 +166,8 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $ret = $q->parseClause('rdbms -doctrine OR database');
 
-        $sql = 'id IN (SELECT id FROM search_test_index WHERE keyword = ?) AND '
-             . 'id NOT IN (SELECT id FROM search_test_index WHERE keyword = ?) '
+        $sql = 'generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) AND '
+             . 'generator_auto_id NOT IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
              . 'OR keyword = ?';
 
         $this->assertEqual($ret, $sql);
@@ -179,11 +178,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doctrine AND orm');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getSqlQuery(), $sql);
     }
@@ -194,10 +193,10 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doctrine OR orm');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
              . 'WHERE keyword = ? OR keyword = ? '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getSqlQuery(), $sql);
     }
@@ -208,8 +207,8 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doctrine');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
-             . 'FROM search_test_index WHERE keyword = ? GROUP BY id ORDER BY relevance DESC';
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
+             . 'FROM search_test_index WHERE keyword = ? GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -220,11 +219,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('(doctrine OR orm) AND dbal');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword = ? OR keyword = ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? OR keyword = ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'dbal'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -235,10 +234,10 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query("'doctrine orm'");
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index WHERE keyword = ? '
              . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -249,11 +248,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query("'doctrine orm dbal'");
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index WHERE keyword = ? '
              . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?) '
              . 'AND (position + 2) = (SELECT position FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'dbal'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -264,11 +263,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doctrine orm');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getSqlQuery(), $sql);
     }
@@ -278,11 +277,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doct?ine orm');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword LIKE ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword LIKE ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doct?ine', 'orm'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -292,11 +291,11 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query('doc* orm');
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword LIKE ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword LIKE ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doc%', 'orm'));
         $this->assertEqual($q->getSqlQuery(), $sql);
@@ -306,12 +305,12 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
         $q = new Doctrine_Search_Query('SearchTestIndex');
         $q->query("doctrine 'orm database'");
 
-        $sql = 'SELECT COUNT(keyword) AS relevance, id '
+        $sql = 'SELECT COUNT(keyword) AS relevance, generator_auto_id '
              . 'FROM search_test_index '
-             . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
-             . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ? '
+             . 'WHERE generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ?) '
+             . 'AND generator_auto_id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? '
              . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?)) '
-             . 'GROUP BY id ORDER BY relevance DESC';
+             . 'GROUP BY generator_auto_id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'database'));
         $this->assertEqual($q->getSqlQuery(), $sql);

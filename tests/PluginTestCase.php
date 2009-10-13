@@ -44,9 +44,9 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $sql = $this->conn->export->exportSortedClassesSql(array('Wiki'));
         $sql = current($sql);
 
-        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content TEXT, version INTEGER, PRIMARY KEY(id, lang, version))');
-        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))');
-        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))');
+        $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_generator_auto_id INTEGER, audit_generator_auto_id INTEGER, audit_parent_id INTEGER, audit_title VARCHAR(255), audit_content TEXT, audit_lang CHAR(2), version INTEGER)');
+        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_generator_auto_id INTEGER, keyword VARCHAR(200), field VARCHAR(50), position INTEGER)');
+        $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255))');
         $this->assertEqual($sql[3], 'CREATE TABLE wiki (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)');
 
         foreach ($sql as $query) {
@@ -87,7 +87,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
 
     public function testSearchableChildTemplate()
     {
-    	  $this->conn->clear();
+    	$this->conn->clear();
 
         $wiki = new Wiki();
         $wiki->state(Doctrine_Record::STATE_TDIRTY);
@@ -103,10 +103,8 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $oQuery->query("jordan");
         $out = $this->conn->fetchAll($oQuery->getSqlQuery(), $oQuery->getParams());
 
-        $this->assertEqual($out[0]['relevance'], 2);
+        $this->assertEqual($out[0]['relevance'], 1);
         $this->assertEqual($out[1]['relevance'], 1);
-        $this->assertEqual($out[0]['id'], 1);
-        $this->assertEqual($out[1]['id'], 2);
     }
 
     public function testSluggableChildTemplate()

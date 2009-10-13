@@ -45,7 +45,7 @@ class Doctrine_Ticket_1236_TestCase extends Doctrine_UnitTestCase
         $test->Translation['en']->title = 'Test';
         $test->Translation['en']->body = 'testing';
         $test->save();
-        $this->assertEqual($test->Translation['en']->id, 1);
+        $this->assertEqual($test->Translation['en']->parent_id, 1);
         $this->assertEqual($test->Translation['en']->title, 'Test');
         $this->assertTrue($test->hasRelation('Translation'));
     }

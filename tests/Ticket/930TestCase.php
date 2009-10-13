@@ -80,7 +80,7 @@ class Doctrine_Ticket_930_TestCase extends Doctrine_UnitTestCase {
     try {
       $q = new Doctrine_Query();
       $r = $q
-      ->select('P.id, J.name, C.code, T.name')
+      ->select('P.id, J.name, C.code, T.name, T.lang')
       ->from('T930_Person P')
       ->leftJoin('P.JobPositions J')
       ->leftJoin('J.Category C')

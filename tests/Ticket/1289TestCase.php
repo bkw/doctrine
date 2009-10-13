@@ -47,8 +47,8 @@ class Doctrine_Ticket_1289_TestCase extends Doctrine_UnitTestCase
         $test->save();
         $version1 = $test->getAuditLog()->getVersion($test, 1);
         $version2 = $test->getAuditLog()->getVersion($test, 2);
-        $this->assertEqual($version1[0]['username'], 'jwage');
-        $this->assertEqual($version2[0]['username'], 'jonwage');
+        $this->assertEqual($version1[0]['audit_username'], 'jwage');
+        $this->assertEqual($version2[0]['audit_username'], 'jonwage');
     }
 }
 

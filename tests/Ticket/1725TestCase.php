@@ -49,7 +49,8 @@ class Doctrine_Ticket_1725_TestCase extends Doctrine_UnitTestCase
         $user->delete();
 
         $version = $user->getAuditLog()->getVersion($user, 2);
-        $this->assertTrue(isset($version[0]['deleted_at']) && $version[0]['deleted_at']);
+
+        $this->assertTrue(isset($version[0]['audit_deleted_at']) && $version[0]['audit_deleted_at']);
 
         Doctrine_Manager::getInstance()->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, false);
     }
