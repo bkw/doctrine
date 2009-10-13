@@ -777,3 +777,26 @@ This also fixes the notorious behavior nesting schema example.
 This example will now work properly under MySQL and other databases which have 
 foreign key constraints. This example already worked in Sqlite because it does
 not have any foreign key constraints.
+
+## Sluggable Provider Option
+
+You can now use a provider option to the `Sluggable` behavior so you can customize
+the PHP code that is used to generate a slug for a record.
+
+    [yml]
+    Article:
+    # ...
+      actAs:
+        Sluggable:
+          provider: [MyClass, provideSlug]
+
+Now you must have some PHP code like this.
+
+    [php]
+    class MyClass
+    {
+        public static function provideSlug(Doctrine_Record $record)
+        {
+            // return something
+        }
+    }
