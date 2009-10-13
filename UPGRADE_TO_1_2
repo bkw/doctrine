@@ -800,3 +800,58 @@ Now you must have some PHP code like this.
             // return something
         }
     }
+
+## Migrations Primary Key Convenience Methods
+
+To ease the process of creating and dropping primary keys in Doctrine when using
+migrations we've implemented two convenience methods named `createPrimaryKey()` 
+and `dropPrimaryKey()`.
+
+You can use create primary keys like the following.
+
+    [php]
+    $columns = array(
+        'id' => array(
+            'type' => 'integer
+            'autoincrement' => true
+         )
+    );
+    $this->createPrimaryKey('my_table', $columns);
+
+If you want to drop the primary key you can do the following.
+
+    [php]
+    $this->dropPrimaryKey('my_table', array('id'));
+
+You can also use the automation helper with these methods.
+
+    [php]
+    class MyMigration extends Doctrine_Migration_Base
+    {
+        public function migrate($direction)
+        {
+            $columns = array(
+                'id' => array(
+                    'type' => 'integer
+                    'autoincrement' => true
+                 )
+            );
+            $this->primaryKey('my_table', $columns);
+        }
+    }
+
+The above migration will create the primary key when migrating up and drop it when
+migrating down.
+
+## Fixed changeColumn() Argument Order in Migrations
+
+Previously the order of `changeColumn()` was not in the order you would expect.
+
+    [php]
+    public function changeColumn($tableName, $columnName, $length = null, $type = null, array $options = array())
+
+Notice how the `$length` is before `$type`. Everywhere else in Doctrine that's 
+how it is. So for this version we have fixed that.
+
+    [php]
+    public function changeColumn($tableName, $columnName, $type = null, $length = null, array $options = array())
