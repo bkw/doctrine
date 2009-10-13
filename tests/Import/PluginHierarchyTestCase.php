@@ -69,11 +69,11 @@ END;
         $sql = current($sql);
 
         $result = array(
-            'CREATE TABLE wiki_test_translation_version (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_generator_auto_id INTEGER, audit_generator_auto_id INTEGER, audit_parent_id INTEGER, audit_title VARCHAR(255), audit_content TEXT, audit_lang CHAR(2), version INTEGER)',
-            'CREATE TABLE wiki_test_translation_index (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_generator_auto_id INTEGER, keyword VARCHAR(200), field VARCHAR(50), position INTEGER)',
-            'CREATE TABLE wiki_test_translation (generator_auto_id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255))',
-            'CREATE TABLE wiki_test (id INTEGER PRIMARY KEY AUTOINCREMENT)',
-            'CREATE UNIQUE INDEX sluggable_idx ON wiki_test_translation (slug)',
+            0 => 'CREATE TABLE wiki_test_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content TEXT, version INTEGER, PRIMARY KEY(id, lang, version))',
+            1 => 'CREATE TABLE wiki_test_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))',
+            2 => 'CREATE TABLE wiki_test_translation (id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))',
+            3 => 'CREATE TABLE wiki_test (id INTEGER PRIMARY KEY AUTOINCREMENT)',
+            4 => 'CREATE UNIQUE INDEX sluggable_idx ON wiki_test_translation (slug)',
         );
             
         foreach($sql as $idx => $req) {

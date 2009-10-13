@@ -54,8 +54,8 @@ class Doctrine_Data_Export_TestCase extends Doctrine_UnitTestCase
 
             $this->assertTrue( ! empty($array));
             $this->assertTrue(isset($array['I18nTestExport']['I18nTestExport_1']));
-            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1']));
-            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_2']));
+            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_en']));
+            $this->assertTrue(isset($array['I18nTestExportTranslation']['I18nTestExportTranslation_1_fr']));
 
             $i->Translation->delete();
             $i->delete();

@@ -49,8 +49,8 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         
         $rel = $e->getTable()->getRelation('SearchTestIndex');
 
-        $this->assertEqual($rel->getLocal(), 'id');
-        $this->assertEqual($rel->getForeign(), 'parent_id');
+        $this->assertIdentical($rel->getLocal(), 'id');
+        $this->assertIdentical($rel->getForeign(), 'id');
     }
     public function testSavingEntriesUpdatesIndex()
     {
@@ -72,13 +72,13 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
     public function testSearchFromTableObject()
     {
         $results = Doctrine_Core::getTable('SearchTest')->search('orm');
-        $this->assertEqual($results[0]['generator_auto_id'], 2);
+        $this->assertEqual($results[0]['id'], 1);
         $query = Doctrine_Query::create()
             ->from('SearchTest s');
         $query = Doctrine_Core::getTable('SearchTest')->search('orm', $query);
-        $this->assertEqual($query->getSqlQuery(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE (s.id IN (SELECT generator_auto_id FROM search_test_index WHERE keyword = ? GROUP BY generator_auto_id))');
+        $this->assertEqual($query->getSqlQuery(), 'SELECT s.id AS s__id, s.title AS s__title, s.content AS s__content FROM search_test s WHERE (s.id IN (SELECT id FROM search_test_index WHERE keyword = ? GROUP BY id))');
         $results = $query->fetchArray();
-        $this->assertEqual($results[0]['id'], 2);
+        $this->assertEqual($results[0]['id'], 1);
     }
 
     public function testQuerying()
@@ -161,12 +161,12 @@ class Doctrine_Search_TestCase extends Doctrine_UnitTestCase
         
         $coll = Doctrine_Query::create()
                 ->from('SearchTestIndex s')
-                ->orderby('s.generator_auto_id DESC')
+                ->orderby('s.id DESC')
                 ->limit(1)
                 ->setHydrationMode(Doctrine_Core::HYDRATE_ARRAY)
                 ->fetchOne();
 
-        $this->assertTrue($coll['generator_auto_id'] > 0);
+        $this->assertEqual($coll['id'], 3);
         $this->assertEqual($coll['keyword'], null);
         $this->assertEqual($coll['field'], null);
         $this->assertEqual($coll['position'], null);
