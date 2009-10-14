@@ -145,6 +145,7 @@ $relation->addTestCase(new Doctrine_Relation_Nest_TestCase());
 $relation->addTestCase(new Doctrine_Relation_OneToOne_TestCase());
 $relation->addTestCase(new Doctrine_Relation_ColumnAliases_TestCase());
 $relation->addTestCase(new Doctrine_Relation_Parser_TestCase());
+$relation->addTestCase(new Doctrine_Relation_OrderBy_TestCase());
 $test->addTestCase($relation);
 
 // Data Types Tests

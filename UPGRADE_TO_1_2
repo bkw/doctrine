@@ -855,3 +855,54 @@ how it is. So for this version we have fixed that.
 
     [php]
     public function changeColumn($tableName, $columnName, $type = null, $length = null, array $options = array())
+
+## Ordering Relationships
+
+It is now possible to set a default order by for your relationships. The order by
+is automatically included in the final SQL when writing DQL queries or lazily
+fetching relationships.
+
+    [yml]
+    User:
+      columns:
+        username: string(255)
+        password: string(255)
+      relations:
+        Articles:
+          class: Article
+          local: id
+          foreign: user_id
+          type: many
+          foreignType: one
+          orderBy: title ASC
+    
+    Article:
+      columns:
+        title: string(255)
+        content: clob
+        user_id: integer
+
+Now if we were to do the following PHP we'll get the SQL with an order by.
+
+    [php]
+    $q = Doctrine::getTable('User')
+        ->createQuery('u')
+        ->leftJoin('u.Articles a');
+
+    echo $q->getSqlQuery() . "\n\n";
+
+Now you should see this SQL query.
+
+    [sql]
+    SELECT u.id AS u__id, u.username AS u__username, u.password AS u__password, a.id AS a__id, a.title AS a__title, a.content AS a__content, a.user_id AS a__user_id FROM user u LEFT JOIN article a ON u.id = a.user_id ORDER BY a.title ASC
+
+Or if you lazily fetch the `Articles` they will be lazily loaded with the order by.
+
+    [php]
+    $user = Doctrine::getTable('User')->find(1);
+    $articles = $user->Articles;
+
+This would execute the following SQL query.
+
+    [sql]
+    SELECT a.id AS a__id, a.title AS a__title, a.content AS a__content, a.user_id AS a__user_id FROM article a WHERE (a.user_id IN (?)) ORDER BY a.title ASC
