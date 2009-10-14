@@ -131,7 +131,7 @@ class Doctrine_Export_Mssql_TestCase extends Doctrine_UnitTestCase
 
         $this->export->createTable($name, $fields);
 
-        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id BIGINT)');
+        $this->assertEqual($this->adapter->pop(), 'CREATE TABLE mytable (id BIGINT NULL)');
     }
     public function testCreateTableSupportsMultiplePks()
     {
@@ -171,7 +171,7 @@ class Doctrine_Export_Mssql_TestCase extends Doctrine_UnitTestCase
         $sql = $this->export->createTableSql($name, $fields, $options);
 
         $this->assertEqual(count($sql), 2);
-        $this->assertEqual($sql[0], 'CREATE TABLE mytable (id BIT NOT NULL, foreignKey INT, PRIMARY KEY([id]))');
+        $this->assertEqual($sql[0], 'CREATE TABLE mytable (id BIT NOT NULL, foreignKey INT NULL, PRIMARY KEY([id]))');
         $this->assertEqual($sql[1], 'ALTER TABLE [mytable] ADD FOREIGN KEY ([foreignKey]) REFERENCES [sometable]([id])');
     }
     public function testCreateDatabaseExecutesSql()
