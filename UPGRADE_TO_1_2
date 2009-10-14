@@ -812,7 +812,7 @@ You can use create primary keys like the following.
     [php]
     $columns = array(
         'id' => array(
-            'type' => 'integer
+            'type' => 'integer,
             'autoincrement' => true
          )
     );
@@ -832,7 +832,7 @@ You can also use the automation helper with these methods.
         {
             $columns = array(
                 'id' => array(
-                    'type' => 'integer
+                    'type' => 'integer,
                     'autoincrement' => true
                  )
             );
