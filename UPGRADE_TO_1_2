@@ -475,7 +475,6 @@ Now we have a blank `Ticket_DC24_Servant` instance and if we were to try and cal
 
 Now as of 1.2 the structure will only look like this.
 
-    [php]
     Array
     (
         [id] => 1
