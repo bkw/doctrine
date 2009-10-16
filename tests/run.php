@@ -221,6 +221,7 @@ $query_tests->addTestCase(new Doctrine_Query_Registry_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_RemoveQueryPart_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_Copy_TestCase());
 $query_tests->addTestCase(new Doctrine_Query_HydrateNone_TestCase());
+$query_tests->addTestCase(new Doctrine_Query_Cache_TestCase());
 $test->addTestCase($query_tests);
 
 // Record Tests
@@ -262,9 +263,7 @@ $cache->addTestCase(new Doctrine_Cache_Apc_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Memcache_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Query_Sqlite_TestCase());
-//$cache->addTestCase(new Doctrine_Cache_File_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
-//$cache->addTestCase(new Doctrine_Cache_TestCase());
 $test->addTestCase($cache);
 
 // Migration Tests

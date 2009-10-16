@@ -854,3 +854,48 @@ This would execute the following SQL query.
 
     [sql]
     SELECT a.id AS a__id, a.title AS a__title, a.content AS a__content, a.user_id AS a__user_id FROM article a WHERE (a.user_id IN (?)) ORDER BY a.title ASC
+
+You can also specify the default order by for a model itself instead of on the relationship.
+
+    [yml]
+    Article:
+      options:
+        orderBy: title ASC
+      columns:
+        title: string(255)
+
+Now any query involving the `Article` model will have that order by.
+
+## Result Cache Improvements
+
+In Doctrine when you use result caching, it stores the results of a query in the
+cache driver the first time it executes and retrieves it from the cache for all
+subsequent requests. The key for this cache entry in the driver is automatically
+generated so it is hard for you to identify a single entry and clear it manually.
+
+In Doctrine 1.2 we added the ability to set the result cache hash/key used.
+
+    [php]
+    $q = Doctrine_Query::create()
+        ->from('User u')
+        ->useResultCache(true, 3600, 'user_list');
+
+If you want to manually clear the item from the query object you can do.
+
+    [php]
+    $q->clearResultCache();
+
+Or if you have the cache driver you could delete it by the key.
+
+    [php]
+    $cacheDriver->delete('user_list');
+
+You can also use the `setResultCacheHash()` to set the key used to store the cache
+entry.
+
+    [php]
+    $q = Doctrine_Query::create()
+        ->from('User u')
+        ->useResultCache(true, 3600);
+
+    $q->setResultCacheHash('user_list');

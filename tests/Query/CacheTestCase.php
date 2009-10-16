@@ -77,7 +77,7 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual(count($coll), 8);    
     }
 
-    /*public function testResultSetCacheAddsResultSetsIntoCache()
+    public function testResultSetCacheAddsResultSetsIntoCache()
     {
         $q = new Doctrine_Query();
 
@@ -249,6 +249,5 @@ class Doctrine_Query_Cache_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($cache->count(), 0);
         $this->assertEqual(count($coll), 0);
-    }*/
-    
+    }
 }
