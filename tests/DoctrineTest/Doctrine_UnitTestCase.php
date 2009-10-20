@@ -272,13 +272,6 @@ class Doctrine_UnitTestCase extends UnitTestCase
     {
         return $this->dataDict->getPortableDeclaration(array('type' => $type, 'name' => 'colname', 'length' => 1, 'fixed' => true));
     }
-    public function clearCache() 
-    {
-        foreach($this->tables as $name) {
-            $table = $this->connection->getTable($name);
-            $table->getCache()->deleteAll();
-        }
-    }
     public function setUp()
     {
         if ( ! $this->init) {
