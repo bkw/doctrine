@@ -899,3 +899,14 @@ entry.
         ->useResultCache(true, 3600);
 
     $q->setResultCacheHash('user_list');
+
+You can also now delete cache entries from the cache drivers using PHP regular
+expressions.
+
+    $cacheDriver = new Doctrine_Cache_Apc();
+
+    $cacheDriver->save('my_cache_one');
+    $cacheDriver->save('my_cache_two');
+    $cacheDriver->save('my_cache_three');
+
+    echo $cacheDriver->deleteByRegex('/my_cache_.*/'); // 3
