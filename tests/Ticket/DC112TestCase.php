@@ -77,7 +77,7 @@ class Doctrine_Ticket_DC112_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($q->getResultCacheHash(), '03469b0a9dc8a2f2f5a05831813a86fb');
     }
 
-    public function testDeleteRegex()
+    public function testDeleteByRegex()
     {
         $cacheDriver = new Doctrine_Cache_Array(array(
             'prefix' => 'test_'
@@ -93,19 +93,67 @@ class Doctrine_Ticket_DC112_TestCase extends Doctrine_UnitTestCase
             ->useResultCache($cacheDriver, 3600, 'doctrine_query_two')
             ->execute();
 
-        Doctrine_Query::create()
-            ->from('User u')
-            ->useResultCache($cacheDriver, 3600, 'doctrine_query_three')
-            ->execute();
-
-        Doctrine_Query::create()
-            ->from('User u')
-            ->useResultCache($cacheDriver, 3600, 'doctrine_query_four')
-            ->execute();
-
-        $this->assertEqual($cacheDriver->count(), 4);
         $count = $cacheDriver->deleteByRegex('/test_doctrine_query_.*/');
-        $this->assertEqual($count, 4);
+        $this->assertEqual($count, 2);
+        $this->assertEqual($cacheDriver->count(), 0);
+    }
+
+    public function testDeleteByPrefix()
+    {
+        $cacheDriver = new Doctrine_Cache_Array(array(
+            'prefix' => 'test_'
+        ));
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'doctrine_query_one')
+            ->execute();
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'doctrine_query_two')
+            ->execute();
+
+        $count = $cacheDriver->deleteByPrefix('test_');
+        $this->assertEqual($count, 2);
+        $this->assertEqual($cacheDriver->count(), 0);
+    }
+
+    public function testDeleteBySuffix()
+    {
+        $cacheDriver = new Doctrine_Cache_Array();
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'one_query')
+            ->execute();
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'two_query')
+            ->execute();
+
+        $count = $cacheDriver->deleteBySuffix('_query');
+        $this->assertEqual($count, 2);
+        $this->assertEqual($cacheDriver->count(), 0);
+    }
+
+    public function testDeleteWithWildcard()
+    {
+        $cacheDriver = new Doctrine_Cache_Array();
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'user_query_one')
+            ->execute();
+
+        Doctrine_Query::create()
+            ->from('User u')
+            ->useResultCache($cacheDriver, 3600, 'user_query_two')
+            ->execute();
+
+        $count = $cacheDriver->delete('user_query_*');
+        $this->assertEqual($count, 2);
         $this->assertEqual($cacheDriver->count(), 0);
     }
 }

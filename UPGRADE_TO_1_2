@@ -903,6 +903,7 @@ entry.
 You can also now delete cache entries from the cache drivers using PHP regular
 expressions.
 
+    [php]
     $cacheDriver = new Doctrine_Cache_Apc();
 
     $cacheDriver->save('my_cache_one');
@@ -910,3 +911,18 @@ expressions.
     $cacheDriver->save('my_cache_three');
 
     echo $cacheDriver->deleteByRegex('/my_cache_.*/'); // 3
+
+If you're not a regular expression master and just want to simply delete with 
+some wild cards then you can use the `*` character with the normal `delete()`
+method and we'll build the regular expression for you and call `deleteByRegex()`.
+
+    [php]
+    echo $cacheDriver->delete('my_cache_*');
+
+Since `preg_match()` is pretty slow the above example would not perform well
+with lots of cache keys to compare to the regular expression so you can
+alternatively use the `deleteByPrefix()` and `deleteBySuffix()` method if
+that is sufficient enough for you.
+
+    [php]
+    echo $cacheDriver->deleteByPrefix('my_cache_');
