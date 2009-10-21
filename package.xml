@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-10-06</date>
- <time>18:42:33</time>
+ <date>2009-10-21</date>
+ <time>17:37:18</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
@@ -167,10 +167,12 @@ requiring needless code duplication.</description>
      <dir name="Hydrator">
       <file name="Abstract.php" role="php" />
       <file name="ArrayDriver.php" role="php" />
+      <file name="ArrayHierarchyDriver.php" role="php" />
       <file name="Exception.php" role="php" />
       <file name="Graph.php" role="php" />
       <file name="NoneDriver.php" role="php" />
       <file name="RecordDriver.php" role="php" />
+      <file name="RecordHierarchyDriver.php" role="php" />
       <file name="ScalarDriver.php" role="php" />
       <file name="SingleScalarDriver.php" role="php" />
      </dir> <!-- /lib/Doctrine/Hydrator -->
@@ -446,16 +448,15 @@ requiring needless code duplication.</description>
      <file name="Access.php" role="php" />
      <file name="AuditLog.php" role="php" />
      <file name="Builder.php" role="php" />
-     <file name="Cache.php" role="php" />
      <file name="Cli.php" role="php" />
      <file name="Collection.php" role="php" />
      <file name="Column.php" role="php" />
      <file name="Compiler.php" role="php" />
      <file name="Configurable.php" role="php" />
      <file name="Connection.php" role="php" />
+     <file name="Core.php" role="php" />
      <file name="Data.php" role="php" />
      <file name="DataDict.php" role="php" />
-     <file name="DataType.php" role="php" />
      <file name="Event.php" role="php" />
      <file name="EventListener.php" role="php" />
      <file name="Exception.php" role="php" />
@@ -501,11 +502,18 @@ requiring needless code duplication.</description>
       <file name="SqliteTestCase.php" role="test" />
      </dir> <!-- /tests/Cache/Query -->
      <file name="ApcTestCase.php" role="test" />
-     <file name="FileTestCase.php" role="test" />
      <file name="MemcacheTestCase.php" role="test" />
      <file name="QuerySqliteTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Cache -->
+    <dir name="CliTestCase">
+     <file name="baz.php" role="test" />
+     <file name="bip.php" role="test" />
+     <file name="CustomDoctrineStyleTask.php" role="test" />
+     <file name="doctrine.php" role="test" />
+     <file name="foo.php" role="test" />
+     <file name="TaskDeclaredInAnIncFile.inc.php" role="test" />
+    </dir> <!-- /tests/CliTestCase -->
     <dir name="Collection">
      <file name="SnapshotTestCase.php" role="test" />
     </dir> <!-- /tests/Collection -->
@@ -605,6 +613,7 @@ requiring needless code duplication.</description>
        <file name="to.yml" role="test" />
       </dir> <!-- /tests/Migration/Diff/schema -->
      </dir> <!-- /tests/Migration/Diff -->
+     <file name="BaseTestCase.php" role="test" />
      <file name="DiffTestCase.php" role="test" />
     </dir> <!-- /tests/Migration -->
     <dir name="migration_classes">
@@ -820,6 +829,7 @@ requiring needless code duplication.</description>
      <file name="002_mysql_change_column.php" role="test" />
     </dir> <!-- /tests/mysql_migration_classes -->
     <dir name="NestedSet">
+     <file name="HydrationTestCase.php" role="test" />
      <file name="MultiRootTestCase.php" role="test" />
      <file name="SingleRootTestCase.php" role="test" />
      <file name="TimestampableMultiRootTestCase.php" role="test" />
@@ -884,6 +894,7 @@ requiring needless code duplication.</description>
      <file name="NestTestCase.php" role="test" />
      <file name="OneToManyTestCase.php" role="test" />
      <file name="OneToOneTestCase.php" role="test" />
+     <file name="OrderByTestCase.php" role="test" />
      <file name="ParserTestCase.php" role="test" />
     </dir> <!-- /tests/Relation -->
     <dir name="Search">
@@ -929,6 +940,9 @@ requiring needless code duplication.</description>
        <file name="Ticket_2375_Model5.php" role="test" />
       </dir> <!-- /tests/Ticket/2375/models2 -->
      </dir> <!-- /tests/Ticket/2375 -->
+     <dir name="DC95">
+      <file name="schema.yml" role="test" />
+     </dir> <!-- /tests/Ticket/DC95 -->
      <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
@@ -1161,6 +1175,13 @@ requiring needless code duplication.</description>
      <file name="DC28TestCase.php" role="test" />
      <file name="DC56TestCase.php" role="test" />
      <file name="DC57TestCase.php" role="test" />
+     <file name="DC63TestCase.php" role="test" />
+     <file name="DC64TestCase.php" role="test" />
+     <file name="DC82TestCase.php" role="test" />
+     <file name="DC86TestCase.php" role="test" />
+     <file name="DC95TestCase.php" role="test" />
+     <file name="DC101TestCase.php" role="test" />
+     <file name="DC112TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1182,8 +1203,8 @@ requiring needless code duplication.</description>
     <file name="BatchIteratorTestCase.php" role="test" />
     <file name="bootstrap.php" role="test" />
     <file name="CacheSqliteTestCase.php" role="test" />
-    <file name="CacheTestCase.php" role="test" />
     <file name="ClassTableInheritanceTestCase.php" role="test" />
+    <file name="CliTestCase.php" role="test" />
     <file name="CollectionOffsetTestCase.php" role="test" />
     <file name="CollectionTestCase.php" role="test" />
     <file name="ColumnAggregationInheritanceTestCase.php" role="test" />
@@ -1301,7 +1322,7 @@ requiring needless code duplication.</description>
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <date>2009-10-06</date>
+   <date>2009-10-21</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>

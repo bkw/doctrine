@@ -1,3 +1,68 @@
+1.2.0-ALPHA3
+------------
+     * [r6440] [1.2] Release Doctrine 1.2 ALPHA2
+     * [r6462] [1.2] moved hydration method to parent for easier use in custom hydrators
+     * [r6465] [1.2][DC-95] Added better support for PEAR style naming convention when generating and loading models
+     * [r6466] [1.2][DC-63] Added new setColumnValidators() method for specifying mapping information
+     * [r6467] [2.0][DC-90] Renaming setColumnValidators() to setColumnOptions() and setColumnOption()
+     * [r6468] [1.2][DC-88] Fixing consistancy of the validators
+     * [r6469] [1.0, 1.1, 1.2][DC-89] Fixing issue with setColumn() string parsing
+     * [r6470] [1.2] Fixing bad tests that could cause other fails
+     * [r6471] [1.2][DC-76] Updating record listener interface
+     * [r6472] [1.2][DC-79] Fix to not save any foreign keys or m2m associations if parent record validation fails
+     * [r6473] [1.2] Adding methods to reset Doctrine_Manager static instance
+     * [r6474] [1.2] Fixing sandbox
+     * [r6475] [2.0][DC-78] CLI refactorings to allow you to register a task
+     * [r6476] [1.2] Removing unncessary is_object
+     * [r6477] [1.2] One more tweak to ErrorStack::add()
+     * [r6478] [1.2] Fixing exception class
+     * [r6479] [1.2] Removing unused function
+     * [r6480] [1.2] Fixing __toString() to return class name if it does not start with Doctrine_Validator_
+     * [r6483] [1.2] Adding functionality to convert nested set structures to a hierarchical structure
+     * [r6484] [1.2] Moving Doctrine to Doctrine_Core to fix autoloaders issue
+     * [r6485] [1.2][DC-102] Fixes issue with model builder class prefixes
+     * [r6486] [1.2] Fix for cti
+     * [r6487] [1.2][DC-99] Formatting the name of foreign key constraint
+     * [r6489] [1.2] Changing require to require_once
+     * [r6490] [1.2] Adding to upgrade file about Doctrine_Core
+     * [r6491] [1.2] Fix to mysql drop database to disable foreign key checks
+     * [r6492] [1.2][DC-101] Added support for foreignKeyName in relationship setup.
+     * [r6493] [1.2] Fix for behavior nesting and php 5.3 limit subquery orderby
+     * [r6494] [1.0, 1.1, 1.2][DC-92] Fixes issue with pgsql boolean default on import
+     * [r6495] [1.2][DC-84] Fix to migration automation functionality executing in wrong order when migrating down
+     * [r6496] [1.2] Added provider option for Sluggable behavior
+     * [r6497] [1.2][DC-86] Fixing sqlite now() expression
+     * [r6498] [1.2][DC-82] Adding support for conditional unique validator for pgsql
+     * [r6499] [1.2] Adding missing test case files
+     * [r6501] [1.2] Adding exception trace to rethrown exception
+     * [r6502] [1.2] Fixed changeColumn() argument order and added createPrimaryKey() and dropPrimaryKey() convenience methods
+     * [r6503] [1.2] Documenting previous commits
+     * [r6504] [1.2] Change so version table is not created until needed
+     * [r6505] [1.2] Fix so that if migration connection is changed the processor will use it
+     * [r6506] [1.2] Reverting r6493 in prep for a new version of the patch which is BC
+     * [r6507] [1.2] Fixing nesting behaviors for good
+     * [r6508] [1.2] Added ability for relationships to specify a default order by with the "orderBy" configuration option
+     * [r6509] [1.2] Fixing parse error
+     * [r6510] [1.2] Fixing typo again
+     * [r6511] [1.2] Updating upgrade doc for nesting behavior changes
+     * [r6512] [1.2] Fixing wrong code block name
+     * [r6513] [1.2] moved the schema importer's array of global definition keys to a static var so it can be used elsewhere
+     * [r6514] [1.2] added missing array
+     * [r6516] [1.2] A little refactoring
+     * [r6517] [1.2][DC-105] Fix to mssql export for notnull false
+     * [r6528] [1.2] Fixing issue with spaces in join condition dql
+     * [r6529] [1.2] Commenting out test temporarily
+     * [r6532] [1.2] Enhancing default order by functionality and enhancing result set cache to allow you to set the cache key/hash for storing entries.
+     * [r6537] [1.2][DC-113] Fix for sequences. Thanks for suggested patch
+     * [r6538] [1.2] Another fix for sequences.
+     * [r6540] [1.2][DC-117] Added support to migrations default options. Thanks Dan Bettles for patch
+     * [r6543] [1.2][DC-124] Removing use of tabs in Doctrine_Inflector
+     * [r6544] [1.0, 1.1, 1.2][DC-125] Fixes issue with memory leak in batchUpdateIndex() for Searchable behavior
+     * [r6545] [1.2][DC-112] Initial entry of functionality for deleting cache entries by regular expressions
+     * [r6546] [1.2][DC-112] Adding documentation for deleteByRegex()
+     * [r6547] [1.2] Removing unused file.
+     * [r6548] [1.2][DC-112] More refactorings on cache drivers for improved delete functionality
+
 1.2.0-ALPHA2
 ------------
      * [r6384] [1.2] Releasing Doctrine 1.2.0-ALPHA1
