@@ -33,18 +33,13 @@
 class Doctrine_Query_Expression_TestCase extends Doctrine_UnitTestCase 
 {
 
-    public function testUnknownExpressionInSelectClauseThrowsException() 
+    public function testUnknownExpression() 
     {
         $q = new Doctrine_Query();
         
-        try {
-            $q->parseQuery('SELECT SOMEUNKNOWNFUNC(u.name, " ", u.loginname) FROM User u');
-            
-            $q->getQuery();
-            $this->fail();
-        } catch(Doctrine_Query_Exception $e) {
-            $this->pass();
-        }
+        $q->parseQuery('SELECT SOMEUNKNOWNFUNC(u.name, " ", u.loginname) FROM User u');
+        
+        $this->assertEqual($q->getQuery(), 'SELECT SOMEUNKNOWNFUNC(e.name, " ", e.loginname) AS e__0 FROM entity e WHERE (e.type = 0)');
     }
 
     public function testUnknownColumnWithinFunctionInSelectClauseThrowsException() 
