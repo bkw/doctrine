@@ -109,7 +109,7 @@ $expression->addTestCase(new Doctrine_Expression_Sqlite_TestCase());
 $test->addTestCase($expression);
 
 // Core Tests
-$core = new GroupTest('Core Test', 'core');
+$core = new GroupTest('Core Tests', 'core');
 $core->addTestCase(new Doctrine_Base_TestCase());
 $core->addTestCase(new Doctrine_Access_TestCase());
 $core->addTestCase(new Doctrine_Configurable_TestCase());
@@ -128,9 +128,14 @@ $core->addTestCase(new Doctrine_Hydrate_Driver_TestCase());
 $core->addTestCase(new Doctrine_Tokenizer_TestCase());
 $core->addTestCase(new Doctrine_BatchIterator_TestCase());
 $core->addTestCase(new Doctrine_Hydrate_TestCase());
-$core->addTestCase(new Doctrine_Cli_TestCase());
 $core->addTestCase(new Doctrine_Extension_TestCase());
 $test->addTestCase($core);
+
+// CLI Tests
+$cli = new GroupTest('CLI Tests', 'cli');
+$cli->addTestCase(new Doctrine_Cli_TestCase());
+$cli->addTestCase(new Doctrine_Task_TestCase());
+$test->addTestCase($cli);
 
 // Relation Tests
 $relation = new GroupTest('Relation Tests', 'relation');

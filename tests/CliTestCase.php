@@ -32,55 +32,129 @@
  */
 class Doctrine_Cli_TestCase extends Doctrine_UnitTestCase 
 {
-    public function setUp()
+    /**
+     * @ignore
+     * @var string
+     */
+    protected $fixturesPath;
+
+    /**
+     * The names of some of the Doctrine Task classes
+     * 
+     * @ignore
+     * @var array
+     */
+    protected $doctrineTaskClassName = array(
+        'Doctrine_Task_CreateDb' => 'create-db',
+        'Doctrine_Task_Migrate' => 'migrate',
+        'Doctrine_Task_GenerateModelsDb' => 'generate-models-db',
+    );
+
+    /**
+     * @ignore
+     * @return string
+     */
+    protected function getFixturesPath()
     {
-        
+        if (! isset($this->fixturesPath)) {
+            $this->fixturesPath = dirname(__FILE__) . '/CliTestCase';
+        }
+
+        return $this->fixturesPath;
     }
 
-    public function tearDown()
-    {
-    }
+    public function setUp() {}
+
+    public function tearDown() {}
 
     public function testTheNameOfTheTaskBaseClassNameIsStoredInAClassConstant()
     {
         $this->assertFalse(is_null(constant('Doctrine_Cli::TASK_BASE_CLASS')));
     }
 
-    public function testClassistaskReturnsTrueIfTheSpecifiedClassIsATask()
+    public function testGetconfigReturnsTheArrayUsedToConstructTheInstance()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $this->assertTrue($cli->classIsTask('Doctrine_Cli_TestCase_EmptyTask'));
-        $this->assertFalse($cli->classIsTask('Doctrine_Cli_TestCase_TestTask003'));
+        $config = array('foo' => 'bar', 'baz' => 'bip');
+        $cli = new Doctrine_Cli_TestCase_PassiveCli($config);
+        $this->assertEqual($config, $cli->getConfig());
     }
 
-    public function testLoadandregistertaskLoadsAndRegistersTheTaskClassInTheSpecifiedFile()
+    public function testIsConstructedWithAnEmptyConfigArrayByDefault()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        /*
-         * Load any task-class from a file.  Neither the file nor the class follow Doctrine naming conventions because
-         * the method mustn't care about that.
-         */
-        $cli->loadAndRegisterTask(
-            dirname(__FILE__) . '/CliTestCase/foo.php',
-            'Doctrine_Cli_TestCase_TestTask004',
-            'TestTask004'
-        );
-
-        $aLoadedClassTask = $cli->getRegisteredTasks();
-        $this->assertTrue(isset($aLoadedClassTask['Doctrine_Cli_TestCase_TestTask004']));
-        $this->assertEqual('TestTask004', $aLoadedClassTask['Doctrine_Cli_TestCase_TestTask004']);
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+        $this->assertEqual(array(), $cli->getConfig());
     }
 
-    public function testLoadandregistertaskThrowsAnExceptionIfTheSpecifiedFileDoesNotExist()
+    public function testGetconfigReturnsTheArraySetWithSetconfig()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+
+        $this->assertEqual(array(), $cli->getConfig());
+
+        $config = array('foo' => 'bar', 'baz' => 'bip');
+        $cli->setConfig($config);
+        $this->assertEqual($config, $cli->getConfig());
+    }
+
+    public function testGetformatterReturnsTheFormatterUsedToConstructTheInstance()
+    {
+        $formatter = new Doctrine_Cli_Formatter();
+        $cli = new Doctrine_Cli_TestCase_PassiveCli(array(), $formatter);
+        $this->assertIdentical($formatter, $cli->getFormatter());
+    }
+
+    public function testIsConstructedWithAnAnsiColourFormatterByDefault()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+        $this->assertTrue($cli->getFormatter() instanceof Doctrine_Cli_AnsiColorFormatter);
+    }
+
+    public function testGetformatterReturnsTheFormatterSetWithSetformatter()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+        $formatter = new Doctrine_Cli_Formatter();
+        $cli->setFormatter($formatter);
+        $this->assertIdentical($formatter, $cli->getFormatter());
+    }
+
+    public function testHasconfigvalueReturnsTrueIfTheElementInTheConfigHasTheSpecifiedValue()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli(array('foo' => 'bar', 'true' => true));
+
+        $this->assertTrue($cli->hasConfigValue('foo', 'bar'));
+        $this->assertFalse($cli->hasConfigValue('foo', 'baz'));
+
+        $this->assertTrue($cli->hasConfigValue('true', 1));
+        $this->assertTrue($cli->hasConfigValue('true', true));
+        $this->assertFalse($cli->hasConfigValue('true', 1, true));
+        $this->assertTrue($cli->hasConfigValue('true', true, true));
+
+        $this->assertFalse($cli->hasConfigValue('missing', 'anything'));
+    }
+
+    public function testHasconfigvalueReturnsTrueIfTheElementInTheConfigIsSetAndAValueWasNotSpecified()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli(array('foo' => 'bar'));
+        $this->assertTrue($cli->hasConfigValue('foo'));
+        $this->assertFalse($cli->hasConfigValue('baz'));
+    }
+
+    public function testGetconfigvalueReturnsTheValueOfTheSpecifiedElementInTheConfig()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli(array('foo' => 'bar'));
+        $this->assertEqual('bar', $cli->getConfigValue('foo'));
+    }
+
+    public function testGetconfigvalueThrowsAnExceptionIfTheSpecifiedElementDoesNotExistInTheConfig()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+
+        $key = 'anything';
 
         try {
-            $filename = dirname(__FILE__) . '/CliTestCase/bar.php';
-            $cli->loadAndRegisterTask($filename, 'anything', 'anything');
-        } catch (InvalidArgumentException $e) {
-            if ($e->getMessage() == "The task file \"{$filename}\" does not exist") {
+            $cli->getConfigValue($key);
+        } catch (OutOfBoundsException $e) {
+            if ($e->getMessage() == "The element \"{$key}\" does not exist in the config") {
                 $this->pass();
                 return;
             }
@@ -89,272 +163,277 @@ class Doctrine_Cli_TestCase extends Doctrine_UnitTestCase
         $this->fail();
     }
 
-    public function testLoadandregistertaskThrowsAnExceptionIfTheSpecifiedClassDoesNotExist()
+    public function testGetconfigvalueReturnsTheDefaultValueIfTheSpecifiedElementDoesNotExistInTheConfig()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try {
-            $className = 'MissingClass';
-            $cli->loadAndRegisterTask(dirname(__FILE__) . '/CliTestCase/baz.php', $className, 'anything');
-        } catch (InvalidArgumentException $e) {
-            if ($e->getMessage() == "The task class \"{$className}\" does not exist") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+        $this->assertEqual('default', $cli->getConfigValue('anything', 'default'));
     }
 
-    public function testLoadandregistertaskThrowsAnExceptionIfTheSpecifiedClassIsNotATask()
+    public function testGetregisteredtasksReturnsTheArraySetWithSetregisteredtasks()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try
-        {
-            $className = 'Doctrine_Cli_TestCase_NotATask';
-            $cli->loadAndRegisterTask(dirname(__FILE__) . '/CliTestCase/bip.php', $className, 'anything');
-        } catch (DomainException $e) {
-            if ($e->getMessage() == "The class \"{$className}\" is not a Doctrine Task") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
-    }
-
-    public function testLoadandregistertaskThrowsAnExceptionIfTheSpecifiedTaskNameIsBlank()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try {
-            $cli->loadAndRegisterTask(dirname(__FILE__) . '/CliTestCase/foo.php', 'Doctrine_Cli_TestCase_TestTask004', '');
-        } catch (InvalidArgumentException $e) {
-            if ($e->getMessage() == "The task-name is blank") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
-    }
-
-    public function testRegistertaskRegistersTheSpecifiedTaskClass()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $cli->setRegisteredTasks(array());
-        $cli->registerTask('Doctrine_Cli_TestCase_EmptyTask', 'anything');
-        $this->assertEqual(array('Doctrine_Cli_TestCase_EmptyTask' => 'anything'), $cli->getRegisteredTasks());
-    }
-
-    public function testRegistertaskThrowsAnExceptionIfTheSpecifiedClassDoesNotExist()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try {
-            $className = 'MissingClass';
-            $cli->registerTask($className, 'anything');
-        } catch (InvalidArgumentException $e) {
-            if ($e->getMessage() == "The task class \"{$className}\" does not exist") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
-    }
-
-    public function testRegistertaskThrowsAnExceptionIfTheSpecifiedClassIsNotATask()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try {
-            $className = 'Doctrine_Cli_TestCase_TestTask003';
-            $cli->registerTask($className, 'anything');
-        } catch (DomainException $e) {
-            if ($e->getMessage() == "The class \"{$className}\" is not a Doctrine Task") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
-    }
-
-    public function testRegistertaskThrowsAnExceptionIfTheSpecifiedTaskNameIsBlank()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        try {
-            $cli->registerTask('Doctrine_Cli_TestCase_EmptyTask', '');
-        } catch (InvalidArgumentException $e) {
-            if ($e->getMessage() == "The task-name is blank") {
-                $this->pass();
-                return;
-            }
-        }
-
-        $this->fail();
-    }
-
-    public function testGetregisteredtasksReturnsTheArrayOfTasksSetWithSetregisteredtasks()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $task = array('Doctrine_Task_DoSomething' => 'do-something');
-        $cli->setRegisteredTasks($task);
-        $this->assertEqual($task, $cli->getRegisteredTasks());
-    }
-
-    public function testListloadedtaskclassesReturnsAnArrayContainingTheNamesOfAllLoadedTaskClasses()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $loadedTaskClassName = $cli->getLoadedTaskClasses();
-
-        $this->assertTrue(is_array($loadedTaskClassName));
-
-        $expectedTaskClassName = array('Doctrine_Cli_TestCase_EmptyTask', 'Doctrine_Task_TestTask004');
-
-        /*
-         * We can't be exactly sure of what's _already_ loaded, so all we can do is make sure that the classes defined
-         * at the bottom of this file have been loaded - or not, as the case may be
-         */
-        $this->assertEqual($expectedTaskClassName, array_intersect($expectedTaskClassName, $loadedTaskClassName));
-
-        //Make sure the list doesn't contain anything _un_expected
-        $this->assertFalse(in_array('Doctrine_Cli_TestCase_TestTask003', $loadedTaskClassName));
-    }
-
-    public function testDerivedoctrinetasknameReturnsTheNameOfADoctrineStyleTaskFromItsClassName()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $this->assertEqual('migrate', $cli->deriveDoctrineTaskName('Doctrine_Task_Migrate'));
-        $this->assertEqual('create-db', $cli->deriveDoctrineTaskName('Doctrine_Task_CreateDb'));
-        $this->assertEqual('generate-models-db', $cli->deriveDoctrineTaskName('Doctrine_Task_GenerateModelsDb'));
-    }
-
-    public function testListloadeddoctrinetasksReturnsAnArrayContainingTheNamesOfLoadedDoctrineStyleTasks()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $loadedTaskName = $cli->getLoadedDoctrineTasks();
-    
-        $this->assertTrue(is_array($loadedTaskName));
-    
-        $expectedTaskName = array('Doctrine_Task_TestTask004' => 'test-task004');
-
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskName));
-    
-        $this->assertFalse(isset($loadedTaskName['Doctrine_Cli_TestCase_EmptyTask']));
-    }
-
-    public function testTaskisregisteredReturnsTrueIfTheSpecifiedTaskIsRegistered()
-    {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-
-        $cli->setRegisteredTasks(array());
-        $found = $cli->taskIsRegistered('do-something', $className);
-        $this->assertFalse($found);
-        $this->assertIdentical(null, $className);
-
-        $cli->setRegisteredTasks(array('DoSomething' => 'do-something'));
-        $found = $cli->taskIsRegistered('do-something', $className);
-        $this->assertTrue($found);
-        $this->assertEqual('DoSomething', $className);
-    }
-
-    public function testLoadsDoctrineStyleTasksOnConstruction()
-    {
-        $cli = new Doctrine_Cli();
-        $registeredTask = $cli->getRegisteredTasks();
-        $expectedTaskName = array('Doctrine_Task_TestTask004' => 'test-task004');
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $registeredTask));
-        $this->assertFalse(isset($registeredTask['Doctrine_Cli_TestCase_EmptyTask']));
-    }
-
-    public function testLoadtasksLoadsCustomDoctrineStyleTasksFromTheSpecifiedDirectory () {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
 
         $this->assertEqual(array(), $cli->getRegisteredTasks());
 
-        $loadedTaskName = $cli->loadTasks(dirname(__FILE__) . '/CliTestCase');
-        
-        $expectedTaskName = array('custom-doctrine-style-task' => 'custom-doctrine-style-task');
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskName));
-        
-        $registeredTask = $cli->getRegisteredTasks();
-        $expectedTaskName = array('Doctrine_Task_CustomDoctrineStyleTask' => 'custom-doctrine-style-task');
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $registeredTask));
-        //Invalid name:
-        $this->assertFalse(isset($registeredTask['Doctrine_Cli_TestCase_TestTask004']));
-        //Doctrine_Cli::loadTasks() must ignore .inc files:
-        $this->assertFalse(isset($registeredTask['Doctrine_Task_TaskDeclaredInAnIncFile']));
+        $registeredTask = array('Doctrine_Task_CreateDb' => 'anything');
+        $cli->setRegisteredTasks($registeredTask);
+        $this->assertEqual($registeredTask, $cli->getRegisteredTasks());
     }
 
-    /*
-     * Exists only to ensure the structure of the array returned by Doctrine_Cli::loadTasks() is the same as it was
-     * before refactoring
-     */
-    public function testLoadtasksReturnsAnArrayOfTaskNames()
+    public function testTaskclassisregisteredReturnsTrueIfTheSpecifiedClassIsRegistered()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $loadedTaskName = $cli->loadTasks();
-        $expectedTaskName = array('test-task004' => 'test-task004');
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskName));
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+
+        $this->assertFalse($cli->taskClassIsRegistered('Doctrine_Task_CreateDb'));
+        $this->assertFalse($cli->taskClassIsRegistered('Doctrine_Task_DropDb'));
+
+        $cli->setRegisteredTasks(array('Doctrine_Task_CreateDb' => 'anything'));
+        $this->assertTrue($cli->taskClassIsRegistered('Doctrine_Task_CreateDb'));
+        $this->assertFalse($cli->taskClassIsRegistered('Doctrine_Task_DropDb'));
     }
 
-    /*
-     * Exists only to ensure the structure of the array returned by Doctrine_Cli::getLoadedTasks() is the same as it was
-     * before refactoring
-     */
-    public function testGetloadedtasksReturnsAnArrayOfTaskNames()
+    public function testTasknameisregisteredReturnsTrueIfATaskWithTheSpecifiedNameIsRegistered()
     {
-        $cli = new Doctrine_Cli_TestCase_MinimalCli();
-        $loadedTaskName = $cli->getLoadedTasks();
-        $expectedTaskName = array('test-task004' => 'test-task004');
-        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskName));
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+
+        $expectedClassName = 'Doctrine_Cli_TestCase_TestTask01';
+        $task = new $expectedClassName();
+        $expectedTaskName = $task->getTaskName();
+
+        $this->assertFalse($cli->taskNameIsRegistered($expectedTaskName));
+
+        $cli->setRegisteredTasks(array($expectedClassName => $task));
+        $this->assertTrue($cli->taskNameIsRegistered($expectedTaskName, $actualClassName));
+        $this->assertEqual($expectedClassName, $actualClassName);
+    }
+
+    public function testDoctrineTaskClassesAreNotAlreadyLoaded()
+    {
+        foreach ($this->doctrineTaskClassName as $taskClassName) {
+            $this->assertFalse(class_exists($taskClassName, false));
+        }
+    }
+
+    //Apologies for this cheap, non-atomic test - this area needs some more work once this round of refactoring's done
+    public function testAutomaticallyIncludesAndRegistersDoctrineTasks()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli(array('autoregister_custom_tasks' => false));
+
+        //Make sure those Doctrine core Tasks are loaded
+        foreach ($this->doctrineTaskClassName as $className => $taskName) {
+            $this->assertTrue(class_exists($className, false));
+            $this->assertTrue($cli->taskClassIsRegistered($className));
+        }
+
+        //Now, make sure we haven't registered any custom Tasks
+        $this->assertFalse($cli->taskClassIsRegistered('Doctrine_Cli_TestCase_EmptyTask'));
+    }
+
+    public function testByDefaultAutomaticallyRegistersIncludedCustomTasks()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+        $this->assertTrue($cli->taskClassIsRegistered('Doctrine_Cli_TestCase_EmptyTask'));
+    }
+
+    public function testRegistertaskclassRegistersTheSpecifiedClass()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+
+        $this->assertFalse($cli->taskClassIsRegistered('Doctrine_Cli_TestCase_TestTask02'));
+
+        require_once($this->getFixturesPath() . '/TestTask02.php');
+        $cli->registerTaskClass('Doctrine_Cli_TestCase_TestTask02');
+        $this->assertTrue($cli->taskClassIsRegistered('Doctrine_Cli_TestCase_TestTask02'));
+
+        //Nothing should happen if we attempt to register a registered class
+        $cli->registerTaskClass('Doctrine_Cli_TestCase_TestTask02');
+        $this->assertTrue($cli->taskClassIsRegistered('Doctrine_Cli_TestCase_TestTask02'));
+    }
+
+    public function testRegistertaskclassThrowsAnExceptionIfTheSpecifiedClassIsNotLoaded()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+
+        try {
+            $cli->registerTaskClass('anything');
+        } catch (InvalidArgumentException $e) {
+            if ($e->getMessage() == 'The task class "anything" does not exist') {
+                $this->pass();
+                return;
+            }
+        }
+
+        $this->fail();
+    }
+
+    public function testRegistertaskclassThrowsAnExceptionIfTheSpecifiedClassIsNotATask()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+
+        $thisClassName = get_class($this);
+
+        try {
+            $cli->registerTaskClass($thisClassName);
+        } catch (DomainException $e) {
+            if ($e->getMessage() == "The class \"{$thisClassName}\" is not a Doctrine Task") {
+                $this->pass();
+                return;
+            }
+        }
+
+        $this->fail();
     }
 
     /*
      * Exists only to ensure the method behaves the same as it did before refactoring
      */
+    public function testLoadtasksThrowsAnExceptionIfTheSpecifiedDirectoryDoesNotExist()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+
+        $directory = $this->getFixturesPath() . '/foo';
+    
+        try {
+            $cli->loadTasks($directory);
+        } catch (InvalidArgumentException $e) {
+            if ($e->getMessage() == "The directory \"{$directory}\" does not exist") {
+                $this->pass();
+                return;
+            }
+        }
+    
+        $this->fail();
+    }
+
+    /*
+     * Exists (mostly) to ensure the method behaves the same as it did before refactoring
+     */
+    public function testLoadtasksLoadsDoctrineStyleTasksFromTheSpecifiedDirectory()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+    
+        $this->assertEqual(array(), $cli->getRegisteredTasks());
+    
+        $loadedTaskName = $cli->loadTasks($this->getFixturesPath() . '/' . __FUNCTION__);
+        $expectedTaskName = array('doctrine-style-task' => 'doctrine-style-task');
+        $this->assertEqual($expectedTaskName, $loadedTaskName);
+
+        $registeredTasks = $cli->getRegisteredTasks();
+
+        $this->assertTrue(isset($registeredTasks['Doctrine_Task_DoctrineStyleTask']));
+
+        $this->assertFalse(isset($registeredTasks['Doctrine_Cli_TestCase_InvalidClassNameForATask']));
+        $this->assertFalse(isset($registeredTasks['Doctrine_Task_TaskDeclaredInAnIncFile']));
+    }
+
+    /*
+     * Exists only to ensure the method behaves the same as it did before refactoring
+     */
+    public function testLoadtasksReturnsAnArrayOfTaskNames()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+        $loadedTaskNames = $cli->loadTasks();
+        $expectedTaskName = array_combine($this->doctrineTaskClassName, $this->doctrineTaskClassName);
+        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskNames));
+    }
+
+    /*
+     * Exists only to ensure the method behaves the same as it did before refactoring
+     */
+    public function testGetloadedtasksReturnsAnArrayOfTaskNames()
+    {
+        $cli = new Doctrine_Cli_TestCase_EmptyCli();
+        $loadedTaskNames = $cli->getLoadedTasks();
+        $expectedTaskName = array_combine($this->doctrineTaskClassName, $this->doctrineTaskClassName);
+        $this->assertEqual($expectedTaskName, array_intersect_assoc($expectedTaskName, $loadedTaskNames));
+    }
+    
+    /*
+     * Exists only to ensure the method behaves the same as it did before refactoring
+     */
     public function test_gettaskclassfromargsReturnsTheNameOfTheClassAssociatedWithTheSpecifiedTask()
     {
-        $cli = new Doctrine_Cli_TestCase_TestCli002();
+        $cli = new Doctrine_Cli_TestCase_PassiveCli02();
         $this->assertEqual('Doctrine_Task_TaskName', $cli->_getTaskClassFromArgs(array('scriptName', 'task-name')));
     }
+
+    public function testRunByDefaultDoesNotThrowExceptions()
+    {
+        $cli = new Doctrine_Cli_TestCase_NoisyCli();
+        $cli->run(array());
+        $this->pass();
+    
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => false));
+        $cli->run(array());
+        $this->pass();
+    
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 0));
+        $cli->run(array());
+        $this->pass();
+    }
+
+    public function testRunThrowsExceptionsIfTheCliWasConstructedWithTheRethrowexceptionsOptionSetToTrue()
+    {
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 1));
+    
+        try {
+            $cli->run(array());
+        //The same exception must be re-thrown...
+        } catch (Doctrine_Cli_TestCase_Exception $e) {
+            //...And it must be formatted
+            if (preg_match('/Foo\W+/', $e->getMessage())) {
+                $this->pass();
+                return;
+            }
+        }
+    
+        $this->fail();
+    }
+
+    public function testGettaskinstanceReturnsTheTaskSetWithSettaskinstance()
+    {
+        $cli = new Doctrine_Cli_TestCase_PassiveCli();
+        $task = new Doctrine_Cli_TestCase_EmptyTask();
+        $cli->setTaskInstance($task);
+        $this->assertIdentical($task, $cli->getTaskInstance());
+    }
+}
+
+class Doctrine_Cli_TestCase_PassiveCli extends Doctrine_Cli
+{
+    protected function includeAndRegisterTaskClasses() {}
+}
+
+class Doctrine_Cli_TestCase_EmptyCli extends Doctrine_Cli
+{
 }
 
 class Doctrine_Cli_TestCase_EmptyTask extends Doctrine_Task
 {
-    public function execute()
-    {
-    }
+    public function execute() {}
 }
 
-//_Not_ a task on purpose
-class Doctrine_Cli_TestCase_TestTask003
-{
-}
-
-//This _must_ follow the normal Doctrine Task naming convention
-class Doctrine_Task_TestTask004 extends Doctrine_Task
-{
-    public function execute()
-    {
-    }
-}
-
-class Doctrine_Cli_TestCase_MinimalCli extends Doctrine_Cli
-{
-    public function __construct()
-    {
-    }
-}
-
-class Doctrine_Cli_TestCase_TestCli002 extends Doctrine_Cli
+class Doctrine_Cli_TestCase_PassiveCli02 extends Doctrine_Cli_TestCase_PassiveCli
 {
     public function _getTaskClassFromArgs(array $args)
     {
         return parent::_getTaskClassFromArgs($args);
     }
+}
+
+class Doctrine_Cli_TestCase_Exception extends Exception
+{
+}
+
+class Doctrine_Cli_TestCase_NoisyCli extends Doctrine_Cli_TestCase_PassiveCli
+{
+    protected function _run(array $args)
+    {
+        throw new Doctrine_Cli_TestCase_Exception('Foo');
+    }
+}
+
+class Doctrine_Cli_TestCase_TestTask01 extends Doctrine_Task
+{
+    public function execute() {}
 }
