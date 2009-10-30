@@ -52,7 +52,7 @@ class Doctrine_Ticket_1449_TestCase extends Doctrine_UnitTestCase
     public function testTest()
     {
         $document = Doctrine_Query::create()
-            ->select('d.id, d.name, a.id')
+            ->select('d.id, d.name, a.id, a.document_id')
             ->from('Ticket_1449_Document d')
             ->leftJoin('d.Attachments a')
             ->limit(1)

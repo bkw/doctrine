@@ -88,6 +88,7 @@ class T736_ModuleLoaderListener extends Doctrine_Record_Listener
         if ($contents instanceof Doctrine_Record)
         {
             $contents->mapValue("moduledata", $delegate);
+            $delegate->parent = $contents;
         } else {
             $contents["moduledata"] = $delegate;
         }

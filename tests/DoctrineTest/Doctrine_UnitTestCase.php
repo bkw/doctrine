@@ -180,6 +180,9 @@ class Doctrine_UnitTestCase extends UnitTestCase
         if ($this->driverName === 'main') {
             $this->prepareTables();
             $this->prepareData();
+            foreach ($this->tables as $name) {
+            	$this->connection->getTable(ucwords($name))->clear();
+            }
         }
     }
     public function prepareTables() {
