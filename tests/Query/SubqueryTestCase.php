@@ -88,6 +88,10 @@ class Doctrine_Query_Subquery_TestCase extends Doctrine_UnitTestCase
 
     public function testGetLimitSubqueryOrderBy2()
     {
+        if ( ! version_compare(PHP_VERSION, '5.3.0', '>')) {
+            return;
+        }
+
         $q = new Doctrine_Query();
         $q->select('u.name, COUNT(DISTINCT a.id) num_albums');
         $q->from('User u, u.Album a');
