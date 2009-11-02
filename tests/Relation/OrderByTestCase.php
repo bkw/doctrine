@@ -75,6 +75,11 @@ class Doctrine_Relation_OrderBy_TestCase extends Doctrine_UnitTestCase
         $user = new OrderByTest_User();
         $user->username = 'jwage';
         $user->password = 'changeme';
+
+        $user2 = new OrderByTest_User();
+        $user2->username = 'parent';
+        $user2->password = 'changeme';
+        $user->ParentUser = $user2;
         $user->save();
 
         $articles = $user->Articles;
