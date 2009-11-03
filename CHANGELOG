@@ -1,3 +1,19 @@
+1.1.5
+-----
+     * [r6408] [1.0, 1.1] Releasing Doctrine 1.0.12 and 1.1.4
+     * [r6439] [1.0, 1.1, 1.2][DC-80] Fixing pgsql importing issue with varchars that have a default value
+     * [r6469] [1.0, 1.1, 1.2][DC-89] Fixing issue with setColumn() string parsing
+     * [r6494] [1.0, 1.1, 1.2][DC-92] Fixes issue with pgsql boolean default on import
+     * [r6518] [1.0, 1.1][DC-108] Fixing issue with Doctrine_Expression and validation
+     * [r6544] [1.0, 1.1, 1.2][DC-125] Fixes issue with memory leak in batchUpdateIndex() for Searchable behavior
+     * [r6564] [1.0, 1.1][DC-133] Fixes issue with portability and unknown expressions
+     * [r6585] [1.0, 1.1] Fixing failing tests for php 5.3
+     * [r6591] [1.0, 1.1, 1.2][DC-93] Fixes issue with refreshRelated() causing hasOne records to be created
+     * [r6614] [1.0, 1.1, 1.2][DC-116] Fixing issue with nested set getParent() method
+     * [r6619] [1.1, 1.2][DC-152] Fixing isModified($deep = true) issue when only deep objects are modified
+     * [r6624] [1.0, 1.1, 1.2][DC-110] Fixes issue with Doctrine_Export_Mysql::createIndexSql()
+     * [r6627] [1.0, 1.1, 1.2][DC-130] Fix to relationship generating with quoted table names for pgsql
+
 1.1.4
 -----
      * [r6189] [1.1, 1.2] fixed misnamed `Doctrine_Migration_Process` method (closes #2388)
