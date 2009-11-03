@@ -42,8 +42,7 @@ define('MIGRATIONS_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'migrations');
 define('SQL_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'sql');
 define('YAML_SCHEMA_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'schema');
 define('DB_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'sandbox.db');
-//define('DSN', 'sqlite:///' . DB_PATH);
-define('DSN', 'pgsql://postgres:postgres@localhost/doctrine12');
+define('DSN', 'sqlite:///' . DB_PATH);
 
 require_once(DOCTRINE_PATH . DIRECTORY_SEPARATOR . 'Doctrine.php');
 
