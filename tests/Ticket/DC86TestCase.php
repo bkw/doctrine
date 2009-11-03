@@ -42,12 +42,12 @@ class Doctrine_Ticket_DC86_TestCase extends Doctrine_UnitTestCase
     {
     	$r = new Ticket_DC86_Test();
     	$r->id = 1;
-    	$r->date = date('Y-m-d h:i:s', strtotime("- 1 week"));
+    	$r->date = date('Y-m-d h:i:s', strtotime("- 10 week"));
     	$r->save();
 
     	$r = new Ticket_DC86_Test();
     	$r->id = 2;
-    	$r->date = date('Y-m-d h:i:s', strtotime("- 1 minute"));
+    	$r->date = date('Y-m-d h:i:s', strtotime("- 5 week"));
     	$r->save();
 
     	$r = new Ticket_DC86_Test();
