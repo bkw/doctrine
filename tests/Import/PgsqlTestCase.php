@@ -57,7 +57,7 @@ class Doctrine_Import_Pgsql_TestCase extends Doctrine_UnitTestCase
                                                         (SELECT 't'
                                                           FROM pg_index
                                                           WHERE c.oid = pg_index.indrelid
-                                                          AND pg_index.indkey[0] = a.attnum
+                                                          AND a.attnum = ANY (pg_index.indkey)
                                                           AND pg_index.indisprimary = 't'
                                                         ) AS pri,
                                                         (SELECT pg_attrdef.adsrc
