@@ -359,23 +359,40 @@ class Doctrine_Cli_TestCase extends Doctrine_UnitTestCase
 
     public function testRunByDefaultDoesNotThrowExceptions()
     {
-        $cli = new Doctrine_Cli_TestCase_NoisyCli();
-        $cli->run(array());
-        $this->pass();
-    
-        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => false));
-        $cli->run(array());
-        $this->pass();
-    
-        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 0));
-        $cli->run(array());
-        $this->pass();
+        try {
+            $cli = new Doctrine_Cli_TestCase_NoisyCli();
+            $cli->run(array());
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
+        try {
+            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => false));
+            $cli->run(array());
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
+        try {
+            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 0));
+            $cli->run(array());
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
     }
 
     public function testRunThrowsExceptionsIfTheCliWasConstructedWithTheRethrowexceptionsOptionSetToTrue()
     {
-        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 1));
-    
+        try {
+            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 1));
+            $this->pass();
+        } catch (Exception $e) {
+            $this->fail();
+        }
+
         try {
             $cli->run(array());
         //The same exception must be re-thrown...
