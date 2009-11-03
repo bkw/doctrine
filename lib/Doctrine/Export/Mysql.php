@@ -574,6 +574,8 @@ class Doctrine_Export_Mysql extends Doctrine_Export
     public function createIndexSql($table, $name, array $definition)
     {
         $table  = $table;
+        $table  = $this->conn->quoteIdentifier($table, true);
+
         $name   = $this->conn->formatter->getIndexName($name);
         $name   = $this->conn->quoteIdentifier($name);
         $type   = '';
