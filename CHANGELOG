@@ -1,3 +1,47 @@
+1.2.0-BETA1
+-----------
+     * [r6549] [1.2] Releasing Doctrine 1.2 ALPHA3
+     * [r6559] [1.2][DC-131][DC-134] Small refactoring to match cache drivers of D2 and fixed a few bugs
+     * [r6560] [1.2][DC-136] Fixes issue with modified properties not being reset when hydration overrides local changes
+     * [r6561] [1.2][DC-115] Last bit of CLI refactorings
+     * [r6568] [1.2][DC-132] Fixes issue with file handles and BLOB fields not using LOB mode
+     * [r6581] [1.2] Removing some left over code from hydration refactorings and fixing a few issues
+     * [r6586] [1.2][DC-146] Fixing generated migrations to use right changeColumn() argument order
+     * [r6587] [1.2][DC-87] Fixing import/export to include connection name
+     * [r6588] [1.2][DC-132][DC-141] Fixing issue with r6568
+     * [r6589] [1.2][DC-151] Improved loadRelated() to handle empty collections and other scenarios
+     * [r6590] [1.2][DC-73] Fixing issue with identity map and test suite
+     * [r6591] [1.0, 1.1, 1.2][DC-93] Fixes issue with refreshRelated() causing hasOne records to be created
+     * [r6592] [1.2][DC-103] Change to get table from relation instead of value
+     * [r6611] [1.2][DC-39][DC-69] Fixes to synchronizeWithArray(), link() and unlink()
+     * [r6612] [1.2][DC-172] Fixing issue with previous commit
+     * [r6613] [1.2][DC-74] Fix to check proxy state dynamically
+     * [r6614] [1.0, 1.1, 1.2][DC-116] Fixing issue with nested set getParent() method
+     * [r6616] [1.2][DC-137] Fixing autoloading for record generator models
+     * [r6617] [1.2][DC-127] Fix to model loading for models with a prefix
+     * [r6618] [1.2][DC-128] Fix to searchable using wrong connection
+     * [r6619] [1.1, 1.2][DC-152] Fixing isModified($deep = true) issue when only deep objects are modified
+     * [r6620] [1.2] Fixing test case that can fail sometimes.
+     * [r6621] [1.2][DC-158] Fixing postgresql import for composite primary keys
+     * [r6622] [1.2] Fixing test case that has some output when it shouldn't
+     * [r6623] [1.2][DC-165] Making sfYaml a svn external
+     * [r6624] [1.0, 1.1, 1.2][DC-110] Fixes issue with Doctrine_Export_Mysql::createIndexSql()
+     * [r6625] [1.2][DC-114] Fix to auto generated cache keys for queries with pending join conditions
+     * [r6626] [1.2] Fixing yaml parser to dump with expanded code
+     * [r6627] [1.0, 1.1, 1.2][DC-130] Fix to relationship generating with quoted table names for pgsql
+     * [r6628] [1.2][DC-153] Fixing core code to operate without a current connection set
+     * [r6629] [1.2][DC-144] Fix for getConnectionForComponent() to use modelsAutoload() instead of autoload()
+     * [r6630] [1.2][DC-147] Adding test coverage
+     * [r6631] [1.2] Reversing accidential commit
+     * [r6632] [1.2][DC-153] Fixing missing piece of code
+     * [r6633] [1.2][DC-148] Adding invoking sql query to rethrown pdo exceptions
+     * [r6634] [1.2][DC-167] Fixes uniqueBy when using a fk or relationship name
+     * [r6635] [1.2][DC-169] Improving replace() to work more like update() and insert()
+     * [r6636] [1.2][DC-171] Adding hardDelete() method to SoftDelete
+     * [r6638] [1.2][DC-96] Adding support for MySQL SET type
+     * [r6642] [1.2][DC-175] Fixing hardDelete() issue
+     * [r6643] [1.2] Adding docs for most recent changes
+
 1.2.0-ALPHA3
 ------------
      * [r6440] [1.2] Release Doctrine 1.2 ALPHA2

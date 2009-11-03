@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-10-21</date>
- <time>17:37:18</time>
+ <date>2009-11-03</date>
+ <time>18:51:38</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -245,16 +245,10 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
-      <dir name="YamlSf">
-       <file name="Dumper.php" role="php" />
-       <file name="Inline.php" role="php" />
-       <file name="Parser.php" role="php" />
-      </dir> <!-- /lib/Doctrine/Parser/YamlSf -->
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
       <file name="Xml.php" role="php" />
-      <file name="YamlSf.php" role="php" />
       <file name="Yml.php" role="php" />
      </dir> <!-- /lib/Doctrine/Parser -->
      <dir name="Query">
@@ -494,6 +488,14 @@ requiring needless code duplication.</description>
      <file name="Validator.php" role="php" />
      <file name="View.php" role="php" />
     </dir> <!-- /lib/Doctrine -->
+    <dir name="vendor">
+     <dir name="sfYaml">
+      <file name="sfYaml.php" role="php" />
+      <file name="sfYamlDumper.php" role="php" />
+      <file name="sfYamlInline.php" role="php" />
+      <file name="sfYamlParser.php" role="php" />
+     </dir> <!-- /lib/vendor/sfYaml -->
+    </dir> <!-- /lib/vendor -->
     <file name="Doctrine.php" role="php" />
    </dir> <!-- /lib -->
    <dir name="tests">
@@ -507,12 +509,23 @@ requiring needless code duplication.</description>
      <file name="SqliteTestCase.php" role="test" />
     </dir> <!-- /tests/Cache -->
     <dir name="CliTestCase">
+     <dir name="testLoadtasksLoadsDoctrineStyleTasksFromTheSpecifiedDirectory">
+      <file name="DoctrineStyleTask.php" role="test" />
+      <file name="EmptyFile.php" role="test" />
+      <file name="InvalidClassNameForATask.php" role="test" />
+      <file name="should-be-ignored.php" role="test" />
+      <file name="TaskDeclaredInAnIncFile.inc.php" role="test" />
+     </dir> <!-- /tests/CliTestCase/testLoadtasksLoadsDoctrineStyleTasksFromTheSpecifiedDirectory -->
      <file name="baz.php" role="test" />
      <file name="bip.php" role="test" />
+     <file name="cli-default.php" role="test" />
+     <file name="cli-with-custom-tasks.php" role="test" />
+     <file name="cli-without-autoregistered-custom-tasks.php" role="test" />
      <file name="CustomDoctrineStyleTask.php" role="test" />
      <file name="doctrine.php" role="test" />
      <file name="foo.php" role="test" />
      <file name="TaskDeclaredInAnIncFile.inc.php" role="test" />
+     <file name="TestTask02.php" role="test" />
     </dir> <!-- /tests/CliTestCase -->
     <dir name="Collection">
      <file name="SnapshotTestCase.php" role="test" />
@@ -918,6 +931,11 @@ requiring needless code duplication.</description>
      <file name="NamedQueryTestCase.php" role="test" />
      <file name="RemoveColumnTestCase.php" role="test" />
     </dir> <!-- /tests/Table -->
+    <dir name="TaskTestCase">
+     <file name="TestTask004.php" role="test" />
+     <file name="TestTask005.php" role="test" />
+     <file name="TestTask006.php" role="test" />
+    </dir> <!-- /tests/TaskTestCase -->
     <dir name="Ticket">
      <dir name="1727">
       <dir name="models1">
@@ -1173,15 +1191,23 @@ requiring needless code duplication.</description>
      <file name="DC24TestCase.php" role="test" />
      <file name="DC25TestCase.php" role="test" />
      <file name="DC28TestCase.php" role="test" />
+     <file name="DC39TestCase.php" role="test" />
      <file name="DC56TestCase.php" role="test" />
      <file name="DC57TestCase.php" role="test" />
      <file name="DC63TestCase.php" role="test" />
      <file name="DC64TestCase.php" role="test" />
+     <file name="DC69TestCase.php" role="test" />
+     <file name="DC74TestCase.php" role="test" />
      <file name="DC82TestCase.php" role="test" />
      <file name="DC86TestCase.php" role="test" />
      <file name="DC95TestCase.php" role="test" />
      <file name="DC101TestCase.php" role="test" />
      <file name="DC112TestCase.php" role="test" />
+     <file name="DC136TestCase.php" role="test" />
+     <file name="DC141TestCase.php" role="test" />
+     <file name="DC147TestCase.php" role="test" />
+     <file name="DC169TestCase.php" role="test" />
+     <file name="DC171TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1256,6 +1282,7 @@ requiring needless code duplication.</description>
     <file name="SoftDeleteBCTestCase.php" role="test" />
     <file name="SoftDeleteTestCase.php" role="test" />
     <file name="TableTestCase.php" role="test" />
+    <file name="TaskTestCase.php" role="test" />
     <file name="template.tpl" role="test" />
     <file name="TemplateTestCase.php" role="test" />
     <file name="TokenizerTestCase.php" role="test" />
@@ -1319,10 +1346,10 @@ requiring needless code duplication.</description>
     <api>1.2.0</api>
    </version>
    <stability>
-    <release>alpha</release>
-    <api>alpha</api>
+    <release>beta</release>
+    <api>beta</api>
    </stability>
-   <date>2009-10-21</date>
+   <date>2009-11-03</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
