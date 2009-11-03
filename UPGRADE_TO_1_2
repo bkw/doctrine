@@ -926,3 +926,69 @@ that is sufficient enough for you.
 
     [php]
     echo $cacheDriver->deleteByPrefix('my_cache_');
+
+## BLOB and File Handle Resources
+
+It is now possible to provide the contents for a blob column through a file
+handle resource.
+
+    [php]
+    $file = new File();
+    $file->binary_data = file('/path/to/file');
+    $file->save();
+
+## Symfony sfYaml External
+
+Doctrine is now using the Symfony Component `sfYaml` for our YAML parsing as an 
+SVN external. So it will always be up to date and receive bug fixes from Symfony.
+
+## Better replace() Support
+
+The `Doctrine_Record::replace()` had a lot of issues previously as it did not 
+behave the same as if you were to call `save()`, `update()`, or `insert()`. 
+Now when you call `replace()` all the same events will be triggered and the
+saving of the graph will be triggered just as if you were using `save()`.
+
+    [php]
+    $user = new User();
+    $user->username = 'jonwage';
+    $user->password = 'changeme2';
+    $user->replace();
+
+## Added hardDelete() method to SoftDelete
+
+Something missing from the `SoftDelete` behavior was the ability to force the 
+deletion of a record in the database. For this we have added a new `hardDelete()`
+method.
+
+    [php]
+    $user = new User();
+    $user->username = 'jwage';
+    $user->password = 'changeme';
+    $user->save();
+    $user->delete() // Doesn't actually delete, sets deleted_at flag
+    
+    $user->hardDelete(); // Will actually delete the record from the database.
+
+## Added MySQL SET Support
+
+Just like the `enum` type for MySQL we also now support the `set` type. It basically
+very similar to `enum` but instead of being able to store only one value you can
+store multiple of the possible values.
+
+    [yml]
+    User:
+      columns:
+        username: string(255)
+        password: string(255)
+        permissions:
+          type: set
+          values: [admin, member, moderator, banned]
+
+Now you can do the following:
+
+    [php]
+    $user = new User();
+    $user->username = 'jwage';
+    $user->password = 'changeme';
+    $user->permissions = array('admin', 'member');
