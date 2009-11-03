@@ -42,7 +42,8 @@ define('MIGRATIONS_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'migrations');
 define('SQL_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'sql');
 define('YAML_SCHEMA_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'schema');
 define('DB_PATH', SANDBOX_PATH . DIRECTORY_SEPARATOR . 'sandbox.db');
-define('DSN', 'sqlite:///' . DB_PATH);
+//define('DSN', 'sqlite:///' . DB_PATH);
+define('DSN', 'pgsql://postgres:postgres@localhost/doctrine12');
 
 require_once(DOCTRINE_PATH . DIRECTORY_SEPARATOR . 'Doctrine.php');
 
@@ -55,5 +56,6 @@ spl_autoload_register(array('Doctrine', 'extensionsAutoload'));
 $manager = Doctrine_Manager::getInstance();
 $manager->openConnection(DSN, 'doctrine');
 $manager->setAttribute(Doctrine_Core::ATTR_MODEL_LOADING, Doctrine_Core::MODEL_LOADING_PEAR);
+$manager->setAttribute(Doctrine_Core::ATTR_USE_DQL_CALLBACKS, true);
 
 Doctrine_Core::setModelsDirectory('models');
