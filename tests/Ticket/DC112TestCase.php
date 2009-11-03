@@ -74,7 +74,7 @@ class Doctrine_Ticket_DC112_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual($q->getResultCacheHash(), 'testing');
         $q->setResultCacheHash(null);
-        $this->assertEqual($q->getResultCacheHash(), '03469b0a9dc8a2f2f5a05831813a86fb');
+        $this->assertEqual($q->getResultCacheHash(), '9b6aafa501ac37b902719cd5061f412d');
     }
 
     public function testDeleteByRegex()
