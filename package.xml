@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-09-25</date>
- <time>17:11:37</time>
+ <date>2009-11-03</date>
+ <time>18:28:23</time>
  <version>
-  <release>1.0.12</release>
-  <api>1.0.12</api>
+  <release>1.0.13</release>
+  <api>1.0.13</api>
  </version>
  <stability>
   <release>stable</release>
@@ -1222,6 +1222,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.0.13</release>
+    <api>1.0.13</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-11-03</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.0.12</release>
