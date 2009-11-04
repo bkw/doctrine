@@ -1152,7 +1152,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
                     $this->useQueryCache(false);
             
                     // mysql doesn't support LIMIT in subqueries
-                    $list = $this->_conn->execute($subquery, $this->getParams($params))->fetchAll(Doctrine::FETCH_COLUMN);
+                    $list = $this->_conn->execute($subquery, $params)->fetchAll(Doctrine::FETCH_COLUMN);
                     $subquery = implode(', ', array_map(array($this->_conn, 'quote'), $list));
 
                     break;
@@ -1927,14 +1927,14 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable, Seria
      */
     public function count($params = array())
     {
-        $q = $this->getCountQuery();
-
         if ( ! is_array($params)) {
             $params = array($params);
         }
 
         $params = array_merge($this->_params['join'], $this->_params['where'], $this->_params['having'], $params);
         $params = $this->_conn->convertBooleans($params);
+
+        $q = $this->getCountQuery($params);
 
         $results = $this->getConnection()->fetchAll($q, $params);
 
