@@ -110,7 +110,7 @@ class Doctrine_Import_Builder_TestCase extends Doctrine_UnitTestCase
         $sql = Doctrine_Core::generateSqlFromArray(array('SchemaTestColumnAggregationInheritanceParent', 'SchemaTestColumnAggregationInheritanceChild'));
         $this->assertEqual(count($sql), 2);
         $this->assertEqual($sql[0], 'CREATE TABLE schema_test_column_aggregation_inheritance_parent (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), type VARCHAR(255), title VARCHAR(255), description VARCHAR(255))');
-        $this->assertEqual($sql[1], 'CREATE INDEX type_idx ON schema_test_column_aggregation_inheritance_parent (type)');
+        $this->assertEqual($sql[1], 'CREATE INDEX schema_test_column_aggregation_inheritance_parent_type_idx ON schema_test_column_aggregation_inheritance_parent (type)');
 
         Doctrine_Lib::removeDirectories($path);
     }
