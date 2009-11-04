@@ -359,40 +359,31 @@ class Doctrine_Cli_TestCase extends Doctrine_UnitTestCase
 
     public function testRunByDefaultDoesNotThrowExceptions()
     {
-        try {
-            $cli = new Doctrine_Cli_TestCase_NoisyCli();
-            $cli->run(array());
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail();
-        }
+        //Hide printed output from the CLI
+        ob_start();
 
-        try {
-            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => false));
-            $cli->run(array());
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail();
-        }
+        $cli = new Doctrine_Cli_TestCase_NoisyCli();
+        $cli->run(array());
+        $this->pass();
+    
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => false));
+        $cli->run(array());
+        $this->pass();
+    
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 0));
+        $cli->run(array());
+        $this->pass();
 
-        try {
-            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 0));
-            $cli->run(array());
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail();
-        }
+        ob_end_clean();
     }
 
     public function testRunThrowsExceptionsIfTheCliWasConstructedWithTheRethrowexceptionsOptionSetToTrue()
     {
-        try {
-            $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 1));
-            $this->pass();
-        } catch (Exception $e) {
-            $this->fail();
-        }
+        //Hide printed output from the CLI
+        ob_start();
 
+        $cli = new Doctrine_Cli_TestCase_NoisyCli(array('rethrow_exceptions' => 1));
+    
         try {
             $cli->run(array());
         //The same exception must be re-thrown...
@@ -405,6 +396,8 @@ class Doctrine_Cli_TestCase extends Doctrine_UnitTestCase
         }
     
         $this->fail();
+
+        ob_end_clean();
     }
 
     public function testGettaskinstanceReturnsTheTaskSetWithSettaskinstance()
