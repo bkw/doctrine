@@ -1,3 +1,25 @@
+1.2.0-BETA2
+-----------
+     * [r6648] [1.1] Releasing Doctrine 1.2.0-BETA1
+     * [r6655] [1.2][DC-165] Shouldn't attempt implicit autoloading of sfYaml through class_exists() call. Handled already by the require_once's.
+     * [r6659] [1.2][DC-67] Fixing having for limit subquery
+     * [r6661] [1.2] Increased the index number for bound parameters. This solves the problem that occured after changeset r6568 in which parameters started to be bound from index 1.
+     * [r6666] [1.0, 1.1, 1.2][DC-183] Fixes issue with non existant constant in sqlite datadict
+     * [r6667] [1.2][DC-184] Fixing strict standards notice
+     * [r6668] [1.2][DC-180] Fixing issue with unique index names
+     * [r6669] [1.2][DC-179] Fixing decimal length validator when decimal point is something other than "."
+     * [r6670] [1.2][DC-178] Fixes issue with default table class name and the model builder
+     * [r6673] [1.2][DC-186] Fix to correct CLI tests
+     * [r6689] [1.2][DC-205] Fix to sequences not being set on inserts
+     * [r6690] [1.2][DC-207] Fixing situation where real exception is masked. Forcing connection on saveGraph() before try catch
+     * [r6691] [1.2][DC-204] Fixing issue with clone and reference to old hydrator
+     * [r6692] [1.2][DC-201] Fixes issue with oracle and level keyword
+     * [r6693] [1.2][DC-191] Fixes issue with loading migration classes from a directory twice
+     * [r6694] [1.2][DC-190] Fixing issue with Doctrine_Manager::reset()
+     * [r6696] [1.2][DC-198] Another attempt at fixing hasOne relationships with refreshRelated
+     * [r6697] [1.2][DC-197] Fix to new orderBy functionality with UPDATE and DELETE DQL queries
+     * [r6698] [1.2][DC-192] Fixes issue with class prefix and relation aliases
+
 1.2.0-BETA1
 -----------
      * [r6549] [1.2] Releasing Doctrine 1.2 ALPHA3

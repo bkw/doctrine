@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-03</date>
- <time>18:51:38</time>
+ <date>2009-11-10</date>
+ <time>20:39:09</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
@@ -1349,7 +1349,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2009-11-03</date>
+   <date>2009-11-10</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
