@@ -19,7 +19,7 @@ The following code is no longer supported.
 You must now always use the following code.
 
     [php]
-    $connection->setAttribute(Doctrine::ATTR_USE_NATIVE_ENUM, true);
+    $connection->setAttribute(Doctrine_Core::ATTR_USE_NATIVE_ENUM, true);
 
 ## Removed all Deprecated Functions
 
@@ -34,7 +34,13 @@ Affected Classes
 
 * Doctrine_Query_Abstract::getSql() to getSqlQuery()
 * Doctrine_Search_Query::getSql() to getSqlQuery()
-* Doctrine_Query_Abstract::getCountQuery() to getCountSqlQuery()
+* Doctrine_Query_Abstract::*getCountQuery
+* 
+* 
+* 
+* 
+* 
+() to getCountSqlQuery()
 * Doctrine_RawSql::getCountQuery() to getCountSqlQuery()
 
 ## Added ability to configure table class
@@ -43,7 +49,7 @@ Added ability to specify the base `Doctrine_Table` class to use if no custom
 `UserModelTable` class exists.
 
     [php]
-    $manager->setAttribute(Doctrine::ATTR_TABLE_CLASS, 'MyTable');
+    $manager->setAttribute(Doctrine_Core::ATTR_TABLE_CLASS, 'MyTable');
 
 Now just make sure the class exists somewhere and is loaded.
 
@@ -64,7 +70,7 @@ specify it.
 
 Before Doctrine 1.2 it was hard coded internally to always use the 
 `Doctrine_Query` class whenever you instantiate a new query. Now you can 
-configure which class this is to use by setting the `Doctrine::ATTR_QUERY_CLASS` 
+configure which class this is to use by setting the `Doctrine_Core::ATTR_QUERY_CLASS` 
 attribute.
 
     [php]
@@ -73,7 +79,7 @@ attribute.
       
     }
 
-    $manager->setAttribute(Doctrine::ATTR_QUERY_CLASS, 'MyQuery');
+    $manager->setAttribute(Doctrine_Core::ATTR_QUERY_CLASS, 'MyQuery');
 
     $q = Doctrine_Query::create();
 
@@ -120,11 +126,11 @@ See: http://trac.doctrine-project.org/ticket/1623
 You can disable cascading saves with the following code.
 
     [php]
-    $manager->setAttribute(Doctrine::ATTR_CASCADE_SAVES, false);
+    $manager->setAttribute(Doctrine_Core::ATTR_CASCADE_SAVES, false);
 
 Disabling this will increase performance significantly when saving objects.
 
-## Added Doctrine::setPath()
+## Added Doctrine_Core::setPath()
 
 Now you can specify the path to your Doctrine libraries if Doctrine.php is 
 outside of the location of your libraries.
@@ -134,7 +140,7 @@ libraries are at `/path/to/the/doctrine/libs` you would need to do the
 following.
 
     [php]
-    Doctrine::setPath('/path/to/the/doctrine/libs');
+    Doctrine_Core::setPath('/path/to/the/doctrine/libs');
 
 ## Ability to clear an individual reference
 
@@ -222,7 +228,7 @@ You can now specify a custom child class to use for all collections inside
 Doctrine.
 
     [php]
-    $manager->setAttribute(Doctrine::ATTR_COLLECTION_CLASS, 'MyCollection');
+    $manager->setAttribute(Doctrine_Core::ATTR_COLLECTION_CLASS, 'MyCollection');
     
     $phonenumbers = $user->Phonenumbers;
     echo get_class($phonenumbers); // MyCollection
@@ -307,7 +313,7 @@ First we need to simply tell `Doctrine` where the extensions are being loaded
 from.
 
     [php]
-    Doctrine::setExtensionsPath('/path/to/extensions');
+    Doctrine_Core::setExtensionsPath('/path/to/extensions');
 
 Now we can check out one of the first available extensions in to our extensions 
 directory and then register it.
@@ -427,7 +433,7 @@ for larger results.
 
     [php]
     // Returns instance of Doctrine_Collection_OnDemand
-    $result = $q->execute(array(), Doctrine::HYDRATE_ON_DEMAND);
+    $result = $q->execute(array(), Doctrine_Core::HYDRATE_ON_DEMAND);
     foreach ($result as $obj) {
         // ...
     }
@@ -491,7 +497,7 @@ models and can autoload them.
 First we have a new method for setting the path to our models for the autoloader.
 
     [php]
-    Doctrine::setModelsDirectory('/path/to/my/models');
+    Doctrine_Core::setModelsDirectory('/path/to/my/models');
 
 Make sure you have registered the `modelsAutoload()` method:
 
@@ -550,7 +556,7 @@ PEAR style naming convention.
 
     [php]
     spl_autoload_register(array('Doctrine', 'autoload'));
-    Doctrine::setModelsDirectory('lib');
+    Doctrine_Core::setModelsDirectory('lib');
 
 Now if we use this code.
 
@@ -635,9 +641,9 @@ it has always missed is a way to hydrate that data in to a hierarchical structur
 With 1.2 this is now possible with some new hydration types.
 
     [php]
-    $categories = Doctrine::getTable('Category')
+    $categories = Doctrine_Core::getTable('Category')
         ->createQuery('c')
-        ->execute(array(), Doctrine::HYDRATE_RECORD_HIERARCHY);
+        ->execute(array(), Doctrine_Core::HYDRATE_RECORD_HIERARCHY);
 
 Now you can access the children of a record by accessing the mapped value property
 named `__children`. It is named with the underscores prefixed to avoid any conflicts.
@@ -651,9 +657,9 @@ You can also execute this structure using array hydration and get back the same
 structure except as an array.
 
     [php]
-    $results = Doctrine::getTable('NestedSetTest_SingleRootNode')
+    $results = Doctrine_Core::getTable('NestedSetTest_SingleRootNode')
         ->createQuery('n')
-        ->execute(array(), Doctrine::HYDRATE_ARRAY_HIERARCHY);
+        ->execute(array(), Doctrine_Core::HYDRATE_ARRAY_HIERARCHY);
 
 If you have an existing `Doctrine_Colletion` instance you can convert that to a
 hierarchy as well.
