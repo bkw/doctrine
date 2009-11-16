@@ -1,3 +1,27 @@
+1.2.0-BETA3
+-----------
+     * [r6699] [1.2] Releasing Doctrine 1.2.0-BETA2
+     * [r6709] [1.2] moved property along with method moved in r6462
+     * [r6710] [1.2] removed manipulation of load references attribute in hydrators
+     * [r6711] [1.2] fixed convenience migration method for dropping a primary key
+     * [r6712] [1.2][DC-222] Fixed reference to Doctrine:: instead of Doctrine_Core::
+     * [r6713] [1.2][DC-223] Fixes issue with cloning queries and the hydrator
+     * [r6714] [1.2][DC-224] Fixes issue with pear style model loading and underscores in the directory path
+     * [r6715] [1.2][DC-225][DC-210] Fixes issue with classPrefix and pearStyle to model builder
+     * [r6716] [1.2][DC-211] Fixes issue with phpDoc relations not including classPrefix
+     * [r6717] [1.2][DC-221] Fixes issue with loading migrations from the same directory twice
+     * [r6718] [1.2][DC-209] Fixing compiler to only compile Doctrine dir
+     * [r6719] [1.2][DC-213] Fixing global options to work more like inheritance should work
+     * [r6720] [1.2][DC-194] Fixing SQL for oracle dropDatabase()
+     * [r6721] [1.2][DC-187] Fix to unique() to allow disabling of unique index and ability to specify options for unique validator
+     * [r6722] [1.2] Updating document
+     * [r6729] [1.2][DC-235] Fixes issue with cache deleteByPrefix()
+     * [r6730] [1.2][DC-232] Adding missing hasMappedValue() method
+     * [r6731] [1.2][DC-183] Another fix for getting correct max varchar length
+     * [r6732] [1.2][DC-212] Fixing issue with nested set hasParent() method
+     * [r6733] [1.0, 1.1, 1.2] Fixing small regression in importer from database for the generated class names
+     * [r6734] [1.2][DC-236] Fixes issue with Doctrine_Collection::toHierarchy()
+
 1.2.0-BETA2
 -----------
      * [r6648] [1.1] Releasing Doctrine 1.2.0-BETA1

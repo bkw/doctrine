@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-10</date>
- <time>20:39:09</time>
+ <date>2009-11-16</date>
+ <time>20:03:28</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
@@ -961,6 +961,9 @@ requiring needless code duplication.</description>
      <dir name="DC95">
       <file name="schema.yml" role="test" />
      </dir> <!-- /tests/Ticket/DC95 -->
+     <dir name="DC221">
+      <file name="TestMigration.php" role="test" />
+     </dir> <!-- /tests/Ticket/DC221 -->
      <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
@@ -1208,6 +1211,8 @@ requiring needless code duplication.</description>
      <file name="DC147TestCase.php" role="test" />
      <file name="DC169TestCase.php" role="test" />
      <file name="DC171TestCase.php" role="test" />
+     <file name="DC187TestCase.php" role="test" />
+     <file name="DC221TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1349,7 +1354,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2009-11-10</date>
+   <date>2009-11-16</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
