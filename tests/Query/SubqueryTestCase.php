@@ -121,7 +121,7 @@ class Doctrine_Query_Subquery_TestCase extends Doctrine_UnitTestCase
           ->limit(5);
         
         try {
-            $this->assertEqual($q->getCountSqlQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT e.id, COUNT(a.id) AS a__0 FROM entity e LEFT JOIN album a ON e.id = a.user_id WHERE e.type = 0 GROUP BY e.id HAVING a__0 > 0) dctrn_count_query');
+            $this->assertEqual($q->getCountSqlQuery(), 'SELECT COUNT(*) AS num_results FROM (SELECT e.id, COUNT(a.id) AS a__0 FROM entity e LEFT JOIN album a ON e.id = a.user_id WHERE (e.type = 0) GROUP BY e.id HAVING a__0 > 0) dctrn_count_query');
             $q->count();
             
             $this->pass();

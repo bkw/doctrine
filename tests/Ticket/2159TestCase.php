@@ -37,7 +37,7 @@ class Doctrine_Ticket_2159_TestCase extends Doctrine_UnitTestCase
         $q = Doctrine_Core::getTable('User')
           ->createQuery('u');
 
-        $sql = 'SELECT COUNT(*) AS num_results FROM entity e WHERE e.type = 0';
+        $sql = 'SELECT COUNT(*) AS num_results FROM entity e WHERE (e.type = 0)';
         $this->assertEqual($q->getCountSqlQuery(), $sql);
         $results1 = $q->execute();
         $count1 = $q->count();
