@@ -4,6 +4,7 @@ class GroupTest extends UnitTestCase
     protected $_testCases = array();
     protected $_name;
     protected $_title;
+    protected $_onlyRunFailed = false;
 
     public function __construct($title, $name)
     {
@@ -13,6 +14,11 @@ class GroupTest extends UnitTestCase
             define('STDOUT', '');
         }
         $this->_formatter = new Doctrine_Cli_AnsiColorFormatter();
+    }
+
+    public function onlyRunFailed($bool)
+    {
+        $this->_onlyRunFailed = $bool;
     }
 
     public function getName()
@@ -48,10 +54,18 @@ class GroupTest extends UnitTestCase
     {
         set_time_limit(900);
 
+        $this->init();
+
         $reporter->setTestCase($this);
         $reporter->paintHeader($this->_title);
 
+        $lastRunsFails = $this->getLastRunsFails();
+
         foreach ($this->_testCases as $k => $testCase) {
+            if ($this->_onlyRunFailed && ! isset($lastRunsFails[get_class($testCase)])) {
+                continue;
+            }
+
             $reporter->setTestCase($testCase);
 
             if ( ! $this->shouldBeRun($testCase, $filter)) {

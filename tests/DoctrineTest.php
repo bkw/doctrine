@@ -175,7 +175,10 @@ class DoctrineTest
             $coverageGeneration->generateReport();
             return $ret;
             // */
+        }
 
+        if (array_key_exists('only-failed', $options)) {
+            $testGroup->onlyRunFailed(true);
         }
         $result = $testGroup->run($reporter, $filter);
 
@@ -219,21 +222,21 @@ class DoctrineTest
      * @return array An array with options
      */
     public function parseOptions($array) {
-        $currentName='';
-        $options=array();
+        $currentName = '';
+        $options = array();
 
         foreach($array as $name) {
-            if (strpos($name,'-')===0) {
-                $name=str_replace('-','',$name);
-                $currentName=$name;
+            if (strpos($name, '--') === 0) {
+                $name = ltrim($name, '--');
+                $currentName = $name;
 
                 if ( ! isset($options[$currentName])) {
-                    $options[$currentName]=array();         
+                    $options[$currentName] = array();         
                 }
             } else {
-                $values=$options[$currentName];
-                array_push($values,$name);    
-                $options[$currentName]=$values;
+                $values = $options[$currentName];
+                array_push($values, $name);    
+                $options[$currentName] = $values;
             }
         }
 
@@ -248,7 +251,8 @@ class DoctrineTest
      * @param string $class The name of the class to autoload 
      * @return boolean True 
      */
-    public static function autoload($class) {
+    public static function autoload($class)
+    {
         if (strpos($class, 'TestCase') === false) {
             return false;
         }

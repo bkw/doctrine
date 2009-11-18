@@ -11,6 +11,20 @@ class UnitTestCase
 
     protected static $_lastRunsPassesAndFails = array('passes' => array(), 'fails' => array());
 
+    public function init()
+    {
+        $tmpFileName = $this->getPassesAndFailsCachePath();
+
+        if (file_exists($tmpFileName)) {
+            $array = unserialize(file_get_contents($tmpFileName));
+        } else {
+            $array = array();
+        }
+        if ($array) {
+            self::$_lastRunsPassesAndFails = $array;
+        }
+    }
+
     public function addMessage($msg)
     {
         $this->_messages[] = $msg;
@@ -161,17 +175,20 @@ class UnitTestCase
         return $this->_passed;
     }
 
+    public function getPassesAndFailsCachePath()
+    {
+        $dir = dirname(__FILE__) . '/doctrine_tests';
+        if ( ! is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        $path = $dir . '/' . md5(serialize(array_keys($this->_testCases)));
+        return $path;
+    }
+
     public function cachePassesAndFails()
     {
-        $tmpFileName = sys_get_temp_dir() . '/' . md5(serialize($this->_testCases));
-        if (file_exists($tmpFileName)) {
-            $array = unserialize(file_get_contents($tmpFileName));
-        } else {
-            $array = array();
-        }
-        if ( ! empty($array)) {
-            self::$_lastRunsPassesAndFails = $array;
-        }
+        $tmpFileName = $this->getPassesAndFailsCachePath();
         file_put_contents($tmpFileName, serialize(self::$_passesAndFails));
     }
 
@@ -183,6 +200,16 @@ class UnitTestCase
     public function getLastRunsPassesAndFails()
     {
         return self::$_lastRunsPassesAndFails;
+    }
+
+    public function getLastRunsFails()
+    {
+        return isset(self::$_lastRunsPassesAndFails['fails']) ? self::$_lastRunsPassesAndFails['fails'] : array();
+    }
+
+    public function getLastRunsPass()
+    {
+        return isset(self::$_lastRunsPassesAndFails['passes']) ? self::$_lastRunsPassesAndFails['passes'] : array();
     }
 
     public function getNewFails()

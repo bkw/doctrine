@@ -268,7 +268,7 @@ class Doctrine_DataDict_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'float', 'length' => 20, 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'DOUBLE');
+        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'FLOAT(20, 2)');
     }
 
     public function testGetNativeDeclarationSupportsBooleanType() 
