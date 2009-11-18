@@ -86,7 +86,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u')->limit(5);
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT a.* FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a WHERE ROWNUM <= 5');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT a.* FROM ( SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) ) a WHERE ROWNUM <= 5');
     }
 
     public function testLimitOffsetQueriesForOracle()
@@ -99,7 +99,7 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
 
         $q->from('User u')->limit(5)->offset(2);
 
-        $this->assertEqual($q->getSqlQuery(), 'SELECT b.* FROM (SELECT a.*, ROWNUM AS doctrine_rownum FROM (SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0)) a ) b WHERE doctrine_rownum BETWEEN 3 AND 7');
+        $this->assertEqual($q->getSqlQuery(), 'SELECT b.* FROM ( SELECT a.*, ROWNUM AS doctrine_rownum FROM ( SELECT e.id AS e__id, e.name AS e__name, e.loginname AS e__loginname, e.password AS e__password, e.type AS e__type, e.created AS e__created, e.updated AS e__updated, e.email_id AS e__email_id FROM entity e WHERE (e.type = 0) ) a  ) b WHERE doctrine_rownum BETWEEN 3 AND 7');
     }
     
     public function testLimitOffsetLimitSubqueriesForOracle()
@@ -116,14 +116,14 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
                     . "FROM entity e "
                     . "INNER JOIN phonenumber p ON e.id = p.entity_id "
                     . "WHERE e.id IN ("
-                        . "SELECT b.id FROM ("
+                        . "SELECT b.id FROM ( "
                             . "SELECT a.*, ROWNUM AS doctrine_rownum "
-                            . "FROM ("
+                            . "FROM ( "
                                 . "SELECT DISTINCT e2.id "
                                 . "FROM entity e2 "
                                 . "INNER JOIN phonenumber p2 ON e2.id = p2.entity_id "
-                                . "WHERE (e2.type = 0)"
-                            . ") a"
+                                . "WHERE (e2.type = 0) "
+                            . ") a "
                         . " ) b "
                         . "WHERE doctrine_rownum BETWEEN 3 AND 7"
                     . ") AND (e.type = 0)";
@@ -154,16 +154,16 @@ class Doctrine_Query_Driver_TestCase extends Doctrine_UnitTestCase
                     . "FROM entity e "
                     . "INNER JOIN phonenumber p ON e.id = p.entity_id "
                     . "WHERE e.id IN ("
-                        . "SELECT b.id FROM ("
+                        . "SELECT b.id FROM ( "
                             . "SELECT a.*, ROWNUM AS doctrine_rownum "
-                                  . "FROM ("
+                                  . "FROM ( "
                                       . "SELECT doctrine_subquery_alias.id FROM ("
                                           . "SELECT e2.id, p2.id "
                                           . "FROM entity e2 "
                                           . "INNER JOIN phonenumber p2 ON e2.id = p2.entity_id "
                                           . "WHERE (e2.type = 0) GROUP BY e2.name ORDER BY p2.id"
-                                      . ") doctrine_subquery_alias GROUP BY doctrine_subquery_alias.id ORDER BY MIN(ROWNUM)"
-                                  . ") a"
+                                      . ") doctrine_subquery_alias GROUP BY doctrine_subquery_alias.id ORDER BY MIN(ROWNUM) "
+                                  . ") a "
                               . " ) b "
                               . "WHERE doctrine_rownum BETWEEN 3 AND 7"
                           . ") AND (e.type = 0) GROUP BY e.name ORDER BY p.id";
