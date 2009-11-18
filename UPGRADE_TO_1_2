@@ -705,33 +705,6 @@ Or in YAML you can do the following.
         User:
           foreignKeyName: user_id_fk
 
-## Behavior Nesting
-
-In Doctrine 1.2 nesting behaviors works properly and you no longer get constraint
-errors in mysql.
-
-    [yml]
-    Wiki:
-      tableName: wiki
-      actAs:
-        Timestampable:
-        I18n:
-          fields: [title, content]
-          actAs:
-            Versionable:
-              fields: [title, content]
-            Searchable:
-              fields: [title, content]
-            Sluggable:
-              fields: [title]
-      columns:
-        title: string(255)
-        content: clob
-
-This example will now work properly under MySQL and other databases which have 
-foreign key constraints. This example already worked in Sqlite because it does
-not have any foreign key constraints.
-
 ## Sluggable Provider Option
 
 You can now use a provider option to the `Sluggable` behavior so you can customize
