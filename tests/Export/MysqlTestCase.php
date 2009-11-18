@@ -216,7 +216,7 @@ class Doctrine_Export_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $this->conn->setAttribute(Doctrine_Core::ATTR_QUOTE_IDENTIFIER, true);
 
-        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true, 'unique' => true),
+        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
                          'name' => array('type' => 'string', 'length' => 4),
                          );
 
@@ -295,7 +295,7 @@ class Doctrine_Export_Mysql_TestCase extends Doctrine_UnitTestCase
     }
     public function testCreateTableSupportsIndexesUsingSingleFieldString()
     {
-        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true, 'unique' => true),
+        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
                          'name' => array('type' => 'string', 'length' => 4),
                          );
 
@@ -309,7 +309,7 @@ class Doctrine_Export_Mysql_TestCase extends Doctrine_UnitTestCase
     }
     public function testCreateTableSupportsIndexesWithCustomSorting()
     {
-        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true, 'unique' => true),
+        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
                          'name' => array('type' => 'string', 'length' => 4),
                          );
 
@@ -328,7 +328,7 @@ class Doctrine_Export_Mysql_TestCase extends Doctrine_UnitTestCase
     }
     public function testCreateTableSupportsFulltextIndexes()
     {
-        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true, 'unique' => true),
+        $fields  = array('id' => array('type' => 'integer', 'unsigned' => 1, 'autoincrement' => true),
                          'content' => array('type' => 'string', 'length' => 4),
                          );
 
