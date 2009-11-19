@@ -61,7 +61,6 @@ class T904_Section extends Doctrine_Record
 {
   public function setTableDefinition()
   {
-    $this->setTableName('section');
     $this->hasColumn('id', 'integer', 4, array('primary' => true, 'autoincrement' => true));
     $this->hasColumn('title', 'string', 60, array('notnull' => true));
     $this->hasColumn('summary', 'string', 255);

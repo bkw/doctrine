@@ -59,7 +59,6 @@ class Ticket_2367_Article extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        $this->setTableName('article');
         $this->hasColumn('id', 'integer', 2, array('type' => 'integer', 'primary' => true,
           'autoincrement' => true, 'unsigned' => true, 'length' => '2'));
         $this->hasColumn('content', 'string', 100, array('type' => 'string', 'length' => '100'));
