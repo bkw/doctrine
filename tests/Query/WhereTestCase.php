@@ -109,6 +109,17 @@ class Doctrine_Query_Where_TestCase extends Doctrine_UnitTestCase
         $this->assertEqual($users[1]->name, 'someone.2');
     }
     
+    public function testExceptionIsThrownWhenParameterIsNull()
+    {
+       try
+       {
+            Doctrine_Query::create()->delete('User')->whereIn('User.id', null)->execute();
+            $this->fail("Should throw exception");
+        } catch(Doctrine_Query_Exception $e) {
+            $this->pass();
+        }
+    }
+
     public function testDirectMultipleParameterSetting2()
     {
         $q = Doctrine_Query::create()
