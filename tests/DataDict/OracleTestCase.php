@@ -200,7 +200,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'integer', 'length' => 20, 'fixed' => false);
 
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'NUMBER(20)');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'INTEGER');
         
         $a['length'] = 8;
         
@@ -224,7 +224,7 @@ class Doctrine_DataDict_Oracle_TestCase extends Doctrine_UnitTestCase
         
         unset($a['length']);
         
-        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'INT');
+        $this->assertEqual($this->dataDict->getNativeDeclaration($a), 'INTEGER');
     }
 
     public function testGetNativeDefinitionSupportsFloatType() 
