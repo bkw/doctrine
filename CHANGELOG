@@ -1,3 +1,45 @@
+1.2.0-RC1
+---------
+     * [r6735] [1.2] Releasing Doctrine 1.2.0-BETA3
+     * [r6736] [1.2] Fixes issue with load data and append option
+     * [r6740] [1.2][DC-241] Code changes towards possible fix
+     * [r6741] [1.2][DC-236] Adding test coverage
+     * [r6742] [1.2][DC-241] Adding test coverage
+     * [r6743] [1.2][DC-240] Fixes issue with relationship orderBy on m2m refclass
+     * [r6744] [1.2][DC-244] Adding some missing event methods
+     * [r6745] [1.2][DC-243] Fixing issue with generating models from db not using model builder options
+     * [r6746] [1.2][DC-242][DC-228][DC-189] Fixes issue with link(), unlink(), fromArray() and synchronizeWithArray()
+     * [r6747] [1.2][DC-238] Making count() use result cache
+     * [r6748] [1.2][DC-241] Fixes issue with limit subquery being invoked with dql callbacks and when running count()
+     * [r6749] [1.2] Added static method hasConnection(). It's an accessor method for $isConnected.
+     * [r6750] [1.2][DC-62] Fixing mysql to map float, decimal and double properly
+     * [r6751] [1.2] Adding only-failed option to test suite
+     * [r6752] [1.2][DC-140] Fixed generated sql for oracle limit clause
+     * [r6758] [1.2][DC-252] Fixing issue with mysql ignoring unique option on integers
+     * [r6759] [1.2][DC-253] Adding missing data types for mssql
+     * [r6760] [1.2][DC-252] Fixing mysql integer unique issue again
+     * [r6763] [1.2] Fixing closeConnection() to only change the current connection if we close the current one
+     * [r6764] [1.2][DC-254] Updating getLimitSubquery() to include all orderby parts
+     * [r6765] [1.2][DC-255] Fixing issue with xml parser not exporting data in utf8
+     * [r6768] [1.2][DC-256] Fixing issue with id quoting and generated subqueries
+     * [r6769] [1.2][DC-257] Adding missing identifier quoting for oracle
+     * [r6770] [1.2] Removing behavior nesting example as it still does not properly work
+     * [r6775] [1.2][DC-266] Fixing generators to inherit table name from parent
+     * [r6776] [1.2][DC-267] Fixing hydrator to put aliased fields in relationship if it exists
+     * [r6777] [1.2][DC-263] Fixing pgsql type import for varchar
+     * [r6778] [1.2][DC-261] Fixes issue with bound query overriding passed query
+     * [r6779] [1.2][DC-255] Fixing arrayToXml so charset is passed recursively
+     * [r6780] [1.2][DC-198] Fixing refreshRelated() for good
+     * [r6781] [1.2] Adding missing tests
+     * [r6782] [1.2] fixed issue: when second parameter ($params) of andWhereIn() or orWhereIn() is NULL, the exception('You must pass at least one parameter when using an IN()') was not thrown
+     * [r6783] [1.2] added testExceptionIsThrownWhenParameterIsNull() to Query/WhereTestCase.php
+     * [r6792] [1.2][DC-276] Fixes issue with having not parsing dql table aliases
+     * [r6793] [1.2][DC-260] Fixes issue with oracle integers
+     * [r6794] [1.2][DC-274] Fixing issue with use of sfYaml
+     * [r6795] [1.2][DC-37][DC-279] Fixes issue with mssql modifyLimitQuery()
+     * [r6796] [1.2][DC-277] Fixing loadModels() for pear style model loading
+     * [r6797] [1.2] Fixing r6748 to be isConnected() instead of static method
+
 1.2.0-BETA3
 -----------
      * [r6699] [1.2] Releasing Doctrine 1.2.0-BETA2

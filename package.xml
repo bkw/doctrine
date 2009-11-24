@@ -21,8 +21,8 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-16</date>
- <time>20:03:28</time>
+ <date>2009-11-24</date>
+ <time>00:24:59</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
@@ -1212,7 +1212,17 @@ requiring needless code duplication.</description>
      <file name="DC169TestCase.php" role="test" />
      <file name="DC171TestCase.php" role="test" />
      <file name="DC187TestCase.php" role="test" />
+     <file name="DC198TestCase.php" role="test" />
+     <file name="DC217TestCase.php" role="test" />
      <file name="DC221TestCase.php" role="test" />
+     <file name="DC236TestCase.php" role="test" />
+     <file name="DC238TestCase.php" role="test" />
+     <file name="DC240TestCase.php" role="test" />
+     <file name="DC241TestCase.php" role="test" />
+     <file name="DC242TestCase.php" role="test" />
+     <file name="DC266TestCase.php" role="test" />
+     <file name="DC267TestCase.php" role="test" />
+     <file name="DC276TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1354,7 +1364,7 @@ requiring needless code duplication.</description>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2009-11-16</date>
+   <date>2009-11-24</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
