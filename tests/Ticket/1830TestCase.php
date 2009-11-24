@@ -55,12 +55,13 @@ class Doctrine_Ticket_1830_TestCase extends Doctrine_UnitTestCase
 
         try
         {
-            $q = Doctrine_Query::create($this->connection)->select('a.*, t.*')
-                 ->from('Ticket_1830_Article a, a.Translation t')
-                 ->addWhere('a.id = ? OR a.id = ?', array(2, 3))
-                 ->orderBy('a.id DESC')
-                 ->limit(1)
-                 ;
+            $q = Doctrine_Core::getTable('Ticket_1830_Article')
+                ->createQuery('a')
+                ->select('a.*, t.*')
+                ->leftJoin('a.Translation t')
+                ->addWhere('a.id = ? OR a.id = ?', array(2, 3))
+                ->orderBy('a.id DESC')
+                ->limit(1);
             $results = $q->execute();
             $this->assertEqual(count($results), 1);
             $this->assertEqual($results[0]->id, 3);
