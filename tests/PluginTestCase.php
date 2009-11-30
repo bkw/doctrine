@@ -45,7 +45,7 @@ class Doctrine_Plugin_TestCase extends Doctrine_UnitTestCase
         $sql = current($sql);
 
         $this->assertEqual($sql[0], 'CREATE TABLE wiki_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content TEXT, version INTEGER, PRIMARY KEY(id, lang, version))');
-        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))');
+        $this->assertEqual($sql[1], 'CREATE TABLE wiki_translation_index (keyword VARCHAR(200), field VARCHAR(50), position INTEGER, id INTEGER, lang CHAR(2), PRIMARY KEY(keyword, field, position, id, lang))');
         $this->assertEqual($sql[2], 'CREATE TABLE wiki_translation (id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))');
         $this->assertEqual($sql[3], 'CREATE TABLE wiki (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL)');
 

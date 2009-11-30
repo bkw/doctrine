@@ -70,7 +70,7 @@ END;
 
         $result = array(
             0 => 'CREATE TABLE wiki_test_translation_version (id INTEGER, lang CHAR(2), title VARCHAR(255), content TEXT, version INTEGER, PRIMARY KEY(id, lang, version))',
-            1 => 'CREATE TABLE wiki_test_translation_index (id INTEGER, lang CHAR(2), keyword VARCHAR(200), field VARCHAR(50), position INTEGER, PRIMARY KEY(id, lang, keyword, field, position))',
+            1 => 'CREATE TABLE wiki_test_translation_index (keyword VARCHAR(200), field VARCHAR(50), position INTEGER, id INTEGER, lang CHAR(2), PRIMARY KEY(keyword, field, position, id, lang))',
             2 => 'CREATE TABLE wiki_test_translation (id INTEGER, title VARCHAR(255), content TEXT, lang CHAR(2), version INTEGER, slug VARCHAR(255), PRIMARY KEY(id, lang))',
             3 => 'CREATE TABLE wiki_test (id INTEGER PRIMARY KEY AUTOINCREMENT)',
             4 => 'CREATE UNIQUE INDEX sluggable_idx ON wiki_test_translation (slug)',
