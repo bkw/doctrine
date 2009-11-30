@@ -21,15 +21,15 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-24</date>
- <time>00:24:59</time>
+ <date>2009-11-30</date>
+ <time>18:52:51</time>
  <version>
   <release>1.2.0</release>
   <api>1.2.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
  <notes>-</notes>
@@ -245,6 +245,12 @@ requiring needless code duplication.</description>
       <file name="Range.php" role="php" />
      </dir> <!-- /lib/Doctrine/Pager -->
      <dir name="Parser">
+      <dir name="sfYaml">
+       <file name="sfYaml.php" role="php" />
+       <file name="sfYamlDumper.php" role="php" />
+       <file name="sfYamlInline.php" role="php" />
+       <file name="sfYamlParser.php" role="php" />
+      </dir> <!-- /lib/Doctrine/Parser/sfYaml -->
       <file name="Exception.php" role="php" />
       <file name="Json.php" role="php" />
       <file name="Serialize.php" role="php" />
@@ -1361,10 +1367,10 @@ requiring needless code duplication.</description>
     <api>1.2.0</api>
    </version>
    <stability>
-    <release>beta</release>
-    <api>beta</api>
+    <release>stable</release>
+    <api>stable</api>
    </stability>
-   <date>2009-11-24</date>
+   <date>2009-11-30</date>
    <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
    <notes>-</notes>
   </release>

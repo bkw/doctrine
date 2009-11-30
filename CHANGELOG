@@ -1,3 +1,20 @@
+1.2.0
+-----
+     * [r6799] [1.2] Fixing issue where queries have connection passed when they should not
+     * [r6800] [1.0, 1.1, 1.2][DC-283] Fixes issue with wrong class property referenced
+     * [r6801] [1.2][DC-282] Fixing issue with memory leak and dql callbacks
+     * [r6802] [1.2][DC-281] Fix to generating yaml/models from db and relationship names
+     * [r6804] [1.2][DC-233] Adding alias to relationship name for Versionable in the same way I18n does
+     * [r6805] [1.2][DC-275] Fixing issue with importing from mysql and decimal types
+     * [r6806] [1.2][DC-271] Fixing issue with object access
+     * [r6819] [1.2][DC-299] Fixing issue with loadModels() including invalid classes in returned array
+     * [r6820] [1.2][DC-295] Added class prefix attribute for easier configuration
+     * [r6821] [1.2][DC-298] Updating api doc blocks
+     * [r6822] [1.2][DC-288] Moving location of sfYaml external
+     * [r6823] [1.2][DC-286] Fixed issue with loadModels dir contains a trailing directory separator
+     * [r6824] [1.2][DC-295] Fixing mistake with last commit for this ticket
+     * [r6825] [1.2] Changing order of searchable columns so keyword is first
+
 1.2.0-RC1
 ---------
      * [r6735] [1.2] Releasing Doctrine 1.2.0-BETA3
