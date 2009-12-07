@@ -971,3 +971,13 @@ Now you can do the following:
     $user->username = 'jwage';
     $user->password = 'changeme';
     $user->permissions = array('admin', 'member');
+
+## Models Autoloading
+
+In Doctrine 1.2 the models autoloading was moved to a custom autoloader for more
+flexibility and not forcing the models autoloading on users if they don't want to
+use it. If you still wish to use the Doctrine model autoloading then you must
+use the following code:
+
+    [php]
+    spl_autoload_register(array('Doctrine_Core', 'modelsAutoload'));
