@@ -1,3 +1,23 @@
+1.2.1
+-----
+     * [r6827] [1.2] Releasing 1.2.0 stable
+     * [r6834] [1.2][DC-302] Fixing issue with relationship ordering
+     * [r6835] [1.2][DC-306] Fixes issue with oracle adapter statement using wrong constant
+     * [r6836] [1.2][DC-304] Fixing issue with sfYaml autoload not returning true
+     * [r6837] [1.2][DC-305] Fixes issue with oracle adapte close cursor
+     * [r6838] [1.2][DC-307] Fixing issue with oracle adapter and errmode
+     * [r6839] [1.2][DC-298] Fixes issue with array cache driver and deleting
+     * [r6840] [1.2][DC-308] Fixed thrown Exceptions to be package-level
+	  Ticket: 308
+     * [r6842] [1.2] Fixes issue with $length in migrations addColumn
+     * [r6859] [1.2] fixed misplaced paren when parsing join condition
+     * [r6883] [1.2][DC-330] Added empty init() method implementation to avoid method does not exist error
+     * [r6886] [1.2][DC-316] Updating upgrade file with information about modelsAutoload()
+     * [r6888] [1.2][DC-292] Added coverage for issue
+     * [r6889] [1.2][DC-317] Fixing issue with nested set createRoot() method and string root column
+     * [r6891] [1.2] Fixing sandbox
+     * [r6893] [1.2][DC-333] Adding _cleanup() call to start of migrations diff to make sure directory is clean
+
 1.2.0
 -----
      * [r6799] [1.2] Fixing issue where queries have connection passed when they should not

@@ -21,11 +21,11 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-11-30</date>
- <time>18:52:51</time>
+ <date>2009-12-07</date>
+ <time>22:00:00</time>
  <version>
-  <release>1.2.0</release>
-  <api>1.2.0</api>
+  <release>1.2.1</release>
+  <api>1.2.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -970,6 +970,10 @@ requiring needless code duplication.</description>
      <dir name="DC221">
       <file name="TestMigration.php" role="test" />
      </dir> <!-- /tests/Ticket/DC221 -->
+     <dir name="DC292">
+      <file name="from.yml" role="test" />
+      <file name="to.yml" role="test" />
+     </dir> <!-- /tests/Ticket/DC292 -->
      <file name="255TestCase.php" role="test" />
      <file name="381TestCase.php" role="test" />
      <file name="384TestCase.php" role="test" />
@@ -1229,6 +1233,9 @@ requiring needless code duplication.</description>
      <file name="DC266TestCase.php" role="test" />
      <file name="DC267TestCase.php" role="test" />
      <file name="DC276TestCase.php" role="test" />
+     <file name="DC292TestCase.php" role="test" />
+     <file name="DC302TestCase.php" role="test" />
+     <file name="DC317TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1361,6 +1368,19 @@ requiring needless code duplication.</description>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.2.1</release>
+    <api>1.2.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-12-07</date>
+   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <notes>-</notes>
+  </release>
   <release>
    <version>
     <release>1.2.0</release>
