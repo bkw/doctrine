@@ -217,7 +217,7 @@ BEGIN
    ELSE
       SELECT NVL(Last_Number, 0) INTO last_Sequence
         FROM User_Sequences
-       WHERE Sequence_Name = \'sometable_seq\';
+       WHERE UPPER(Sequence_Name) = UPPER(\'sometable_seq\');
       SELECT :NEW."id" INTO last_InsertID FROM DUAL;
       WHILE (last_InsertID > last_Sequence) LOOP
          SELECT "sometable_seq".NEXTVAL INTO last_Sequence FROM DUAL;
