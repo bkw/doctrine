@@ -272,7 +272,7 @@ Now you can run a query like the following which would use the new `MyHydrator`.
     [php]
     $q->execute(array(), 'MyHydrator');
 
-# Custom Connections
+## Custom Connections
 
 You can now write and register your own custom Doctrine connection drivers and 
 adapters.
@@ -304,7 +304,7 @@ that they are the classes we defined above.
     echo get_class($conn); // Doctrine_Connection_Test
     echo get_class($conn->getDbh()); // Doctrine_Adapter_Test
 
-# Doctrine Extensions
+## Doctrine Extensions
 
 Doctrine now has support for creating, loading and testing extensions in to your 
 projects.
