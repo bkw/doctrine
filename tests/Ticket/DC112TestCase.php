@@ -81,7 +81,6 @@ class Doctrine_Ticket_DC112_TestCase extends Doctrine_UnitTestCase
 
     public function testDeleteByRegex()
     {
-        xdebug_break();
         $cacheDriver = new Doctrine_Cache_Array(array(
             'prefix' => 'test_'
         ));
