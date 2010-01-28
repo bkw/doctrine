@@ -265,10 +265,13 @@ $test->addTestCase($search);
 $cache = new GroupTest('Cache Tests', 'cache');
 $cache->addTestCase(new Doctrine_Query_Cache_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Apc_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Array_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Db_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Memcache_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Query_Sqlite_TestCase());
 $cache->addTestCase(new Doctrine_Cache_Sqlite_TestCase());
+$cache->addTestCase(new Doctrine_Cache_Xcache_TestCase());
 $test->addTestCase($cache);
 
 // Migration Tests

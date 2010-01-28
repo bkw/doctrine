@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Cache_Apc_TestCase
+ * Doctrine_Cache_Array_TestCase
  *
  * @package     Doctrine
  * @subpackage  Doctrine_Cache
@@ -31,20 +31,20 @@
  * @since       1.2
  * @version     $Revision$
  */
-class Doctrine_Cache_Apc_TestCase extends Doctrine_Cache_Abstract_TestCase
+class Doctrine_Cache_Array_TestCase extends Doctrine_Cache_Abstract_TestCase
 {
     protected function _clearCache()
     {
-        apc_clear_cache('user');
+        // do nothing
     }
     
     protected function _isEnabled()
     {
-        return extension_loaded('apc');
+        return true;
     }
     
     protected function _getCacheDriver()
     {
-        return new Doctrine_Cache_Apc();
+        return new Doctrine_Cache_Array();
     }
 }

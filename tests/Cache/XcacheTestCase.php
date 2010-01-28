@@ -20,7 +20,7 @@
  */
 
 /**
- * Doctrine_Cache_Apc_TestCase
+ * Doctrine_Cache_Xcache_TestCase
  *
  * @package     Doctrine
  * @subpackage  Doctrine_Cache
@@ -31,20 +31,27 @@
  * @since       1.2
  * @version     $Revision$
  */
-class Doctrine_Cache_Apc_TestCase extends Doctrine_Cache_Abstract_TestCase
+class Doctrine_Cache_Xcache_TestCase extends Doctrine_Cache_Abstract_TestCase
 {
     protected function _clearCache()
     {
-        apc_clear_cache('user');
+        for ($i = 0, $count = xcache_count(XC_TYPE_VAR); $i < $count; $i++) {
+            xcache_clear_cache(XC_TYPE_VAR, $i);
+        }
     }
-    
+
     protected function _isEnabled()
     {
-        return extension_loaded('apc');
+        // Wow, Xcache doesn't work in CLI by design
+        if (array_key_exists('SHELL', $_ENV)) {
+            return false;
+        }
+
+        return extension_loaded('xcache');
     }
-    
+
     protected function _getCacheDriver()
     {
-        return new Doctrine_Cache_Apc();
+        return new Doctrine_Cache_Xcache();
     }
 }

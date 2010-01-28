@@ -30,7 +30,7 @@
  * @since       1.0
  * @version     $Revision$
  */
-class Doctrine_Ticket_DC238_TestCase extends Doctrine_UnitTestCase 
+class Doctrine_Ticket_DC238_TestCase extends Doctrine_UnitTestCase
 {
     public function testTest()
     {
@@ -60,7 +60,6 @@ class Doctrine_Ticket_DC238_TestCase extends Doctrine_UnitTestCase
 
         $this->assertEqual(1, $profiler->count());
 
-        $this->assertEqual($cacheDriver->count(), 1);
         $this->assertTrue($cacheDriver->contains('user_query_count'));
     }
 }
