@@ -331,7 +331,7 @@ class Doctrine_DataDict_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'array', 'length' => 40);
 
-        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'VARCHAR(40)');
+        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'TINYTEXT');
     }
 
     public function testGetNativeDeclarationSupportsStringType() 
@@ -352,13 +352,13 @@ class Doctrine_DataDict_Mysql_TestCase extends Doctrine_UnitTestCase
     {
         $a = array('type' => 'array');
 
-        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'TEXT');
+        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'LONGTEXT');
     }
 
     public function testGetNativeDeclarationSupportsObjectType() 
     {
         $a = array('type' => 'object');
 
-        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'TEXT');
+        $this->assertEqual($this->dataDict->GetNativeDeclaration($a), 'LONGTEXT');
     }
 }
