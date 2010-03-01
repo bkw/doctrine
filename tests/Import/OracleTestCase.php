@@ -71,7 +71,7 @@ WHERE tc.table_name = :tableName ORDER BY column_id";
     {
         $this->import->listTables();
         
-        $q = "SELECT * FROM user_objects WHERE object_type = 'TABLE'";
+        $q = "SELECT * FROM user_objects WHERE object_type = 'TABLE' and object_name in (select table_name from user_tables)";
         $this->assertEqual($this->adapter->pop(), $q);
     }
     public function testListDatabasesExecutesSql()
