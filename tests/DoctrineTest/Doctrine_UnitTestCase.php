@@ -286,4 +286,7 @@ class Doctrine_UnitTestCase extends UnitTestCase
 
         $this->init = true;
     }
+    
+    public function tearDown() {
+    }
 }

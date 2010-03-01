@@ -156,6 +156,8 @@ class UnitTestCase
                 $this->setUp();
 
                 $this->$method();
+                
+                $this->tearDown();
             }
         }
     }

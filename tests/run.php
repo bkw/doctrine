@@ -14,7 +14,8 @@ $excludeTickets = array(
     '1876b',
     '1935',
     '2015',
-    '2292'
+    '2292',
+    'DC521' // PostgreSQL specific error
 );
 
 $ticketTestCases = glob(dirname(__FILE__) . '/Ticket/*TestCase.php');
