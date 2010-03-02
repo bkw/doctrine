@@ -125,8 +125,17 @@ class Doctrine_Tokenizer_TestCase extends Doctrine_UnitTestCase
         $str = 'foo.field and bar.field';
         $a   = $tokenizer->bracketExplode($str, array(' \&\& ', ' AND '), '(', ')');
         $this->assertEqual($a, array('foo.field', 'bar.field'));
-    }
 
+        // test the JOIN splitter as used in Doctrine_Query_From::parse()
+        $str = 'foo.field join bar.field';
+        $a   = $tokenizer->bracketExplode($str, 'JOIN');
+        $this->assertEqual($a, array('foo.field', 'bar.field'));
+
+        // test that table names including the split string are unaffected
+        $str = 'foojointable.field join bar.field';
+        $a   = $tokenizer->bracketExplode($str, 'JOIN');
+        $this->assertEqual($a, array('foojointable.field', 'bar.field'));
+    }
 
     public function testQuoteExplodedShouldQuoteArray()
     {
