@@ -174,6 +174,13 @@ class Doctrine_Record_TestCase extends Doctrine_UnitTestCase
 
     public function testToArray()
     {
+        $query = Doctrine_Query::create()
+            ->select('u.id')
+            ->from('User u')
+            ->limit(1);
+        $user = $query->fetchOne()->toArray();
+        $this->assertFalse((bool) $user['name']);
+
         $user = new User();
 
         $a = $user->toArray();
