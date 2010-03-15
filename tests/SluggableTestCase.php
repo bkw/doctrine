@@ -52,7 +52,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
         $itemTable  = Doctrine_Core::getTable('SluggableItem2');
-        $this->assertTrue($index = $itemTable->getIndex('sluggable'));
+        $this->assertTrue($index = $itemTable->getIndex('my_item2_sluggable'));
         $this->assertEqual($index['type'], 'unique');
         $this->assertEqual($index['fields'], array('slug'));
     }
@@ -120,7 +120,7 @@ class Doctrine_Sluggable_TestCase extends Doctrine_UnitTestCase
         $item->save();
         $this->assertEqual($item->slug, 'my-item-1');
         $itemTable  = Doctrine_Core::getTable('SluggableItem5');
-        $this->assertTrue($index = $itemTable->getIndex('sluggable'));
+        $this->assertTrue($index = $itemTable->getIndex('my_item5_sluggable'));
         $this->assertEqual($index['type'], 'unique');
         $this->assertEqual($index['fields'], array('slug', 'user_id'));
     }
