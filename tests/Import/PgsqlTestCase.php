@@ -37,7 +37,7 @@ class Doctrine_Import_Pgsql_TestCase extends Doctrine_UnitTestCase
         $this->import->listSequences('table');
         
         $this->assertEqual($this->adapter->pop(), "SELECT
-                                                relname
+                                                regexp_replace(relname, '_seq$', '')
                                             FROM
                                                 pg_class
                                             WHERE relkind = 'S' AND relnamespace IN
