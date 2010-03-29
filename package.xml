@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
  <channel>pear.doctrine-project.org</channel>
  <summary>PHP5 Database ORM</summary>
@@ -21,18 +21,20 @@ requiring needless code duplication.</description>
   <email>jonwage@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-12-07</date>
- <time>22:00:00</time>
+ <date>2010-03-29</date>
+ <time>17:03:32</time>
  <version>
-  <release>1.2.1</release>
-  <api>1.2.1</api>
+  <release>1.2.2</release>
+  <api>1.2.2</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.doctrine-project.org/license">LGPL license</license>
- <notes>-</notes>
+ <notes>
+-
+ </notes>
  <contents>
   <dir baseinstalldir="Doctrine" name="/">
    <dir name="lib">
@@ -50,6 +52,9 @@ requiring needless code duplication.</description>
       <file name="Statement.php" role="php" />
      </dir> <!-- /lib/Doctrine/Adapter -->
      <dir name="AuditLog">
+      <dir name="Listener">
+       <file name="Microtime.php" role="php" />
+      </dir> <!-- /lib/Doctrine/AuditLog/Listener -->
       <file name="Listener.php" role="php" />
      </dir> <!-- /lib/Doctrine/AuditLog -->
      <dir name="Cache">
@@ -509,10 +514,14 @@ requiring needless code duplication.</description>
      <dir name="Query">
       <file name="SqliteTestCase.php" role="test" />
      </dir> <!-- /tests/Cache/Query -->
+     <file name="AbstractTestCase.php" role="test" />
      <file name="ApcTestCase.php" role="test" />
+     <file name="ArrayTestCase.php" role="test" />
+     <file name="DbTestCase.php" role="test" />
      <file name="MemcacheTestCase.php" role="test" />
      <file name="QuerySqliteTestCase.php" role="test" />
      <file name="SqliteTestCase.php" role="test" />
+     <file name="XcacheTestCase.php" role="test" />
     </dir> <!-- /tests/Cache -->
     <dir name="CliTestCase">
      <dir name="testLoadtasksLoadsDoctrineStyleTasksFromTheSpecifiedDirectory">
@@ -1204,6 +1213,7 @@ requiring needless code duplication.</description>
      <file name="DC24TestCase.php" role="test" />
      <file name="DC25TestCase.php" role="test" />
      <file name="DC28TestCase.php" role="test" />
+     <file name="DC36TestCase.php" role="test" />
      <file name="DC39TestCase.php" role="test" />
      <file name="DC56TestCase.php" role="test" />
      <file name="DC57TestCase.php" role="test" />
@@ -1234,8 +1244,11 @@ requiring needless code duplication.</description>
      <file name="DC267TestCase.php" role="test" />
      <file name="DC276TestCase.php" role="test" />
      <file name="DC292TestCase.php" role="test" />
+     <file name="DC300TestCase.php" role="test" />
      <file name="DC302TestCase.php" role="test" />
      <file name="DC317TestCase.php" role="test" />
+     <file name="DC437TestCase.php" role="test" />
+     <file name="DC521TestCase.php" role="test" />
      <file name="NewTicketTestCase.php" role="test" />
      <file name="NjeroTestCase.php" role="test" />
     </dir> <!-- /tests/Ticket -->
@@ -1370,6 +1383,21 @@ requiring needless code duplication.</description>
  <changelog>
   <release>
    <version>
+    <release>1.2.2</release>
+    <api>1.2.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-03-29</date>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
+   <notes>
+-
+   </notes>
+  </release>
+  <release>
+   <version>
     <release>1.2.1</release>
     <api>1.2.1</api>
    </version>
@@ -1379,7 +1407,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2009-12-07</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1392,7 +1422,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2009-11-30</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1405,7 +1437,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2009-06-15</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1418,7 +1452,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2009-05-11</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1431,7 +1467,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2009-03-16</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1444,7 +1482,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-09-11</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1457,7 +1497,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-09-09</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1470,7 +1512,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-09-01</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1483,7 +1527,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-06-23</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1496,7 +1542,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-03-28</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1509,7 +1557,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-03-18</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1522,7 +1572,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-03-01</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1535,7 +1587,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-02-29</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1548,7 +1602,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-02-13</date>
    <license uri="http://www.doctrine-project.org/license">LGPL license</license>
-   <notes>-</notes>
+   <notes>
+-
+   </notes>
   </release>
   <release>
    <version>
@@ -1561,7 +1617,9 @@ requiring needless code duplication.</description>
    </stability>
    <date>2008-02-06</date>
    <license uri="http://doctrine-project.org/license">MIT license</license>
-   <notes>barfoo</notes>
+   <notes>
+barfoo
+   </notes>
   </release>
  </changelog>
 </package>
