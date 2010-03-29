@@ -237,7 +237,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
 
         $sql = 'SELECT COUNT(keyword) AS relevance, id '
              . 'FROM search_test_index WHERE keyword = ? '
-             . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?) '
+             . 'AND (position + 1) IN (SELECT position FROM search_test_index WHERE keyword = ?) '
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm'));
@@ -251,8 +251,8 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
 
         $sql = 'SELECT COUNT(keyword) AS relevance, id '
              . 'FROM search_test_index WHERE keyword = ? '
-             . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?) '
-             . 'AND (position + 2) = (SELECT position FROM search_test_index WHERE keyword = ?) '
+             . 'AND (position + 1) IN (SELECT position FROM search_test_index WHERE keyword = ?) '
+             . 'AND (position + 2) IN (SELECT position FROM search_test_index WHERE keyword = ?) '
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'dbal'));
@@ -310,7 +310,7 @@ class Doctrine_Search_Query_TestCase extends Doctrine_UnitTestCase
              . 'FROM search_test_index '
              . 'WHERE id IN (SELECT id FROM search_test_index WHERE keyword = ?) '
              . 'AND id IN (SELECT id FROM search_test_index WHERE keyword = ? '
-             . 'AND (position + 1) = (SELECT position FROM search_test_index WHERE keyword = ?)) '
+             . 'AND (position + 1) IN (SELECT position FROM search_test_index WHERE keyword = ?)) '
              . 'GROUP BY id ORDER BY relevance DESC';
 
         $this->assertEqual($q->getParams(), array('doctrine', 'orm', 'database'));
