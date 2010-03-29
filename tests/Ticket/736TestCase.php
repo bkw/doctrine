@@ -5,7 +5,7 @@
  * @package     Doctrine
  * @author      Peter Petermann <Peter.Petermann@rtl.de>
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @version     $Revision$
  */
 class Doctrine_Ticket_736_TestCase extends Doctrine_UnitTestCase

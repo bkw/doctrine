@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Doctrine</name>
- <channel>pear.phpdoctrine.org</channel>
+ <channel>pear.doctrine-project.org</channel>
  <summary>PHP5 Database ORM</summary>
  <description>Doctrine is an ORM (object relational mapper) for PHP 5.2.x+ that sits on top of
 a powerful DBAL (database abstraction layer). One of its key features is the
@@ -31,7 +31,7 @@ requiring needless code duplication.</description>
   <release>stable</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+ <license uri="http://www.doctrine-project.org/license">LGPL license</license>
  <notes>-</notes>
  <contents>
   <dir baseinstalldir="Doctrine" name="/">
@@ -1378,7 +1378,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2009-12-07</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1391,7 +1391,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2009-11-30</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1404,7 +1404,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2009-06-15</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1417,7 +1417,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2009-05-11</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1430,7 +1430,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2009-03-16</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1443,7 +1443,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2008-09-11</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1456,7 +1456,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2008-09-09</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1469,7 +1469,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2008-09-01</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1482,7 +1482,7 @@ requiring needless code duplication.</description>
     <api>stable</api>
    </stability>
    <date>2008-06-23</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1495,7 +1495,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-03-28</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1508,7 +1508,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-03-18</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1521,7 +1521,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-03-01</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1534,7 +1534,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-02-29</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1547,7 +1547,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-02-13</date>
-   <license uri="http://www.phpdoctrine.org/license">LGPL license</license>
+   <license uri="http://www.doctrine-project.org/license">LGPL license</license>
    <notes>-</notes>
   </release>
   <release>
@@ -1560,7 +1560,7 @@ requiring needless code duplication.</description>
     <api>beta</api>
    </stability>
    <date>2008-02-06</date>
-   <license uri="http://phpdoctrine.net/license">MIT license</license>
+   <license uri="http://doctrine-project.org/license">MIT license</license>
    <notes>barfoo</notes>
   </release>
  </changelog>

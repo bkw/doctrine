@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 class DC521TestModel extends Doctrine_Record
@@ -67,7 +67,7 @@ class DC521IdOnlyTestModel extends Doctrine_Record
  * @author      Gergely Kis <gergely.kis@mattakis.com>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @since       1.2
  * @version     $Revision$
  */

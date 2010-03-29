@@ -6,7 +6,7 @@
  * @author      Jani Hartikainen <firstname at codeutopia net>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @category    Object Relational Mapping
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @version     $Revision$
  */
 
