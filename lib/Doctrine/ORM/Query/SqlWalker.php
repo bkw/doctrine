@@ -458,6 +458,7 @@ class SqlWalker implements TreeWalker
 
                 $sql .= $class->getQuotedColumnName($fieldName, $this->_platform);
                 break;
+
             case AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION:
                 // 1- the owning side:
                 //    Just use the foreign key, i.e. u.group_id
@@ -484,6 +485,7 @@ class SqlWalker implements TreeWalker
                     throw QueryException::associationPathInverseSideNotSupported();
                 }
                 break;
+                
             default:
                 throw QueryException::invalidPathExpression($pathExpr);
         }
