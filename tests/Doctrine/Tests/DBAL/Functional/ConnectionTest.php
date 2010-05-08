@@ -44,7 +44,7 @@ class ConnectionTest extends \Doctrine\Tests\DbalFunctionalTestCase
             
             throw new \Exception;
               
-            $this->_conn->commit(); // never reached
+            $this->_connx->commit(); // never reached
         } catch (\Exception $e) {
             $this->assertEquals(1, $this->_conn->getTransactionNestingLevel());
             $this->_conn->rollback();
