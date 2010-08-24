@@ -230,4 +230,31 @@ class Doctrine_Expression_Pgsql extends Doctrine_Expression_Driver
     	$translate = 'TRANSLATE(' . $string . ', ' . $from . ', ' . $to . ')';
     	return $translate;
     }
+
+    /**
+     * transform locate to position
+     *
+     * @param string $substr string to find
+     * @param string $str to find where
+     * @return string
+     */
+    public function locate($substr, $str)
+    {
+        return $this->position($substr, $str);
+    }
+    
+    /**
+     * position
+     *
+     * @param string $substr string to find
+     * @param string $str to find where
+     * @return string
+     */
+    public function position($substr, $str)
+    {
+        $substr = $this->getIdentifier($substr);
+        $str = $this->getIdentifier($str);
+        
+        return sprintf('POSITION(%s IN %s)', $substr, $str);
+    }
 }
