@@ -920,6 +920,41 @@ class Doctrine_Collection extends Doctrine_Access implements Countable, Iterator
     }
 
     /**
+     * Replaces all records of this collection and processes the 
+     * difference of the last snapshot and the current data
+     *
+     * @param Doctrine_Connection $conn     optional connection parameter
+     * @return Doctrine_Collection
+     */
+    public function replace(Doctrine_Connection $conn = null, $processDiff = true)
+    {
+        if ($conn == null) {
+            $conn = $this->_table->getConnection();
+        }
+
+        try {
+            $conn->beginInternalTransaction();
+
+            $conn->transaction->addCollection($this);
+
+            if ($processDiff) {
+                $this->processDiff();
+            }
+
+            foreach ($this->getData() as $key => $record) {
+                $record->replace($conn);
+            }
+
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollback();
+            throw $e;
+        }
+
+        return $this;
+    }
+
+    /**
      * Deletes all records from this collection
      *
      * @return Doctrine_Collection
