@@ -168,9 +168,9 @@ class Doctrine_Connection_Mssql extends Doctrine_Connection_Common
                     $from_clause_pos = strpos($helper_string, ' FROM ');
                     $fields_string = substr($helper_string, 0, $from_clause_pos + 1);
 
-                    $field_array = explode(',', $fields_string);
-                    $field_array = array_shift($field_array);
-                    $aux2 = spliti(' as ', $field_array);
+                    $fieldArray = explode(',', $fields_string);
+                    $fieldArray = array_shift($fieldArray);
+                    $aux2 = preg_split('/ as /i', $fieldArray);
                     $aux2 = explode('.', end($aux2));
 
                     $aliases[$i] = trim(end($aux2));
@@ -187,9 +187,9 @@ class Doctrine_Connection_Mssql extends Doctrine_Connection_Common
             }
 
             $fields_string = substr($query, strlen($selectReplace), strpos($query, ' FROM ') - strlen($selectReplace));
-            $field_array = explode(',', $fields_string);
-            $field_array = array_shift($field_array);
-            $aux2 = spliti(' as ', $field_array);
+            $fieldArray = explode(',', $fields_string);
+            $fieldArray = array_shift($fieldArray);
+            $aux2 = preg_split('/ as /i', $fieldArray);
             $aux2 = explode('.', end($aux2));
             $key_field = trim(end($aux2));
 
